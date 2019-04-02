@@ -34,6 +34,16 @@ namespace NBagOfTricks
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool IsReadable(byte b)
+        {
+            return b >= 32 && b <= 126;
+        }
+
+        /// <summary>
         /// Returns the rightmost characters of a string based on the number of characters specified.
         /// </summary>
         /// <param name="str">The source string to return characters from.</param>

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace NBagOfTricks
+
+namespace NBagOfTricks.UI
 {
     /// <summary>Class that provides a better wait cursor. Clients should use it with using (new WaitCursor()) { slow code }</summary>
     public class WaitCursor : IDisposable

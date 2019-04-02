@@ -62,6 +62,14 @@ namespace NBagOfTricks
         }
 
         /// <summary>
+        /// Compare two doubles "close enough".
+        /// </summary>
+        public static bool IsClose(this double t1, double t2, double tol = 0.000001)
+        {
+            return Math.Abs(t2 - t1) < tol;
+        }
+
+        /// <summary>
         /// Split a double into two parts: each side of the dp.
         /// </summary>
         /// <param name="val"></param>

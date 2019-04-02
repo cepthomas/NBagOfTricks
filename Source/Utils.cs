@@ -28,10 +28,10 @@ namespace NBagOfTricks
         /// Get the user app dir.
         /// </summary>
         /// <returns></returns>
-        public static string GetAppDataDir()
+        public static string GetAppDataDir(string appName)
         {
             string localdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            return Path.Combine(localdir, "Nebulator");
+            return Path.Combine(localdir, appName);
         }
 
         /// <summary>
@@ -150,6 +150,35 @@ namespace NBagOfTricks
         #endregion
 
         #region Misc extensions
+        /// <summary>Rudimentary C# source code formatter to make generated files somewhat readable.</summary>
+        /// <param name="src">Lines to prettify.</param>
+        /// <returns>Formatted lines.</returns>
+        public static List<string> FormatSourceCode(this List<string> src)
+        {
+            List<string> fmt = new List<string>();
+            int indent = 0;
+
+            src.ForEach(s =>
+            {
+                if (s.StartsWith("{"))
+                {
+                    fmt.Add(new string(' ', indent * 4) + s);
+                    indent++;
+                }
+                else if (s.StartsWith("}") && indent > 0)
+                {
+                    indent--;
+                    fmt.Add(new string(' ', indent * 4) + s);
+                }
+                else
+                {
+                    fmt.Add(new string(' ', indent * 4) + s);
+                }
+            });
+
+            return fmt;
+        }
+
         /// <summary>
         /// Perform a blind deep copy of an object. The class must be marked as [Serializable] in order for this to work.
         /// There are many ways to do this: http://stackoverflow.com/questions/129389/how-do-you-do-a-deep-copy-an-object-in-net-c-specifically/11308879
