@@ -139,7 +139,7 @@ namespace NBagOfTricks
         }
 
         /// <summary>
-        /// Conversion.
+        /// Conversion for stopwatch values.
         /// </summary>
         /// <param name="ticks"></param>
         /// <returns></returns>

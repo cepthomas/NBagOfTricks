@@ -16,8 +16,8 @@ namespace NBagOfTricks.UI
         /// <summary>Device has received something.</summary>
         public class KeyboardEventArgs : EventArgs
         {
-            /// <summary>Channel number.</summary>
-            public int ChannelNumber { get; set; } = 1; // TODO editable?
+            /// <summary>Channel number. Client can set it.</summary>
+            public int ChannelNumber { get; set; } = 1;
 
             /// <summary>Midi note id.</summary>
             public int NoteId { get; set; } = 0;
@@ -46,8 +46,7 @@ namespace NBagOfTricks.UI
         #endregion
 
         #region Properties
-        /// <inheritdoc />
-        public string DeviceName { get; private set; } = "";
+
         #endregion
 
         #region Lifecycle
@@ -56,7 +55,6 @@ namespace NBagOfTricks.UI
         /// </summary>
         public VirtualKeyboard()
         {
-            CreateKeys();
             // Intercept all keyboard events.
             //KeyPreview = true;
 
@@ -78,25 +76,9 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         void Keyboard_Load(object sender, EventArgs e)
         {
-            //// Get the bitmap.
-            //Bitmap bm = new Bitmap(Properties.Resources.glyphicons_327_piano);
-
-            //// Convert to an icon and use for the form's icon.
-            //Icon = Icon.FromHandle(bm.GetHicon());
-        }
-
-        /// <inheritdoc />
-        public bool Init(string _ = "")
-        {
-            bool inited = true;
-
-            DrawKeys();
-
             CreateKeyMap();
-
-            Show();
-
-            return inited;
+            CreateKeys();
+            DrawKeys();
         }
         #endregion
 
@@ -120,33 +102,13 @@ namespace NBagOfTricks.UI
         }
         #endregion
 
-        //#region Interface implementation
-        ///// <inheritdoc />
-        //public void Start()
-        //{
-        //    // Ignore.
-        //}
-
-        ///// <inheritdoc />
-        //public void Stop()
-        //{
-        //    // Ignore.
-        //}
-
-        ///// <inheritdoc />
-        //public void Housekeep()
-        //{
-        //    // Ignore.
-        //}
-        //#endregion
-
         #region Private functions
         /// <summary>
         /// Is it a white key?
         /// </summary>
         /// <param name="notenum">Which note</param>
         /// <returns>True/false</returns>
-        public bool IsNatural(int notenum)
+        bool IsNatural(int notenum)
         {
             int[] naturals = { 0, 2, 4, 5, 7, 9, 11 };
             return naturals.Contains(notenum % 12);
@@ -369,7 +331,7 @@ namespace NBagOfTricks.UI
         #endregion
     }
 
-    /// <summary></summary>
+    /// <summary>One individual key.</summary>
     public class VirtualKey : Control
     {
         #region Fields

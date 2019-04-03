@@ -3,6 +3,7 @@ A collection of the C# things I seem to use repeatedly.
 
 No dependencies on third party components.
 
+TODO doc the other components.
 
 # PNUT
 Practically Nonexistent Unit Tester
@@ -108,5 +109,3 @@ A subset intended for consumption by Jenkins. Not tested yet but looks nice.
 ## NStateMachine
 Semi-hierarchical state machine for .NET. Generates diagrams via dot. See Test_SM.cs for an example of usage.
 
-This needs a link to pnut.cs in [pnut](https://github.com/cepthomas/pnut). This project assumes you have
-that one at the same level - adjust to taste.

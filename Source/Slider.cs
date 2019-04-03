@@ -93,7 +93,6 @@ namespace NBagOfTricks.UI
         public Slider()
         {
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
-            //InitializeComponent();
         }
         #endregion
 
@@ -111,7 +110,9 @@ namespace NBagOfTricks.UI
             if (disposing)
             {
                 if (components != null)
+                {
                     components.Dispose();
+                }
             }
             base.Dispose(disposing);
         }

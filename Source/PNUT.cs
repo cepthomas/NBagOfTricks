@@ -211,10 +211,6 @@ namespace NBagOfTricks.PNUT
             }
 
             Context.OutLines.ForEach(l => Console.WriteLine(l));
-#if DEBUG
-            Context.OutLines.ForEach(l => Debug.WriteLine(l));
-#endif
-
         }
     }
 

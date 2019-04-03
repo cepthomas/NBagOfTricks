@@ -4,7 +4,7 @@ using System.Linq;
 using System.IO;
 using NBagOfTricks.StateMachine;
 using NBagOfTricks.PNUT;
-
+using System.Diagnostics;
 
 namespace NBagOfTricks.Test
 {
@@ -68,10 +68,11 @@ namespace NBagOfTricks.Test
 
             // Make a picture.
             string sdot = mainDoorLock.SM.GenerateDot();
-            File.WriteAllText("test.gv", sdot);
-
-
-            //TODO dot -Tpng testout.gv -o testout.png
+            File.WriteAllText("testout.gv", sdot);
+            Process p = new Process();
+            p.StartInfo.FileName = "dot";
+            p.StartInfo.Arguments = "-Tpng testout.gv -o testout.png";
+            bool ok = p.Start();
         }
     }
 
