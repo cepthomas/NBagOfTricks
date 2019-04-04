@@ -46,6 +46,7 @@
     <Compile Include="Meter.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="MiscUtils.cs" />
     <Compile Include="Pot.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -64,11 +65,21 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateMachine.cs" />
     <Compile Include="TimingAnalyzer.cs" />
-    <Compile Include="Utils.cs" />
     <Compile Include="VirtualKeyboard.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WaitCursor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Meter.resx">
+      <DependentUpon>Meter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pot.resx">
+      <DependentUpon>Pot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Slider.resx">
+      <DependentUpon>Slider.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

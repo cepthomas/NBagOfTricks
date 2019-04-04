@@ -45,10 +45,6 @@ namespace NBagOfTricks.UI
         bool _keyDown = false;
         #endregion
 
-        #region Properties
-
-        #endregion
-
         #region Lifecycle
         /// <summary>
         /// Constructor.
@@ -76,8 +72,8 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         void Keyboard_Load(object sender, EventArgs e)
         {
-            CreateKeyMap();
             CreateKeys();
+            CreateKeyMap();
             DrawKeys();
         }
         #endregion
@@ -86,7 +82,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private System.ComponentModel.IContainer components = new System.ComponentModel.Container();
 
         /// <summary>
         /// Clean up any resources being used.

@@ -228,5 +228,17 @@ namespace NBagOfTricks.UI
             Invalidate();
         }
         #endregion
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // Meter
+            // 
+            this.Name = "Meter";
+            this.Size = new System.Drawing.Size(131, 43);
+            this.ResumeLayout(false);
+
+        }
     }
 }

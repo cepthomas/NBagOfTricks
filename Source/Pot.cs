@@ -214,5 +214,17 @@ namespace NBagOfTricks.UI
             base.OnMouseMove(e);
         }
         #endregion
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // Pot
+            // 
+            this.Name = "Pot";
+            this.Size = new System.Drawing.Size(60, 55);
+            this.ResumeLayout(false);
+
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace NBagOfTricks
     /// <summary>
     /// Static general utility functions.
     /// </summary>
-    public static class Utils
+    public static class MiscUtils
     {
         #region System utils
         /// <summary>
@@ -20,7 +20,7 @@ namespace NBagOfTricks
         /// </summary>
         public static string GetVersionString()
         {
-            Version ver = typeof(Utils).Assembly.GetName().Version;
+            Version ver = typeof(MiscUtils).Assembly.GetName().Version;
             return $"{ver.Major}.{ver.Minor}.{ver.Build}";
         }
 
