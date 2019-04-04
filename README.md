@@ -4,7 +4,7 @@ A collection of the C# things I seem to use repeatedly.
 No dependencies on third party components.
 
 TODO doc the other components.
-TODO relocated WinForms parts?
+TODO relocate WinForms parts?
 
 
 # PNUT

@@ -22,7 +22,7 @@ namespace NBagOfTricks.UI
             /// <summary>Midi note id.</summary>
             public int NoteId { get; set; } = 0;
 
-            /// <summary>Midi velocity.</summary>
+            /// <summary>Midi velocity. 0 means key up.</summary>
             public double Velocity { get; set; } = 0;
         }
         public event EventHandler<KeyboardEventArgs> KeyboardEvent;
@@ -258,7 +258,7 @@ namespace NBagOfTricks.UI
                 {
                     ChannelNumber = 1,
                     NoteId = e.NoteId,
-                    Velocity = 0.8
+                    Velocity = e.Down ? 0.8 : 0
                 });
             }
         }
@@ -297,30 +297,33 @@ namespace NBagOfTricks.UI
         /// </summary>
         void DrawKeys()
         {
-            int whiteKeyWidth = Width / _keys.Count(k => k.IsNatural);
-            int blackKeyWidth = (int)(whiteKeyWidth * 0.6);
-            int blackKeyHeight = (int)(Height * 0.5);
-            int offset = whiteKeyWidth - blackKeyWidth / 2;
-
-            int w = 0;
-
-            for (int i = 0; i < _keys.Count; i++)
+            if(_keys.Count > 0)
             {
-                VirtualKey pk = _keys[i];
+                int whiteKeyWidth = Width / _keys.Count(k => k.IsNatural);
+                int blackKeyWidth = (int)(whiteKeyWidth * 0.6);
+                int blackKeyHeight = (int)(Height * 0.5);
+                int offset = whiteKeyWidth - blackKeyWidth / 2;
 
-                if (pk.IsNatural)
+                int w = 0;
+
+                for (int i = 0; i < _keys.Count; i++)
                 {
-                    pk.Height = Height;
-                    pk.Width = whiteKeyWidth;
-                    pk.Location = new Point(w * whiteKeyWidth, 0);
-                    w++;
-                }
-                else
-                {
-                    pk.Height = blackKeyHeight;
-                    pk.Width = blackKeyWidth;
-                    pk.Location = new Point(offset + (w - 1) * whiteKeyWidth);
-                    pk.BringToFront();
+                    VirtualKey pk = _keys[i];
+
+                    if (pk.IsNatural)
+                    {
+                        pk.Height = Height;
+                        pk.Width = whiteKeyWidth;
+                        pk.Location = new Point(w * whiteKeyWidth, 0);
+                        w++;
+                    }
+                    else
+                    {
+                        pk.Height = blackKeyHeight;
+                        pk.Width = blackKeyWidth;
+                        pk.Location = new Point(offset + (w - 1) * whiteKeyWidth);
+                        pk.BringToFront();
+                    }
                 }
             }
         }
