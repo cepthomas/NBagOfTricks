@@ -25,17 +25,35 @@ namespace NBagOfTricks.PNUT
     /// </summary>
     public class TestContext
     {
+        /// <summary></summary>
         public OutputFormat Format { get; set; } = OutputFormat.Readable;
+
+        /// <summary></summary>
         public string CurrentSuiteId { get; set; } = "???";
+
+        /// <summary></summary>
         public bool CurrentSuitePass { get; set; } = true;
+
+        /// <summary></summary>
         public int NumSuitesRun { get; set; } = 0;
+
+        /// <summary></summary>
         public int NumSuitesFailed { get; set; } = 0;
+
+        /// <summary></summary>
         public bool CurrentCasePass { get; set; } = true;
+
+        /// <summary></summary>
         public int NumCasesRun { get; set; } = 0;
+
+        /// <summary></summary>
         public int NumCasesFailed { get; set; } = 0;
 
-        public List<string> OutLines { get; set; } = new List<string>();
-        public List<string> PropLines { get; set; } = new List<string>();
+        /// <summary></summary>
+        public List<string> OutputLines { get; set; } = new List<string>();
+        
+        /// <summary></summary>
+        public List<string> PropertyLines { get; set; } = new List<string>();
     }
 
     /// <summary>
@@ -114,7 +132,7 @@ namespace NBagOfTricks.PNUT
                 tc.Context = Context;
                 Context.CurrentSuitePass = true;
                 Context.CurrentCasePass = true;
-                Context.PropLines.Clear();
+                Context.PropertyLines.Clear();
 
                 // Document the start of the suite.
                 switch(Context.Format)
@@ -159,10 +177,10 @@ namespace NBagOfTricks.PNUT
                 {
                     case OutputFormat.Xml:
                         // Any properties?
-                        if (Context.PropLines.Count() > 0)
+                        if (Context.PropertyLines.Count() > 0)
                         {
                             tc.RecordVerbatim($"        <properties>");
-                            Context.PropLines.ForEach(l => tc.RecordVerbatim(l));
+                            Context.PropertyLines.ForEach(l => tc.RecordVerbatim(l));
                             tc.RecordVerbatim($"        </properties>");
                         }
 
@@ -170,7 +188,7 @@ namespace NBagOfTricks.PNUT
                         break;
 
                     case OutputFormat.Readable:
-                        Context.OutLines.Add($"");
+                        Context.OutputLines.Add($"");
                         break;
                 }
             }
@@ -204,28 +222,37 @@ namespace NBagOfTricks.PNUT
                     break;
             }
 
-            Context.OutLines.InsertRange(0, preamble);
+            Context.OutputLines.InsertRange(0, preamble);
             if(Context.Format == OutputFormat.Xml)
             {
-                Context.OutLines.Add($"</testsuites>");
+                Context.OutputLines.Add($"</testsuites>");
             }
 
-            Context.OutLines.ForEach(l => Console.WriteLine(l));
+            Context.OutputLines.ForEach(l => Console.WriteLine(l));
         }
     }
 
     /// <summary>
-    /// The class that encapsulates an individual test suite.
+    /// Defining class for an individual test suite.
     /// </summary>
     public abstract class TestSuite
     {
+        #region Properties
+        /// <summary>Accumulated count.</summary>
+        public int CaseCnt { get; set; } = 0;
+
+        /// <summary>Common context info.</summary>
+        public TestContext Context { get; set; } = null;
+        #endregion
+
+        #region Definitions
         const string UNKNOWN_FILE = "???";
         const int UNKNOWN_LINE = -1;
+        #endregion
 
-        public int CaseCnt { get; set; } = 0;
-        public TestContext Context { get; set; } = null;
-
-        // All test case specifications must supply this.
+        /// <summary>
+        /// All test case specifications must supply this.
+        /// </summary>
         public abstract void RunSuite();
 
         /// <summary>
@@ -244,7 +271,7 @@ namespace NBagOfTricks.PNUT
                 switch (Context.Format)
                 {
                     case OutputFormat.Xml:
-                        Context.OutLines.Add($"        <testcase name=\"{Context.CurrentSuiteId}.{CaseCnt}\" classname=\"{Context.CurrentSuiteId}\" />");
+                        Context.OutputLines.Add($"        <testcase name=\"{Context.CurrentSuiteId}.{CaseCnt}\" classname=\"{Context.CurrentSuiteId}\" />");
                         break;
 
                     case OutputFormat.Readable:
@@ -256,13 +283,13 @@ namespace NBagOfTricks.PNUT
                 switch (Context.Format)
                 {
                     case OutputFormat.Xml:
-                        Context.OutLines.Add($"        <testcase name=\"{Context.CurrentSuiteId}.{CaseCnt}\" classname=\"{Context.CurrentSuiteId}\">");
-                        Context.OutLines.Add($"            <failure message=\"{file}:{line} {message}\"></failure>");
-                        Context.OutLines.Add($"        </testcase>");
+                        Context.OutputLines.Add($"        <testcase name=\"{Context.CurrentSuiteId}.{CaseCnt}\" classname=\"{Context.CurrentSuiteId}\">");
+                        Context.OutputLines.Add($"            <failure message=\"{file}:{line} {message}\"></failure>");
+                        Context.OutputLines.Add($"        </testcase>");
                         break;
 
                     case OutputFormat.Readable:
-                        Context.OutLines.Add($"! ({file}:{line}) {Context.CurrentSuiteId}.{CaseCnt} {message}");
+                        Context.OutputLines.Add($"! ({file}:{line}) {Context.CurrentSuiteId}.{CaseCnt} {message}");
                         break;
                 }
             }
@@ -278,11 +305,11 @@ namespace NBagOfTricks.PNUT
             switch (Context.Format)
             {
                 case OutputFormat.Xml:
-                    Context.PropLines.Add($"            <property name=\"{name}\" value=\"{value}\" />");
+                    Context.PropertyLines.Add($"            <property name=\"{name}\" value=\"{value}\" />");
                     break;
 
                 case OutputFormat.Readable:
-                    Context.OutLines.Add($"Property {name}:{value}");
+                    Context.OutputLines.Add($"Property {name}:{value}");
                     break;
             }
         }
@@ -293,10 +320,15 @@ namespace NBagOfTricks.PNUT
         /// <param name="message"></param>
         public void RecordVerbatim(string message)
         {
-            Context.OutLines.Add(message);
+            Context.OutputLines.Add(message);
         }
 
-        #region Test macros - Boilerplate
+        #region Test functions - Boilerplate
+        /// <summary>
+        /// Print some info to the report.
+        /// </summary>
+        /// <param name="message">Info text</param>
+        /// <param name="vars">Optional vars to print</param>
         protected void UT_INFO(string message, params object[] vars)
         {
             if(Context.Format == OutputFormat.Readable)
@@ -305,14 +337,26 @@ namespace NBagOfTricks.PNUT
             }
         }
 
+        /// <summary>
+        /// Add an element to the property collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
         protected void UT_PROPERTY<T>(string name, T value)
         {
             RecordProperty(name, value.ToString());
         }
         #endregion
 
-        #region Test macros - Basic
-        // Checks whether the given condition is true.
+        #region Test functions - Basic
+        /// <summary>
+        /// Checks whether the given condition is true.
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         protected bool UT_TRUE(bool condition, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
         {
             bool pass = true;
@@ -328,7 +372,13 @@ namespace NBagOfTricks.PNUT
             return pass;
         }
 
-        // Checks whether the given condition is false.
+        /// <summary>
+        /// Checks whether the given condition is false.
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         protected bool UT_FALSE(bool condition, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
         {
             bool pass = true;
@@ -344,7 +394,14 @@ namespace NBagOfTricks.PNUT
             return pass;
         }
 
-        // Prints the condition and gens assert/exception.
+        /// <summary>
+        /// Prints the condition and gens assert/exception.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
         protected void UT_ASSERT<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             if (value1.CompareTo(value2) != 0)
@@ -354,8 +411,16 @@ namespace NBagOfTricks.PNUT
         }
         #endregion
 
-        #region Test macros - Comparers
-        // Checks whether the first parameter is equal to the second.
+        #region Test functions - Comparers
+        /// <summary>
+        /// Checks whether the first parameter is equal to the second.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         protected bool UT_EQUAL<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             bool pass = true;
@@ -371,7 +436,15 @@ namespace NBagOfTricks.PNUT
             return pass;
         }
 
-        // Checks whether the first parameter is not equal to the second.
+        /// <summary>
+        /// Checks whether the first parameter is not equal to the second.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         protected bool UT_NOT_EQUAL<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             bool pass = true;
@@ -387,7 +460,15 @@ namespace NBagOfTricks.PNUT
             return pass;
         }
 
-        // Checks whether the first parameter is less than the second.
+        /// <summary>
+        /// Checks whether the first parameter is less than the second.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         protected bool UT_LESS<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             bool pass = true;
@@ -403,7 +484,15 @@ namespace NBagOfTricks.PNUT
             return pass;
         }
 
-        // Checks whether the first parameter is less than or equal to the second.
+        /// <summary>
+        /// Checks whether the first parameter is less than or equal to the second.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         protected bool UT_LESS_OR_EQUAL<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             bool pass = true;
@@ -419,7 +508,15 @@ namespace NBagOfTricks.PNUT
             return pass;
         }
 
-        // Checks whether the first parameter is greater than the second.
+        /// <summary>
+        /// Checks whether the first parameter is greater than the second.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         protected bool UT_GREATER<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             bool pass = true;
@@ -435,7 +532,15 @@ namespace NBagOfTricks.PNUT
             return pass;
         }
 
-        // Checks whether the first parameter is greater than or equal to the second.
+        /// <summary>
+        /// Checks whether the first parameter is greater than or equal to the second.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         protected bool UT_GREATER_OR_EQUAL<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             bool pass = true;
@@ -451,8 +556,16 @@ namespace NBagOfTricks.PNUT
             return pass;
         }
 
-        // Checks whether the first parameter is within the given tolerance from the second parameter.
-        // This is useful for comparing floating point values.
+        /// <summary>
+        /// Checks whether the first parameter is within the given tolerance from the second parameter.
+        /// This is useful for comparing floating point values.
+        /// </summary>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="tolerance"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         protected bool UT_CLOSE(double value1, double value2, double tolerance, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
         {
             bool pass = true;

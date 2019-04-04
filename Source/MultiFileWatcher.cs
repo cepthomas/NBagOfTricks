@@ -12,11 +12,11 @@ namespace NBagOfTricks
     {
         #region Events
         /// <summary>Reporting a change to listeners.</summary>
-        public event EventHandler<FileChangeEventArgs> FileChangeEvent;
         public class FileChangeEventArgs : EventArgs
         {
             public HashSet<string> FileNames { get; set; } = null;
         }
+        public event EventHandler<FileChangeEventArgs> FileChangeEvent;
         #endregion
 
         #region Fields
