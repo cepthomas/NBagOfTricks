@@ -22,6 +22,18 @@ namespace NBagOfTricks
         }
 
         /// <summary>
+        /// Test for float string.
+        /// </summary>
+        /// <param name="sourceString"></param>
+        /// <returns></returns>
+        public static bool IsFloat(this string sourceString)
+        {
+            bool isint = true;
+            sourceString.ForEach(c => isint &= (char.IsNumber(c) || c == '.'));
+            return isint;
+        }
+
+        /// <summary>
         /// Test for alpha string.
         /// </summary>
         /// <param name="sourceString"></param>
