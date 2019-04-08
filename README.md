@@ -3,27 +3,21 @@ A collection of the C# things I seem to use repeatedly.
 
 No dependencies on third party components.
 
-TODO doc the other components.
-TODO relocate WinForms parts?
-
+![logo](https://github.com/cepthomas/NBagOfTricks/blob/master/felix.jpg)
 
 # PNUT
 Practically Nonexistent Unit Tester
 
-A public version of a super lightweight unit test framework for C/C++ and C#. It has gone through many 
+A public version of a super lightweight unit test framework for C/C++. It has gone through many 
 useful and successful iterations and may as well bring you joy also.
 
 Inspired by [Quicktest](http://quicktest.sourceforge.net/) from long ago.
-
-The C/C++ version is plain C++ with a little bit of stl so will build and run on any win or nx platform using any compiler. A VS2017 solution is provided. Alternatively you can use Qt Creator for vanilla (non-Qt) C/C++ projects.
-
-See test.cpp/cs for an example of how to write unit tests and main.cpp/program.cs of how to run them.
 
 ## Output Formats
 There are two formats currently supported.
 
 ### Readable Text
-For humans.
+For humans. ! indicates a test failure.
 
 ```
 #------------------------------------------------------------------
@@ -68,31 +62,6 @@ A subset intended for consumption by Jenkins. Not tested yet but looks nice.
             <failure message="C:\Dev\pnut\cs\test.cs:42 [321] == [321]"></failure>
         </testcase>
         <testcase name="PNUT_1.5" classname="PNUT_1" />
-        <testcase name="PNUT_1.6 " classname="PNUT_1">
-            <failure message="C:\Dev\pnut\cs\test.cs:48 [987] not less than or equal [321]"></failure>
-        </testcase>
-        <testcase name="PNUT_1.7" classname="PNUT_1" />
-        <testcase name="PNUT_1.8" classname="PNUT_1" />
-        <testcase name="PNUT_1.9 " classname="PNUT_1">
-            <failure message="C:\Dev\pnut\cs\test.cs:57 [321] not greater than [987]"></failure>
-        </testcase>
-        <testcase name="PNUT_1.10" classname="PNUT_1" />
-        <testcase name="PNUT_1.11 " classname="PNUT_1">
-            <failure message="C:\Dev\pnut\cs\test.cs:63 [321] not greater than or equal [987]"></failure>
-        </testcase>
-        <testcase name="PNUT_1.12" classname="PNUT_1" />
-        <testcase name="PNUT_1.13" classname="PNUT_1" />
-        <testcase name="PNUT_1.14" classname="PNUT_1" />
-        <testcase name="PNUT_1.15 " classname="PNUT_1">
-            <failure message="C:\Dev\pnut\cs\test.cs:75 [1.5] not close enough to [1.498]"></failure>
-        </testcase>
-    </testsuite>
-    <testsuite name = PNUT_2>
-        <testcase name="PNUT_2.1" classname="PNUT_2" />
-        <testcase name="PNUT_2.2 " classname="PNUT_2">
-            <failure message="C:\Dev\pnut\cs\test.cs:97 [1] not greater than [2]"></failure>
-        </testcase>
-        <testcase name="PNUT_2.3" classname="PNUT_2" />
         <properties>
             <property name="version" value="xyz123" />
             <property name="rand-seed" value="999" />
@@ -108,6 +77,31 @@ A subset intended for consumption by Jenkins. Not tested yet but looks nice.
 </testsuites>
 ```
 
-## NStateMachine
-Semi-hierarchical state machine for .NET. Generates diagrams via dot. See Test_SM.cs for an example of usage.
+# NStateMachine
+- Semi-hierarchical state machine for .NET.
+- Generates diagrams via dot.
+- See Test_SM.cs for an example of usage.
 
+# Components
+- MmTimerEx: A theoretically better multimedia timer with improved accuracy for sub 10 msec period.
+- MultiFileWatcher: Multiple file change watcher.
+- TimingAnalyzer: High speed event statistics.
+
+# Various utilities and extensions
+- KeyUtils
+- MathUtils
+- MiscUtils
+- StringUtils
+
+# UI controls for audio apps
+- Meter
+- Pot
+- Slider
+- VirtualKeyboard: Control based on Le[Leslie Sanford's Midi Toolkit](https://github.com/tebjan/Sanford.Multimedia.Midi) piano.
+
+# General purpose UI components
+- PropertyGridEx
+- WaitCursor
+
+# License
+https://github.com/cepthomas/Nebulator/blob/master/LICENSE

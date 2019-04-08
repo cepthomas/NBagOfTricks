@@ -16,12 +16,14 @@ namespace NBagOfTricks.StateMachine
     /// </summary>
     /// <remarks>
     /// States:
-    /// - Each state must have a name.  TODO "" means default
+    /// - Each state must have a name, except the (optional) default state identified by null.
+    ///   The default state is checked first, then the current state.
     /// - Each state must have one or more Transitions.
     /// - Each state may have an enter and/or exit action executed on state changes.
     /// 
     /// Transitions:
-    ///  - Each transition must have an event name. TODO "" means default
+    ///  - Each transition must have an event name, except the (optional) default transition identified by null.
+    ///    If a transition for the event name is not found, the default transition is executed.
     ///  - Each transition may have a next state name otherwise stays in the same state.
     ///  - Each transition may have a transition action.
     /// </remarks>
@@ -30,6 +32,9 @@ namespace NBagOfTricks.StateMachine
         #region Fields
         /// <summary>All the states.</summary>
         Dictionary<string, State> _states = new Dictionary<string, State>();
+
+        /// <summary>The default state if used.</summary>
+        State _defaultState = null;
 
         /// <summary>The event queue.</summary>
         Queue<EventInfo> _eventQueue = new Queue<EventInfo>();
@@ -73,26 +78,62 @@ namespace NBagOfTricks.StateMachine
                     }
                     else
                     {
-                        // Check for duplicate state names.
-                        if (!_states.ContainsKey(st.StateName))
+                        // Check for default state.
+                        if(st.StateName == null)
                         {
-                            _states.Add(st.StateName, st);
+                            if(_defaultState == null)
+                            {
+                                st.StateName = "Default";
+                                _defaultState = st;
+                            }
+                            else
+                            {
+                                string serr = $"Multiple default states";
+                                Errors.Add(serr);
+                            }
                         }
                         else
                         {
-                            string serr = $"Duplicate State Name:{st.StateName}";
-                            Errors.Add(serr);
+                            // Check for duplicate state names.
+                            if (!_states.ContainsKey(st.StateName))
+                            {
+                                _states.Add(st.StateName, st);
+                            }
+                            else
+                            {
+                                string serr = $"Duplicate State Name:{st.StateName}";
+                                Errors.Add(serr);
+                            }
                         }
                     }
                 }
 
+                if(_defaultState != null)
+                {
+                    _states.Add("", _defaultState);
+                }
+
                 //////// Sanity checking on the transitions.
-                foreach (State st in _states.Values)
+                foreach (State st in _states.Values)// also _default...
                 {
                     Errors.AddRange(st.Init(_states.Keys));
                 }
+                //               Errors.AddRange(_defaultState.Init(_states.Keys));
 
-                if (initialState != null && _states.ContainsKey(initialState))
+
+                if (!string.IsNullOrEmpty(initialState) && _states.ContainsKey(initialState))
+                {
+                    CurrentState = _states[initialState];
+                    CurrentState.Enter(null);
+                }
+                else // invalid initial state
+                {
+                    string serr = $"Invalid Initial State:{initialState}";
+                    Errors.Add(serr);
+                }
+
+
+                if (!string.IsNullOrEmpty(initialState) && _states.ContainsKey(initialState))
                 {
                     CurrentState = _states[initialState];
                     CurrentState.Enter(null);
@@ -140,19 +181,29 @@ namespace NBagOfTricks.StateMachine
                         try
                         {
                             // Dig out the correct transition if there is one.
+                            string nextStateName = null;
 
-                            // Try current state.
-                            string nextStateName = CurrentState.ProcessEvent(ei);
+                            // Try default state first.
+                            if(_defaultState != null)
+                            {
+                                nextStateName = _defaultState.ProcessEvent(ei);
+                            }
 
                             if (nextStateName is null)
                             {
-                                throw new Exception($"State: {CurrentState.StateName} InvalidEvent: {ei.Name}");
+                                // Try current state.
+                                nextStateName = CurrentState.ProcessEvent(ei);
                             }
 
-                            // is there a state change?
+                            if (nextStateName is null)
+                            {
+                                throw new Exception($"State: {CurrentState.StateName} Invalid event: {ei.Name}");
+                            }
+
+                            // Is there a state change?
                             if (nextStateName != CurrentState.StateName)
                             {
-                                // get the next state
+                                // Get the next state.
                                 State nextState = _states[nextStateName];
 
                                 // Exit current state.
@@ -204,7 +255,6 @@ namespace NBagOfTricks.StateMachine
                 "    ratio=\"compress\";",
                 "    fontname=\"Arial\";",
                 "    label=\"\";", // (your label here!)
-
                 "    node [",
                 "    height=\"0.50\";",
                 "    width=\"1.0\";",
@@ -233,19 +283,19 @@ namespace NBagOfTricks.StateMachine
                     Transition t = kvp.Value;
 
                     // Get event name, but strip off "Transition" suffix if present to save space.
-                    string transitionSuffix = "Transition";
+    //                string transitionSuffix = "Transition";
                     string eventName = t.EventName;
-                    if (eventName.EndsWith(transitionSuffix))
-                    {
-                        eventName = eventName.Substring(0, eventName.Length - transitionSuffix.Length);
-                    }
+                    //if (eventName.EndsWith(transitionSuffix))
+                    //{
+                    //    eventName = eventName.Substring(0, eventName.Length - transitionSuffix.Length);
+                    //}
 
                     // Write an edge for the transition
                     string nextState = t.NextState;
-                    if (nextState == "SAME_STATE")
-                    {
-                        nextState = s.StateName;
-                    }
+                    //if (nextState == "SAME_STATE")
+                    //{
+                    //    nextState = s.StateName;
+                    //}
                     ls.Add($"        \"{s.StateName}\" -> \"{nextState}\" [label=\"{eventName}\"];");
                 }
 
@@ -263,7 +313,7 @@ namespace NBagOfTricks.StateMachine
     {
         #region Properties
         /// <summary>The state name.</summary>
-        public string StateName { get; } = "???";
+        public string StateName { get; set;  } = "???";
 
         /// <summary>All the transitions possible for this state.</summary>
         public Dictionary<string, Transition> Transitions { get; set; } = new Dictionary<string, Transition>();
@@ -317,7 +367,7 @@ namespace NBagOfTricks.StateMachine
 
             foreach (Transition t in tempTrans.Values)
             {
-                if (t.EventName == "")
+                if (string.IsNullOrEmpty(t.EventName))
                 {
                     if (_defaultTransition is null)
                     {
@@ -344,7 +394,7 @@ namespace NBagOfTricks.StateMachine
 
                 // Fix any SAME_STATE to current.
                 string nextState = t.NextState;
-                if (nextState == "")
+                if (string.IsNullOrEmpty(nextState))
                 {
                     t.NextState = StateName;
                 }
@@ -362,14 +412,14 @@ namespace NBagOfTricks.StateMachine
 
         /// <summary>Process the event.</summary>
         /// <param name="ei">The event information.</param>
-        /// <returns>The next state.</returns>
+        /// <returns>The next state name.</returns>
         public string ProcessEvent(EventInfo ei)
         {
             string nextState = null;
 
             if (Transitions != null)
             {
-                // Get the transition associated with the event
+                // Get the transition associated with the event.
                 if (!Transitions.TryGetValue(ei.Name, out Transition tx))
                 {
                     tx = _defaultTransition;

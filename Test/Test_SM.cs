@@ -66,6 +66,11 @@ namespace NBagOfTricks.Test
 
             UT_EQUAL(mainDoorLock.CurrentState, "Unlocked");
 
+            // Default state test.
+            mainDoorLock.PressKey(CombinationLock.Keys.Key_Power);
+
+            UT_EQUAL(mainDoorLock.CurrentState, "Locked");
+
             // Make a picture.
             string sdot = mainDoorLock.SM.GenerateDot();
             File.WriteAllText("testout.gv", sdot);
@@ -110,6 +115,10 @@ namespace NBagOfTricks.Test
                     SM.ProcessEvent("SetCombo", key);
                     break;
 
+                case Keys.Key_Power:
+                    SM.ProcessEvent("Shutdown", key);
+                    break;
+
                 default:
                     SM.ProcessEvent("DigitKeyPressed", key);
                     break;
@@ -128,22 +137,25 @@ namespace NBagOfTricks.Test
                     new Transition("IsUnlocked", "Unlocked")),
 
                 new State("Locked", LockedEnter, null,
-                    new Transition("ForceFail", "", ForceFail),
-                    new Transition("DigitKeyPressed", "", LockedAddDigit),
-                    new Transition("Reset", "", ClearCurrentEntry),
+                    new Transition("ForceFail", null, ForceFail),
+                    new Transition("DigitKeyPressed", null, LockedAddDigit),
+                    new Transition("Reset", null, ClearCurrentEntry),
                     new Transition("ValidCombo", "Unlocked"),
-                    new Transition("", "", ClearCurrentEntry)), // ignore other events
+                    new Transition(null, null, ClearCurrentEntry)), // ignore other events
                 
                 new State("Unlocked", UnlockedEnter, null,
                     new Transition("Reset", "Locked", ClearCurrentEntry),
                     new Transition("SetCombo", "SettingCombo", ClearCurrentEntry),
-                    new Transition("", "", ClearCurrentEntry)), // ignore other events
+                    new Transition(null, null, ClearCurrentEntry)), // ignore other events
                 
                 new State("SettingCombo", ClearCurrentEntry, null,
-                    new Transition("DigitKeyPressed", "", SetComboAddDigit),
+                    new Transition("DigitKeyPressed", null, SetComboAddDigit),
                     new Transition("SetCombo", "Unlocked", SetCombo),
-                    new Transition("Reset", "Unlocked", ClearCurrentEntry)
-                    )
+                    new Transition("Reset", "Unlocked", ClearCurrentEntry)),
+
+                new State(null, null, null,
+                    new Transition("Shutdown", "Locked", TryDefault),
+                    new Transition("Bar", "Foo"))
             };
 
             // initialize the state machine
@@ -167,9 +179,10 @@ namespace NBagOfTricks.Test
             Key_9,
             Key_Reset = '*',
             Key_Set = '#',
+            Key_Power = '!',
         }
 
-        /// <summary>State of the HW lock</summary>
+        /// <summary>State of the hardware lock</summary>
         public enum HwLockStates
         {
             HwIsLocked,
@@ -178,19 +191,19 @@ namespace NBagOfTricks.Test
         #endregion
 
         #region Fields
-        /// <summary>Current state of the HW Lock</summary>
+        /// <summary>Current state of the hardware Lock</summary>
         HwLockStates _hwLockState;
         #endregion
 
         #region Private functions
-        /// <summary>Energize the HW lock to the locked position</summary>
+        /// <summary>Energize the hardware lock to the locked position</summary>
         void HwLock()
         {
             Trace("HwLock: Locking");
             _hwLockState = HwLockStates.HwIsLocked;
         }
 
-        /// <summary>Energize the HW lock to the unlocked position</summary>
+        /// <summary>Energize the hardware lock to the unlocked position</summary>
         void HwUnLock()
         {
             Trace("HwLock: Unlocking");
@@ -213,7 +226,7 @@ namespace NBagOfTricks.Test
             // Create the FSM.
             SM = new SmEngine();
 
-            _hwLockState = hwLockState; // initialize the state of the HW lock
+            _hwLockState = hwLockState; // initialize the state of the hardware lock
 
             _currentEntry = new List<Keys>();
 
@@ -309,6 +322,14 @@ namespace NBagOfTricks.Test
         {
             Trace("ForceFail");
             throw new Exception("ForceFail");
+        }
+
+        /// <summary>Clear the lock</summary>
+        void TryDefault(Object o)
+        {
+            Trace($"ClearCurrentEntry:{o}");
+            HwLock();
+            _currentEntry.Clear();
         }
         #endregion
     }

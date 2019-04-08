@@ -18,7 +18,8 @@ namespace NBagOfTricks.Test
             //w.ShowDialog();
 
             TestRunner runner = new TestRunner(OutputFormat.Readable);
-            var cases = new[] { "PNUT", "ETC", "SM" };
+            //var cases = new[] { "PNUT", "ETC", "SM" };
+            var cases = new[] { "SM" };
             runner.RunSuites(cases);
         }
     }
