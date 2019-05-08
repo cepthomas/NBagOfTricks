@@ -104,4 +104,4 @@ A subset intended for consumption by Jenkins. Not tested yet but looks nice.
 - WaitCursor
 
 # License
-https://github.com/cepthomas/Nebulator/blob/master/LICENSE
+https://github.com/cepthomas/NBagOfTricks/blob/master/LICENSE
