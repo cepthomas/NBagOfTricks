@@ -28,24 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.virtualKeyboard1 = new NBagOfTricks.UI.VirtualKeyboard();
+            this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
             this.pot1 = new NBagOfTricks.UI.Pot();
             this.slider1 = new NBagOfTricks.UI.Slider();
             this.meter1 = new NBagOfTricks.UI.Meter();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.txtInfo = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // virtualKeyboard1
+            // vkbd
             // 
-            this.virtualKeyboard1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.virtualKeyboard1.Location = new System.Drawing.Point(0, 0);
-            this.virtualKeyboard1.Name = "virtualKeyboard1";
-            this.virtualKeyboard1.Size = new System.Drawing.Size(864, 118);
-            this.virtualKeyboard1.TabIndex = 0;
+            this.vkbd.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.vkbd.Location = new System.Drawing.Point(0, 0);
+            this.vkbd.Name = "vkbd";
+            this.vkbd.Size = new System.Drawing.Size(864, 118);
+            this.vkbd.TabIndex = 0;
+            this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.vkbd_KeyboardEvent);
             // 
             // pot1
             // 
@@ -97,16 +99,28 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.virtualKeyboard1);
+            this.splitContainer1.Panel1.Controls.Add(this.vkbd);
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.txtInfo);
             this.splitContainer1.Panel2.Controls.Add(this.meter1);
             this.splitContainer1.Panel2.Controls.Add(this.pot1);
             this.splitContainer1.Panel2.Controls.Add(this.slider1);
             this.splitContainer1.Size = new System.Drawing.Size(864, 236);
             this.splitContainer1.SplitterDistance = 118;
             this.splitContainer1.TabIndex = 4;
+            // 
+            // txtInfo
+            // 
+            this.txtInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtInfo.Location = new System.Drawing.Point(498, 9);
+            this.txtInfo.Name = "txtInfo";
+            this.txtInfo.Size = new System.Drawing.Size(341, 96);
+            this.txtInfo.TabIndex = 4;
+            this.txtInfo.Text = "";
             // 
             // TestHost
             // 
@@ -126,10 +140,11 @@
 
         #endregion
 
-        private UI.VirtualKeyboard virtualKeyboard1;
+        private UI.VirtualKeyboard vkbd;
         private UI.Pot pot1;
         private UI.Slider slider1;
         private UI.Meter meter1;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.RichTextBox txtInfo;
     }
 }

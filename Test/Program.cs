@@ -14,13 +14,12 @@ namespace NBagOfTricks.Test
     {
         static void Main(string[] args)
         {
-            //TestHost w = new TestHost();
-            //w.ShowDialog();
+            TestHost w = new TestHost();
+            w.ShowDialog();
 
-            TestRunner runner = new TestRunner(OutputFormat.Readable);
-            //var cases = new[] { "PNUT", "ETC", "SM" };
-            var cases = new[] { "SM" };
-            runner.RunSuites(cases);
+            //TestRunner runner = new TestRunner(OutputFormat.Readable);
+            //var cases = new[] { "SM" }; // "PNUT"
+            //runner.RunSuites(cases);
         }
     }
 }

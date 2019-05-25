@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
-using System.IO;
+
 
 namespace NBagOfTricks.UI
 {
     /// <summary>
     /// Virtual keyboard control borrowed from Leslie Sanford with extras.
+    /// TODO: If you press a key on the very top, a low amount of velocity is sent and v.v.
+    /// TODO: Spacing on right end is messed up sometimes.
     /// </summary>
     public partial class VirtualKeyboard : UserControl
     {
@@ -26,6 +28,18 @@ namespace NBagOfTricks.UI
             public double Velocity { get; set; } = 0;
         }
         public event EventHandler<KeyboardEventArgs> KeyboardEvent;
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// General width of the keyboard.
+        /// </summary>
+        public int KeySize { get; set; } = 10;
+
+        /// <summary>
+        /// General height of the keyboard.
+        /// </summary>
+        public int KeyHeight { get; set; } = 100;
         #endregion
 
         #region Constants
@@ -52,7 +66,7 @@ namespace NBagOfTricks.UI
         public VirtualKeyboard()
         {
             // Intercept all keyboard events.
-            //KeyPreview = true;
+            // KeyPreview = true;
 
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -62,7 +76,6 @@ namespace NBagOfTricks.UI
             Load += Keyboard_Load;
             KeyDown += Keyboard_KeyDown;
             KeyUp += Keyboard_KeyUp;
-            Resize += Keyboard_Resize;
         }
 
         /// <summary>
@@ -196,16 +209,6 @@ namespace NBagOfTricks.UI
 
         #region User input handlers
         /// <summary>
-        /// Event handler.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Keyboard_Resize(object sender, EventArgs e)
-        {
-            DrawKeys();
-        }
-
-        /// <summary>
         /// Use alpha keyboard to drive piano.
         /// </summary>
         /// <param name="sender"></param>
@@ -219,7 +222,7 @@ namespace NBagOfTricks.UI
                     VirtualKey pk = _keys[_keyMap[e.KeyCode]];
                     if (!pk.IsPressed)
                     {
-                        pk.PressVKey();
+                        pk.PressVKey(100);
                         e.Handled = true;
                     }
                 }
@@ -258,7 +261,7 @@ namespace NBagOfTricks.UI
                 {
                     ChannelNumber = 1,
                     NoteId = e.NoteId,
-                    Velocity = e.Down ? 0.8 : 0
+                    Velocity = e.Velocity
                 });
             }
         }
@@ -299,29 +302,30 @@ namespace NBagOfTricks.UI
         {
             if(_keys.Count > 0)
             {
-                int whiteKeyWidth = Width / _keys.Count(k => k.IsNatural);
+                int whiteKeyWidth = _keys.Count * KeySize / _keys.Count(k => k.IsNatural);
                 int blackKeyWidth = (int)(whiteKeyWidth * 0.6);
-                int blackKeyHeight = (int)(Height * 0.5);
+                int blackKeyHeight = (int)(KeyHeight * 0.65);
                 int offset = whiteKeyWidth - blackKeyWidth / 2;
 
-                int w = 0;
+                int numWhiteKeys = 0;
 
                 for (int i = 0; i < _keys.Count; i++)
                 {
                     VirtualKey pk = _keys[i];
 
+                    // Note that controls have to have integer width so resizing is a bit lumpy.
                     if (pk.IsNatural)
                     {
-                        pk.Height = Height;
+                        pk.Height = KeyHeight;
                         pk.Width = whiteKeyWidth;
-                        pk.Location = new Point(w * whiteKeyWidth, 0);
-                        w++;
+                        pk.Location = new Point(numWhiteKeys * whiteKeyWidth, 0);
+                        numWhiteKeys++;
                     }
                     else
                     {
                         pk.Height = blackKeyHeight;
                         pk.Width = blackKeyWidth;
-                        pk.Location = new Point(offset + (w - 1) * whiteKeyWidth);
+                        pk.Location = new Point(offset + (numWhiteKeys - 1) * whiteKeyWidth);
                         pk.BringToFront();
                     }
                 }
@@ -355,7 +359,7 @@ namespace NBagOfTricks.UI
         public class VKeyEventArgs : EventArgs
         {
             public int NoteId { get; set; }
-            public bool Down { get; set; }
+            public int Velocity { get; set; }
         }
         #endregion
 
@@ -379,11 +383,12 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// 
         /// </summary>
-        public void PressVKey()
+        /// <param name="velocity"></param>
+        public void PressVKey(int velocity)
         {
             IsPressed = true;
             Invalidate();
-            VKeyEvent?.Invoke(this, new VKeyEventArgs() { NoteId = NoteId, Down = true });
+            VKeyEvent?.Invoke(this, new VKeyEventArgs() { NoteId = NoteId, Velocity = velocity });
         }
 
         /// <summary>
@@ -393,7 +398,20 @@ namespace NBagOfTricks.UI
         {
             IsPressed = false;
             Invalidate();
-            VKeyEvent?.Invoke(this, new VKeyEventArgs() { NoteId = NoteId, Down = false });
+            VKeyEvent?.Invoke(this, new VKeyEventArgs() { NoteId = NoteId, Velocity = 0 });
+        }
+        #endregion
+
+        #region Private functions
+        /// <summary>
+        /// Calc velocity from Y position.
+        /// </summary>
+        /// <returns></returns>
+        int CalcVelocity()
+        {
+            var p = PointToClient(Cursor.Position);
+            var vel = p.Y * 127 / Height;
+            return vel;
         }
         #endregion
 
@@ -406,7 +424,7 @@ namespace NBagOfTricks.UI
         {
             if (MouseButtons == MouseButtons.Left)
             {
-                PressVKey();
+                PressVKey(CalcVelocity());
             }
         }
 
@@ -428,7 +446,7 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            PressVKey();
+            PressVKey(CalcVelocity());
 
             if (!_owner.Focused)
             {

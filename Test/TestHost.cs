@@ -16,5 +16,12 @@ namespace NBagOfTricks.Test
         {
             InitializeComponent();
         }
+
+        private void vkbd_KeyboardEvent(object sender, UI.VirtualKeyboard.KeyboardEventArgs e)
+        {
+            string s = $"note:{e.NoteId} vel:{e.Velocity}{Environment.NewLine}";
+            txtInfo.AppendText(s);
+            txtInfo.ScrollToCaret();
+        }
     }
 }

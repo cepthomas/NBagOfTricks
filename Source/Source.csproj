@@ -70,10 +70,5 @@
     </Compile>
     <Compile Include="WaitCursor.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="VirtualKeyboard.resx">
-      <DependentUpon>VirtualKeyboard.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
