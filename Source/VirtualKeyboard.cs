@@ -9,8 +9,6 @@ namespace NBagOfTricks.UI
 {
     /// <summary>
     /// Virtual keyboard control borrowed from Leslie Sanford with extras.
-    /// TODO: If you press a key on the very top, a low amount of velocity is sent and v.v.
-    /// TODO: Spacing on right end is messed up sometimes.
     /// </summary>
     public partial class VirtualKeyboard : UserControl
     {
