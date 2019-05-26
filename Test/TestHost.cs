@@ -17,11 +17,16 @@ namespace NBagOfTricks.Test
             InitializeComponent();
         }
 
+        private void TestHost_Load(object sender, EventArgs e)
+        {
+            txtInfo.Colors.Add("note:7", Color.Purple);
+            txtInfo.Colors.Add("vel:10", Color.Green);
+        }
+
         private void vkbd_KeyboardEvent(object sender, UI.VirtualKeyboard.KeyboardEventArgs e)
         {
-            string s = $"note:{e.NoteId} vel:{e.Velocity}{Environment.NewLine}";
-            txtInfo.AppendText(s);
-            txtInfo.ScrollToCaret();
+            string s = $"note:{e.NoteId} vel:{e.Velocity}";
+            txtInfo.AddLine(s);
         }
     }
 }

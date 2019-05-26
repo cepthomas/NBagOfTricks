@@ -93,7 +93,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = new System.ComponentModel.Container();
+        System.ComponentModel.IContainer components = new System.ComponentModel.Container();
 
         /// <summary>
         /// Clean up any resources being used.

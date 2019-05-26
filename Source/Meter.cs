@@ -75,7 +75,6 @@ namespace NBagOfTricks.UI
         public Meter()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
-            //InitializeComponent();
             Name = "Meter";
             Load += Meter_Load;
         }
@@ -92,7 +91,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        System.ComponentModel.IContainer components = new System.ComponentModel.Container();
 
         /// <summary>
         /// Clean up any resources being used.
@@ -228,17 +227,5 @@ namespace NBagOfTricks.UI
             Invalidate();
         }
         #endregion
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // Meter
-            // 
-            this.Name = "Meter";
-            this.Size = new System.Drawing.Size(131, 43);
-            this.ResumeLayout(false);
-
-        }
     }
 }

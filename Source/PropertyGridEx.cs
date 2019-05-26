@@ -81,7 +81,6 @@ namespace NBagOfTricks.UI
         {
             // Add any initialization after the InitializeComponent() call.
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
-            //BackColor = Globals.UserSettings.BackColor;
             
             _propertyGridView = base.GetType().BaseType.InvokeMember("gridView", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance, null, this, null);
             _hotCommands = base.GetType().BaseType.InvokeMember("hotcommands", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance, null, this, null);

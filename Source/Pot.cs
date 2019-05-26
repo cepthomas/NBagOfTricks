@@ -100,7 +100,6 @@ namespace NBagOfTricks.UI
         public Pot()
         {
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
-            //InitializeComponent();
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
             Name = "Pot";
@@ -112,7 +111,7 @@ namespace NBagOfTricks.UI
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        System.ComponentModel.IContainer components = new System.ComponentModel.Container();
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -214,17 +213,5 @@ namespace NBagOfTricks.UI
             base.OnMouseMove(e);
         }
         #endregion
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // Pot
-            // 
-            this.Name = "Pot";
-            this.Size = new System.Drawing.Size(60, 55);
-            this.ResumeLayout(false);
-
-        }
     }
 }

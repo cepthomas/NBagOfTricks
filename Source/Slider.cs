@@ -100,7 +100,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.Container components = null;
+        System.ComponentModel.IContainer components = new System.ComponentModel.Container();
 
         /// <summary>
         /// Clean up any resources being used.
@@ -200,17 +200,5 @@ namespace NBagOfTricks.UI
             Value = MathUtils.Constrain(newval, Minimum, Maximum);
         }
         #endregion
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // Slider
-            // 
-            this.Name = "Slider";
-            this.Size = new System.Drawing.Size(119, 44);
-            this.ResumeLayout(false);
-
-        }
     }
 }
