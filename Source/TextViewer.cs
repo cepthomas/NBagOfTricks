@@ -24,12 +24,12 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// User selectable color.
         /// </summary>
-        public override Color BackColor { get; set; } = Color.AliceBlue;
+        public override Color BackColor { set { _rtb.BackColor = value; } }
 
         /// <summary>
         /// User selectable font.
         /// </summary>
-        public override Font Font { get; set; } = new Font("Consolas", 9);
+        public override Font Font { set { _rtb.Font = value; } }
 
         /// <summary>
         /// User selection.
@@ -55,6 +55,7 @@ namespace NBagOfTricks.UI
         public TextViewer()
         {
             InitializeComponent();
+            Font = new Font("Consolas", 10);
         }
 
         /// <summary>
@@ -64,8 +65,6 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         private void TextViewer_Load(object sender, EventArgs e)
         {
-            _rtb.Font = Font;
-            _rtb.BackColor = BackColor;
             _rtb.ForeColor = Color.Black;
             _rtb.Dock = DockStyle.Fill;
             _rtb.ReadOnly = true;
