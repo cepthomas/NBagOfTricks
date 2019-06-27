@@ -32,6 +32,16 @@ namespace NBagOfTricks.UI
         public override Color BackColor { get; set; } = SystemColors.Control;
 
         /// <summary>
+        /// Number of decimal places to display.
+        /// </summary>
+        public int DecPlaces { get; set; } = 1;
+
+        /// <summary>
+        /// Fader orientation
+        /// </summary>
+        public Orientation Orientation { get; set; } = Orientation.Horizontal;
+
+        /// <summary>
         /// Maximum value of this slider.
         /// </summary>
         public double Maximum { get; set; } = 1.0;
@@ -72,16 +82,6 @@ namespace NBagOfTricks.UI
                 Invalidate();
             }
         }
-
-        /// <summary>
-        /// Number of decimal places to display.
-        /// </summary>
-        public int DecPlaces { get; set; } = 1;
-
-        /// <summary>
-        /// Fader orientation
-        /// </summary>
-        public Orientation Orientation { get; set; }
         #endregion
 
         #region Events
@@ -134,30 +134,29 @@ namespace NBagOfTricks.UI
             Brush brush = new SolidBrush(ControlColor);
             Pen pen = new Pen(ControlColor);
 
-
-            if (Orientation == Orientation.Vertical) TODO
-            {
-            }
-            else
-            {
-            }
-
-
-
             // Draw border.
-            int bw = 1;
-            Pen penBorder = new Pen(Color.Black, bw);
+            int brdwidth = 1;
+            Pen penBorder = new Pen(Color.Black, brdwidth);
             pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
 
             // Draw data.
-            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -bw, -bw);
+            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -brdwidth, -brdwidth);
 
-            double x = Width * (_value - Minimum) / (Maximum - Minimum);
-            pe.Graphics.FillRectangle(brush, bw, bw, (float)x - 2 * bw, Height - 2 * bw);
+            // Draw the bar.
+            if (Orientation == Orientation.Horizontal)
+            {
+                float x = (float)(Width * (_value - Minimum) / (Maximum - Minimum));
+                pe.Graphics.FillRectangle(brush, brdwidth, brdwidth, x - 2 * brdwidth, Height - 2 * brdwidth);
+            }
+            else
+            {
+                float y = (float)(Height * (_value - Minimum) / (Maximum - Minimum));
+                pe.Graphics.FillRectangle(brush, brdwidth, (Height - y) - brdwidth, Width - 2 * brdwidth, Height - brdwidth);
+            }
 
             // Text.
-            StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
             string sval = _value.ToString("#0." + new string('0', DecPlaces));
+            StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
 
             if (Label != "")
             {
@@ -181,7 +180,7 @@ namespace NBagOfTricks.UI
         {
             if (e.Button == MouseButtons.Left)
             {
-                SetValueFromMouse(e.X);
+                SetValueFromMouse(e);
             }
             base.OnMouseMove(e);
         }
@@ -194,7 +193,7 @@ namespace NBagOfTricks.UI
             switch(e.Button)
             {
                 case MouseButtons.Left:
-                    SetValueFromMouse(e.X);
+                    SetValueFromMouse(e);
                     break;
 
                 case MouseButtons.Right:
@@ -208,10 +207,13 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// ommon updater.
         /// </summary>
-        /// <param name="x"></param>
-        private void SetValueFromMouse(int x)
+        /// <param name="e"></param>
+        private void SetValueFromMouse(MouseEventArgs e)
         {
-            double newval = Minimum + x * (Maximum - Minimum) / Width;
+            double newval = Orientation == Orientation.Horizontal ?
+                Minimum + e.X * (Maximum - Minimum) / Width :
+                Minimum + (Height - e.Y) * (Maximum - Minimum) / Height;
+
             Value = MathUtils.Constrain(newval, Minimum, Maximum);
         }
         #endregion

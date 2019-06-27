@@ -30,6 +30,7 @@
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
+            this.slider2 = new NBagOfTricks.UI.Slider();
             this.pan1 = new NBagOfTricks.UI.Pan();
             this.txtInfo = new NBagOfTricks.UI.TextViewer();
             this.meter1 = new NBagOfTricks.UI.Meter();
@@ -54,6 +55,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.slider2);
             this.splitContainer1.Panel2.Controls.Add(this.pan1);
             this.splitContainer1.Panel2.Controls.Add(this.txtInfo);
             this.splitContainer1.Panel2.Controls.Add(this.meter1);
@@ -74,9 +76,25 @@
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.vkbd_KeyboardEvent);
             // 
+            // slider2
+            // 
+            this.slider2.ControlColor = System.Drawing.Color.SlateBlue;
+            this.slider2.DecPlaces = 1;
+            this.slider2.Label = "Vertical";
+            this.slider2.Location = new System.Drawing.Point(390, 23);
+            this.slider2.Maximum = 10D;
+            this.slider2.Minimum = 0D;
+            this.slider2.Name = "slider2";
+            this.slider2.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.slider2.ResetValue = 0D;
+            this.slider2.Size = new System.Drawing.Size(53, 157);
+            this.slider2.TabIndex = 6;
+            this.slider2.Value = 5D;
+            // 
             // pan1
             // 
-            this.pan1.ControlColor = System.Drawing.Color.Orange;
+            this.pan1.BackColor = System.Drawing.Color.Gainsboro;
+            this.pan1.ControlColor = System.Drawing.Color.Crimson;
             this.pan1.Location = new System.Drawing.Point(29, 121);
             this.pan1.Name = "pan1";
             this.pan1.Size = new System.Drawing.Size(150, 56);
@@ -98,7 +116,7 @@
             // 
             this.meter1.ControlColor = System.Drawing.Color.Orange;
             this.meter1.Label = "";
-            this.meter1.Location = new System.Drawing.Point(324, 23);
+            this.meter1.Location = new System.Drawing.Point(211, 121);
             this.meter1.Maximum = 100D;
             this.meter1.MeterType = NBagOfTricks.UI.MeterType.Linear;
             this.meter1.Minimum = 0D;
@@ -109,8 +127,9 @@
             // 
             // pot1
             // 
-            this.pot1.ControlColor = System.Drawing.Color.Black;
+            this.pot1.ControlColor = System.Drawing.Color.Green;
             this.pot1.DecPlaces = 2;
+            this.pot1.ForeColor = System.Drawing.Color.Black;
             this.pot1.Label = "???";
             this.pot1.Location = new System.Drawing.Point(89, 23);
             this.pot1.Maximum = 1D;
@@ -125,15 +144,16 @@
             // 
             this.slider1.ControlColor = System.Drawing.Color.Orange;
             this.slider1.DecPlaces = 2;
-            this.slider1.Label = "";
+            this.slider1.Label = "Horizontal";
             this.slider1.Location = new System.Drawing.Point(189, 23);
             this.slider1.Maximum = 1D;
             this.slider1.Minimum = 0D;
             this.slider1.Name = "slider1";
+            this.slider1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.slider1.ResetValue = 0D;
             this.slider1.Size = new System.Drawing.Size(115, 59);
             this.slider1.TabIndex = 2;
-            this.slider1.Value = 0D;
+            this.slider1.Value = 0.3D;
             // 
             // TestHost
             // 
@@ -161,5 +181,6 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private UI.TextViewer txtInfo;
         private UI.Pan pan1;
+        private UI.Slider slider2;
     }
 }
