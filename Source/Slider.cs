@@ -77,6 +77,11 @@ namespace NBagOfTricks.UI
         /// Number of decimal places to display.
         /// </summary>
         public int DecPlaces { get; set; } = 1;
+
+        /// <summary>
+        /// Fader orientation
+        /// </summary>
+        public Orientation Orientation { get; set; }
         #endregion
 
         #region Events
@@ -128,6 +133,16 @@ namespace NBagOfTricks.UI
             pe.Graphics.Clear(BackColor);
             Brush brush = new SolidBrush(ControlColor);
             Pen pen = new Pen(ControlColor);
+
+
+            if (Orientation == Orientation.Vertical) TODO
+            {
+            }
+            else
+            {
+            }
+
+
 
             // Draw border.
             int bw = 1;

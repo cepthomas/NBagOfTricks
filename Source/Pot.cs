@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+// TODO Fader, pan, pot, slider need a way to set level from typing.
+
+
 namespace NBagOfTricks.UI
 {
     /// <summary></summary>
