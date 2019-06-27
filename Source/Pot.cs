@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace NBagOfTricks.UI
 {
     /// <summary></summary>
-    public enum Taper { Linear, Log } // TODO Log sort of works but needs more debug.
+    public enum Taper { Linear, Log } // TODO Log sort of works but needs more debug. Also for slider?
 
     /// <summary>
     /// Control potentiometer.
