@@ -8,8 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-// TODO Fader, pan, pot, slider need a way to set level from typing.
-
 
 namespace NBagOfTricks.UI
 {
@@ -35,11 +33,6 @@ namespace NBagOfTricks.UI
         /// For styling.
         /// </summary>
         public Color ControlColor { get; set; } = Color.Black;
-
-        /// <summary>
-        /// For styling.
-        /// </summary>
-        public override Color BackColor { get; set; } = SystemColors.Control;
 
         /// <summary>
         /// Name etc.
@@ -214,6 +207,27 @@ namespace NBagOfTricks.UI
                 Value = Taper == Taper.Log ? Math.Pow(newValue, 10) : newValue;
             }
             base.OnMouseMove(e);
+        }
+
+        /// <summary>
+        /// Handle the nudge key.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.Control)
+            {
+                if (e.KeyCode == Keys.Down)
+                {
+                    Value = Value - Maximum * 0.01f;
+                }
+                else if (e.KeyCode == Keys.Up)
+                {
+                    Value = Value + Maximum * 0.01f;
+                }
+            }
+
+            base.OnKeyDown(e);
         }
         #endregion
     }

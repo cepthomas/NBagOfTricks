@@ -43,11 +43,6 @@ namespace NBagOfTricks.UI
         public Color ControlColor { get; set; } = Color.Orange;
 
         /// <summary>
-        /// For styling.
-        /// </summary>
-        public override Color BackColor { get; set; } = SystemColors.Control;
-
-        /// <summary>
         /// How the meter responds.
         /// </summary>
         public MeterType MeterType { get; set; } = MeterType.Linear;

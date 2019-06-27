@@ -59,9 +59,7 @@ namespace NBagOfTricks.UI
         protected override void OnPaint(PaintEventArgs pe)
         {
             // Setup.
-            //pe.Graphics.Clear(UserSettings.TheSettings.BackColor);
             Brush brush = new SolidBrush(ControlColor);
-            //Pen pen = new Pen(ControlColor);
 
             // Draw border.
             int bw = 1;
@@ -99,7 +97,7 @@ namespace NBagOfTricks.UI
         {
             if (e.Button == MouseButtons.Left)
             {
-                SetValuePanFromMouse(e.X);
+                SetValueFromMouse(e);
             }
             base.OnMouseMove(e);
         }
@@ -109,18 +107,50 @@ namespace NBagOfTricks.UI
         /// </summary>
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            SetValuePanFromMouse(e.X);
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    SetValueFromMouse(e);
+                    break;
+
+                case MouseButtons.Right:
+                    Value = 0;
+                    break;
+            }
+
             base.OnMouseDown(e);
         }
 
         /// <summary>
         /// Calculate position.
         /// </summary>
-        /// <param name="x"></param>
-        void SetValuePanFromMouse(int x)
+        /// <param name="e"></param>
+        void SetValueFromMouse(MouseEventArgs e)
         {
-            Value = (((double)x / Width) * 2.0f) - 1.0f;
+            Value = ((double)e.X / Width * 2.0f) - 1.0f;
         }
+
+        /// <summary>
+        /// Handle the nudge key.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.Control)
+            {
+                if (e.KeyCode == Keys.Down)
+                {
+                    Value = Value - 0.01f;
+                }
+                else if (e.KeyCode == Keys.Up)
+                {
+                    Value = Value + 0.01f;
+                }
+            }
+
+            base.OnKeyDown(e);
+        }
+
 
         #region Designer boilerplate
         /// <summary>

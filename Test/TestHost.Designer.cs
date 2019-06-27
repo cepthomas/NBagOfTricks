@@ -78,6 +78,7 @@
             // 
             // slider2
             // 
+            this.slider2.BackColor = System.Drawing.Color.Gainsboro;
             this.slider2.ControlColor = System.Drawing.Color.SlateBlue;
             this.slider2.DecPlaces = 1;
             this.slider2.Label = "Vertical";
@@ -114,6 +115,7 @@
             // 
             // meter1
             // 
+            this.meter1.BackColor = System.Drawing.Color.Gainsboro;
             this.meter1.ControlColor = System.Drawing.Color.Orange;
             this.meter1.Label = "";
             this.meter1.Location = new System.Drawing.Point(211, 121);
@@ -127,6 +129,7 @@
             // 
             // pot1
             // 
+            this.pot1.BackColor = System.Drawing.Color.Gainsboro;
             this.pot1.ControlColor = System.Drawing.Color.Green;
             this.pot1.DecPlaces = 2;
             this.pot1.ForeColor = System.Drawing.Color.Black;
@@ -142,6 +145,7 @@
             // 
             // slider1
             // 
+            this.slider1.BackColor = System.Drawing.Color.Gainsboro;
             this.slider1.ControlColor = System.Drawing.Color.Orange;
             this.slider1.DecPlaces = 2;
             this.slider1.Label = "Horizontal";

@@ -27,11 +27,6 @@ namespace NBagOfTricks.UI
         public Color ControlColor { get; set; } = Color.Orange;
 
         /// <summary>
-        /// For styling.
-        /// </summary>
-        public override Color BackColor { get; set; } = SystemColors.Control;
-
-        /// <summary>
         /// Number of decimal places to display.
         /// </summary>
         public int DecPlaces { get; set; } = 1;
@@ -133,11 +128,7 @@ namespace NBagOfTricks.UI
             pe.Graphics.Clear(BackColor);
             Brush brush = new SolidBrush(ControlColor);
             Pen pen = new Pen(ControlColor);
-
-            // Draw border.
             int brdwidth = 1;
-            Pen penBorder = new Pen(Color.Black, brdwidth);
-            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
 
             // Draw data.
             Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -brdwidth, -brdwidth);
@@ -145,14 +136,19 @@ namespace NBagOfTricks.UI
             // Draw the bar.
             if (Orientation == Orientation.Horizontal)
             {
-                float x = (float)(Width * (_value - Minimum) / (Maximum - Minimum));
-                pe.Graphics.FillRectangle(brush, brdwidth, brdwidth, x - 2 * brdwidth, Height - 2 * brdwidth);
+                double x = (_value - Minimum) / (Maximum - Minimum);
+                pe.Graphics.FillRectangle(brush, drawArea.Left, drawArea.Top, drawArea.Width * (float)x, drawArea.Height);
             }
             else
             {
-                float y = (float)(Height * (_value - Minimum) / (Maximum - Minimum));
-                pe.Graphics.FillRectangle(brush, brdwidth, (Height - y) - brdwidth, Width - 2 * brdwidth, Height - brdwidth);
+                double y = 1.0 - (_value - Minimum) / (Maximum - Minimum);
+                pe.Graphics.FillRectangle(brush, drawArea.Left, drawArea.Height * (float)y, drawArea.Width, drawArea.Bottom);
             }
+
+            // Draw border.
+            Pen penBorder = new Pen(Color.Black, brdwidth);
+            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
+            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
 
             // Text.
             string sval = _value.ToString("#0." + new string('0', DecPlaces));
@@ -215,6 +211,27 @@ namespace NBagOfTricks.UI
                 Minimum + (Height - e.Y) * (Maximum - Minimum) / Height;
 
             Value = MathUtils.Constrain(newval, Minimum, Maximum);
+        }
+
+        /// <summary>
+        /// Handle the nudge key.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.Control)
+            {
+                if (e.KeyCode == Keys.Down)
+                {
+                    Value = Value - Maximum * 0.01f;
+                }
+                else if (e.KeyCode == Keys.Up)
+                {
+                    Value = Value + Maximum * 0.01f;
+                }
+            }
+
+            base.OnKeyDown(e);
         }
         #endregion
     }
