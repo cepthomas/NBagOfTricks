@@ -26,7 +26,7 @@ namespace NBagOfTricks.UI
             }
             set
             {
-                _value = MathUtils.Constrain(value, -1.0, 1.0);
+                _value = Math.Round(MathUtils.Constrain(value, -1.0, 1.0), 2);
                 PanChanged?.Invoke(this, EventArgs.Empty);
                 Invalidate();
             }

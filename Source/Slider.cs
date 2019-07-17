@@ -57,7 +57,7 @@ namespace NBagOfTricks.UI
             }
             set
             {
-                _resetVal = MathUtils.Constrain(value, Minimum, Maximum);
+                _resetVal = Math.Round(MathUtils.Constrain(value, Minimum, Maximum), DecPlaces);
             }
         }
 
@@ -72,7 +72,7 @@ namespace NBagOfTricks.UI
             }
             set
             {
-                _value = MathUtils.Constrain(value, Minimum, Maximum);
+                _value = Math.Round(MathUtils.Constrain(value, Minimum, Maximum), DecPlaces);
                 ValueChanged?.Invoke(this, EventArgs.Empty);
                 Invalidate();
             }
@@ -210,7 +210,7 @@ namespace NBagOfTricks.UI
                 Minimum + e.X * (Maximum - Minimum) / Width :
                 Minimum + (Height - e.Y) * (Maximum - Minimum) / Height;
 
-            Value = MathUtils.Constrain(newval, Minimum, Maximum);
+            Value = newval;
         }
 
         /// <summary>
@@ -221,13 +221,15 @@ namespace NBagOfTricks.UI
         {
             if (e.Control)
             {
+                double incr = Math.Pow(10, -DecPlaces);
+
                 if (e.KeyCode == Keys.Down)
                 {
-                    Value = Value - Maximum * 0.01f;
+                    Value = Value - incr;
                 }
                 else if (e.KeyCode == Keys.Up)
                 {
-                    Value = Value + Maximum * 0.01f;
+                    Value = Value + incr;
                 }
             }
 

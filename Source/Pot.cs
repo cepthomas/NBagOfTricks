@@ -75,7 +75,7 @@ namespace NBagOfTricks.UI
             get { return _value; }
             set
             {
-                _value = MathUtils.Constrain(value, _minimum, _maximum);
+                _value = Math.Round(MathUtils.Constrain(value, Minimum, Maximum), DecPlaces);
                 ValueChanged?.Invoke(this, EventArgs.Empty);
                 Invalidate();
             }
@@ -217,13 +217,15 @@ namespace NBagOfTricks.UI
         {
             if (e.Control)
             {
+                double incr = Math.Pow(10, -DecPlaces);
+
                 if (e.KeyCode == Keys.Down)
                 {
-                    Value = Value - Maximum * 0.01f;
+                    Value = Value - incr;
                 }
                 else if (e.KeyCode == Keys.Up)
                 {
-                    Value = Value + Maximum * 0.01f;
+                    Value = Value + incr;
                 }
             }
 

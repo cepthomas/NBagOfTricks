@@ -90,7 +90,7 @@
             this.slider2.ResetValue = 0D;
             this.slider2.Size = new System.Drawing.Size(53, 157);
             this.slider2.TabIndex = 6;
-            this.slider2.Value = 5D;
+            this.slider2.Value = 5.4D;
             // 
             // pan1
             // 
