@@ -22,8 +22,8 @@ namespace NBagOfTricks.UI
             /// <summary>Midi note id.</summary>
             public int NoteId { get; set; } = 0;
 
-            /// <summary>Midi velocity. 0 means key up.</summary>
-            public double Velocity { get; set; } = 0;
+            /// <summary>Midi velocity. 0 means note off.</summary>
+            public int Velocity { get; set; } = 0;
         }
         public event EventHandler<KeyboardEventArgs> KeyboardEvent;
         #endregion
