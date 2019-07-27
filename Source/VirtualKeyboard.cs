@@ -384,7 +384,7 @@ namespace NBagOfTricks.UI
             TabStop = false;
             IsNatural = isNatural;
             NoteId = noteId;
-            Font = new Font("Arial", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Font = new Font("Consolas", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
         }
         #endregion
 
@@ -507,13 +507,11 @@ namespace NBagOfTricks.UI
             // Note name.
             if(_owner.ShowNoteNames)
             {
-                StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
-                Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
-
                 int root = NoteId % 12;
                 int octave = (NoteId / 12) - 1;
-
-                e.Graphics.DrawString($"{_noteNames[root]}{octave}", Font, Brushes.Black, r, format);
+                int x = IsNatural ? 3 : 0;
+                e.Graphics.DrawString($"{_noteNames[root]}", Font, Brushes.Black, x, 3);
+                e.Graphics.DrawString($"{octave}", Font, Brushes.Black, x, 13);
             }
         }
         #endregion
