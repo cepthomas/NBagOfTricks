@@ -205,7 +205,6 @@ namespace NBagOfTricks.UI
             if (Label.Length > 0 && Orientation == Orientation.Horizontal)
             {
                 StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
-
                 Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
                 pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
             }

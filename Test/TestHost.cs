@@ -22,6 +22,8 @@ namespace NBagOfTricks.Test
             txtInfo.Colors.Add("note:7", Color.Purple);
             txtInfo.Colors.Add("vel:10", Color.Green);
             txtInfo.BackColor = Color.Cornsilk;
+
+            vkbd.ShowNoteNames = true;
         }
 
         private void vkbd_KeyboardEvent(object sender, UI.VirtualKeyboard.KeyboardEventArgs e)

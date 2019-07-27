@@ -12,6 +12,11 @@ namespace NBagOfTricks.UI
     /// </summary>
     public partial class VirtualKeyboard : UserControl
     {
+        #region Properties
+        /// <summary>Draw the names on the keys.</summary>
+        public bool ShowNoteNames { get; set; } = false;
+        #endregion
+
         #region Events
         /// <summary>Device has received something.</summary>
         public class KeyboardEventArgs : EventArgs
@@ -28,19 +33,8 @@ namespace NBagOfTricks.UI
         public event EventHandler<KeyboardEventArgs> KeyboardEvent;
         #endregion
 
-        #region Properties
-        /// <summary>
-        /// General width of the keyboard.
-        /// </summary>
-        public int KeySize { get; set; } = 10;
-
-        /// <summary>
-        /// General height of the keyboard.
-        /// </summary>
-        public int KeyHeight { get; set; } = 100;
-        #endregion
-
         #region Constants
+        const int KEY_SIZE = 10;
         const int LOW_NOTE = 21;
         const int HIGH_NOTE = 109;
         const int MIDDLE_C = 60;
@@ -72,6 +66,7 @@ namespace NBagOfTricks.UI
             Name = "VirtualKeyboard";
             Text = "Virtual Keyboard";
             Load += Keyboard_Load;
+            Resize += Keyboard_Resize;
             KeyDown += Keyboard_KeyDown;
             KeyUp += Keyboard_KeyUp;
         }
@@ -86,6 +81,17 @@ namespace NBagOfTricks.UI
             CreateKeys();
             CreateKeyMap();
             DrawKeys();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Keyboard_Resize(object sender, EventArgs e)
+        {
+            DrawKeys();
+            Invalidate();
         }
         #endregion
 
@@ -300,9 +306,10 @@ namespace NBagOfTricks.UI
         {
             if(_keys.Count > 0)
             {
-                int whiteKeyWidth = _keys.Count * KeySize / _keys.Count(k => k.IsNatural);
+                int whiteKeyWidth = _keys.Count * KEY_SIZE / _keys.Count(k => k.IsNatural);
                 int blackKeyWidth = (int)(whiteKeyWidth * 0.6);
-                int blackKeyHeight = (int)(KeyHeight * 0.65);
+                int whiteKeyHeight = (int)(Height); // KeyHeight
+                int blackKeyHeight = (int)(whiteKeyHeight * 0.65);
                 int offset = whiteKeyWidth - blackKeyWidth / 2;
 
                 int numWhiteKeys = 0;
@@ -314,7 +321,7 @@ namespace NBagOfTricks.UI
                     // Note that controls have to have integer width so resizing is a bit lumpy.
                     if (pk.IsNatural)
                     {
-                        pk.Height = KeyHeight;
+                        pk.Height = whiteKeyHeight;
                         pk.Width = whiteKeyWidth;
                         pk.Location = new Point(numWhiteKeys * whiteKeyWidth, 0);
                         numWhiteKeys++;
@@ -338,6 +345,9 @@ namespace NBagOfTricks.UI
         #region Fields
         /// <summary>Hook to owner.</summary>
         VirtualKeyboard _owner;
+
+        /// <summary>For showing names.</summary>
+        static string[] _noteNames = { "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B" };
         #endregion
 
         #region Properties
@@ -374,6 +384,7 @@ namespace NBagOfTricks.UI
             TabStop = false;
             IsNatural = isNatural;
             NoteId = noteId;
+            Font = new Font("Arial", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
         }
         #endregion
 
@@ -490,7 +501,20 @@ namespace NBagOfTricks.UI
                 e.Graphics.FillRectangle(IsNatural ? new SolidBrush(Color.White) : new SolidBrush(Color.Black), 0, 0, Size.Width, Size.Height);
             }
 
+            // Outline.
             e.Graphics.DrawRectangle(Pens.Black, 0, 0, Size.Width - 1, Size.Height - 1);
+
+            // Note name.
+            if(_owner.ShowNoteNames)
+            {
+                StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
+                Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
+
+                int root = NoteId % 12;
+                int octave = (NoteId / 12) - 1;
+
+                e.Graphics.DrawString($"{_noteNames[root]}{octave}", Font, Brushes.Black, r, format);
+            }
         }
         #endregion
     }

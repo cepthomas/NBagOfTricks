@@ -62,17 +62,15 @@
             this.splitContainer1.Panel2.Controls.Add(this.pot1);
             this.splitContainer1.Panel2.Controls.Add(this.slider1);
             this.splitContainer1.Size = new System.Drawing.Size(864, 488);
-            this.splitContainer1.SplitterDistance = 114;
+            this.splitContainer1.SplitterDistance = 97;
             this.splitContainer1.TabIndex = 4;
             // 
             // vkbd
             // 
             this.vkbd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.vkbd.KeyHeight = 100;
-            this.vkbd.KeySize = 10;
             this.vkbd.Location = new System.Drawing.Point(0, 0);
             this.vkbd.Name = "vkbd";
-            this.vkbd.Size = new System.Drawing.Size(864, 114);
+            this.vkbd.Size = new System.Drawing.Size(864, 97);
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.vkbd_KeyboardEvent);
             // 
@@ -110,7 +108,7 @@
             this.txtInfo.Location = new System.Drawing.Point(498, 9);
             this.txtInfo.MaxText = 5000;
             this.txtInfo.Name = "txtInfo";
-            this.txtInfo.Size = new System.Drawing.Size(341, 352);
+            this.txtInfo.Size = new System.Drawing.Size(341, 369);
             this.txtInfo.TabIndex = 4;
             // 
             // meter1
