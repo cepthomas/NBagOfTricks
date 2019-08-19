@@ -92,6 +92,7 @@ A subset intended for consumption by Jenkins. Not tested yet but looks nice.
 - MathUtils
 - MiscUtils
 - StringUtils
+- Dumper writes object tree contents.
 
 # UI controls for audio apps
 - Meter
