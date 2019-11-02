@@ -28,6 +28,11 @@ namespace NBagOfTricks
         /// <summary>
         /// 
         /// </summary>
+        public bool _inited { get; set; } = false;
+
+        /// <summary>
+        /// 
+        /// </summary>
         Timer _timer = new Timer();
 
         /// <summary>
@@ -63,7 +68,7 @@ namespace NBagOfTricks
 
         #region Properties
         /// <summary>
-        /// 
+        /// If ther than default is wanted.
         /// </summary>
         public string Label { get; set; } = "cpu";
 
@@ -107,7 +112,133 @@ namespace NBagOfTricks
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             Name = "CpuMeter";
             Load += CpuMeter_Load;
+        }
 
+        /// <summary>
+        /// Initialize everything.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CpuMeter_Load(object sender, EventArgs e)
+        {
+            _timer.Tick += Timer_Tick;
+            _timer.Interval = 500;
+            _timer.Start();
+        }
+        #endregion
+
+        #region Private functions
+        /// <summary>
+        /// Paints the volume meter.
+        /// </summary>
+        protected override void OnPaint(PaintEventArgs pe)
+        {
+            // Setup.
+            pe.Graphics.Clear(BackColor);
+            Brush brush = new SolidBrush(ControlColor);
+            Pen pen = new Pen(ControlColor);
+
+            // Draw border.
+            int bw = BORDER_WIDTH;
+            Pen penBorder = new Pen(Color.Black, bw);
+            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
+
+            // Draw data.
+            // TODO for each process?
+            // The Processor (% Processor Time) counter will be out of 100 and will give the total usage across all
+            // processors /cores/etc in the computer. However, the Processor (% Process Time) is scaled by the number
+            // of logical processors. To get average usage across a computer, divide the result by Environment.ProcessorCount.
+            if(_cpuBuff != null)
+            {
+                for (int i = 0; i < _cpuBuff.Length; i++)
+                {
+                    int index = _buffIndex - i;
+                    index = index < 0 ? index + _cpuBuff.Length : index;
+
+                    double val = _cpuBuff[index];
+
+                    // Draw data point.
+                    double x = i + bw;
+                    double y = MathUtils.Map(val, _min, _max, Height - 2 * bw, bw);
+
+                    pe.Graphics.DrawLine(pen, (float)x, (float)y, (float)x, Height - 2 * bw);
+                    // or: pe.Graphics.FillRectangle(brush, (float)x, (float)y, 2, 2);
+                }
+            }
+
+            StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
+            Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
+            pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
+        }
+
+        /// <summary>
+        /// Update drawing area.
+        /// </summary>
+        protected override void OnResize(EventArgs e)
+        {
+            if(_inited)
+            {
+                SetBuffs();
+            }
+
+            base.OnResize(e);
+            Invalidate();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void SetBuffs()
+        {
+            int size = Width - 2 * BORDER_WIDTH;
+            for (int i = 0; i < _processesBuffs.Count(); i++)
+            {
+                _processesBuffs[i] = new double[size];
+            }
+
+            _cpuBuff = new double[size];
+
+            _buffIndex = 0;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if (_cpuPerf == null)
+            {
+                InitPerf();
+            }
+            else
+            {
+                _cpuBuff[_buffIndex] = 0;
+
+                for (int i = 0; i < _processesPerf.Count(); i++)
+                {
+                    float val = _processesPerf[i].NextValue();
+                    _processesBuffs[i][_buffIndex] = val;
+                }
+
+                _cpuBuff[_buffIndex] = _cpuPerf.NextValue();
+
+                _buffIndex++;
+                if (_buffIndex >= _cpuBuff.Count())
+                {
+                    _buffIndex = 0;
+                }
+
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// Defer init as they are slow processes.
+        /// </summary>
+        void InitPerf()
+        {
             int cores = 0;
             int physicalProcessors = 0;
             int logicalProcessors = 0;
@@ -141,107 +272,11 @@ namespace NBagOfTricks
             }
 
             _cpuPerf = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-        }
 
-        /// <summary>
-        /// Initialize everything.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CpuMeter_Load(object sender, EventArgs e)
-        {
-            _timer.Tick += Timer_Tick;
-            _timer.Interval = 500;
-            _timer.Start();
+            SetBuffs();
+
+            _inited = true;
         }
         #endregion
-
-        #region Private functions
-        /// <summary>
-        /// Paints the volume meter.
-        /// </summary>
-        protected override void OnPaint(PaintEventArgs pe)
-        {
-            // Setup.
-            pe.Graphics.Clear(BackColor);
-            Brush brush = new SolidBrush(ControlColor);
-            Pen pen = new Pen(ControlColor);
-
-            // Draw border.
-            int bw = BORDER_WIDTH;
-            Pen penBorder = new Pen(Color.Black, bw);
-            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
-
-            // Draw data.
-            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -bw, -bw);
-
-            for (int i = 0; i < _cpuBuff.Length; i++)
-            {
-                int index = _buffIndex - i;
-                index = index < 0 ? index + _cpuBuff.Length : index;
-
-                double val = _cpuBuff[index];
-                // TODO for each process?
-                // The Processor (% Processor Time) counter will be out of 100 and will give the total usage across all
-                // processors /cores/etc in the computer. However, the Processor (% Process Time) is scaled by the number
-                // of logical processors. To get average usage across a computer, divide the result by Environment.ProcessorCount.
-
-                // Draw data point.
-                double x = i + bw;
-                double y = MathUtils.Map(val, _min, _max, Height - 2 * bw, bw);
-
-                pe.Graphics.DrawLine(pen, (float)x, (float)y, (float)x, Height - 2 * bw);
-                // or: pe.Graphics.FillRectangle(brush, (float)x, (float)y, 2, 2);
-            }
-
-            StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
-            Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
-            pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
-        }
-
-        /// <summary>
-        /// Update drawing area.
-        /// </summary>
-        protected override void OnResize(EventArgs e)
-        {
-            int size = Width - 2 * BORDER_WIDTH;
-            for (int i = 0; i < _processesBuffs.Count(); i++)
-            {
-                _processesBuffs[i] = new double[size];
-            }
-
-            _cpuBuff = new double[size];
-
-            _buffIndex = 0;
-            base.OnResize(e);
-            Invalidate();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            _cpuBuff[_buffIndex] = 0;
-
-            for (int i = 0; i < _processesPerf.Count(); i++)
-            {
-                float val = _processesPerf[i].NextValue();
-                _processesBuffs[i][_buffIndex] = val;
-            }
-
-            _cpuBuff[_buffIndex] = _cpuPerf.NextValue();
-
-            _buffIndex++;
-            if(_buffIndex >= _cpuBuff.Count())
-            {
-                _buffIndex = 0;
-            }
-
-            Invalidate();
-        }
-        #endregion
-   }
+    }
 }
