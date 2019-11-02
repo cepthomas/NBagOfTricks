@@ -16,9 +16,14 @@ namespace NBagOfTricks
     {
         #region Fields
         /// <summary>
-        /// 
+        /// Total usage.
         /// </summary>
-        PerformanceCounter[] _pc = null;
+        PerformanceCounter _cpuPerf = null;
+
+        /// <summary>
+        /// Logical processes.
+        /// </summary>
+        PerformanceCounter[] _processesPerf = null;
 
         /// <summary>
         /// 
@@ -38,12 +43,12 @@ namespace NBagOfTricks
         /// <summary>
         /// Storage.
         /// </summary>
-        double[][] _buff = null;
+        double[][] _processesBuffs = null;
 
         /// <summary>
         /// Storage.
         /// </summary>
-        double[] _sum = null;
+        double[] _cpuBuff = null;
 
         /// <summary>
         /// Storage.
@@ -57,6 +62,11 @@ namespace NBagOfTricks
         #endregion
 
         #region Properties
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Label { get; set; } = "cpu";
+
         /// <summary>
         /// Default is 500 msec. Change if you like.
         /// </summary>
@@ -121,14 +131,16 @@ namespace NBagOfTricks
                 }
             }
 
-            _pc = new PerformanceCounter[logicalProcessors];
-            _buff = new double[logicalProcessors][];
+            _processesPerf = new PerformanceCounter[logicalProcessors];
+            _processesBuffs = new double[logicalProcessors][];
 
             for (int i = 0; i < logicalProcessors; i++)
             {
                 var pc = new PerformanceCounter("Processor", "% Processor Time", i.ToString());
-                _pc[i] = pc;
+                _processesPerf[i] = pc;
             }
+
+            _cpuPerf = new PerformanceCounter("Processor", "% Processor Time", "_Total");
         }
 
         /// <summary>
@@ -163,12 +175,16 @@ namespace NBagOfTricks
             // Draw data.
             Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -bw, -bw);
 
-            for (int i = 0; i < _sum.Length; i++)
+            for (int i = 0; i < _cpuBuff.Length; i++)
             {
                 int index = _buffIndex - i;
-                index = index < 0 ? index + _sum.Length : index;
+                index = index < 0 ? index + _cpuBuff.Length : index;
 
-                double val = _sum[index];
+                double val = _cpuBuff[index];
+                // TODO for each process?
+                // The Processor (% Processor Time) counter will be out of 100 and will give the total usage across all
+                // processors /cores/etc in the computer. However, the Processor (% Process Time) is scaled by the number
+                // of logical processors. To get average usage across a computer, divide the result by Environment.ProcessorCount.
 
                 // Draw data point.
                 double x = i + bw;
@@ -180,7 +196,7 @@ namespace NBagOfTricks
 
             StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
             Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
-            pe.Graphics.DrawString("CPU Meter", Font, Brushes.Black, r, format);
+            pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
         }
 
         /// <summary>
@@ -189,11 +205,12 @@ namespace NBagOfTricks
         protected override void OnResize(EventArgs e)
         {
             int size = Width - 2 * BORDER_WIDTH;
-            for (int i = 0; i < _buff.Count(); i++)
+            for (int i = 0; i < _processesBuffs.Count(); i++)
             {
-                _buff[i] = new double[size];
+                _processesBuffs[i] = new double[size];
             }
-            _sum = new double[size];
+
+            _cpuBuff = new double[size];
 
             _buffIndex = 0;
             base.OnResize(e);
@@ -207,17 +224,18 @@ namespace NBagOfTricks
         /// <param name="e"></param>
         private void Timer_Tick(object sender, EventArgs e)
         {
-            _sum[_buffIndex] = 0;
+            _cpuBuff[_buffIndex] = 0;
 
-            for (int i = 0; i < _pc.Count(); i++)
+            for (int i = 0; i < _processesPerf.Count(); i++)
             {
-                float val = _pc[i].NextValue();
-                _buff[i][_buffIndex] = val;
-                _sum[_buffIndex] += val;
+                float val = _processesPerf[i].NextValue();
+                _processesBuffs[i][_buffIndex] = val;
             }
 
+            _cpuBuff[_buffIndex] = _cpuPerf.NextValue();
+
             _buffIndex++;
-            if(_buffIndex >= _sum.Count())
+            if(_buffIndex >= _cpuBuff.Count())
             {
                 _buffIndex = 0;
             }
