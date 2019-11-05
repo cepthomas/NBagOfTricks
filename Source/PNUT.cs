@@ -172,6 +172,7 @@ namespace NBagOfTricks.PNUT
                 // Completed the suite, update the counts.
                 Context.NumSuitesRun++;
                 Context.NumCasesRun += tc.CaseCnt;
+                Context.NumCasesFailed += tc.CaseFailCnt;
 
                 switch (Context.Format)
                 {
@@ -241,6 +242,9 @@ namespace NBagOfTricks.PNUT
         /// <summary>Accumulated count.</summary>
         public int CaseCnt { get; set; } = 0;
 
+        /// <summary>Accumulated count.</summary>
+        public int CaseFailCnt { get; set; } = 0;
+
         /// <summary>Common context info.</summary>
         public TestContext Context { get; set; } = null;
         #endregion
@@ -280,6 +284,8 @@ namespace NBagOfTricks.PNUT
             }
             else
             {
+                CaseFailCnt++;
+
                 switch (Context.Format)
                 {
                     case OutputFormat.Xml:
