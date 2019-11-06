@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandProcessor.cs" />
     <Compile Include="CpuMeter.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -28,7 +28,7 @@ namespace NBagOfTricks
         /// <summary>
         /// 
         /// </summary>
-        public bool _inited { get; set; } = false;
+        bool _inited = false;
 
         /// <summary>
         /// 

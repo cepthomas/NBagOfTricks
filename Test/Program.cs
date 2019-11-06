@@ -16,12 +16,8 @@ namespace NBagOfTricks.Test
         {
             // Use test host for debugging UI components.
             TestHost w = new TestHost();
-            w.ShowDialog();
-
-            // Use pnut for automated lib tests.
-            //TestRunner runner = new TestRunner(OutputFormat.Readable);
-            //var cases = new[] { "SM" }; // "PNUT"
-            //runner.RunSuites(cases);
+            w.RunTests();
+            //w.ShowDialog();
         }
     }
 }

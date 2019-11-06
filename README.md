@@ -86,6 +86,8 @@ A subset intended for consumption by Jenkins. Not tested yet but looks nice.
 - MmTimerEx: A theoretically better multimedia timer with improved accuracy for sub 10 msec period.
 - MultiFileWatcher: Multiple file change watcher.
 - TimingAnalyzer: High speed event statistics.
+- CPU meter.
+- Command line arg parser.
 
 # Various utilities and extensions
 - KeyUtils

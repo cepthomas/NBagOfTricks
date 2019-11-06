@@ -53,6 +53,7 @@
     <Compile Include="TestHost.Designer.cs">
       <DependentUpon>TestHost.cs</DependentUpon>
     </Compile>
+    <Compile Include="Test_CMD.cs" />
     <Compile Include="Test_PNUT.cs" />
     <Compile Include="Test_SM.cs" />
   </ItemGroup>

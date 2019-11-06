@@ -71,13 +71,19 @@ namespace NBagOfTricks.Test
 
             UT_EQUAL(mainDoorLock.CurrentState, "Locked");
 
-            // Make a picture.
-            string sdot = mainDoorLock.SM.GenerateDot();
-            File.WriteAllText("testout.gv", sdot);
-            Process p = new Process();
-            p.StartInfo.FileName = "dot";
-            p.StartInfo.Arguments = "-Tpng testout.gv -o testout.png";
-            bool ok = p.Start();
+            // Make a picture, maybe.
+            try
+            {
+                string sdot = mainDoorLock.SM.GenerateDot();
+                File.WriteAllText("testout.gv", sdot);
+                Process p = new Process();
+                p.StartInfo.FileName = "dot";
+                p.StartInfo.Arguments = "-Tpng testout.gv -o testout.png";
+                bool ok = p.Start();
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 

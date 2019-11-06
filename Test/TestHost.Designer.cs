@@ -37,6 +37,7 @@
             this.meter1 = new NBagOfTricks.UI.Meter();
             this.pot1 = new NBagOfTricks.UI.Pot();
             this.slider1 = new NBagOfTricks.UI.Slider();
+            this.btnUT = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -57,6 +58,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.btnUT);
             this.splitContainer1.Panel2.Controls.Add(this.cpuMeter1);
             this.splitContainer1.Panel2.Controls.Add(this.slider2);
             this.splitContainer1.Panel2.Controls.Add(this.pan1);
@@ -64,7 +66,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.meter1);
             this.splitContainer1.Panel2.Controls.Add(this.pot1);
             this.splitContainer1.Panel2.Controls.Add(this.slider1);
-            this.splitContainer1.Size = new System.Drawing.Size(1152, 601);
+            this.splitContainer1.Size = new System.Drawing.Size(1256, 601);
             this.splitContainer1.SplitterDistance = 119;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 4;
@@ -76,7 +78,7 @@
             this.vkbd.Margin = new System.Windows.Forms.Padding(5);
             this.vkbd.Name = "vkbd";
             this.vkbd.ShowNoteNames = false;
-            this.vkbd.Size = new System.Drawing.Size(1152, 119);
+            this.vkbd.Size = new System.Drawing.Size(1256, 119);
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.vkbd_KeyboardEvent);
             // 
@@ -84,6 +86,7 @@
             // 
             this.cpuMeter1.BackColor = System.Drawing.Color.Gainsboro;
             this.cpuMeter1.ControlColor = System.Drawing.Color.Orange;
+            this.cpuMeter1.Label = "cpu";
             this.cpuMeter1.Location = new System.Drawing.Point(74, 285);
             this.cpuMeter1.Name = "cpuMeter1";
             this.cpuMeter1.Size = new System.Drawing.Size(221, 90);
@@ -126,7 +129,7 @@
             this.txtInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtInfo.MaxText = 5000;
             this.txtInfo.Name = "txtInfo";
-            this.txtInfo.Size = new System.Drawing.Size(455, 454);
+            this.txtInfo.Size = new System.Drawing.Size(559, 453);
             this.txtInfo.TabIndex = 4;
             // 
             // meter1
@@ -178,11 +181,23 @@
             this.slider1.TabIndex = 2;
             this.slider1.Value = 0.3D;
             // 
+            // btnUT
+            // 
+            this.btnUT.BackColor = System.Drawing.Color.HotPink;
+            this.btnUT.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUT.Location = new System.Drawing.Point(22, 28);
+            this.btnUT.Name = "btnUT";
+            this.btnUT.Size = new System.Drawing.Size(75, 60);
+            this.btnUT.TabIndex = 8;
+            this.btnUT.Text = "UT";
+            this.btnUT.UseVisualStyleBackColor = false;
+            this.btnUT.Click += new System.EventHandler(this.btnUT_Click);
+            // 
             // TestHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1152, 601);
+            this.ClientSize = new System.Drawing.Size(1256, 601);
             this.Controls.Add(this.splitContainer1);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TestHost";
@@ -207,5 +222,6 @@
         private UI.Pan pan1;
         private UI.Slider slider2;
         private CpuMeter cpuMeter1;
+        private System.Windows.Forms.Button btnUT;
     }
 }
