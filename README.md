@@ -87,7 +87,7 @@ A subset intended for consumption by Jenkins. Not tested yet but looks nice.
 - MultiFileWatcher: Multiple file change watcher.
 - TimingAnalyzer: High speed event statistics.
 - CPU meter.
-- Command line arg parser.
+- Command line arg parser and a companion console application.
 
 # Various utilities and extensions
 - KeyUtils

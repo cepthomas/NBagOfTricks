@@ -167,4 +167,74 @@ namespace NBagOfTricks.Test
             UT_EQUAL(cp.GetUsage("ng-cmd").Length, 89);
         }
     }
+
+
+    ////////////////////////////////////////////////////////////////////////
+    //public class CMD_CONS : TestSuite
+    //{
+    //    Consolette _console = new Consolette();
+    //    Processor _cp = new Processor();
+
+    //    // Command parameters.
+    //    string _cmdHelp = "";
+
+    //    public override void RunSuite()
+    //    {
+    //        UT_INFO("Not really a unit test, more of an example.");
+
+    //        _cp.Commands.Add(new Command()
+    //        {
+    //            Name = new string[] { "help", "h", "?" },
+    //            Description = "What do you want to know?",
+    //            Tail = "Optional cmd name",
+    //            TailFunc = (v) => { _cmdHelp = v; return true; }
+    //        });
+
+
+    //        _cp.Commands.Add(new Command()
+    //        {
+    //            Name = new string[] { "clear", "cls", "c" },
+    //            Description = "Clear screen.",
+    //        });
+
+    //        _console.UserCommand += Console_UserCommand;
+    //        _console.Run();
+    //    }
+
+    //    void Console_UserCommand(object sender, Consolette.UserCommandArgs e)
+    //    {
+    //        _cmdHelp = "";
+
+    //        List<string> cmdResults = new List<string>();
+
+    //        try
+    //        {
+    //            string cmd = _cp.Parse(e.Command);
+
+    //            switch (cmd)
+    //            {
+    //                case "help":
+    //                    cmdResults.Add(_cp.GetUsage(_cmdHelp));
+    //                    break;
+
+    //                case "cls":
+    //                    _console.Clear();
+    //                    break;
+
+    //                case "": // something wrong with the args...
+    //                    cmdResults.Add("Errors:");
+    //                    cmdResults.AddRange(_cp.Errors);
+    //                    break;
+    //            }
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            cmdResults.Add("Exception:");
+    //            cmdResults.Add(ex.Message);
+    //            cmdResults.Add(ex.StackTrace);
+    //        }
+
+    //        e.Response = string.Join(Environment.NewLine, cmdResults);
+    //    }
+    //}
 }
