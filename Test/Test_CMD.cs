@@ -33,7 +33,7 @@ namespace NBagOfTricks.Test
             ///////// Happy path //////////
             cp.Commands.Add(new Command()
             {
-                Name = "help h ?",
+                Name = new string[] { "help", "h", "?" },
                 Description = "what do you want to know",    
                 Args = new Arguments
                 {
@@ -43,7 +43,7 @@ namespace NBagOfTricks.Test
 
             cp.Commands.Add(new Command()
             {
-                Name = "realcmd go r",
+                Name = new string[]{ "realcmd", "go", "r" },
                 Description = "Just a command that does amazing things with some arguments",
                 Tail = "Files to process...",
                 Args = new Arguments
@@ -63,7 +63,7 @@ namespace NBagOfTricks.Test
 
             cp.Commands.Add(new Command()
             {
-                Name = "dooda d",
+                Name = new string[] { "dooda", "d" },
                 Description = "just another command",
                 Args = new Arguments
                 {
@@ -131,7 +131,7 @@ namespace NBagOfTricks.Test
             ///////// Sad path //////////
             cp.Commands.Add(new Command()
             {
-                Name = "cmderrors g",
+                Name = new string[] { "cmderrors", "g" },
                 Description = "Just a command that does amazing things with some arguments",
                 Args = new Arguments
                 {
@@ -147,9 +147,10 @@ namespace NBagOfTricks.Test
             string testCmd = "cmderrors -unexpctedarg -abc xtra -jkl -ghi some1";
 
             UT_EQUAL(cp.Parse(testCmd), "");
-            UT_EQUAL(cp.Errors.Count, 4);
+            UT_EQUAL(cp.Errors.Count, 5);
             //cp.Errors.ForEach(err => UT_INFO(err));
             UT_TRUE(cp.Errors.Contains("Unexpected arg:unexpctedarg"));
+            UT_TRUE(cp.Errors.Contains("Extraneous value:xtra"));
             UT_TRUE(cp.Errors.Contains("Missing param for arg:jkl"));
             UT_TRUE(cp.Errors.Contains("Problem with arg:ghi"));
             UT_TRUE(cp.Errors.Contains("Missing arg:def"));

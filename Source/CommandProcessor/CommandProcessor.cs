@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using NBagOfTricks.Utils;
 
 
 namespace NBagOfTricks.CommandProcessor
@@ -34,6 +35,7 @@ namespace NBagOfTricks.CommandProcessor
         public string Parse(string cmdString)
         {
             Errors.Clear();
+            Commands.ForEach(c => c.Errors.Clear());
             string cmdname = "";
 
             List<string> parts = cmdString.SplitByToken(" "); // TODO Support delimited quotes for strings with spaces.
@@ -42,13 +44,13 @@ namespace NBagOfTricks.CommandProcessor
             {
                 // Find the cmd in our list.
                 var vcmd = from c in Commands
-                           where c.Name.SplitByToken(" ").Contains(parts[0])
+                           where c.Name.Contains(parts[0])
                            select c;
 
                 if (vcmd.Any())
                 {
                     Command cmd = vcmd.First();
-                    cmdname = cmd.Name.SplitByToken(" ").First(); // first name in list
+                    cmdname = cmd.Name[0];
                     parts.RemoveAt(0); // strip cmd name
                     cmd.Parse(parts);
                     Errors.AddRange(cmd.Errors);
@@ -78,7 +80,7 @@ namespace NBagOfTricks.CommandProcessor
             {
                 // Find the cmd in our list.
                 var vcmd = from c in Commands
-                           where c.Name.SplitByToken(" ").Contains(scmd)
+                           where c.Name.Contains(scmd)
                            select c;
 
                 if (vcmd.Any())
@@ -87,7 +89,7 @@ namespace NBagOfTricks.CommandProcessor
 
                     Command cmd = vcmd.First();
 
-                    sb.Append($"Usage: {cmd.Name.Replace(" ", " | ")}");
+                    sb.Append($"Usage: {string.Join(" | ", cmd.Name)}");
 
                     string pmark = "";
 
@@ -132,7 +134,7 @@ namespace NBagOfTricks.CommandProcessor
             if (scmd == "")
             {
                 sb.AppendLine("Commands:");
-                Commands.ForEach(c => sb.AppendLine($"  {c.Name.Replace(" ", " | ")}: {c.Description}"));
+                Commands.ForEach(c => sb.AppendLine($"  {string.Join(" | ", c.Name)}: {c.Description}"));
             }
 
             return sb.ToString();
@@ -143,8 +145,8 @@ namespace NBagOfTricks.CommandProcessor
     public class Command
     {
         #region Properties - filled in by client
-        /// <summary>The command name(s). The first one is the main command and aliases follow separated bu spaces.</summary>
-        public string Name { get; set; } = "???";
+        /// <summary>The command name(s). The first one is the main command and aliases follow.</summary>
+        public string[] Name { get; set; } = { "???" };
 
         /// <summary>For usage.</summary>
         public string Description { get; set; } = "???";
@@ -238,12 +240,12 @@ namespace NBagOfTricks.CommandProcessor
                             {
                                 if (TailFunc.Invoke(sarg) == false)
                                 {
-                                    Errors.Add($"Problem with tail:{Name}");
+                                    Errors.Add($"Problem with tail:{Name[0]}");
                                 }
                             }
                             else
                             {
-                                Errors.Add($"Extraneous tail:{Name}");
+                                Errors.Add($"Extraneous value:{sarg}");
                             }
 
                             if (currentArg.ArgFunc?.Invoke("") == false)
@@ -261,12 +263,12 @@ namespace NBagOfTricks.CommandProcessor
                     {
                         if (TailFunc.Invoke(sarg) == false)
                         {
-                            Errors.Add($"Problem with tail:{Name}");
+                            Errors.Add($"Problem with tail:{Name[0]}");
                         }
                     }
                     else
                     {
-                        Errors.Add($"Extraneous tail:{Name}");
+                        Errors.Add($"Extraneous value:{sarg}");
                     }
                 }
             }
@@ -311,7 +313,7 @@ namespace NBagOfTricks.CommandProcessor
     /// <summary>Specialized container. Has Add() to support initialization.</summary>
     public class Commands : List<Command>
     {
-        public void Add(string name, string desc, Arguments args = null)
+        public void Add(string[] name, string desc, Arguments args = null)
         {
             Add(new Command()
             {

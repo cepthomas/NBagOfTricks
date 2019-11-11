@@ -45,44 +45,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandProcessor.cs" />
-    <Compile Include="CpuMeter.cs">
+    <Compile Include="CommandProcessor\CommandProcessor.cs" />
+    <Compile Include="UI\CpuMeter.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Dumper.cs" />
-    <Compile Include="Meter.cs">
+    <Compile Include="Utils\Dumper.cs" />
+    <Compile Include="UI\Meter.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MiscUtils.cs" />
-    <Compile Include="Pan.cs">
+    <Compile Include="Utils\MiscUtils.cs" />
+    <Compile Include="UI\Pan.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Pot.cs">
+    <Compile Include="UI\Pot.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PropertyGridEx.cs">
+    <Compile Include="UI\PropertyGridEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Slider.cs">
+    <Compile Include="UI\Slider.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="StringUtils.cs" />
-    <Compile Include="KeyUtils.cs" />
-    <Compile Include="MathUtils.cs" />
-    <Compile Include="MmTimerEx.cs" />
-    <Compile Include="MultiFileWatcher.cs" />
-    <Compile Include="PNUT.cs" />
+    <Compile Include="Utils\StringUtils.cs" />
+    <Compile Include="Utils\KeyUtils.cs" />
+    <Compile Include="Utils\MathUtils.cs" />
+    <Compile Include="Utils\MmTimerEx.cs" />
+    <Compile Include="Utils\MultiFileWatcher.cs" />
+    <Compile Include="PNUT\PNUT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StateMachine.cs" />
-    <Compile Include="TextViewer.cs">
+    <Compile Include="StateMachine\StateMachine.cs" />
+    <Compile Include="UI\TextViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TimingAnalyzer.cs" />
-    <Compile Include="UI\xxx.cs" />
-    <Compile Include="VirtualKeyboard.cs">
+    <Compile Include="Utils\TimingAnalyzer.cs" />
+    <Compile Include="UI\VirtualKeyboard.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="WaitCursor.cs" />
+    <Compile Include="UI\WaitCursor.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

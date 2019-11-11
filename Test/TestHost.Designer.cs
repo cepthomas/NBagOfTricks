@@ -30,7 +30,7 @@
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
-            this.cpuMeter1 = new NBagOfTricks.CpuMeter();
+            this.cpuMeter1 = new NBagOfTricks.UI.CpuMeter();
             this.slider2 = new NBagOfTricks.UI.Slider();
             this.pan1 = new NBagOfTricks.UI.Pan();
             this.txtInfo = new NBagOfTricks.UI.TextViewer();
@@ -221,7 +221,7 @@
         private UI.TextViewer txtInfo;
         private UI.Pan pan1;
         private UI.Slider slider2;
-        private CpuMeter cpuMeter1;
+        private UI.CpuMeter cpuMeter1;
         private System.Windows.Forms.Button btnUT;
     }
 }

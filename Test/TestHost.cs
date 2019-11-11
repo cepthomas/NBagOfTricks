@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NBagOfTricks.PNUT;
+using NBagOfTricks.Utils;
+using NBagOfTricks.UI;
 
 
 namespace NBagOfTricks.Test
