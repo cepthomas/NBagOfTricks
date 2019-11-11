@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace NBagOfTricks
+namespace NBagOfTricks.Utils
 {
    /// <summary>
    /// Misc string extension methods.

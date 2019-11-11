@@ -7,7 +7,7 @@ using System.Drawing.Drawing2D;
 using System.Runtime.Serialization.Formatters.Binary;
 
 
-namespace NBagOfTricks
+namespace NBagOfTricks.Utils
 {
     /// <summary>
     /// Static general utility functions.

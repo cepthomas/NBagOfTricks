@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 
-namespace NBagOfTricks
+namespace NBagOfTricks.Utils
 {
     /// <summary>
     /// The win multimedia timer is erratic. This class attempts to reduce the error by running at one msec

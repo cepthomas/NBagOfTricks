@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
 
-namespace NBagOfTricks
+namespace NBagOfTricks.Utils
 {
     /// <summary>
     /// Static keyboard processing functions.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace NBagOfTricks
+namespace NBagOfTricks.Utils
 {
     /// <summary>
     /// Dumps: objects, dictionaries of objects, or lists of objects.

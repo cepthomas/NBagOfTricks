@@ -78,10 +78,12 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="TimingAnalyzer.cs" />
+    <Compile Include="UI\xxx.cs" />
     <Compile Include="VirtualKeyboard.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WaitCursor.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

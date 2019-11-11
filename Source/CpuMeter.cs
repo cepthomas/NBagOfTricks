@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 
-namespace NBagOfTricks
+namespace NBagOfTricks.UI
 {
     public partial class CpuMeter : UserControl
     {
