@@ -70,7 +70,7 @@ A subset intended for consumption by Jenkins. Not tested yet but looks nice.
     <testsuite name = ETC_33>
         <testcase name="ETC_33.1" classname="ETC_33" />
         <testcase name="ETC_33.2 " classname="ETC_33">
-            <failure message="C:\Dev\pnut\cs\test.cs:113 [lwil/"4xG|] != [Should fail]"></failure>
+            <failure message="C:\Dev\pnut\cs\test.cs:113 [lwil/4xG|] != [Should fail]"></failure>
         </testcase>
         <testcase name="ETC_33.3" classname="ETC_33" />
     </testsuite>
@@ -100,7 +100,7 @@ A subset intended for consumption by Jenkins. Not tested yet but looks nice.
 - Meter
 - Pot
 - Slider
-- VirtualKeyboard: Control based on Le[Leslie Sanford's Midi Toolkit](https://github.com/tebjan/Sanford.Multimedia.Midi) piano.
+- VirtualKeyboard: Control based on Leslie Sanford's [Midi Toolkit](https://github.com/tebjan/Sanford.Multimedia.Midi) piano control.
 
 # General purpose UI components
 - PropertyGridEx

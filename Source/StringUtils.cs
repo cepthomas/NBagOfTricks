@@ -114,7 +114,8 @@ namespace NBagOfTricks
         /// </summary>
         /// <param name="mruList">The MRU.</param>
         /// <param name="newVal">New value(s) to perhaps insert.</param>
-        public static void UpdateMru(this List<string> mruList, string newVal)
+        /// <param name="mruSize">Optional max size.</param>
+        public static void UpdateMru(this List<string> mruList, string newVal, int mruSize = 20)
         {
             // First check if it's already in there.
             for (int i = 0; i < mruList.Count; i++)
@@ -128,7 +129,7 @@ namespace NBagOfTricks
 
             // Insert at the front and trim the tail.
             mruList.Insert(0, newVal);
-            while (mruList.Count > 20)
+            while (mruList.Count > mruSize)
             {
                 mruList.RemoveAt(mruList.Count - 1);
             }

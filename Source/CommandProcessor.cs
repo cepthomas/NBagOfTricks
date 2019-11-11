@@ -6,8 +6,10 @@ using System.Text;
 
 namespace NBagOfTricks.CommandProcessor
 {
+    /// <summary>Argument Options.</summary>
     public enum Arg { Req, Opt }
 
+    /// <summary>Parameter Options.</summary>
     public enum Param { Req, Opt, None }
 
     /// <summary>Main processor.</summary>
@@ -24,12 +26,17 @@ namespace NBagOfTricks.CommandProcessor
         public List<string> Errors { get; private set; } = new List<string>();
         #endregion
 
-        /// <summary>Parse the cmd string against our definitions.</summary>
-        public bool Parse(string args)
+        /// <summary>
+        /// Parse the cmd string using our definitions.
+        /// </summary>
+        /// <param name="cmdString">String to parse.</param>
+        /// <returns>The main command name or empty if failed.</returns>
+        public string Parse(string cmdString)
         {
             Errors.Clear();
+            string cmdname = "";
 
-            List<string> parts = args.SplitByToken(" ");
+            List<string> parts = cmdString.SplitByToken(" "); // TODO Support delimited quotes for strings with spaces.
 
             if (parts.Count > 0)
             {
@@ -41,6 +48,7 @@ namespace NBagOfTricks.CommandProcessor
                 if (vcmd.Any())
                 {
                     Command cmd = vcmd.First();
+                    cmdname = cmd.Name.SplitByToken(" ").First(); // first name in list
                     parts.RemoveAt(0); // strip cmd name
                     cmd.Parse(parts);
                     Errors.AddRange(cmd.Errors);
@@ -52,10 +60,11 @@ namespace NBagOfTricks.CommandProcessor
             }
             else
             {
-                Errors.Add($"Empty command");
+                //Errors.Add($"Empty command");
+                cmdname = "";
             }
 
-            return Errors.Count == 0;
+            return Errors.Count == 0 ? cmdname : "";
         }
 
         /// <summary>Format the usage help text.</summary>
@@ -134,7 +143,7 @@ namespace NBagOfTricks.CommandProcessor
     public class Command
     {
         #region Properties - filled in by client
-        /// <summary>The command name. Spaces separate aliases.</summary>
+        /// <summary>The command name(s). The first one is the main command and aliases follow separated bu spaces.</summary>
         public string Name { get; set; } = "???";
 
         /// <summary>For usage.</summary>
@@ -144,7 +153,7 @@ namespace NBagOfTricks.CommandProcessor
         public string Tail { get; set; } = "";
 
         /// <summary>Possible arguments for this command.</summary>
-        public Arguments Args { get; set; } = null;
+        public Arguments Args { get; set; } = new Arguments();
 
         /// <summary>Handler for stuff at the end.</summary>
         public Func<string, bool> TailFunc { get; set; } = null;
@@ -225,9 +234,16 @@ namespace NBagOfTricks.CommandProcessor
                             break;
 
                         case Param.None: // it's a file or other thing
-                            if (TailFunc?.Invoke(sarg) == false)
+                            if(TailFunc != null)
                             {
-                                Errors.Add($"Problem with tail:{Name}");
+                                if (TailFunc.Invoke(sarg) == false)
+                                {
+                                    Errors.Add($"Problem with tail:{Name}");
+                                }
+                            }
+                            else
+                            {
+                                Errors.Add($"Extraneous tail:{Name}");
                             }
 
                             if (currentArg.ArgFunc?.Invoke("") == false)
@@ -241,9 +257,16 @@ namespace NBagOfTricks.CommandProcessor
                 }
                 else // it's a file or other thing
                 {
-                    if (TailFunc?.Invoke(sarg) == false)
+                    if (TailFunc != null)
                     {
-                        Errors.Add($"Problem with tail:{Name}");
+                        if (TailFunc.Invoke(sarg) == false)
+                        {
+                            Errors.Add($"Problem with tail:{Name}");
+                        }
+                    }
+                    else
+                    {
+                        Errors.Add($"Extraneous tail:{Name}");
                     }
                 }
             }

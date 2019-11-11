@@ -78,7 +78,7 @@ namespace NBagOfTricks.Test
             cp.Parse(testCmd);
 
             UT_EQUAL(cp.Errors.Count, 0);
-            cp.Errors.ForEach(err => UT_INFO(err));
+            //cp.Errors.ForEach(err => UT_INFO(err));
 
             UT_EQUAL(txtFiles.Count, 1);
             UT_EQUAL(txtFiles[0], "InputFile1.txt");
@@ -98,7 +98,7 @@ namespace NBagOfTricks.Test
 
             /////// Alias ///////
             testCmd = "d -thing2 shiny";
-            cp.Parse(testCmd);
+            UT_EQUAL(cp.Parse(testCmd), "dooda");
 
             UT_EQUAL(cp.Errors.Count, 0);
             UT_EQUAL(doodaFlag, "thing2");
@@ -145,8 +145,8 @@ namespace NBagOfTricks.Test
 
             /////// Basic processing ///////
             string testCmd = "cmderrors -unexpctedarg -abc xtra -jkl -ghi some1";
-            cp.Parse(testCmd);
 
+            UT_EQUAL(cp.Parse(testCmd), "");
             UT_EQUAL(cp.Errors.Count, 4);
             //cp.Errors.ForEach(err => UT_INFO(err));
             UT_TRUE(cp.Errors.Contains("Unexpected arg:unexpctedarg"));
