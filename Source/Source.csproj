@@ -50,6 +50,7 @@
     <Compile Include="UI\CpuMeter.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="UI\UiUtils.cs" />
     <Compile Include="Utils\Dumper.cs" />
     <Compile Include="UI\Meter.cs">
       <SubType>UserControl</SubType>
@@ -68,7 +69,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Utils\StringUtils.cs" />
-    <Compile Include="Utils\KeyUtils.cs" />
+    <Compile Include="UI\KeyUtils.cs" />
     <Compile Include="Utils\MathUtils.cs" />
     <Compile Include="Utils\MmTimerEx.cs" />
     <Compile Include="Utils\MultiFileWatcher.cs" />

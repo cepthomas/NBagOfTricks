@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
 
-namespace NBagOfTricks.Utils
+namespace NBagOfTricks.UI
 {
     /// <summary>
     /// Static keyboard processing functions.
@@ -157,6 +157,5 @@ namespace NBagOfTricks.Utils
         public enum KeyStates { None = 0, Down = 1, Toggled = 2 }
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern short GetKeyStateW32(int keyCode);
-
     }
 }

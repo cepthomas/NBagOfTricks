@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NBagOfTricks;
 using NBagOfTricks.UI;
 using NBagOfTricks.PNUT;
 
@@ -17,7 +16,7 @@ namespace NBagOfTricks.Test
             // Use test host for debugging UI components.
             TestHost w = new TestHost();
             w.RunTests();
-            //w.ShowDialog();
+            w.ShowDialog();
         }
     }
 }
