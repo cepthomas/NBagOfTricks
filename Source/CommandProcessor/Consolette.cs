@@ -42,9 +42,9 @@ namespace NBagOfTricks.CommandProcessor
         public string Prompt { get; set; } = ">";
 
         /// <summary>
-        /// The colors to display when text is matched. TODO.
+        /// The colors to display when text is matched.
         /// </summary>
-        public Dictionary<string, ConsoleColor> Colors { get; set; } = new Dictionary<string, ConsoleColor>();
+        public Dictionary<string, ConsoleColor> Colors { get; set; } = new Dictionary<string, ConsoleColor>(); //  TODO.
 
         /// <summary>
         /// User selectable color.
@@ -79,7 +79,7 @@ namespace NBagOfTricks.CommandProcessor
             Console.SetWindowSize(1, 1);
             Console.SetBufferSize(100, 200);
             Console.SetWindowSize(100, 40);
-            Console.Title = "ConsoleX";
+            Console.Title = "Consolette";
         }
 
         /// <summary>
