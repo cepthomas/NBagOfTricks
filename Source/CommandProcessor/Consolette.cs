@@ -33,6 +33,26 @@ namespace NBagOfTricks.CommandProcessor
         /// Copy of current line.
         /// </summary>
         string _currentText = "";
+
+        /// <summary>
+        /// Default value.
+        /// </summary>
+        int _width = 100;
+
+        /// <summary>
+        /// Default value.
+        /// </summary>
+        int _height = 50;
+
+        /// <summary>
+        /// Default value.
+        /// </summary>
+        int _x = 50;
+
+        /// <summary>
+        /// Default value.
+        /// </summary>
+        int _y = 50;
         #endregion
 
         #region Properties
@@ -45,6 +65,27 @@ namespace NBagOfTricks.CommandProcessor
         /// The colors to display when text is matched.
         /// </summary>
         public Dictionary<string, ConsoleColor> Colors { get; set; } = new Dictionary<string, ConsoleColor>(); //  TODO.
+
+        /// <summary>
+        /// What you like.
+        /// </summary>
+        public int Width { get { return _width; } set { /*_width = value; SetSize();*/ } }  // TODO also check limits
+
+        /// <summary>
+        /// What you like.
+        /// </summary>
+        public int Height { get { return _height; } set {/* _height = value; SetSize(); */} }
+
+        /// <summary>
+        /// What you like.
+        /// </summary>
+        public int X { get { return _x; } set { /*_x = value; SetPosition();*/ } }
+
+        /// <summary>
+        /// What you like.
+        /// </summary>
+        public int Y { get { return _y; } set { /*_y = value; SetPosition();*/ } }
+
 
         /// <summary>
         /// User selectable color.
@@ -76,10 +117,9 @@ namespace NBagOfTricks.CommandProcessor
         /// </summary>
         public Consolette()
         {
-            Console.SetWindowSize(1, 1);
-            Console.SetBufferSize(100, 200);
-            Console.SetWindowSize(100, 40);
             Console.Title = "Consolette";
+            SetSize();
+            SetPosition();
         }
 
         /// <summary>
@@ -174,6 +214,26 @@ namespace NBagOfTricks.CommandProcessor
             Console.Clear();
             _cmdHistory.Clear();
             _currentCmd = 0;
+        }
+        #endregion
+
+        #region Private functions TODO fix these
+        /// <summary>
+        /// Helper.
+        /// </summary>
+        void SetSize()
+        {
+            //Console.SetWindowSize(1, 1);
+            //Console.SetBufferSize(_width, 200);
+            //Console.SetWindowSize(_width, _height);
+        }
+
+        /// <summary>
+        /// Helper.
+        /// </summary>
+        void SetPosition()
+        {
+            // Console.SetWindowPosition(_x, _y);
         }
         #endregion
     }
