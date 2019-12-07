@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandProcessor\CommandProcessor.cs" />
-    <Compile Include="CommandProcessor\Consolette.cs" />
+    <Compile Include="CommandProcessor\ConsoleEx.cs" />
     <Compile Include="UI\CpuMeter.cs">
       <SubType>UserControl</SubType>
     </Compile>
