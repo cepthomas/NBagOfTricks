@@ -5,6 +5,35 @@ No dependencies on third party components.
 
 ![logo](https://github.com/cepthomas/NBagOfTricks/blob/master/felix.jpg)
 
+# NStateMachine
+- Semi-hierarchical state machine for .NET.
+- Generates diagrams via dot.
+- See Test_SM.cs for an example of usage.
+
+# Components
+- MmTimerEx: A theoretically better multimedia timer with improved accuracy for sub 10 msec period.
+- MultiFileWatcher: Multiple file change watcher.
+- TimingAnalyzer: High speed event statistics.
+- Command line arg parser and a companion console application.
+
+# Various utilities and extensions
+- KeyUtils
+- MathUtils
+- MiscUtils
+- StringUtils
+- Dumper writes object tree contents.
+
+# UI controls for audio (or other) apps
+- Meter
+- Pot
+- Slider
+- CPU meter.
+- VirtualKeyboard: Control based on Leslie Sanford's [Midi Toolkit](https://github.com/tebjan/Sanford.Multimedia.Midi) piano control.
+
+# General purpose UI components
+- PropertyGridEx
+- WaitCursor
+
 # PNUT
 Practically Nonexistent Unit Tester
 
@@ -76,35 +105,6 @@ A subset intended for consumption by Jenkins. Not tested yet but looks nice.
     </testsuite>
 </testsuites>
 ```
-
-# NStateMachine
-- Semi-hierarchical state machine for .NET.
-- Generates diagrams via dot.
-- See Test_SM.cs for an example of usage.
-
-# Components
-- MmTimerEx: A theoretically better multimedia timer with improved accuracy for sub 10 msec period.
-- MultiFileWatcher: Multiple file change watcher.
-- TimingAnalyzer: High speed event statistics.
-- CPU meter.
-- Command line arg parser and a companion console application.
-
-# Various utilities and extensions
-- KeyUtils
-- MathUtils
-- MiscUtils
-- StringUtils
-- Dumper writes object tree contents.
-
-# UI controls for audio apps
-- Meter
-- Pot
-- Slider
-- VirtualKeyboard: Control based on Leslie Sanford's [Midi Toolkit](https://github.com/tebjan/Sanford.Multimedia.Midi) piano control.
-
-# General purpose UI components
-- PropertyGridEx
-- WaitCursor
 
 # License
 https://github.com/cepthomas/NBagOfTricks/blob/master/LICENSE

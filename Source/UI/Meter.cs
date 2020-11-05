@@ -216,7 +216,12 @@ namespace NBagOfTricks.UI
         /// </summary>
         protected override void OnResize(EventArgs e)
         {
-            _buff = new double[Width - 2 * BORDER_WIDTH];
+            int buffSize = Width - 2 * BORDER_WIDTH;
+            _buff = new double[buffSize];
+            for(int i = 0; i < buffSize; i++)
+            {
+                _buff[i] = Minimum;
+            }
             _buffIndex = 0;
             base.OnResize(e);
             Invalidate();

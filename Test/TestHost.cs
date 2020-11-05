@@ -37,15 +37,59 @@ namespace NBagOfTricks.Test
             txtInfo.BackColor = Color.Cornsilk;
 
             vkbd.ShowNoteNames = true;
+
+            pot1.ValueChanged += Pot1_ValueChanged;
+            pan1.ValueChanged += Pan1_ValueChanged;
+            slider1.ValueChanged += Slider1_ValueChanged;
+            slider2.ValueChanged += Slider2_ValueChanged;
+
+            //string _fileExts = ".wav;.mp3;"; //.aiff;.aac";
+            //List<string> paths = UserSettings.TheSettings.RootDirs;
+            //List<string> exts = _fileExts.SplitByToken(";");
+            //navigator.AllTags = UserSettings.TheSettings.AllTags.ToHashSet();
+            //navigator.DoubleClickSelect = !UserSettings.TheSettings.Autoplay;
+            //navigator.Init(paths, exts);
+
         }
 
-        private void vkbd_KeyboardEvent(object sender, UI.VirtualKeyboard.KeyboardEventArgs e)
+        void Navigator_FileSelectedEvent(object sender, string fn)
+        {
+            txtInfo.AddLine($"Sel file {fn}");
+        }
+
+        private void Pot1_ValueChanged(object sender, EventArgs e)
+        {
+            // 0 1
+            meter2.AddValue(pot1.Value);
+        }
+
+        private void Slider1_ValueChanged(object sender, EventArgs e)
+        {
+            // 0 1
+            meter1.AddValue(slider1.Value * 100.0);
+        }
+
+        private void Slider2_ValueChanged(object sender, EventArgs e)
+        {
+            // 0 10
+            meter1.AddValue(slider2.Value * 10.0);
+        }
+
+        private void Pan1_ValueChanged(object sender, EventArgs e)
+        {
+            // -1 +1
+            meter1.AddValue(pan1.Value * 50.0 + 50.0);
+        }
+
+        private void Vkbd_KeyboardEvent(object sender, VirtualKeyboard.KeyboardEventArgs e)
         {
             string s = $"note:{e.NoteId} vel:{e.Velocity}";
             txtInfo.AddLine(s);
+
+            meter3.AddValue(e.NoteId / 8.0 - 10.0);
         }
 
-        private void btnUT_Click(object sender, EventArgs e)
+        private void UT_Click(object sender, EventArgs e)
         {
             RunTests();
         }

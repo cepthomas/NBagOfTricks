@@ -28,7 +28,7 @@ namespace NBagOfTricks.UI
             set
             {
                 _value = Math.Round(MathUtils.Constrain(value, -1.0, 1.0), 2);
-                PanChanged?.Invoke(this, EventArgs.Empty);
+                ValueChanged?.Invoke(this, EventArgs.Empty);
                 Invalidate();
             }
         }
@@ -43,7 +43,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// True when pan value changed.
         /// </summary>
-        public event EventHandler PanChanged;
+        public event EventHandler ValueChanged;
         #endregion
 
         /// <summary>
