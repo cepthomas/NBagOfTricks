@@ -24,17 +24,17 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// User selectable color.
         /// </summary>
-        public override Color BackColor { set { _rtb.BackColor = value; } }
+        public new Color BackColor { get { return _rtb.BackColor; } set { _rtb.BackColor = value; } }
 
         /// <summary>
         /// User selectable font.
         /// </summary>
-        public override Font Font { set { _rtb.Font = value; } }
+        public new Font Font { get { return _rtb.Font; } set { _rtb.Font = value; } }
 
         /// <summary>
         /// User selection.
         /// </summary>
-        public bool WordWrap { set { _rtb.WordWrap = value; } }
+        public bool WordWrap { get { return _rtb.WordWrap; } set { _rtb.WordWrap = value; } }
 
         /// <summary>
         /// Limit the size.
@@ -46,7 +46,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Contained control. Could have just subclassed but this leaves it open to add other stuff easily.
         /// </summary>
-        RichTextBox _rtb;
+        RichTextBox _rtb = new RichTextBox();
         #endregion
 
         /// <summary>
@@ -54,8 +54,9 @@ namespace NBagOfTricks.UI
         /// </summary>
         public TextViewer()
         {
-            InitializeComponent();
+            Controls.Add(_rtb);
             Font = new Font("Consolas", 10);
+            Load += new System.EventHandler(TextViewer_Load);
         }
 
         /// <summary>
@@ -65,6 +66,7 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         private void TextViewer_Load(object sender, EventArgs e)
         {
+            _rtb.Text = "";
             _rtb.ForeColor = Color.Black;
             _rtb.Dock = DockStyle.Fill;
             _rtb.ReadOnly = true;
@@ -117,11 +119,10 @@ namespace NBagOfTricks.UI
             _rtb.Clear();
         }
 
-        #region Designer boilerplate
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        System.ComponentModel.IContainer components = new System.ComponentModel.Container();
+        IContainer components = new Container();
 
         /// <summary>5
         /// Clean up any resources being used.
@@ -135,17 +136,5 @@ namespace NBagOfTricks.UI
             }
             base.Dispose(disposing);
         }
-
-        private void InitializeComponent()
-        {
-            _rtb = new RichTextBox();
-            Controls.Add(_rtb);
-
-            this.SuspendLayout();
-            this.Name = "TextViewer";
-            this.Load += new System.EventHandler(this.TextViewer_Load);
-            this.ResumeLayout(false);
-        }
-        #endregion
     }
 }

@@ -25,8 +25,7 @@ namespace NBagOfTricks.Test
         {
             // Use pnut for automated lib tests.
             TestRunner runner = new TestRunner(OutputFormat.Readable);
-            //var cases = new[] { "PNUT", "SM", "CMD" };
-            var cases = new[] { "CMD" };
+            var cases = new[] { "PNUT", "SM", "CMD" };
             runner.RunSuites(cases);
         }
 
@@ -43,18 +42,16 @@ namespace NBagOfTricks.Test
             slider1.ValueChanged += Slider1_ValueChanged;
             slider2.ValueChanged += Slider2_ValueChanged;
 
-            //string _fileExts = ".wav;.mp3;"; //.aiff;.aac";
-            //List<string> paths = UserSettings.TheSettings.RootDirs;
-            //List<string> exts = _fileExts.SplitByToken(";");
-            //navigator.AllTags = UserSettings.TheSettings.AllTags.ToHashSet();
-            //navigator.DoubleClickSelect = !UserSettings.TheSettings.Autoplay;
-            //navigator.Init(paths, exts);
-
+            List<string> paths = new List<string>() { $@"{Environment.CurrentDirectory}\..\..\" };
+            List<string> exts = ".txt;.md;.xml;.cs".SplitByToken(";");
+            navigator.AllTags = new HashSet<string>() { "abc", "123", "xyz" };
+            navigator.DoubleClickSelect = false;
+            navigator.Init(paths, exts);
         }
 
         void Navigator_FileSelectedEvent(object sender, string fn)
         {
-            txtInfo.AddLine($"Sel file {fn}");
+            txtInfo.AddLine($"Selected file: {fn}");
         }
 
         private void Pot1_ValueChanged(object sender, EventArgs e)

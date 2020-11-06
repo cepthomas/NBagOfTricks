@@ -9,7 +9,6 @@ using System.Windows.Forms;
 
 namespace NBagOfTricks.UI
 {
-
     /// <summary>
     /// Custom renderer for toolstrip checkbox color.
     /// </summary>

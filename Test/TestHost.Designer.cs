@@ -72,8 +72,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.meter1);
             this.splitContainer1.Panel2.Controls.Add(this.pot1);
             this.splitContainer1.Panel2.Controls.Add(this.slider1);
-            this.splitContainer1.Size = new System.Drawing.Size(1256, 601);
-            this.splitContainer1.SplitterDistance = 119;
+            this.splitContainer1.Size = new System.Drawing.Size(1436, 720);
+            this.splitContainer1.SplitterDistance = 142;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 4;
             // 
@@ -84,16 +84,16 @@
             this.vkbd.Margin = new System.Windows.Forms.Padding(5);
             this.vkbd.Name = "vkbd";
             this.vkbd.ShowNoteNames = false;
-            this.vkbd.Size = new System.Drawing.Size(1256, 119);
+            this.vkbd.Size = new System.Drawing.Size(1436, 142);
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.Vkbd_KeyboardEvent);
             // 
             // navigator
             // 
             this.navigator.DoubleClickSelect = false;
-            this.navigator.Location = new System.Drawing.Point(12, 28);
+            this.navigator.Location = new System.Drawing.Point(12, 25);
             this.navigator.Name = "navigator";
-            this.navigator.Size = new System.Drawing.Size(363, 423);
+            this.navigator.Size = new System.Drawing.Size(484, 529);
             this.navigator.TabIndex = 11;
             this.navigator.FileSelectedEvent += new System.EventHandler<string>(this.Navigator_FileSelectedEvent);
             // 
@@ -102,7 +102,7 @@
             this.meter3.BackColor = System.Drawing.Color.Gainsboro;
             this.meter3.ControlColor = System.Drawing.Color.Violet;
             this.meter3.Label = "meter dots";
-            this.meter3.Location = new System.Drawing.Point(666, 28);
+            this.meter3.Location = new System.Drawing.Point(875, 28);
             this.meter3.Margin = new System.Windows.Forms.Padding(4);
             this.meter3.Maximum = 10D;
             this.meter3.MeterType = NBagOfTricks.UI.MeterType.ContinuousDots;
@@ -117,7 +117,7 @@
             this.meter2.BackColor = System.Drawing.Color.Gainsboro;
             this.meter2.ControlColor = System.Drawing.Color.Azure;
             this.meter2.Label = "meter log";
-            this.meter2.Location = new System.Drawing.Point(666, 126);
+            this.meter2.Location = new System.Drawing.Point(875, 126);
             this.meter2.Margin = new System.Windows.Forms.Padding(4);
             this.meter2.Maximum = 3D;
             this.meter2.MeterType = NBagOfTricks.UI.MeterType.Log;
@@ -131,7 +131,7 @@
             // 
             this.btnUT.BackColor = System.Drawing.Color.HotPink;
             this.btnUT.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnUT.Location = new System.Drawing.Point(452, 370);
+            this.btnUT.Location = new System.Drawing.Point(519, 139);
             this.btnUT.Name = "btnUT";
             this.btnUT.Size = new System.Drawing.Size(75, 60);
             this.btnUT.TabIndex = 8;
@@ -144,7 +144,7 @@
             this.cpuMeter1.BackColor = System.Drawing.Color.Gainsboro;
             this.cpuMeter1.ControlColor = System.Drawing.Color.Orange;
             this.cpuMeter1.Label = "cpu";
-            this.cpuMeter1.Location = new System.Drawing.Point(401, 128);
+            this.cpuMeter1.Location = new System.Drawing.Point(610, 128);
             this.cpuMeter1.Name = "cpuMeter1";
             this.cpuMeter1.Size = new System.Drawing.Size(221, 90);
             this.cpuMeter1.TabIndex = 7;
@@ -155,7 +155,7 @@
             this.slider2.ControlColor = System.Drawing.Color.SlateBlue;
             this.slider2.DecPlaces = 1;
             this.slider2.Label = "Vertical";
-            this.slider2.Location = new System.Drawing.Point(1116, 25);
+            this.slider2.Location = new System.Drawing.Point(1325, 25);
             this.slider2.Margin = new System.Windows.Forms.Padding(4);
             this.slider2.Maximum = 10D;
             this.slider2.Minimum = 0D;
@@ -170,7 +170,7 @@
             // 
             this.pan1.BackColor = System.Drawing.Color.Gainsboro;
             this.pan1.ControlColor = System.Drawing.Color.Crimson;
-            this.pan1.Location = new System.Drawing.Point(422, 25);
+            this.pan1.Location = new System.Drawing.Point(631, 25);
             this.pan1.Margin = new System.Windows.Forms.Padding(4);
             this.pan1.Name = "pan1";
             this.pan1.Size = new System.Drawing.Size(200, 69);
@@ -186,7 +186,7 @@
             this.txtInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtInfo.MaxText = 5000;
             this.txtInfo.Name = "txtInfo";
-            this.txtInfo.Size = new System.Drawing.Size(666, 202);
+            this.txtInfo.Size = new System.Drawing.Size(846, 297);
             this.txtInfo.TabIndex = 4;
             // 
             // meter1
@@ -194,7 +194,7 @@
             this.meter1.BackColor = System.Drawing.Color.Gainsboro;
             this.meter1.ControlColor = System.Drawing.Color.Orange;
             this.meter1.Label = "meter xyz";
-            this.meter1.Location = new System.Drawing.Point(872, 126);
+            this.meter1.Location = new System.Drawing.Point(1081, 126);
             this.meter1.Margin = new System.Windows.Forms.Padding(4);
             this.meter1.Maximum = 100D;
             this.meter1.MeterType = NBagOfTricks.UI.MeterType.Linear;
@@ -211,7 +211,7 @@
             this.pot1.DecPlaces = 2;
             this.pot1.ForeColor = System.Drawing.Color.Black;
             this.pot1.Label = "pot 99";
-            this.pot1.Location = new System.Drawing.Point(452, 257);
+            this.pot1.Location = new System.Drawing.Point(519, 28);
             this.pot1.Margin = new System.Windows.Forms.Padding(5);
             this.pot1.Maximum = 1D;
             this.pot1.Minimum = 0D;
@@ -227,7 +227,7 @@
             this.slider1.ControlColor = System.Drawing.Color.Orange;
             this.slider1.DecPlaces = 2;
             this.slider1.Label = "Horizontal";
-            this.slider1.Location = new System.Drawing.Point(872, 28);
+            this.slider1.Location = new System.Drawing.Point(1081, 28);
             this.slider1.Margin = new System.Windows.Forms.Padding(4);
             this.slider1.Maximum = 1D;
             this.slider1.Minimum = 0D;
@@ -242,7 +242,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1256, 601);
+            this.ClientSize = new System.Drawing.Size(1436, 720);
             this.Controls.Add(this.splitContainer1);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TestHost";

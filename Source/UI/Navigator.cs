@@ -12,9 +12,9 @@ using System.IO;
 
 namespace NBagOfTricks.UI
 {
-    // TODOC: tree selection displays files in dir with selectable filtertags
+    // TODO: tree selection displays files in dir with selectable filtertags
 
-    // TODOC: select filtertag(s) and display all entries with full paths
+    // TODO: select filtertag(s) and display all entries with full paths
 
 
     /// <summary>
@@ -103,7 +103,7 @@ namespace NBagOfTricks.UI
                     ShowDirectories(info.GetDirectories(), rootNode);
                     treeView.Nodes.Add(rootNode);
                 }
-                // else error... TODOC
+                // else error... TODO
 
             }
 
@@ -151,7 +151,7 @@ namespace NBagOfTricks.UI
             {
                 if (_filterExts.Contains(Path.GetExtension(file.Name)))
                 {
-                    var item = new ListViewItem(new[] { file.Name, "TODOC tags" });
+                    var item = new ListViewItem(new[] { file.Name, "TODO tags" });
                     item.Tag = file.FullName;
                     lvFiles.Items.Add(item);
                 }
@@ -203,7 +203,7 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         private void EditTags_Click(object sender, EventArgs e)
         {
-            // TODOC: edit filtertags, check for invalid or in use.
+            // TODO: edit filtertags, check for invalid or in use.
 
         }
 
