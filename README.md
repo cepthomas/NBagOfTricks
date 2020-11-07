@@ -24,19 +24,20 @@ No dependencies on third party components.
 
 # General purpose UI components
 - PropertyGridEx: Added a few features.
-- Navigator: Folder/file tree control with tags/filters and notifications.
-- CPU meter: Standalone display control.
+- TreeViewEx: Folder/file tree control with tags/filters and notifications.
+- CpuMeter: Standalone display control.
+- TextViewer: With colorizing.
 - WaitCursor: Easy to use cursor.
 
 # PNUT
 - A super lightweight [unit test framework for C#](https://github.com/cepthomas/NBagOfTricks/blob/master/Source/PNUT/PNUT.md).
 
 # Various utilities and extensions
-- KeyUtils
-- MathUtils
-- MiscUtils
-- StringUtils
-- Dumper writes object tree contents.
+- KeyUtils: Keyboard input.
+- MathUtils: Numbers are good.
+- MiscUtils: Things that don't fit anywhere else.
+- StringUtils: Mostly extensions.
+- Dumper: Writes object tree contents.
 
 # License
 https://github.com/cepthomas/NBagOfTricks/blob/master/LICENSE

@@ -1,6 +1,6 @@
 ﻿namespace NBagOfTricks.UI
 {
-    partial class Navigator
+    partial class TreeViewEx
     {
         /// <summary> 
         /// Required designer variable.
@@ -128,16 +128,16 @@
             this.splitContainer2.SplitterDistance = 257;
             this.splitContainer2.TabIndex = 4;
             // 
-            // Navigator
+            // TreeViewEx
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.toolStrip1);
-            this.Name = "Navigator";
+            this.Name = "TreeViewEx";
             this.Size = new System.Drawing.Size(588, 612);
-            this.Load += new System.EventHandler(this.Navigator_Load);
-            this.Resize += new System.EventHandler(this.Navigator_Resize);
+            this.Load += new System.EventHandler(this.TreeViewEx_Load);
+            this.Resize += new System.EventHandler(this.TreeViewEx_Resize);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.splitContainer2.Panel1.ResumeLayout(false);

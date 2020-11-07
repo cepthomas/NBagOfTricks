@@ -47,11 +47,11 @@
   <ItemGroup>
     <Compile Include="CommandProcessor\CommandProcessor.cs" />
     <Compile Include="CommandProcessor\ConsoleEx.cs" />
-    <Compile Include="UI\Navigator.cs">
+    <Compile Include="UI\TreeViewEx.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Navigator.Designer.cs">
-      <DependentUpon>Navigator.cs</DependentUpon>
+    <Compile Include="UI\TreeViewEx.Designer.cs">
+      <DependentUpon>TreeViewEx.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\CpuMeter.cs">
       <SubType>UserControl</SubType>
@@ -92,8 +92,8 @@
     <Compile Include="UI\WaitCursor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\Navigator.resx">
-      <DependentUpon>Navigator.cs</DependentUpon>
+    <EmbeddedResource Include="UI\TreeViewEx.resx">
+      <DependentUpon>TreeViewEx.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

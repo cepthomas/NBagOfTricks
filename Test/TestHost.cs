@@ -44,12 +44,12 @@ namespace NBagOfTricks.Test
 
             List<string> paths = new List<string>() { $@"{Environment.CurrentDirectory}\..\..\" };
             List<string> exts = ".txt;.md;.xml;.cs".SplitByToken(";");
-            navigator.AllTags = new HashSet<string>() { "abc", "123", "xyz" };
-            navigator.DoubleClickSelect = false;
-            navigator.Init(paths, exts);
+            tvex.AllTags = new HashSet<string>() { "abc", "123", "xyz" };
+            tvex.DoubleClickSelect = false;
+            tvex.Init(paths, exts);
         }
 
-        void Navigator_FileSelectedEvent(object sender, string fn)
+        void TreeViewEx_FileSelectedEvent(object sender, string fn)
         {
             txtInfo.AddLine($"Selected file: {fn}");
         }

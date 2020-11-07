@@ -20,7 +20,7 @@ namespace NBagOfTricks.UI
     /// <summary>
     /// 
     /// </summary>
-    public partial class Navigator : UserControl
+    public partial class TreeViewEx : UserControl
     {
         #region Fields
         /// <summary>
@@ -57,7 +57,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public Navigator()
+        public TreeViewEx()
         {
             InitializeComponent();
         }
@@ -66,7 +66,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void Navigator_Load(object sender, EventArgs e)
+        void TreeViewEx_Load(object sender, EventArgs e)
         {
         }
         #endregion
@@ -190,7 +190,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Navigator_Resize(object sender, EventArgs e)
+        private void TreeViewEx_Resize(object sender, EventArgs e)
         {
             lvFiles.Columns[0].Width = lvFiles.Width / 2;
             lvFiles.Columns[1].Width = -2;

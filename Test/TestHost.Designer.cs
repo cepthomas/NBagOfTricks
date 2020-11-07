@@ -30,7 +30,7 @@
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
-            this.navigator = new NBagOfTricks.UI.Navigator();
+            this.tvex = new NBagOfTricks.UI.TreeViewEx();
             this.meter3 = new NBagOfTricks.UI.Meter();
             this.meter2 = new NBagOfTricks.UI.Meter();
             this.btnUT = new System.Windows.Forms.Button();
@@ -61,7 +61,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.navigator);
+            this.splitContainer1.Panel2.Controls.Add(this.tvex);
             this.splitContainer1.Panel2.Controls.Add(this.meter3);
             this.splitContainer1.Panel2.Controls.Add(this.meter2);
             this.splitContainer1.Panel2.Controls.Add(this.btnUT);
@@ -88,14 +88,14 @@
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.Vkbd_KeyboardEvent);
             // 
-            // navigator
+            // tvex
             // 
-            this.navigator.DoubleClickSelect = false;
-            this.navigator.Location = new System.Drawing.Point(12, 25);
-            this.navigator.Name = "navigator";
-            this.navigator.Size = new System.Drawing.Size(484, 529);
-            this.navigator.TabIndex = 11;
-            this.navigator.FileSelectedEvent += new System.EventHandler<string>(this.Navigator_FileSelectedEvent);
+            this.tvex.DoubleClickSelect = false;
+            this.tvex.Location = new System.Drawing.Point(12, 25);
+            this.tvex.Name = "tvex";
+            this.tvex.Size = new System.Drawing.Size(484, 529);
+            this.tvex.TabIndex = 11;
+            this.tvex.FileSelectedEvent += new System.EventHandler<string>(this.TreeViewEx_FileSelectedEvent);
             // 
             // meter3
             // 
@@ -270,6 +270,6 @@
         private System.Windows.Forms.Button btnUT;
         private UI.Meter meter2;
         private UI.Meter meter3;
-        private UI.Navigator navigator;
+        private UI.TreeViewEx tvex;
     }
 }
