@@ -12,11 +12,6 @@ using System.IO;
 
 namespace NBagOfTricks.UI
 {
-    // TODO: tree selection displays files in dir with selectable filtertags
-
-    // TODO: select filtertag(s) and display all entries with full paths
-
-
     /// <summary>
     /// 
     /// </summary>
@@ -36,14 +31,24 @@ namespace NBagOfTricks.UI
 
         #region Properties
         /// <summary>
-        /// Generate event for single or double click.
+        /// Key is file path, value is space separated associated tags.
         /// </summary>
-        public bool DoubleClickSelect { get; set; } = false;
+        public Dictionary<string, string> TaggedFiles { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        /// Key is dir path, value is space separated associated tags.
+        /// </summary>
+        public Dictionary<string, string> TaggedDirs { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
         /// All possible tags - client supplies and persists.
         /// </summary>
         public HashSet<string> AllTags = new HashSet<string>();
+
+        /// <summary>
+        /// Generate event for single or double click.
+        /// </summary>
+        public bool DoubleClickSelect { get; set; } = false;
         #endregion
 
         #region Events
@@ -68,8 +73,8 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         void TreeViewEx_Load(object sender, EventArgs e)
         {
+
         }
-        #endregion
 
         /// <summary>
         /// 
@@ -81,7 +86,16 @@ namespace NBagOfTricks.UI
             _rootPaths = rootPaths;
             _filterExts = filterExts;
             PopulateTreeView();
+            if(treeView.Nodes.Count > 0)
+            {
+                treeView.SelectedNode = treeView.Nodes[0];
+            }
+            else
+            {
+
+            }
         }
+        #endregion
 
         /// <summary>
         /// 
@@ -140,88 +154,128 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TreeView_MouseClick(object sender, MouseEventArgs e)
-        {
-            TreeNode clickedNode = treeView.GetNodeAt(e.X, e.Y);
-
-            lvFiles.Items.Clear();
-            var nodeDirInfo = clickedNode.Tag as DirectoryInfo;
-
-            foreach (FileInfo file in nodeDirInfo.GetFiles())
-            {
-                if (_filterExts.Contains(Path.GetExtension(file.Name)))
-                {
-                    var item = new ListViewItem(new[] { file.Name, "TODO tags" });
-                    item.Tag = file.FullName;
-                    lvFiles.Items.Add(item);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ListFiles_Click(object sender, EventArgs e)
-        {
-            if (!DoubleClickSelect && FileSelectedEvent != null)
-            {
-                FileSelectedEvent.Invoke(this, lvFiles.SelectedItems[0].Tag.ToString());
-            }
-
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ListFiles_DoubleClick(object sender, EventArgs e)
-        {
-            if (DoubleClickSelect && FileSelectedEvent != null)
-            {
-                FileSelectedEvent.Invoke(this, lvFiles.SelectedItems[0].Tag.ToString());
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void TreeViewEx_Resize(object sender, EventArgs e)
         {
             lvFiles.Columns[0].Width = lvFiles.Width / 2;
             lvFiles.Columns[1].Width = -2;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditTags_Click(object sender, EventArgs e)
+        #region Tree and List Selection
+        private void ListFiles_MouseClick(object sender, MouseEventArgs e)
         {
-            // TODO: edit filtertags, check for invalid or in use.
+            if (e.Button == MouseButtons.Left && !DoubleClickSelect && FileSelectedEvent != null)
+            {
+                FileSelectedEvent.Invoke(this, lvFiles.SelectedItems[0].Tag.ToString());
+            }
+        }
+
+        void lvFiles_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && DoubleClickSelect && FileSelectedEvent != null)
+            {
+                FileSelectedEvent.Invoke(this, lvFiles.SelectedItems[0].Tag.ToString());
+            }
+        }
+
+        private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                TreeNode clickedNode = e.Node;
+
+                lvFiles.Items.Clear();
+                var nodeDirInfo = clickedNode.Tag as DirectoryInfo;
+
+                foreach (FileInfo file in nodeDirInfo.GetFiles())
+                {
+                    if (_filterExts.Contains(Path.GetExtension(file.Name)))
+                    {
+                        var item = new ListViewItem(new[] { file.Name, "TODO tags" });
+                        item.Tag = file.FullName;
+                        lvFiles.Items.Add(item);
+                    }
+                }
+            }
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FilterByTags_DropDownOpening(object sender, EventArgs e)
-        {
-            //I'm doing this in two places. In one of them, it turns out (I forgot) that every one was a check box. I was able to get this working by:
-            //Instead of putting the dropdowns directly into the button, creating a context menu and loading that as the list; then calling the closing event for that context menu, and not allowing a close on ItemClick.
+        #endregion
 
-            //   Add all the ToolStripMenuItems to the NoCloseItems Array in the Form.Load event that you want to make the menu stay open when they are clicked.Then you iterate through all those items and add a single Paint event handler sub to them.
-            //That Paint event will be raised every time one of them is highlighted (selected) or un-highlighted (not selected).  In the Paint even you can cast the sender Object to a ToolStripMenuItem and find if it is Selected or not.
-            //If it is selected then, set its OwnerItem.DropDown.AutoClose property to False so it will not close if the item is clicked.If it is not selected then set it to True so the DropDown will close when something else on the form gets the focus.
-            //You will want to use the Paint event instead of the Mouse events because, the user may be using the keyboard to navigate and select the menu items instead of the mouse.
+
+        #region Context Menu
+
+        private void cms_Opening(object sender, CancelEventArgs e)
+        {
+            cms.Items.Add(new ToolStripMenuItem("Select All"));
+            cms.Items.Add(new ToolStripMenuItem("Clear All"));
+
+            // Tree context menu:
+            // - Same as above for dirs.
+            // - expand/compress all or 1/2/3/...
+
+            // Files context menu:
+            // - list of all tags with checkboxes indicating tags for this file. show inherited from dir.
+            // - add tag
+            // - delete tag (need to remove from all files)
+            // - edit tag? maybe
+
+
+
+                //       cms.Items.Clear();
+
+                // cms.ShowImageMargin = false;
+                // cms.Items.Add(new ToolStripMenuItem("Select All"));
+                // cms.Items.Add(new ToolStripMenuItem("Clear All"));
+                // cms.ItemClicked += new ToolStripItemClickedEventHandler(cms_ItemClicked);
+
+                // lvFiles.ContextMenuStrip = cms;
+                // lvFiles.ContextMenuStrip.Opening += new CancelEventHandler(cms_MenuOpening);
+
+
+                // //string text, Image image, EventHandler onClick
+
+                // ToolStripMenuItem toolStripMenuItem1 = new ToolStripMenuItem("11111");
+                // toolStripMenuItem1.Checked = true;
+                // toolStripMenuItem1.CheckState = CheckState.Indeterminate;
+                // cms.Items.Add(toolStripMenuItem1);
+
+                // ToolStripMenuItem toolStripMenuItem2 = new ToolStripMenuItem("222222");
+                // cms.Items.Add(toolStripMenuItem2);
+
+                // ToolStripSeparator toolStripSeparator1 = new ToolStripSeparator();
+                // cms.Items.Add(toolStripSeparator1);
+
+                // ToolStripComboBox toolStripComboBox1 = new ToolStripComboBox();
+                // toolStripComboBox1.Items.Add("c1");
+                // toolStripComboBox1.Items.Add("c2");
+                // toolStripComboBox1.Items.Add("c3");
+                // cms.Items.Add(toolStripComboBox1);
+
+                // ToolStripTextBox toolStripTextBox1 = new ToolStripTextBox();
+                // toolStripTextBox1.Font = new Font("Segoe UI", 9F);
+                // toolStripTextBox1.Text = "Hello!";
+                // cms.Items.Add(toolStripTextBox1);
 
         }
+
+        void cms_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            // Set/clear the assay selections based on menu selection.
+            switch (e.ClickedItem.ToString())
+            {
+                case "Select All":
+                    //SelectedAssays.Clear();
+                    //SelectedAssays.AddRange(AllAssays);
+                    //PopulateList();
+                    break;
+
+                case "Clear All":
+                    //SelectedAssays.Clear();
+                    //PopulateList();
+                    break;
+            }
+        }
+
+        #endregion
     }
 }

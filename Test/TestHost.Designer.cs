@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestHost));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
             this.tvex = new NBagOfTricks.UI.TreeViewEx();
@@ -41,6 +42,7 @@
             this.meter1 = new NBagOfTricks.UI.Meter();
             this.pot1 = new NBagOfTricks.UI.Pot();
             this.slider1 = new NBagOfTricks.UI.Slider();
+            this.chkCpu = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -61,6 +63,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.chkCpu);
             this.splitContainer1.Panel2.Controls.Add(this.tvex);
             this.splitContainer1.Panel2.Controls.Add(this.meter3);
             this.splitContainer1.Panel2.Controls.Add(this.meter2);
@@ -95,6 +98,8 @@
             this.tvex.Name = "tvex";
             this.tvex.Size = new System.Drawing.Size(484, 529);
             this.tvex.TabIndex = 11;
+            this.tvex.TaggedDirs = ((System.Collections.Generic.Dictionary<string, string>)(resources.GetObject("tvex.TaggedDirs")));
+            this.tvex.TaggedFiles = ((System.Collections.Generic.Dictionary<string, string>)(resources.GetObject("tvex.TaggedFiles")));
             this.tvex.FileSelectedEvent += new System.EventHandler<string>(this.TreeViewEx_FileSelectedEvent);
             // 
             // meter3
@@ -143,6 +148,7 @@
             // 
             this.cpuMeter1.BackColor = System.Drawing.Color.Gainsboro;
             this.cpuMeter1.ControlColor = System.Drawing.Color.Orange;
+            this.cpuMeter1.Enable = false;
             this.cpuMeter1.Label = "cpu";
             this.cpuMeter1.Location = new System.Drawing.Point(610, 128);
             this.cpuMeter1.Name = "cpuMeter1";
@@ -179,15 +185,13 @@
             // 
             // txtInfo
             // 
-            this.txtInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtInfo.Location = new System.Drawing.Point(557, 257);
             this.txtInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtInfo.MaxText = 5000;
             this.txtInfo.Name = "txtInfo";
-            this.txtInfo.Size = new System.Drawing.Size(846, 297);
+            this.txtInfo.Size = new System.Drawing.Size(846, 296);
             this.txtInfo.TabIndex = 4;
+            this.txtInfo.WordWrap = true;
             // 
             // meter1
             // 
@@ -238,6 +242,17 @@
             this.slider1.TabIndex = 2;
             this.slider1.Value = 0.3D;
             // 
+            // chkCpu
+            // 
+            this.chkCpu.AutoSize = true;
+            this.chkCpu.Location = new System.Drawing.Point(670, 225);
+            this.chkCpu.Name = "chkCpu";
+            this.chkCpu.Size = new System.Drawing.Size(73, 21);
+            this.chkCpu.TabIndex = 12;
+            this.chkCpu.Text = "cpu go";
+            this.chkCpu.UseVisualStyleBackColor = true;
+            this.chkCpu.CheckedChanged += new System.EventHandler(this.ChkCpu_CheckedChanged);
+            // 
             // TestHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -250,6 +265,7 @@
             this.Load += new System.EventHandler(this.TestHost_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -271,5 +287,6 @@
         private UI.Meter meter2;
         private UI.Meter meter3;
         private UI.TreeViewEx tvex;
+        private System.Windows.Forms.CheckBox chkCpu;
     }
 }

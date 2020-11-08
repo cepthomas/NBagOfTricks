@@ -14,7 +14,7 @@ using NBagOfTricks.UI;
 
 namespace NBagOfTricks.Test
 {
-    public partial class TestHost : Form
+    public partial class TestHost : Form // TODOC resize is klunky.
     {
         public TestHost()
         {
@@ -47,6 +47,28 @@ namespace NBagOfTricks.Test
             tvex.AllTags = new HashSet<string>() { "abc", "123", "xyz" };
             tvex.DoubleClickSelect = false;
             tvex.Init(paths, exts);
+
+            //C:\Dev\repos\NBagOfTricks\Test
+            //| Program.cs
+            //| TestHost.cs
+            //| TestHost.Designer.cs
+            //| Test_CMD - Copy.cs
+            //| Test_CMD.cs
+            //| Test_PNUT.cs
+            //| Test_SM.cs
+            //+ ---bin
+            //|   \---Debug
+            //| NBagOfTricks.xml
+            //| testout.txt
+            //+ ---obj
+            //|   \---Debug
+            //|       |   .NETFramework,Version = v4.7.1.AssemblyAttributes.cs
+            //|       | TemporaryGeneratedFile_036C0B5B - 1481 - 4323 - 8D20 - 8F5ADCB23D92.cs
+            //|       | TemporaryGeneratedFile_5937a670 - 0e60 - 4077 - 877b - f7221da3dda1.cs
+            //|       | TemporaryGeneratedFile_E7A71F73 - 0F8D - 4B9B - B56E - 8E70B10BC5D3.cs
+            //|       | Test.csproj.FileListAbsolute.txt
+            //\---Properties
+            //        AssemblyInfo.cs
         }
 
         void TreeViewEx_FileSelectedEvent(object sender, string fn)
@@ -89,6 +111,11 @@ namespace NBagOfTricks.Test
         private void UT_Click(object sender, EventArgs e)
         {
             RunTests();
+        }
+
+        private void ChkCpu_CheckedChanged(object sender, EventArgs e)
+        {
+            cpuMeter1.Enable = chkCpu.Checked;
         }
     }
 }

@@ -1,7 +1,7 @@
 # NBagOfTricks
 C# things collected over the years.
 
-No dependencies on third party components.
+Targets .NET Framework 4.7.2. No dependencies on third party components.
 
 ![logo](https://github.com/cepthomas/NBagOfTricks/blob/master/felix.jpg)
 
@@ -20,7 +20,7 @@ No dependencies on third party components.
 - Meter: Linear or log.
 - Pot: Just like on your guitar.
 - Slider: Just like on your mixer.
-- VirtualKeyboard: Control based on one from Leslie Sanford's [Midi Toolkit](https://github.com/tebjan/Sanford.Multimedia.Midi) piano control.
+- VirtualKeyboard: Piano control based loosely on Leslie Sanford's [Midi Toolkit](https://github.com/tebjan/Sanford.Multimedia.Midi).
 
 # General purpose UI components
 - PropertyGridEx: Added a few features.
