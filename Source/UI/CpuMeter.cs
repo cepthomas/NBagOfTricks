@@ -65,6 +65,21 @@ namespace NBagOfTricks.UI
         /// A number.
         /// </summary>
         const int BORDER_WIDTH = 1;
+
+        /// <summary>
+        /// CPU info.
+        /// </summary>
+        int _cores = 0;
+
+        /// <summary>
+        /// CPU info.
+        /// </summary>
+        int _physicalProcessors = 0;
+
+        /// <summary>
+        /// CPU info.
+        /// </summary>
+        int _logicalProcessors = 0;
         #endregion
 
         #region Properties
@@ -72,6 +87,11 @@ namespace NBagOfTricks.UI
         /// If ther than default is wanted.
         /// </summary>
         public string Label { get; set; } = "cpu";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool Enable { get; set; } = false;
 
         /// <summary>
         /// Default is 500 msec. Change if you like.
@@ -209,47 +229,46 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (_cpuPerf == null)
+            if(Enable)
             {
-                InitPerf();
-            }
-            else
-            {
-                _cpuBuff[_buffIndex] = 0;
-
-                for (int i = 0; i < _processesPerf.Count(); i++)
+                if (_cpuPerf == null)
                 {
-                    float val = _processesPerf[i].NextValue();
-                    _processesBuffs[i][_buffIndex] = val;
+                    InitPerf();
                 }
-
-                _cpuBuff[_buffIndex] = _cpuPerf.NextValue();
-
-                _buffIndex++;
-                if (_buffIndex >= _cpuBuff.Count())
+                else
                 {
-                    _buffIndex = 0;
-                }
+                    _cpuBuff[_buffIndex] = 0;
 
-                Invalidate();
+                    for (int i = 0; i < _processesPerf.Count(); i++)
+                    {
+                        float val = _processesPerf[i].NextValue();
+                        _processesBuffs[i][_buffIndex] = val;
+                    }
+
+                    _cpuBuff[_buffIndex] = _cpuPerf.NextValue();
+
+                    _buffIndex++;
+                    if (_buffIndex >= _cpuBuff.Count())
+                    {
+                        _buffIndex = 0;
+                    }
+
+                    Invalidate();
+                }
             }
         }
 
         /// <summary>
-        /// Defer init as they are slow processes.
+        /// Defer init as they are slow processes. TODO Init on another thread?
         /// </summary>
         void InitPerf()
         {
-            int cores = 0;
-            int physicalProcessors = 0;
-            int logicalProcessors = 0;
-
             using (var searcher = new System.Management.ManagementObjectSearcher("Select * from Win32_Processor"))
             {
                 var items = searcher.Get();
                 foreach (var item in items)
                 {
-                    cores = int.Parse(item["NumberOfCores"].ToString());
+                    _cores = int.Parse(item["NumberOfCores"].ToString());
                 }
             }
 
@@ -258,15 +277,15 @@ namespace NBagOfTricks.UI
                 var items = searcher.Get();
                 foreach (var item in items)
                 {
-                    physicalProcessors = int.Parse(item["NumberOfProcessors"].ToString());
-                    logicalProcessors = int.Parse(item["NumberOfLogicalProcessors"].ToString());
+                    _physicalProcessors = int.Parse(item["NumberOfProcessors"].ToString());
+                    _logicalProcessors = int.Parse(item["NumberOfLogicalProcessors"].ToString());
                 }
             }
 
-            _processesPerf = new PerformanceCounter[logicalProcessors];
-            _processesBuffs = new double[logicalProcessors][];
+            _processesPerf = new PerformanceCounter[_logicalProcessors];
+            _processesBuffs = new double[_logicalProcessors][];
 
-            for (int i = 0; i < logicalProcessors; i++)
+            for (int i = 0; i < _logicalProcessors; i++)
             {
                 var pc = new PerformanceCounter("Processor", "% Processor Time", i.ToString());
                 _processesPerf[i] = pc;
