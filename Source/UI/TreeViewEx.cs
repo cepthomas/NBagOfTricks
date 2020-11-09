@@ -102,6 +102,8 @@ namespace NBagOfTricks.UI
         /// </summary>
         void PopulateTreeView()
         {
+            treeView.Nodes.Clear();
+
             foreach (string path in _rootPaths)
             {
                 TreeNode rootNode;
@@ -117,10 +119,13 @@ namespace NBagOfTricks.UI
                     ShowDirectories(info.GetDirectories(), rootNode);
                     treeView.Nodes.Add(rootNode);
                 }
-                // else error... TODO
-
+                else
+                {
+                    throw new DirectoryNotFoundException($"Invalid root directory: {path}");
+                }
             }
 
+            // Open them up a bit.
             foreach (TreeNode n in treeView.Nodes)
             {
                 n.Expand();
@@ -128,7 +133,7 @@ namespace NBagOfTricks.UI
         }
 
         /// <summary>
-        /// 
+        /// Recursively drill down through the directory structure and populate the tree.
         /// </summary>
         /// <param name="dirs"></param>
         /// <param name="parentNode"></param>
@@ -160,22 +165,7 @@ namespace NBagOfTricks.UI
             lvFiles.Columns[1].Width = -2;
         }
 
-        #region Tree and List Selection
-        private void ListFiles_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && !DoubleClickSelect && FileSelectedEvent != null)
-            {
-                FileSelectedEvent.Invoke(this, lvFiles.SelectedItems[0].Tag.ToString());
-            }
-        }
-
-        void lvFiles_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && DoubleClickSelect && FileSelectedEvent != null)
-            {
-                FileSelectedEvent.Invoke(this, lvFiles.SelectedItems[0].Tag.ToString());
-            }
-        }
+        #region Tree Selection
 
         private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
@@ -199,6 +189,36 @@ namespace NBagOfTricks.UI
 
         }
 
+
+        #endregion
+
+
+        #region File List Selection
+        /// <summary>
+        /// Single click file selection.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ListFiles_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && !DoubleClickSelect && FileSelectedEvent != null)
+            {
+                FileSelectedEvent.Invoke(this, lvFiles.SelectedItems[0].Tag.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Double click file selection.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ListFiles_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && DoubleClickSelect && FileSelectedEvent != null)
+            {
+                FileSelectedEvent.Invoke(this, lvFiles.SelectedItems[0].Tag.ToString());
+            }
+        }
         #endregion
 
 
