@@ -52,11 +52,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="UI\TreeViewEx.cs">
+    <Compile Include="UI\FilTree.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\TreeViewEx.Designer.cs">
-      <DependentUpon>TreeViewEx.cs</DependentUpon>
+    <Compile Include="UI\FilTree.Designer.cs">
+      <DependentUpon>FilTree.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\CpuMeter.cs">
       <SubType>UserControl</SubType>
@@ -101,8 +101,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\TreeViewEx.resx">
-      <DependentUpon>TreeViewEx.cs</DependentUpon>
+    <EmbeddedResource Include="UI\FilTree.resx">
+      <DependentUpon>FilTree.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

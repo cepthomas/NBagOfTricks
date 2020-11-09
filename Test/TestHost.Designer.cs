@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestHost));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
-            this.tvex = new NBagOfTricks.UI.TreeViewEx();
+            this.chkCpu = new System.Windows.Forms.CheckBox();
+            this.ftree = new NBagOfTricks.UI.FilTree();
             this.meter3 = new NBagOfTricks.UI.Meter();
             this.meter2 = new NBagOfTricks.UI.Meter();
             this.btnUT = new System.Windows.Forms.Button();
@@ -42,7 +44,6 @@
             this.meter1 = new NBagOfTricks.UI.Meter();
             this.pot1 = new NBagOfTricks.UI.Pot();
             this.slider1 = new NBagOfTricks.UI.Slider();
-            this.chkCpu = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -64,7 +65,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.chkCpu);
-            this.splitContainer1.Panel2.Controls.Add(this.tvex);
+            this.splitContainer1.Panel2.Controls.Add(this.ftree);
             this.splitContainer1.Panel2.Controls.Add(this.meter3);
             this.splitContainer1.Panel2.Controls.Add(this.meter2);
             this.splitContainer1.Panel2.Controls.Add(this.btnUT);
@@ -91,16 +92,29 @@
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.Vkbd_KeyboardEvent);
             // 
-            // tvex
+            // chkCpu
             // 
-            this.tvex.DoubleClickSelect = false;
-            this.tvex.Location = new System.Drawing.Point(12, 25);
-            this.tvex.Name = "tvex";
-            this.tvex.Size = new System.Drawing.Size(484, 529);
-            this.tvex.TabIndex = 11;
-            this.tvex.TaggedDirs = ((System.Collections.Generic.Dictionary<string, string>)(resources.GetObject("tvex.TaggedDirs")));
-            this.tvex.TaggedFiles = ((System.Collections.Generic.Dictionary<string, string>)(resources.GetObject("tvex.TaggedFiles")));
-            this.tvex.FileSelectedEvent += new System.EventHandler<string>(this.TreeViewEx_FileSelectedEvent);
+            this.chkCpu.AutoSize = true;
+            this.chkCpu.Location = new System.Drawing.Point(670, 225);
+            this.chkCpu.Name = "chkCpu";
+            this.chkCpu.Size = new System.Drawing.Size(73, 21);
+            this.chkCpu.TabIndex = 12;
+            this.chkCpu.Text = "cpu go";
+            this.chkCpu.UseVisualStyleBackColor = true;
+            this.chkCpu.CheckedChanged += new System.EventHandler(this.ChkCpu_CheckedChanged);
+            // 
+            // ftree
+            // 
+            this.ftree.AllTags = ((System.Collections.Generic.List<string>)(resources.GetObject("ftree.AllTags")));
+            this.ftree.DoubleClickSelect = false;
+            this.ftree.FilterExts = ((System.Collections.Generic.List<string>)(resources.GetObject("ftree.FilterExts")));
+            this.ftree.Location = new System.Drawing.Point(12, 25);
+            this.ftree.Name = "ftree";
+            this.ftree.RootPaths = ((System.Collections.Generic.List<string>)(resources.GetObject("ftree.RootPaths")));
+            this.ftree.Size = new System.Drawing.Size(484, 529);
+            this.ftree.TabIndex = 11;
+            this.ftree.TaggedPaths = ((System.Collections.Generic.List<System.ValueTuple<string, string>>)(resources.GetObject("ftree.TaggedPaths")));
+            this.ftree.FileSelectedEvent += new System.EventHandler<string>(this.FilTree_FileSelectedEvent);
             // 
             // meter3
             // 
@@ -242,17 +256,6 @@
             this.slider1.TabIndex = 2;
             this.slider1.Value = 0.3D;
             // 
-            // chkCpu
-            // 
-            this.chkCpu.AutoSize = true;
-            this.chkCpu.Location = new System.Drawing.Point(670, 225);
-            this.chkCpu.Name = "chkCpu";
-            this.chkCpu.Size = new System.Drawing.Size(73, 21);
-            this.chkCpu.TabIndex = 12;
-            this.chkCpu.Text = "cpu go";
-            this.chkCpu.UseVisualStyleBackColor = true;
-            this.chkCpu.CheckedChanged += new System.EventHandler(this.ChkCpu_CheckedChanged);
-            // 
             // TestHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -263,6 +266,7 @@
             this.Name = "TestHost";
             this.Text = "TestHost";
             this.Load += new System.EventHandler(this.TestHost_Load);
+            this.Shown += new System.EventHandler(this.TestHost_Shown);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
@@ -286,7 +290,7 @@
         private System.Windows.Forms.Button btnUT;
         private UI.Meter meter2;
         private UI.Meter meter3;
-        private UI.TreeViewEx tvex;
+        private UI.FilTree ftree;
         private System.Windows.Forms.CheckBox chkCpu;
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace NBagOfTricks.UI
 {
-    partial class TreeViewEx
+    partial class FilTree
     {
         /// <summary> 
         /// Required designer variable.
@@ -60,7 +60,9 @@
             this.treeView.Name = "treeView";
             this.treeView.Size = new System.Drawing.Size(257, 585);
             this.treeView.TabIndex = 0;
-            this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
+            this.treeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.TreeView_DrawNode);
+            this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterSelect);
+            this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseClick);
             // 
             // lvFiles
             // 
@@ -147,7 +149,7 @@
             this.toolStripTextBox1});
             this.cms.Name = "contextMenuStrip1";
             this.cms.Size = new System.Drawing.Size(212, 129);
-            this.cms.Opening += new System.ComponentModel.CancelEventHandler(this.cms_Opening);
+            this.cms.Opening += new System.ComponentModel.CancelEventHandler(this.Cms_Opening);
             // 
             // toolStripMenuItem1
             // 
@@ -185,17 +187,17 @@
             this.toolStripTextBox1.Size = new System.Drawing.Size(100, 27);
             this.toolStripTextBox1.Text = "New one here";
             // 
-            // TreeViewEx
+            // FilTree
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ContextMenuStrip = this.cms;
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.toolStrip1);
-            this.Name = "TreeViewEx";
+            this.Name = "FilTree";
             this.Size = new System.Drawing.Size(588, 612);
-            this.Load += new System.EventHandler(this.TreeViewEx_Load);
-            this.Resize += new System.EventHandler(this.TreeViewEx_Resize);
+            this.Load += new System.EventHandler(this.FilTree_Load);
+            this.Resize += new System.EventHandler(this.FilTree_Resize);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.splitContainer2.Panel1.ResumeLayout(false);
@@ -216,9 +218,7 @@
         private System.Windows.Forms.ColumnHeader dvcolFile;
         private System.Windows.Forms.ColumnHeader dvcolTags;
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripButton btnEditTags;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.ToolStripDropDownButton btnFilterByTags;
         private System.Windows.Forms.ContextMenuStrip cms;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
@@ -226,5 +226,7 @@
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+        private System.Windows.Forms.ToolStripDropDownButton btnFilterByTags;
+        private System.Windows.Forms.ToolStripButton btnEditTags;
     }
 }

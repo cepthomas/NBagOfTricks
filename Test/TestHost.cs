@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using NBagOfTricks.PNUT;
 using NBagOfTricks.Utils;
 using NBagOfTricks.UI;
-
+using System.IO;
 
 namespace NBagOfTricks.Test
 {
@@ -42,11 +42,25 @@ namespace NBagOfTricks.Test
             slider1.ValueChanged += Slider1_ValueChanged;
             slider2.ValueChanged += Slider2_ValueChanged;
 
-            List<string> paths = new List<string>() { $@"{Environment.CurrentDirectory}\..\..\" };
-            List<string> exts = ".txt;.md;.xml;.cs".SplitByToken(";");
-            tvex.AllTags = new HashSet<string>() { "abc", "123", "xyz" };
-            tvex.DoubleClickSelect = false;
-            tvex.Init(paths, exts);
+            string root = $@"C:\Dev\repos\NBagOfTricks\Test";
+            ftree.RootPaths = new List<string>() { root };
+            ftree.FilterExts = ".txt;.md;.xml;.cs".SplitByToken(";");
+            ftree.AllTags = new List<string>() { "abc", "123", "xyz" };
+            ftree.DoubleClickSelect = false;
+
+            // Good files
+            ftree.TaggedPaths.Add(($@"{root}\Test_CMD.cs", ""));
+            ftree.TaggedPaths.Add(($@"{root}\Test_PNUT.cs", "abc"));
+            ftree.TaggedPaths.Add(($@"{root}\bin\Debug\testout.txt", "123 xyz"));
+
+            // Bad paths.
+            //ftree.TaggedPaths.Add(($@"{root}\bad_file.txt", "xyz"));
+            //ftree.TaggedPaths.Add(($@"{root}\bin\bad_path", ""));
+
+            // Bad tags.
+            ftree.TaggedPaths.Add(($@"{root}\bin\Debug\NBagOfTricks.xml", "333333 abc"));
+
+            ftree.Init();
 
             //C:\Dev\repos\NBagOfTricks\Test
             //| Program.cs
@@ -57,12 +71,12 @@ namespace NBagOfTricks.Test
             //| Test_PNUT.cs
             //| Test_SM.cs
             //+ ---bin
-            //|   \---Debug
-            //| NBagOfTricks.xml
-            //| testout.txt
+            //|    \---Debug
+            //|        NBagOfTricks.xml
+            //|        testout.txt
             //+ ---obj
             //|   \---Debug
-            //|       |   .NETFramework,Version = v4.7.1.AssemblyAttributes.cs
+            //|       | .NETFramework,Version = v4.7.1.AssemblyAttributes.cs
             //|       | TemporaryGeneratedFile_036C0B5B - 1481 - 4323 - 8D20 - 8F5ADCB23D92.cs
             //|       | TemporaryGeneratedFile_5937a670 - 0e60 - 4077 - 877b - f7221da3dda1.cs
             //|       | TemporaryGeneratedFile_E7A71F73 - 0F8D - 4B9B - B56E - 8E70B10BC5D3.cs
@@ -71,7 +85,12 @@ namespace NBagOfTricks.Test
             //        AssemblyInfo.cs
         }
 
-        void TreeViewEx_FileSelectedEvent(object sender, string fn)
+        private void TestHost_Shown(object sender, EventArgs e)
+        {
+
+        }
+
+        void FilTree_FileSelectedEvent(object sender, string fn)
         {
             txtInfo.AddLine($"Selected file: {fn}");
         }

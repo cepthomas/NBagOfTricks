@@ -24,7 +24,7 @@ Targets .NET Framework 4.7.2. No dependencies on third party components.
 
 # General purpose UI components
 - PropertyGridEx: Added a few features.
-- TreeViewEx: Folder/file tree control with tags/filters and notifications.
+- FilTree: Folder/file tree control with tags/filters and notifications.
 - CpuMeter: Standalone display control.
 - TextViewer: With colorizing.
 - WaitCursor: Easy to use cursor.
