@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-
+using NBagOfTricks.Utils;
 
 namespace NBagOfTricks.UI
 {
@@ -18,15 +18,20 @@ namespace NBagOfTricks.UI
     public partial class FilTree : UserControl
     {
         #region Fields
-        /// <summary>
-        /// Key is file path, value is space separated associated tags.
-        /// </summary>
-        Dictionary<string, string> _taggedFiles = new Dictionary<string, string>();
+        ///// <summary>
+        ///// Key is file path, value is space separated associated tags.
+        ///// </summary>
+        //Dictionary<string, string> _taggedFiles = new Dictionary<string, string>();
+
+        ///// <summary>
+        ///// Key is dir path, value is space separated associated tags.
+        ///// </summary>
+        //Dictionary<string, string> _taggedDirs = new Dictionary<string, string>();
 
         /// <summary>
-        /// Key is dir path, value is space separated associated tags.
+        /// Key is file or dir path, value is associated tags.
         /// </summary>
-        Dictionary<string, string> _taggedDirs = new Dictionary<string, string>();
+        Dictionary<string, HashSet<string>> _taggedPaths = new Dictionary<string, HashSet<string>>();
 
         /// <summary>
         /// All possible tags.
@@ -43,7 +48,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Key is path to file or directory, value is space separated associated tags.
         /// </summary>
-        public List<(string path, string tags)> TaggedPaths { get; set; } = new List<(string, string)>(); //TODOC get packs up everything so client can save.
+        public List<(string path, string tags)> TaggedPaths { get; set; } = new List<(string, string)>();
 
         /// <summary>
         /// All possible tags.
@@ -94,7 +99,7 @@ namespace NBagOfTricks.UI
         }
 
         /// <summary>
-        /// 
+        /// Populate everything from the properties.
         /// </summary>
         public void Init()
         {
@@ -102,24 +107,39 @@ namespace NBagOfTricks.UI
             _allTags.Clear();
             AllTags.ForEach(t => _allTags.Add(t));
 
-            _taggedDirs.Clear();
-            _taggedFiles.Clear();
             foreach ((string path, string tags) in TaggedPaths)
             {
-                // TODOC Check for valid tags. Remove or add to all tags?
-                if (Directory.Exists(path))
+                // Check for valid path. TODOC Check for path is off one of the roots.
+                if (Directory.Exists(path) || File.Exists(path))
                 {
-                    _taggedDirs.Add(path, tags);
-                }
-                else if (File.Exists(path))
-                {
-                    _taggedFiles.Add(path, tags);
+                    // Check for valid tags. If not, add to all tags.
+                    HashSet<string> h = new HashSet<string>();
+                    tags.SplitByToken(" ").ForEach(t => { _allTags.Add(t); h.Add(t); });
+                    _taggedPaths.Add(path, h);
                 }
                 else
                 {
                     throw new FileNotFoundException($"Invalid path: {path}");
                 }
             }
+
+            //_taggedDirs.Clear();
+            //_taggedFiles.Clear();
+            //foreach ((string path, string tags) in TaggedPaths)
+            //{
+            //    if (Directory.Exists(path))
+            //    {
+            //        _taggedDirs.Add(path, tags);
+            //    }
+            //    else if (File.Exists(path))
+            //    {
+            //        _taggedFiles.Add(path, tags);
+            //    }
+            //    else
+            //    {
+            //        throw new FileNotFoundException($"Invalid path: {path}");
+            //    }
+            //}
 
             // Show what we have.
             PopulateTreeView();
@@ -133,7 +153,58 @@ namespace NBagOfTricks.UI
                 throw new DirectoryNotFoundException($"No root directories");
             }
         }
+
+        /// <summary>
+        /// Collect changes. TODOC kinda klunky.
+        /// </summary>
+        public void Cleanup()
+        {
+            AllTags = _allTags.ToList();
+
+            TaggedPaths.Clear();
+            _taggedPaths.ForEach(kv => { TaggedPaths.Add((kv.Key, string.Join(" ", kv.Value.ToArray()))); });
+
+            //Dictionary<string, string> _taggedFiles = new Dictionary<string, string>();
+            //Dictionary<string, string> _taggedDirs = new Dictionary<string, string>();
+            //HashSet<string> _allTags = new HashSet<string>();
+        }
         #endregion
+
+        #region Tree View
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                PopulateNode(e.Node);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        private void PopulateNode(TreeNode node)
+        {
+            TreeNode clickedNode = node;
+
+            lvFiles.Items.Clear();
+            var nodeDirInfo = clickedNode.Tag as DirectoryInfo;
+
+            foreach (FileInfo file in nodeDirInfo.GetFiles())
+            {
+                if (FilterExts.Contains(Path.GetExtension(file.Name)))
+                {
+                    var item = new ListViewItem(new[] { file.Name, "TODO tags" });
+                    item.Tag = file.FullName;
+                    lvFiles.Items.Add(item);
+                }
+            }
+        }
 
         /// <summary>
         /// 
@@ -191,56 +262,9 @@ namespace NBagOfTricks.UI
                 parentNode.Nodes.Add(subDirNode);
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FilTree_Resize(object sender, EventArgs e)
-        {
-            lvFiles.Columns[0].Width = lvFiles.Width / 2;
-            lvFiles.Columns[1].Width = -2;
-        }
-
-        #region Tree Selection
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                PopulateNode(e.Node);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="node"></param>
-        private void PopulateNode(TreeNode node)
-        {
-            TreeNode clickedNode = node;
-
-            lvFiles.Items.Clear();
-            var nodeDirInfo = clickedNode.Tag as DirectoryInfo;
-
-            foreach (FileInfo file in nodeDirInfo.GetFiles())
-            {
-                if (FilterExts.Contains(Path.GetExtension(file.Name)))
-                {
-                    var item = new ListViewItem(new[] { file.Name, "TODO tags" });
-                    item.Tag = file.FullName;
-                    lvFiles.Items.Add(item);
-                }
-            }
-        }
         #endregion
 
-        #region File List Selection
+        #region File List
         /// <summary>
         /// Single click file selection.
         /// </summary>
@@ -276,10 +300,6 @@ namespace NBagOfTricks.UI
 
             // TODOC context menus:
 
-            // Tree context menu:
-            // - Same as above for dirs.
-            // - expand/compress all or 1/2/3/...
-
             // Files context menu:
             // - list of all tags with checkboxes indicating tags for this file. show inherited from dir.
             // - add tag
@@ -287,44 +307,54 @@ namespace NBagOfTricks.UI
             // - edit tag? maybe
 
 
-
-                //       cms.Items.Clear();
-
-                // cms.ShowImageMargin = false;
-                // cms.Items.Add(new ToolStripMenuItem("Select All"));
-                // cms.Items.Add(new ToolStripMenuItem("Clear All"));
-                // cms.ItemClicked += new ToolStripItemClickedEventHandler(cms_ItemClicked);
-
-                // lvFiles.ContextMenuStrip = cms;
-                // lvFiles.ContextMenuStrip.Opening += new CancelEventHandler(cms_MenuOpening);
+            // Tree context menu:
+            // - Same as above for dirs.
+            // - expand/compress all or 1/2/3/...
 
 
-                // //string text, Image image, EventHandler onClick
 
-                // ToolStripMenuItem toolStripMenuItem1 = new ToolStripMenuItem("11111");
-                // toolStripMenuItem1.Checked = true;
-                // toolStripMenuItem1.CheckState = CheckState.Indeterminate;
-                // cms.Items.Add(toolStripMenuItem1);
+            //cms.Items.Clear();
 
-                // ToolStripMenuItem toolStripMenuItem2 = new ToolStripMenuItem("222222");
-                // cms.Items.Add(toolStripMenuItem2);
+            // cms.ShowImageMargin = false;
+            // cms.Items.Add(new ToolStripMenuItem("Select All"));
+            // cms.Items.Add(new ToolStripMenuItem("Clear All"));
+            // cms.ItemClicked += new ToolStripItemClickedEventHandler(cms_ItemClicked);
 
-                // ToolStripSeparator toolStripSeparator1 = new ToolStripSeparator();
-                // cms.Items.Add(toolStripSeparator1);
+            // lvFiles.ContextMenuStrip = cms;
+            // lvFiles.ContextMenuStrip.Opening += new CancelEventHandler(cms_MenuOpening);
 
-                // ToolStripComboBox toolStripComboBox1 = new ToolStripComboBox();
-                // toolStripComboBox1.Items.Add("c1");
-                // toolStripComboBox1.Items.Add("c2");
-                // toolStripComboBox1.Items.Add("c3");
-                // cms.Items.Add(toolStripComboBox1);
 
-                // ToolStripTextBox toolStripTextBox1 = new ToolStripTextBox();
-                // toolStripTextBox1.Font = new Font("Segoe UI", 9F);
-                // toolStripTextBox1.Text = "Hello!";
-                // cms.Items.Add(toolStripTextBox1);
+            // //string text, Image image, EventHandler onClick
+
+            // ToolStripMenuItem toolStripMenuItem1 = new ToolStripMenuItem("11111");
+            // toolStripMenuItem1.Checked = true;
+            // toolStripMenuItem1.CheckState = CheckState.Indeterminate;
+            // cms.Items.Add(toolStripMenuItem1);
+
+            // ToolStripMenuItem toolStripMenuItem2 = new ToolStripMenuItem("222222");
+            // cms.Items.Add(toolStripMenuItem2);
+
+            // ToolStripSeparator toolStripSeparator1 = new ToolStripSeparator();
+            // cms.Items.Add(toolStripSeparator1);
+
+            // ToolStripComboBox toolStripComboBox1 = new ToolStripComboBox();
+            // toolStripComboBox1.Items.Add("c1");
+            // toolStripComboBox1.Items.Add("c2");
+            // toolStripComboBox1.Items.Add("c3");
+            // cms.Items.Add(toolStripComboBox1);
+
+            // ToolStripTextBox toolStripTextBox1 = new ToolStripTextBox();
+            // toolStripTextBox1.Font = new Font("Segoe UI", 9F);
+            // toolStripTextBox1.Text = "Hello!";
+            // cms.Items.Add(toolStripTextBox1);
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void Cms_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             // Set/clear the assay selections based on menu selection.
@@ -372,6 +402,17 @@ namespace NBagOfTricks.UI
         private void TreeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
         {
             e.DrawDefault = true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FilTree_Resize(object sender, EventArgs e)
+        {
+            lvFiles.Columns[0].Width = lvFiles.Width / 2;
+            lvFiles.Columns[1].Width = -2;
         }
         #endregion
     }

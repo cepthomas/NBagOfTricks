@@ -265,6 +265,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TestHost";
             this.Text = "TestHost";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TestHost_FormClosing);
             this.Load += new System.EventHandler(this.TestHost_Load);
             this.Shown += new System.EventHandler(this.TestHost_Shown);
             this.splitContainer1.Panel1.ResumeLayout(false);

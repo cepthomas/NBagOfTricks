@@ -14,7 +14,7 @@ using System.IO;
 
 namespace NBagOfTricks.Test
 {
-    public partial class TestHost : Form // TODOC resize is klunky.
+    public partial class TestHost : Form
     {
         public TestHost()
         {
@@ -88,6 +88,15 @@ namespace NBagOfTricks.Test
         private void TestHost_Shown(object sender, EventArgs e)
         {
 
+        }
+
+        private void TestHost_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ftree.Cleanup();
+
+            // Inspect.
+            var at = ftree.AllTags;
+            var tp = ftree.TaggedPaths;
         }
 
         void FilTree_FileSelectedEvent(object sender, string fn)
