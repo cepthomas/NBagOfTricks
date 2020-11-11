@@ -109,9 +109,12 @@ namespace NBagOfTricks.UI
 
             foreach ((string path, string tags) in TaggedPaths)
             {
-                // Check for valid path. TODOC Check for path is off one of the roots.
+                // Check for valid path.
                 if (Directory.Exists(path) || File.Exists(path))
                 {
+                    // TODOC Check for path is off one of the roots - ask user what to do.
+
+
                     // Check for valid tags. If not, add to all tags.
                     HashSet<string> h = new HashSet<string>();
                     tags.SplitByToken(" ").ForEach(t => { _allTags.Add(t); h.Add(t); });

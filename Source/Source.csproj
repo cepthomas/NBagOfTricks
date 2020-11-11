@@ -61,6 +61,12 @@
     <Compile Include="UI\CpuMeter.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="UI\TimeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\TimeControl.Designer.cs">
+      <DependentUpon>TimeControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\UiUtils.cs" />
     <Compile Include="Utils\Dumper.cs" />
     <Compile Include="UI\Meter.cs">
@@ -103,6 +109,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\FilTree.resx">
       <DependentUpon>FilTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\TimeControl.resx">
+      <DependentUpon>TimeControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
