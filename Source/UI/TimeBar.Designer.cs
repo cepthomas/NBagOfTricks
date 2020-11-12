@@ -1,6 +1,6 @@
 ﻿namespace NBagOfTricks.UI
 {
-    partial class TimeControl
+    partial class TimeBar
     {
         /// <summary> 
         /// Required designer variable.
@@ -32,14 +32,14 @@
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
-            // TimeControl
+            // TimeBar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "TimeControl";
+            this.Name = "TimeBar";
             this.Size = new System.Drawing.Size(314, 176);
-            this.Load += new System.EventHandler(this.TimeControl_Load);
-            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.TimeControl_PreviewKeyDown);
+            this.Load += new System.EventHandler(this.TimeBar_Load);
+            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.TimeBar_PreviewKeyDown);
             this.ResumeLayout(false);
 
         }

@@ -9,7 +9,7 @@ using NBagOfTricks.Utils;
 
 namespace NBagOfTricks.UI
 {
-    public partial class TimeControl : UserControl
+    public partial class TimeBar : UserControl
     {
         #region Fields
         /// <summary>
@@ -71,7 +71,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Constructor.
         /// </summary>
-        public TimeControl()
+        public TimeBar()
         {
             InitializeComponent();
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
@@ -82,7 +82,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void TimeControl_Load(object sender, EventArgs e)
+        void TimeBar_Load(object sender, EventArgs e)
         {
             toolTip.SetToolTip(this, "Current time");
             Invalidate();
@@ -220,7 +220,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void TimeControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        void TimeBar_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             switch (e.KeyData)
             {

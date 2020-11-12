@@ -62,8 +62,8 @@ namespace NBagOfTricks.Test
 
             ftree.Init();
 
-            timeControl.Length = new TimeSpan(0, 12, 34);
-            timeControl.CurrentTime = new TimeSpan(0);
+            timeBar.Length = new TimeSpan(0, 12, 34);
+            timeBar.CurrentTime = new TimeSpan(0);
 
             timer1.Enabled = true;
         }
@@ -129,15 +129,15 @@ namespace NBagOfTricks.Test
             cpuMeter1.Enable = chkCpu.Checked;
         }
 
-        private void TimeControl_CurrentTimeChanged(object sender, EventArgs e)
+        private void TimeBar_CurrentTimeChanged(object sender, EventArgs e)
         {
-            //txtInfo.AddLine($"Current time:{timeControl.CurrentTime}");
+            //txtInfo.AddLine($"Current time:{timeBar.CurrentTime}");
         }
 
         void Timer1_Tick(object sender, EventArgs e)
         {
-            TimeSpan ts = timeControl.CurrentTime + new TimeSpan(0, 0, 0, 0, timer1.Interval);
-            timeControl.CurrentTime = ts < timeControl.Length ? ts : timeControl.Length;
+            TimeSpan ts = timeBar.CurrentTime + new TimeSpan(0, 0, 0, 0, timer1.Interval);
+            timeBar.CurrentTime = ts < timeBar.Length ? ts : timeBar.Length;
         }
     }
 }

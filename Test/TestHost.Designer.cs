@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestHost));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
-            this.timeControl = new NBagOfTricks.UI.TimeControl();
+            this.timeBar = new NBagOfTricks.UI.TimeBar();
             this.chkCpu = new System.Windows.Forms.CheckBox();
             this.ftree = new NBagOfTricks.UI.FilTree();
             this.meter3 = new NBagOfTricks.UI.Meter();
@@ -66,7 +66,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.timeControl);
+            this.splitContainer1.Panel2.Controls.Add(this.timeBar);
             this.splitContainer1.Panel2.Controls.Add(this.chkCpu);
             this.splitContainer1.Panel2.Controls.Add(this.ftree);
             this.splitContainer1.Panel2.Controls.Add(this.meter3);
@@ -95,16 +95,16 @@
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.Vkbd_KeyboardEvent);
             // 
-            // timeControl
+            // timeBar
             // 
-            this.timeControl.ProgressColor = System.Drawing.Color.Orange;
-            this.timeControl.CurrentTime = System.TimeSpan.Parse("00:00:00");
-            this.timeControl.Length = System.TimeSpan.Parse("00:00:00");
-            this.timeControl.Location = new System.Drawing.Point(552, 236);
-            this.timeControl.Name = "timeControl";
-            this.timeControl.Size = new System.Drawing.Size(543, 45);
-            this.timeControl.TabIndex = 13;
-            this.timeControl.CurrentTimeChanged += new System.EventHandler(this.TimeControl_CurrentTimeChanged);
+            this.timeBar.ProgressColor = System.Drawing.Color.Orange;
+            this.timeBar.CurrentTime = System.TimeSpan.Parse("00:00:00");
+            this.timeBar.Length = System.TimeSpan.Parse("00:00:00");
+            this.timeBar.Location = new System.Drawing.Point(552, 236);
+            this.timeBar.Name = "timeBar";
+            this.timeBar.Size = new System.Drawing.Size(543, 45);
+            this.timeBar.TabIndex = 13;
+            this.timeBar.CurrentTimeChanged += new System.EventHandler(this.TimeBar_CurrentTimeChanged);
             // 
             // chkCpu
             // 
@@ -312,7 +312,7 @@
         private UI.Meter meter3;
         private UI.FilTree ftree;
         private System.Windows.Forms.CheckBox chkCpu;
-        private UI.TimeControl timeControl;
+        private UI.TimeBar timeBar;
         private System.Windows.Forms.Timer timer1;
     }
 }
