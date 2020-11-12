@@ -39,6 +39,11 @@ namespace NBagOfTricks.UI
         HashSet<string> _allTags = new HashSet<string>();
 
         /// <summary>
+        /// Filter by these tags.
+        /// </summary>
+        HashSet<string> _activeFilters = new HashSet<string>();
+
+        /// <summary>
         /// Manage cosmetics.
         /// </summary>
         TreeNode _lastSelectedNode = null;
@@ -160,7 +165,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Collect changes. TODOC kinda klunky.
         /// </summary>
-        public void Cleanup()
+        public void FlushChanges()
         {
             AllTags = _allTags.ToList();
 
@@ -296,8 +301,16 @@ namespace NBagOfTricks.UI
         #endregion
 
         #region Context Menus
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Cms_Opening(object sender, CancelEventArgs e)
         {
+
+
+
             cms.Items.Add(new ToolStripMenuItem("Select All"));
             cms.Items.Add(new ToolStripMenuItem("Clear All"));
 
@@ -322,12 +335,6 @@ namespace NBagOfTricks.UI
             // cms.Items.Add(new ToolStripMenuItem("Select All"));
             // cms.Items.Add(new ToolStripMenuItem("Clear All"));
             // cms.ItemClicked += new ToolStripItemClickedEventHandler(cms_ItemClicked);
-
-            // lvFiles.ContextMenuStrip = cms;
-            // lvFiles.ContextMenuStrip.Opening += new CancelEventHandler(cms_MenuOpening);
-
-
-            // //string text, Image image, EventHandler onClick
 
             // ToolStripMenuItem toolStripMenuItem1 = new ToolStripMenuItem("11111");
             // toolStripMenuItem1.Checked = true;
@@ -377,6 +384,45 @@ namespace NBagOfTricks.UI
         }
         #endregion
 
+        #region Filtering
+
+        private void FilterByTags_DropDownOpening(object sender, EventArgs e)
+        {
+            btnFilterByTags.DropDownItems.Clear();
+
+            btnFilterByTags.DropDownItems.Add(new ToolStripMenuItem("Select All", null, FilterByTags_ItemClicked));
+            btnFilterByTags.DropDownItems.Add(new ToolStripMenuItem("Clear All", null, FilterByTags_ItemClicked));
+            // cms.Items.Add(new ToolStripMenuItem("Clear All"));
+            // cms.ItemClicked += new ToolStripItemClickedEventHandler(cms_ItemClicked);
+
+
+
+            // cms.ShowImageMargin = false;
+            // cms.Items.Add(new ToolStripMenuItem("Select All"));
+            // cms.Items.Add(new ToolStripMenuItem("Clear All"));
+            // cms.ItemClicked += new ToolStripItemClickedEventHandler(cms_ItemClicked);
+
+            // ToolStripMenuItem toolStripMenuItem1 = new ToolStripMenuItem("11111");
+            // toolStripMenuItem1.Checked = true;
+            // toolStripMenuItem1.CheckState = CheckState.Indeterminate;
+            // cms.Items.Add(toolStripMenuItem1);
+
+
+        }
+
+        private void FilterByTags_ItemClicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FilterByTags_DropDownClosed(object sender, EventArgs e)
+        {
+            // Need an active filters list
+
+        }
+        #endregion
+
+
         #region Misc
         /// <summary>
         /// Ensure tree selection is always visible. Kludgy...
@@ -418,5 +464,6 @@ namespace NBagOfTricks.UI
             lvFiles.Columns[1].Width = -2;
         }
         #endregion
+
     }
 }

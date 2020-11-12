@@ -62,27 +62,10 @@ namespace NBagOfTricks.Test
 
             ftree.Init();
 
-            //C:\Dev\repos\NBagOfTricks\Test
-            //| Program.cs
-            //| TestHost.cs
-            //| TestHost.Designer.cs
-            //| Test_CMD - Copy.cs
-            //| Test_CMD.cs
-            //| Test_PNUT.cs
-            //| Test_SM.cs
-            //+ ---bin
-            //|    \---Debug
-            //|        NBagOfTricks.xml
-            //|        testout.txt
-            //+ ---obj
-            //|   \---Debug
-            //|       | .NETFramework,Version = v4.7.1.AssemblyAttributes.cs
-            //|       | TemporaryGeneratedFile_036C0B5B - 1481 - 4323 - 8D20 - 8F5ADCB23D92.cs
-            //|       | TemporaryGeneratedFile_5937a670 - 0e60 - 4077 - 877b - f7221da3dda1.cs
-            //|       | TemporaryGeneratedFile_E7A71F73 - 0F8D - 4B9B - B56E - 8E70B10BC5D3.cs
-            //|       | Test.csproj.FileListAbsolute.txt
-            //\---Properties
-            //        AssemblyInfo.cs
+            timeControl.Length = new TimeSpan(0, 12, 34);
+            timeControl.CurrentTime = new TimeSpan(0);
+
+            timer1.Enabled = true;
         }
 
         private void TestHost_Shown(object sender, EventArgs e)
@@ -92,7 +75,7 @@ namespace NBagOfTricks.Test
 
         private void TestHost_FormClosing(object sender, FormClosingEventArgs e)
         {
-            ftree.Cleanup();
+            ftree.FlushChanges();
 
             // Inspect.
             var at = ftree.AllTags;
@@ -106,25 +89,25 @@ namespace NBagOfTricks.Test
 
         private void Pot1_ValueChanged(object sender, EventArgs e)
         {
-            // 0 1
+            // 0 -> 1
             meter2.AddValue(pot1.Value);
         }
 
         private void Slider1_ValueChanged(object sender, EventArgs e)
         {
-            // 0 1
+            // 0 -> 1
             meter1.AddValue(slider1.Value * 100.0);
         }
 
         private void Slider2_ValueChanged(object sender, EventArgs e)
         {
-            // 0 10
+            // 0 -> 10
             meter1.AddValue(slider2.Value * 10.0);
         }
 
         private void Pan1_ValueChanged(object sender, EventArgs e)
         {
-            // -1 +1
+            // -1 -> +1
             meter1.AddValue(pan1.Value * 50.0 + 50.0);
         }
 
@@ -144,6 +127,17 @@ namespace NBagOfTricks.Test
         private void ChkCpu_CheckedChanged(object sender, EventArgs e)
         {
             cpuMeter1.Enable = chkCpu.Checked;
+        }
+
+        private void TimeControl_CurrentTimeChanged(object sender, EventArgs e)
+        {
+            //txtInfo.AddLine($"Current time:{timeControl.CurrentTime}");
+        }
+
+        void Timer1_Tick(object sender, EventArgs e)
+        {
+            TimeSpan ts = timeControl.CurrentTime + new TimeSpan(0, 0, 0, 0, timer1.Interval);
+            timeControl.CurrentTime = ts < timeControl.Length ? ts : timeControl.Length;
         }
     }
 }

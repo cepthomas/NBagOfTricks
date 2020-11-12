@@ -109,8 +109,10 @@
             this.btnFilterByTags.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.btnFilterByTags.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnFilterByTags.Name = "btnFilterByTags";
-            this.btnFilterByTags.Size = new System.Drawing.Size(109, 24);
-            this.btnFilterByTags.Text = "Filter by Tags";
+            this.btnFilterByTags.Size = new System.Drawing.Size(56, 24);
+            this.btnFilterByTags.Text = "Filter";
+            this.btnFilterByTags.DropDownClosed += new System.EventHandler(this.FilterByTags_DropDownClosed);
+            this.btnFilterByTags.DropDownOpening += new System.EventHandler(this.FilterByTags_DropDownOpening);
             // 
             // btnEditTags
             // 
