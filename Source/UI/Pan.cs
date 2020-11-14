@@ -87,8 +87,10 @@ namespace NBagOfTricks.UI
             }
 
             // Draw text.
-            StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
-            pe.Graphics.DrawString(panValue, Font, Brushes.Black, ClientRectangle, format);
+            using (StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
+            {
+                pe.Graphics.DrawString(panValue, Font, Brushes.Black, ClientRectangle, format);
+            }
         }
 
         /// <summary>

@@ -160,8 +160,7 @@ namespace NBagOfTricks.UI
             Pen pen = new Pen(ControlColor);
 
             // Draw border.
-            int bw = BORDER_WIDTH;
-            Pen penBorder = new Pen(Color.Black, bw);
+            Pen penBorder = new Pen(Color.Black, BORDER_WIDTH);
             pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
 
             // Draw data.
@@ -179,17 +178,19 @@ namespace NBagOfTricks.UI
                     double val = _cpuBuff[index];
 
                     // Draw data point.
-                    double x = i + bw;
-                    double y = MathUtils.Map(val, _min, _max, Height - 2 * bw, bw);
+                    double x = i + BORDER_WIDTH;
+                    double y = MathUtils.Map(val, _min, _max, Height - 2 * BORDER_WIDTH, BORDER_WIDTH);
 
-                    pe.Graphics.DrawLine(pen, (float)x, (float)y, (float)x, Height - 2 * bw);
+                    pe.Graphics.DrawLine(pen, (float)x, (float)y, (float)x, Height - 2 * BORDER_WIDTH);
                     // or: pe.Graphics.FillRectangle(brush, (float)x, (float)y, 2, 2);
                 }
             }
 
-            StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
-            Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
-            pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
+            using (StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
+            {
+                Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
+                pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
+            }
         }
 
         /// <summary>

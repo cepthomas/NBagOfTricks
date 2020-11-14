@@ -422,7 +422,6 @@ namespace NBagOfTricks.UI
         }
         #endregion
 
-
         #region Misc
         /// <summary>
         /// Ensure tree selection is always visible. Kludgy...

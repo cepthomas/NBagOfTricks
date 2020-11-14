@@ -64,10 +64,10 @@
     <Compile Include="UI\TimeBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\TimeBar.Designer.cs">
-      <DependentUpon>TimeBar.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\UiUtils.cs" />
+    <Compile Include="UI\WaveViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Utils\Dumper.cs" />
     <Compile Include="UI\Meter.cs">
       <SubType>UserControl</SubType>
@@ -109,9 +109,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\FilTree.resx">
       <DependentUpon>FilTree.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\TimeBar.resx">
-      <DependentUpon>TimeBar.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

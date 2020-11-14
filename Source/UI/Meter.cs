@@ -151,12 +151,11 @@ namespace NBagOfTricks.UI
             Pen pen = new Pen(ControlColor);
 
             // Draw border.
-            int bw = BORDER_WIDTH;
-            Pen penBorder = new Pen(Color.Black, bw);
+            Pen penBorder = new Pen(Color.Black, BORDER_WIDTH);
             pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
 
             // Draw data.
-            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -bw, -bw);
+            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -BORDER_WIDTH, -BORDER_WIDTH);
 
             switch (MeterType)
             {
@@ -168,13 +167,13 @@ namespace NBagOfTricks.UI
                     {
                         int w = (int)(drawArea.Width * percent);
                         int h = drawArea.Height;
-                        pe.Graphics.FillRectangle(brush, bw, bw, w, h);
+                        pe.Graphics.FillRectangle(brush, BORDER_WIDTH, BORDER_WIDTH, w, h);
                     }
                     else
                     {
                         int w = drawArea.Width;
                         int h = (int)(drawArea.Height * percent);
-                        pe.Graphics.FillRectangle(brush, bw, Height - bw - h, w, h);
+                        pe.Graphics.FillRectangle(brush, BORDER_WIDTH, Height - BORDER_WIDTH - h, w, h);
                     }
                     break;
 
@@ -188,12 +187,12 @@ namespace NBagOfTricks.UI
                         double val = _buff[index];
 
                         // Draw data point.
-                        double x = i + bw;
-                        double y = MathUtils.Map(val, Minimum, Maximum, Height - 2 * bw, bw);
+                        double x = i + BORDER_WIDTH;
+                        double y = MathUtils.Map(val, Minimum, Maximum, Height - 2 * BORDER_WIDTH, BORDER_WIDTH);
 
                         if(MeterType == MeterType.ContinuousLine)
                         {
-                            pe.Graphics.DrawLine(pen, (float)x, (float)y, (float)x, Height - 2 * bw);
+                            pe.Graphics.DrawLine(pen, (float)x, (float)y, (float)x, Height - 2 * BORDER_WIDTH);
                         }
                         else
                         {
@@ -205,9 +204,11 @@ namespace NBagOfTricks.UI
 
             if (Label.Length > 0 && Orientation == Orientation.Horizontal)
             {
-                StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
-                Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
-                pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
+                using (StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
+                {
+                    Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
+                    pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
+                }
             }
         }
 

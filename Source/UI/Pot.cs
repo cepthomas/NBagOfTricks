@@ -154,18 +154,15 @@ namespace NBagOfTricks.UI
             double y = (diameter / 2.0) * Math.Sin(Math.PI * degrees / 180);
             e.Graphics.DrawLine(pen, 0, 0, (float)x, (float)y);
 
-            StringFormat format = new StringFormat()
+            using(StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
             {
-                LineAlignment = StringAlignment.Center,
-                Alignment = StringAlignment.Center
-            };
+                Rectangle srect = new Rectangle(0, 7, 0, 0);
+                string sValue = _value.ToString("#." + new string('0', DecPlaces));
+                e.Graphics.DrawString(sValue, Font, Brushes.Black, srect, format);
 
-            Rectangle srect = new Rectangle(0, 7, 0, 0);
-            string sValue = _value.ToString("#." + new string('0', DecPlaces));
-            e.Graphics.DrawString(sValue, Font, Brushes.Black, srect, format);
-
-            srect = new Rectangle(0, 20, 0, 0);
-            e.Graphics.DrawString(Label, Font, Brushes.Black, srect, format);
+                srect = new Rectangle(0, 20, 0, 0);
+                e.Graphics.DrawString(Label, Font, Brushes.Black, srect, format);
+            }
 
             e.Graphics.Restore(state);
             base.OnPaint(e);

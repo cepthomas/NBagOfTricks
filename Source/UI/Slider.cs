@@ -153,18 +153,19 @@ namespace NBagOfTricks.UI
 
             // Text.
             string sval = _value.ToString("#0." + new string('0', DecPlaces));
-            StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
-
-            if (Label != "")
+            using (StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
             {
-                Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
-                pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
-                r = new Rectangle(ClientRectangle.X, ClientRectangle.Height / 2, ClientRectangle.Width, ClientRectangle.Height / 2);
-                pe.Graphics.DrawString(sval, Font, Brushes.Black, r, format);
-            }
-            else
-            {
-                pe.Graphics.DrawString(sval, Font, Brushes.Black, ClientRectangle, format);
+                if (Label != "")
+                {
+                    Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
+                    pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
+                    r = new Rectangle(ClientRectangle.X, ClientRectangle.Height / 2, ClientRectangle.Width, ClientRectangle.Height / 2);
+                    pe.Graphics.DrawString(sval, Font, Brushes.Black, r, format);
+                }
+                else
+                {
+                    pe.Graphics.DrawString(sval, Font, Brushes.Black, ClientRectangle, format);
+                }
             }
         }
         #endregion

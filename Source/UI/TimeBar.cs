@@ -12,20 +12,17 @@ namespace NBagOfTricks.UI
     public partial class TimeBar : UserControl
     {
         #region Fields
-        /// <summary>
-        /// Total length.
-        /// </summary>
+        /// <summary>Total length.</summary>
         TimeSpan _length = new TimeSpan();
 
-        /// <summary>
-        /// Current position.
-        /// </summary>
+        /// <summary>Current position.</summary>
         TimeSpan _current = new TimeSpan();
 
-        /// <summary>
-        /// For tracking mouse moves.
-        /// </summary>
+        /// <summary>For tracking mouse moves.</summary>
         int _lastXPos = 0;
+
+        /// <summary>Tooltip for mousing.</summary>
+        ToolTip toolTip = new ToolTip();
 
         // Some constants.
         int LARGE_CHANGE = 1000;
@@ -34,36 +31,24 @@ namespace NBagOfTricks.UI
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Where we be now.
-        /// </summary>
+        /// <summary>Where we be now.</summary>
         public TimeSpan CurrentTime { get { return _current; } set { _current = value; Invalidate(); } }
 
-        /// <summary>
-        /// Where we be going.
-        /// </summary>
+        /// <summary>Where we be going.</summary>
         public TimeSpan Length { get { return _length; } set { _length = value; Invalidate(); } }
 
-        /// <summary>
-        /// For styling.
-        /// </summary>
+        /// <summary>For styling.</summary>
         public Color ProgressColor { get; set; } = Color.Orange;
 
-        /// <summary>
-        /// Big font.
-        /// </summary>
+        /// <summary>Big font.</summary>
         Font FontLarge { get; set; } = new Font("Consolas", 24, FontStyle.Regular, GraphicsUnit.Point, 0);
 
-        /// <summary>
-        /// Baby font.
-        /// </summary>
+        /// <summary>Baby font.</summary>
         Font FontSmall { get; set; } = new Font("Consolas", 14, FontStyle.Regular, GraphicsUnit.Point, 0);
         #endregion
 
         #region Events
-        /// <summary>
-        /// Value changed by user.
-        /// </summary>
+        /// <summary>Value changed by user.</summary>
         public event EventHandler CurrentTimeChanged;
         #endregion
 
@@ -73,19 +58,28 @@ namespace NBagOfTricks.UI
         /// </summary>
         public TimeBar()
         {
-            InitializeComponent();
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            PreviewKeyDown += TimeBar_PreviewKeyDown;
         }
+        #endregion
 
-        /// <summary>
-        /// Ready to show.
+        #region Designer boilerplate
+        /// <summary> 
+        /// Required designer variable.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void TimeBar_Load(object sender, EventArgs e)
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
         {
-            toolTip.SetToolTip(this, "Current time");
-            Invalidate();
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
         }
         #endregion
 
