@@ -11,56 +11,41 @@ namespace NBagOfTricks.UI
     public enum MeterType { Linear, Log, ContinuousLine, ContinuousDots }
 
     /// <summary>
-    /// Implements a rudimentary volume meter.
+    /// Implements a rudimentary volume meter. TODOC Add damping?
     /// </summary>
     public partial class Meter : UserControl
     {
         #region Fields
-        /// <summary>
-        /// Storage.
-        /// </summary>
+        /// <summary>Storage.</summary>
         double[] _buff = { };
 
-        /// <summary>
-        /// Storage.
-        /// </summary>
+        /// <summary>Storage.</summary>
         int _buffIndex = 0;
 
-        /// <summary>
-        /// A number.
-        /// </summary>
-        const int BORDER_WIDTH = 1;
+        /// <summary>The pen.</summary>
+        Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+
+        /// <summary>The brush.</summary>
+        SolidBrush _brush = new SolidBrush(Color.White);
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Optional label.
-        /// </summary>
+        /// <summary>Optional label.</summary>
         public string Label { get; set; } = "";
 
-        /// <summary>
-        /// For styling.
-        /// </summary>
-        public Color ControlColor { get; set; } = Color.Orange;
+        /// <summary>For styling.</summary>
+        public Color DrawColor { get { return _brush.Color; } set { _brush.Color = value; } }
 
-        /// <summary>
-        /// How the meter responds.
-        /// </summary>
+        /// <summary>How the meter responds.</summary>
         public MeterType MeterType { get; set; } = MeterType.Linear;
 
-        /// <summary>
-        /// Minimum value. If Log type, this is in db - usually -60;
-        /// </summary>
+        /// <summary>Minimum value. If Log type, this is in db - usually -60;</summary>
         public double Minimum { get; set; } = 0;
 
-        /// <summary>
-        /// Maximum value. If Log type, this is in db - usually +18.
-        /// </summary>
+        /// <summary>Maximum value. If Log type, this is in db - usually +18.</summary>
         public double Maximum { get; set; } = 100;
 
-        /// <summary>
-        /// Meter orientation.
-        /// </summary>
+        /// <summary>Meter orientation.</summary>
         public Orientation Orientation { get; set; } = Orientation.Horizontal;
         #endregion
 
@@ -145,17 +130,12 @@ namespace NBagOfTricks.UI
         /// </summary>
         protected override void OnPaint(PaintEventArgs pe)
         {
-            // Setup.
             pe.Graphics.Clear(BackColor);
-            Brush brush = new SolidBrush(ControlColor);
-            Pen pen = new Pen(ControlColor);
-
-            // Draw border.
-            Pen penBorder = new Pen(Color.Black, BORDER_WIDTH);
-            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
+            // Border
+            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
 
             // Draw data.
-            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -BORDER_WIDTH, -BORDER_WIDTH);
+            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -UiDefs.BORDER_WIDTH, -UiDefs.BORDER_WIDTH);
 
             switch (MeterType)
             {
@@ -167,13 +147,13 @@ namespace NBagOfTricks.UI
                     {
                         int w = (int)(drawArea.Width * percent);
                         int h = drawArea.Height;
-                        pe.Graphics.FillRectangle(brush, BORDER_WIDTH, BORDER_WIDTH, w, h);
+                        pe.Graphics.FillRectangle(_brush, UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH, w, h);
                     }
                     else
                     {
                         int w = drawArea.Width;
                         int h = (int)(drawArea.Height * percent);
-                        pe.Graphics.FillRectangle(brush, BORDER_WIDTH, Height - BORDER_WIDTH - h, w, h);
+                        pe.Graphics.FillRectangle(_brush, UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH - h, w, h);
                     }
                     break;
 
@@ -187,16 +167,16 @@ namespace NBagOfTricks.UI
                         double val = _buff[index];
 
                         // Draw data point.
-                        double x = i + BORDER_WIDTH;
-                        double y = MathUtils.Map(val, Minimum, Maximum, Height - 2 * BORDER_WIDTH, BORDER_WIDTH);
+                        double x = i + UiDefs.BORDER_WIDTH;
+                        double y = MathUtils.Map(val, Minimum, Maximum, drawArea.Height - UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH);
 
                         if(MeterType == MeterType.ContinuousLine)
                         {
-                            pe.Graphics.DrawLine(pen, (float)x, (float)y, (float)x, Height - 2 * BORDER_WIDTH);
+                            pe.Graphics.DrawLine(_pen, (float)x, (float)y, (float)x, drawArea.Height - 2 * UiDefs.BORDER_WIDTH);
                         }
                         else
                         {
-                            pe.Graphics.FillRectangle(brush, (float)x, (float)y, 2, 2);
+                            pe.Graphics.FillRectangle(_brush, (float)x, (float)y, 2, 2);
                         }
                     }
                     break;
@@ -217,7 +197,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         protected override void OnResize(EventArgs e)
         {
-            int buffSize = Width - 2 * BORDER_WIDTH;
+            int buffSize = Width - 2 * UiDefs.BORDER_WIDTH;
             _buff = new double[buffSize];
             for(int i = 0; i < buffSize; i++)
             {

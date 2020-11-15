@@ -12,65 +12,49 @@ namespace NBagOfTricks.UI
     public partial class Slider : UserControl
     {
         #region Fields
+        /// <summary> </summary>
         double _value = 0.0;
+
+        /// <summary> </summary>
         double _resetVal = 0.0;
+
+        /// <summary>The pen.</summary>
+        Pen _pen = new Pen(Color.Black);
+
+        /// <summary>The brush.</summary>
+        SolidBrush _brush = new SolidBrush(Color.White);
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Optional label.
-        /// </summary>
+        /// <summary>Optional label.</summary>
         public string Label { get; set; } = "";
 
-        /// <summary>
-        /// For styling.
-        /// </summary>
-        public Color ControlColor { get; set; } = Color.Orange;
+        /// <summary>For styling.</summary>
+        public Color DrawColor { get { return _brush.Color; } set { _brush.Color = value; } }
 
-        /// <summary>
-        /// Number of decimal places to display.
-        /// </summary>
+        /// <summary>Number of decimal places to display.</summary>
         public int DecPlaces { get; set; } = 1;
 
-        /// <summary>
-        /// Fader orientation
-        /// </summary>
+        /// <summary>Fader orientation</summary>
         public Orientation Orientation { get; set; } = Orientation.Horizontal;
 
-        /// <summary>
-        /// Maximum value of this slider.
-        /// </summary>
+        /// <summary>Maximum value of this slider.</summary>
         public double Maximum { get; set; } = 1.0;
 
-        /// <summary>
-        /// Minimum value of this slider.
-        /// </summary>
+        /// <summary>Minimum value of this slider.</summary>
         public double Minimum { get; set; } = 0.0;
 
-        /// <summary>
-        /// Reset value of this slider.
-        /// </summary>
+        /// <summary>Reset value of this slider.</summary>
         public double ResetValue
         {
-            get
-            {
-                return _resetVal;
-            }
-            set
-            {
-                _resetVal = Math.Round(MathUtils.Constrain(value, Minimum, Maximum), DecPlaces);
-            }
+            get { return _resetVal; }
+            set { _resetVal = Math.Round(MathUtils.Constrain(value, Minimum, Maximum), DecPlaces); }
         }
 
-        /// <summary>
-        /// The value for this slider.
-        /// </summary>
+        /// <summary>The value for this slider.</summary>
         public double Value
         {
-            get
-            {
-                return _value;
-            }
+            get { return _value; }
             set
             {
                 _value = Math.Round(MathUtils.Constrain(value, Minimum, Maximum), DecPlaces);
@@ -94,6 +78,16 @@ namespace NBagOfTricks.UI
         public Slider()
         {
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            Load += Slider_Load;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Slider_Load(object sender, EventArgs e)
+        {
         }
         #endregion
 
@@ -127,29 +121,25 @@ namespace NBagOfTricks.UI
         {
             // Setup.
             pe.Graphics.Clear(BackColor);
-            Brush brush = new SolidBrush(ControlColor);
-            Pen pen = new Pen(ControlColor);
-            int brdwidth = 1;
 
             // Draw data.
-            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -brdwidth, -brdwidth);
+            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -UiDefs.BORDER_WIDTH, -UiDefs.BORDER_WIDTH);
 
             // Draw the bar.
             if (Orientation == Orientation.Horizontal)
             {
                 double x = (_value - Minimum) / (Maximum - Minimum);
-                pe.Graphics.FillRectangle(brush, drawArea.Left, drawArea.Top, drawArea.Width * (float)x, drawArea.Height);
+                pe.Graphics.FillRectangle(_brush, drawArea.Left, drawArea.Top, drawArea.Width * (float)x, drawArea.Height);
             }
             else
             {
                 double y = 1.0 - (_value - Minimum) / (Maximum - Minimum);
-                pe.Graphics.FillRectangle(brush, drawArea.Left, drawArea.Height * (float)y, drawArea.Width, drawArea.Bottom);
+                pe.Graphics.FillRectangle(_brush, drawArea.Left, drawArea.Height * (float)y, drawArea.Width, drawArea.Bottom);
             }
 
             // Draw border.
-            Pen penBorder = new Pen(Color.Black, brdwidth);
-            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
-            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
+            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
+            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
 
             // Text.
             string sval = _value.ToString("#0." + new string('0', DecPlaces));

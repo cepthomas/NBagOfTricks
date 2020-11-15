@@ -14,38 +14,26 @@ namespace NBagOfTricks.UI
     public class TextViewer : UserControl
     {
         #region Properties
-        /// <summary>
-        /// The colors to display when text is matched.
-        /// </summary>
+        /// <summary>The colors to display when text is matched.</summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Dictionary<string, Color> Colors { get; set; } = new Dictionary<string, Color>();
 
-        /// <summary>
-        /// User selectable color.
-        /// </summary>
+        /// <summary>User selectable color.</summary>
         public new Color BackColor { get { return _rtb.BackColor; } set { _rtb.BackColor = value; } }
 
-        /// <summary>
-        /// User selectable font.
-        /// </summary>
+        /// <summary>User selectable font.</summary>
         public new Font Font { get { return _rtb.Font; } set { _rtb.Font = value; } }
 
-        /// <summary>
-        /// User selection.
-        /// </summary>
+        /// <summary>User selection.</summary>
         public bool WordWrap { get { return _rtb.WordWrap; } set { _rtb.WordWrap = value; } }
 
-        /// <summary>
-        /// Limit the size.
-        /// </summary>
+        /// <summary>Limit the size.</summary>
         public int MaxText { get; set; } = 5000;
         #endregion
 
         #region Fields
-        /// <summary>
-        /// Contained control. Could have just subclassed but this leaves it open to add other stuff easily.
-        /// </summary>
+        /// <summary>Contained control. Could have just subclassed but this leaves it open to add other stuff easily.</summary>
         RichTextBox _rtb = new RichTextBox();
         #endregion
 

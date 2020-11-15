@@ -65,6 +65,14 @@ namespace NBagOfTricks.Test
             timeBar.Length = new TimeSpan(0, 12, 34);
             timeBar.CurrentTime = new TimeSpan(0);
 
+            float[] data = new float[1000];
+            for(int i = 0; i < data.Length; i ++)
+            {
+                data[i] = (float)Math.Sin(MathUtils.DegreesToRadians(i));
+            }
+            waveViewer1.DrawColor = Color.Green;
+            waveViewer1.Init(data, 1.0f);
+
             timer1.Enabled = true;
         }
 

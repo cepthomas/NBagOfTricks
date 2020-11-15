@@ -20,7 +20,7 @@ namespace NBagOfTricks.Utils
         #endregion
 
         #region Fields
-        /// <summary>Detect changed composition file.</summary>
+        /// <summary>Detect changed files.</summary>
         List<FileSystemWatcher> _watchers = new List<FileSystemWatcher>();
 
         /// <summary>Used to delay reporting to client as there can be multiple events for one file change.</summary>

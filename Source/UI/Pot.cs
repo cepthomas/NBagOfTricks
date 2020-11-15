@@ -21,56 +21,56 @@ namespace NBagOfTricks.UI
     public partial class Pot : UserControl
     {
         #region Fields
+        /// <summary> </summary>
         double _minimum = 0.0;
+
+        /// <summary> </summary>
         double _maximum = 1.0;
+
+        /// <summary> </summary>
         double _value = 0.5;
+
+        /// <summary> </summary>
         double _beginDragValue = 0.0;
+
+        /// <summary> </summary>
         int _beginDragY = 0;
+
+        /// <summary> </summary>
         bool _dragging = false;
+
+        /// <summary> </summary>
+        Pen _pen = new Pen(Color.Black, 3.0f) { LineJoin = System.Drawing.Drawing2D.LineJoin.Round };
         #endregion
 
         #region Properties
-        /// <summary>
-        /// For styling.
-        /// </summary>
-        public Color ControlColor { get; set; } = Color.Black;
+        /// <summary>For styling.</summary>
+        public Color DrawColor { get { return _pen.Color; } set { _pen.Color = value; } }
 
-        /// <summary>
-        /// Name etc.
-        /// </summary>
+        /// <summary>Name etc.</summary>
         public string Label { get; set; } = "???";
 
-        /// <summary>
-        /// Taper.
-        /// </summary>
+        /// <summary>Taper.</summary>
         public Taper Taper { get; set; } = Taper.Linear;
 
-        /// <summary>
-        /// Number of decimal places to display.
-        /// </summary>
+        /// <summary>Number of decimal places to display.</summary>
         public int DecPlaces { get; set; } = 1;
 
-        /// <summary>
-        /// Minimum Value of the Pot.
-        /// </summary>
+        /// <summary>Minimum Value of the Pot.</summary>
         public double Minimum
         {
             get { return _minimum; }
             set { _minimum = Math.Min(value, _maximum); Invalidate(); }
         }
 
-        /// <summary>
-        /// Maximum Value of the Pot.
-        /// </summary>
+        /// <summary>Maximum Value of the Pot.</summary>
         public double Maximum
         {
             get { return _maximum; }
             set { _maximum = Math.Max(value, _minimum); Invalidate(); }
         }
 
-        /// <summary>
-        /// The current value of the pot.
-        /// </summary>
+        /// <summary>The current value of the pot.</summary>
         public double Value
         {
             get { return _value; }
@@ -84,9 +84,7 @@ namespace NBagOfTricks.UI
         #endregion
 
         #region Events
-        /// <summary>
-        /// Value changed event.
-        /// </summary>
+        /// <summary>Value changed event.</summary>
         public event EventHandler ValueChanged;
         #endregion
 
@@ -101,6 +99,16 @@ namespace NBagOfTricks.UI
             AutoScaleMode = AutoScaleMode.Font;
             Name = "Pot";
             Size = new Size(115, 86);
+            Load += Pot_Load;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Pot_Load(object sender, EventArgs e)
+        {
         }
         #endregion
 
@@ -132,17 +140,12 @@ namespace NBagOfTricks.UI
         {
             int diameter = Math.Min(Width - 4, Height - 4);
 
-            Pen pen = new Pen(ControlColor, 3.0f)
-            {
-                LineJoin = System.Drawing.Drawing2D.LineJoin.Round
-            };
-
             System.Drawing.Drawing2D.GraphicsState state = e.Graphics.Save();
 
             e.Graphics.Clear(BackColor);
             e.Graphics.TranslateTransform(Width / 2, Height / 2);
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            e.Graphics.DrawArc(pen, new Rectangle(diameter / -2, diameter / -2, diameter, diameter), 135, 270);
+            e.Graphics.DrawArc(_pen, new Rectangle(diameter / -2, diameter / -2, diameter, diameter), 135, 270);
 
             double val = Taper == Taper.Log ? Math.Log10(_value) : _value;
             double min = Taper == Taper.Log ? Math.Log10(_minimum) : _minimum;
@@ -152,7 +155,7 @@ namespace NBagOfTricks.UI
             double degrees = 135 + (percent * 270);
             double x = (diameter / 2.0) * Math.Cos(Math.PI * degrees / 180);
             double y = (diameter / 2.0) * Math.Sin(Math.PI * degrees / 180);
-            e.Graphics.DrawLine(pen, 0, 0, (float)x, (float)y);
+            e.Graphics.DrawLine(_pen, 0, 0, (float)x, (float)y);
 
             using(StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
             {

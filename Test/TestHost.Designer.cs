@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestHost));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
+            this.waveViewer1 = new NBagOfTricks.UI.WaveViewer();
             this.timeBar = new NBagOfTricks.UI.TimeBar();
             this.chkCpu = new System.Windows.Forms.CheckBox();
             this.ftree = new NBagOfTricks.UI.FilTree();
@@ -66,6 +67,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.waveViewer1);
             this.splitContainer1.Panel2.Controls.Add(this.timeBar);
             this.splitContainer1.Panel2.Controls.Add(this.chkCpu);
             this.splitContainer1.Panel2.Controls.Add(this.ftree);
@@ -95,14 +97,22 @@
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.Vkbd_KeyboardEvent);
             // 
+            // waveViewer1
+            // 
+            this.waveViewer1.DrawColor = System.Drawing.Color.Orange;
+            this.waveViewer1.Location = new System.Drawing.Point(1042, 236);
+            this.waveViewer1.Name = "waveViewer1";
+            this.waveViewer1.Size = new System.Drawing.Size(254, 45);
+            this.waveViewer1.TabIndex = 14;
+            // 
             // timeBar
             // 
-            this.timeBar.ProgressColor = System.Drawing.Color.Orange;
             this.timeBar.CurrentTime = System.TimeSpan.Parse("00:00:00");
             this.timeBar.Length = System.TimeSpan.Parse("00:00:00");
             this.timeBar.Location = new System.Drawing.Point(552, 236);
             this.timeBar.Name = "timeBar";
-            this.timeBar.Size = new System.Drawing.Size(543, 45);
+            this.timeBar.ProgressColor = System.Drawing.Color.Orange;
+            this.timeBar.Size = new System.Drawing.Size(388, 45);
             this.timeBar.TabIndex = 13;
             this.timeBar.CurrentTimeChanged += new System.EventHandler(this.TimeBar_CurrentTimeChanged);
             // 
@@ -134,7 +144,7 @@
             // meter3
             // 
             this.meter3.BackColor = System.Drawing.Color.Gainsboro;
-            this.meter3.ControlColor = System.Drawing.Color.Violet;
+            this.meter3.DrawColor = System.Drawing.Color.Violet;
             this.meter3.Label = "meter dots";
             this.meter3.Location = new System.Drawing.Point(875, 25);
             this.meter3.Margin = new System.Windows.Forms.Padding(4);
@@ -149,7 +159,7 @@
             // meter2
             // 
             this.meter2.BackColor = System.Drawing.Color.Gainsboro;
-            this.meter2.ControlColor = System.Drawing.Color.Azure;
+            this.meter2.DrawColor = System.Drawing.Color.Azure;
             this.meter2.Label = "meter log";
             this.meter2.Location = new System.Drawing.Point(875, 121);
             this.meter2.Margin = new System.Windows.Forms.Padding(4);
@@ -176,7 +186,7 @@
             // cpuMeter1
             // 
             this.cpuMeter1.BackColor = System.Drawing.Color.Gainsboro;
-            this.cpuMeter1.ControlColor = System.Drawing.Color.Orange;
+            this.cpuMeter1.DrawColor = System.Drawing.Color.DarkOrange;
             this.cpuMeter1.Enable = false;
             this.cpuMeter1.Label = "cpu";
             this.cpuMeter1.Location = new System.Drawing.Point(680, 25);
@@ -187,10 +197,10 @@
             // slider2
             // 
             this.slider2.BackColor = System.Drawing.Color.Gainsboro;
-            this.slider2.ControlColor = System.Drawing.Color.SlateBlue;
             this.slider2.DecPlaces = 1;
+            this.slider2.DrawColor = System.Drawing.Color.SlateBlue;
             this.slider2.Label = "Vertical";
-            this.slider2.Location = new System.Drawing.Point(1264, 25);
+            this.slider2.Location = new System.Drawing.Point(1254, 25);
             this.slider2.Margin = new System.Windows.Forms.Padding(4);
             this.slider2.Maximum = 10D;
             this.slider2.Minimum = 0D;
@@ -204,7 +214,7 @@
             // pan1
             // 
             this.pan1.BackColor = System.Drawing.Color.Gainsboro;
-            this.pan1.ControlColor = System.Drawing.Color.Crimson;
+            this.pan1.DrawColor = System.Drawing.Color.Crimson;
             this.pan1.Location = new System.Drawing.Point(692, 121);
             this.pan1.Margin = new System.Windows.Forms.Padding(4);
             this.pan1.Name = "pan1";
@@ -225,7 +235,7 @@
             // meter1
             // 
             this.meter1.BackColor = System.Drawing.Color.Gainsboro;
-            this.meter1.ControlColor = System.Drawing.Color.Orange;
+            this.meter1.DrawColor = System.Drawing.Color.Orange;
             this.meter1.Label = "meter xyz";
             this.meter1.Location = new System.Drawing.Point(1081, 121);
             this.meter1.Margin = new System.Windows.Forms.Padding(4);
@@ -240,8 +250,8 @@
             // pot1
             // 
             this.pot1.BackColor = System.Drawing.Color.Gainsboro;
-            this.pot1.ControlColor = System.Drawing.Color.Green;
             this.pot1.DecPlaces = 2;
+            this.pot1.DrawColor = System.Drawing.Color.Green;
             this.pot1.ForeColor = System.Drawing.Color.Black;
             this.pot1.Label = "pot 99";
             this.pot1.Location = new System.Drawing.Point(593, 96);
@@ -257,8 +267,8 @@
             // slider1
             // 
             this.slider1.BackColor = System.Drawing.Color.Gainsboro;
-            this.slider1.ControlColor = System.Drawing.Color.Orange;
             this.slider1.DecPlaces = 2;
+            this.slider1.DrawColor = System.Drawing.Color.Orange;
             this.slider1.Label = "Horizontal";
             this.slider1.Location = new System.Drawing.Point(1081, 25);
             this.slider1.Margin = new System.Windows.Forms.Padding(4);
@@ -314,5 +324,6 @@
         private System.Windows.Forms.CheckBox chkCpu;
         private UI.TimeBar timeBar;
         private System.Windows.Forms.Timer timer1;
+        private UI.WaveViewer waveViewer1;
     }
 }

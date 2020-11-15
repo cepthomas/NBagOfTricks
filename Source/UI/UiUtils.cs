@@ -13,9 +13,13 @@ using NBagOfTricks.Utils;
 
 namespace NBagOfTricks.UI
 {
-    /// <summary>
-    /// Custom renderer for toolstrip checkbox color.
-    /// </summary>
+    public class UiDefs
+    {
+        /// <summary>A number.</summary>
+        public const int BORDER_WIDTH = 1;
+    }
+
+    /// <summary>Custom renderer for toolstrip checkbox color.</summary>
     public class CheckBoxRenderer : ToolStripSystemRenderer
     {
         /// <summary>
@@ -73,5 +77,4 @@ namespace NBagOfTricks.UI
 
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context) { return UITypeEditorEditStyle.DropDown; }
     }
-
 }

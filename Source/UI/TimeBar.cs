@@ -24,10 +24,17 @@ namespace NBagOfTricks.UI
         /// <summary>Tooltip for mousing.</summary>
         ToolTip toolTip = new ToolTip();
 
-        // Some constants.
+        /// <summary>The pen.</summary>
+        Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+
+        /// <summary>The brush.</summary>
+        SolidBrush _brush = new SolidBrush(Color.White);
+
+        /// <summary>Constant.</summary>
         int LARGE_CHANGE = 1000;
+
+        /// <summary>Constant.</summary>
         int SMALL_CHANGE = 100;
-        int BORDER_WIDTH = 1;
         #endregion
 
         #region Properties
@@ -38,7 +45,7 @@ namespace NBagOfTricks.UI
         public TimeSpan Length { get { return _length; } set { _length = value; Invalidate(); } }
 
         /// <summary>For styling.</summary>
-        public Color ProgressColor { get; set; } = Color.Orange;
+        public Color ProgressColor { get { return _brush.Color; } set { _brush.Color = value; } }
 
         /// <summary>Big font.</summary>
         Font FontLarge { get; set; } = new Font("Consolas", 24, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -60,6 +67,16 @@ namespace NBagOfTricks.UI
         {
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             PreviewKeyDown += TimeBar_PreviewKeyDown;
+            Load += TimeBar_Load;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void TimeBar_Load(object sender, EventArgs e)
+        {
         }
         #endregion
 
@@ -91,19 +108,17 @@ namespace NBagOfTricks.UI
         {
             // Setup.
             pe.Graphics.Clear(BackColor);
-            Brush brush = new SolidBrush(ProgressColor);
 
             // Draw border.
-            Pen penBorder = new Pen(Color.Black, BORDER_WIDTH);
-            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
+            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
 
             if (_current < _length)
             {
-                pe.Graphics.FillRectangle(brush,
-                    BORDER_WIDTH,
-                    BORDER_WIDTH,
-                    (Width - 2 * BORDER_WIDTH) * (int)_current.TotalMilliseconds / (int)_length.TotalMilliseconds,
-                    Height - 2 * BORDER_WIDTH);
+                pe.Graphics.FillRectangle(_brush,
+                    UiDefs.BORDER_WIDTH,
+                    UiDefs.BORDER_WIDTH,
+                    (Width - 2 * UiDefs.BORDER_WIDTH) * (int)_current.TotalMilliseconds / (int)_length.TotalMilliseconds,
+                    Height - 2 * UiDefs.BORDER_WIDTH);
             }
 
             // Text.

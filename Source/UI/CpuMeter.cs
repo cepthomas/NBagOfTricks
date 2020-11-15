@@ -16,92 +16,58 @@ namespace NBagOfTricks.UI
     public partial class CpuMeter : UserControl
     {
         #region Fields
-        /// <summary>
-        /// Total usage.
-        /// </summary>
+        /// <summary>Total usage.</summary>
         PerformanceCounter _cpuPerf = null;
 
-        /// <summary>
-        /// Logical processes.
-        /// </summary>
+        /// <summary>Logical processes.</summary>
         PerformanceCounter[] _processesPerf = null;
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary> </summary>
         bool _inited = false;
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary> </summary>
         Timer _timer = new Timer();
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary> </summary>
         int _min = 0;
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary> </summary>
         int _max = 100;
 
-        /// <summary>
-        /// Storage.
-        /// </summary>
+        /// <summary>Storage.</summary>
         double[][] _processesBuffs = null;
 
-        /// <summary>
-        /// Storage.
-        /// </summary>
+        /// <summary>Storage.</summary>
         double[] _cpuBuff = null;
 
-        /// <summary>
-        /// Storage.
-        /// </summary>
+        /// <summary>Storage.</summary>
         int _buffIndex = 0;
 
-        /// <summary>
-        /// A number.
-        /// </summary>
-        const int BORDER_WIDTH = 1;
-
-        /// <summary>
-        /// CPU info.
-        /// </summary>
+        /// <summary>CPU info.</summary>
         int _cores = 0;
 
-        /// <summary>
-        /// CPU info.
-        /// </summary>
+        /// <summary>CPU info.</summary>
         int _physicalProcessors = 0;
 
-        /// <summary>
-        /// CPU info.
-        /// </summary>
+        /// <summary>CPU info.</summary>
         int _logicalProcessors = 0;
+
+        /// <summary>The pen.</summary>
+        Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
         #endregion
 
         #region Properties
-        /// <summary>
-        /// If ther than default is wanted.
-        /// </summary>
+        /// <summary>User can change.</summary>
         public string Label { get; set; } = "cpu";
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary> </summary>
         public bool Enable { get; set; } = false;
 
-        /// <summary>
-        /// Default is 500 msec. Change if you like.
-        /// </summary>
+        /// <summary>Default is 500 msec. Change if you like.</summary>
         public int UpdateFreq { set { _timer.Interval = value; } }
 
-        /// <summary>
-        /// For styling.
-        /// </summary>
-        public Color ControlColor { get; set; } = Color.Orange;
+        /// <summary>For styling.</summary>
+        public Color DrawColor { get { return _pen.Color; } set { _pen.Color = value; } }
         #endregion
 
         #region Designer boilerplate
@@ -154,14 +120,9 @@ namespace NBagOfTricks.UI
         /// </summary>
         protected override void OnPaint(PaintEventArgs pe)
         {
-            // Setup.
             pe.Graphics.Clear(BackColor);
-            Brush brush = new SolidBrush(ControlColor);
-            Pen pen = new Pen(ControlColor);
 
-            // Draw border.
-            Pen penBorder = new Pen(Color.Black, BORDER_WIDTH);
-            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
+            pe.Graphics.DrawRectangle(Pens.Black, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
 
             // Draw data.
             // TODO for each process?
@@ -178,10 +139,10 @@ namespace NBagOfTricks.UI
                     double val = _cpuBuff[index];
 
                     // Draw data point.
-                    double x = i + BORDER_WIDTH;
-                    double y = MathUtils.Map(val, _min, _max, Height - 2 * BORDER_WIDTH, BORDER_WIDTH);
+                    double x = i + UiDefs.BORDER_WIDTH;
+                    double y = MathUtils.Map(val, _min, _max, Height - 2 * UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH);
 
-                    pe.Graphics.DrawLine(pen, (float)x, (float)y, (float)x, Height - 2 * BORDER_WIDTH);
+                    pe.Graphics.DrawLine(_pen, (float)x, (float)y, (float)x, Height - 2 * UiDefs.BORDER_WIDTH);
                     // or: pe.Graphics.FillRectangle(brush, (float)x, (float)y, 2, 2);
                 }
             }
@@ -212,7 +173,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         void SetBuffs()
         {
-            int size = Width - 2 * BORDER_WIDTH;
+            int size = Width - 2 * UiDefs.BORDER_WIDTH;
             for (int i = 0; i < _processesBuffs.Count(); i++)
             {
                 _processesBuffs[i] = new double[size];

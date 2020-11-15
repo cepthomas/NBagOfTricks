@@ -24,13 +24,16 @@ namespace NBagOfTricks.UI
         /// <summary>Storage for display.</summary>
         float[] _buff = null;
 
-        /// <summary>A number.</summary>
-        const int BORDER_WIDTH = 1;
+        /// <summary>The pen.</summary>
+        Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+
+        /// <summary>The other pen.</summary>
+        Pen _penDraw = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
         #endregion
 
         #region Properties
         /// <summary>For styling.</summary>
-        public Color ControlColor { get; set; } = Color.Orange;
+        public Color DrawColor { get { return _penDraw.Color; } set { _penDraw.Color = value; } }
         #endregion
 
         #region Lifecycle
@@ -40,6 +43,16 @@ namespace NBagOfTricks.UI
         public WaveViewer()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            Load += WaveViewer_Load;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void WaveViewer_Load(object sender, EventArgs e)
+        {
         }
         #endregion
 
@@ -91,7 +104,7 @@ namespace NBagOfTricks.UI
             }
             else
             {
-                int fitWidth = Width - 2 * BORDER_WIDTH;
+                int fitWidth = Width - 2 * UiDefs.BORDER_WIDTH;
                 _buff = new float[fitWidth];
                 int smplPerPixel = _rawVals.Length / fitWidth;
 
@@ -121,17 +134,14 @@ namespace NBagOfTricks.UI
         {
             // Setup.
             pe.Graphics.Clear(BackColor);
-            Brush brush = new SolidBrush(ControlColor);
-            Pen pen = new Pen(ControlColor);
 
             // Draw border.
-            Pen penBorder = new Pen(Color.Black, BORDER_WIDTH);
-            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
+            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
 
             if (_buff == null)
             {
                 Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
-                pe.Graphics.DrawString("No data - please init()", Font, Brushes.Red, r);
+                pe.Graphics.DrawString("No data", Font, Brushes.Red, r);
             }
             else
             {
@@ -140,10 +150,10 @@ namespace NBagOfTricks.UI
                     double val = _buff[i];
 
                     // Draw data point.
-                    double x = i + BORDER_WIDTH;
-                    double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * BORDER_WIDTH, BORDER_WIDTH);
-                    double y2 = MathUtils.Map(val, -_rawMax, _rawMax, BORDER_WIDTH, Height - 2 * BORDER_WIDTH);
-                    pe.Graphics.DrawLine(pen, (float)x, (float)y1, (float)x, (float)y2);
+                    double x = i + UiDefs.BORDER_WIDTH;
+                    double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH);
+                    double y2 = MathUtils.Map(val, -_rawMax, _rawMax, UiDefs.BORDER_WIDTH, Height - 2 * UiDefs.BORDER_WIDTH);
+                    pe.Graphics.DrawLine(_penDraw, (float)x, (float)y1, (float)x, (float)y2);
                 }
             }
         }

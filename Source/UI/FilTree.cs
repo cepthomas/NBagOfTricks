@@ -18,68 +18,38 @@ namespace NBagOfTricks.UI
     public partial class FilTree : UserControl
     {
         #region Fields
-        ///// <summary>
-        ///// Key is file path, value is space separated associated tags.
-        ///// </summary>
-        //Dictionary<string, string> _taggedFiles = new Dictionary<string, string>();
-
-        ///// <summary>
-        ///// Key is dir path, value is space separated associated tags.
-        ///// </summary>
-        //Dictionary<string, string> _taggedDirs = new Dictionary<string, string>();
-
-        /// <summary>
-        /// Key is file or dir path, value is associated tags.
-        /// </summary>
+        /// <summary>Key is file or dir path, value is associated tags.</summary>
         Dictionary<string, HashSet<string>> _taggedPaths = new Dictionary<string, HashSet<string>>();
 
-        /// <summary>
-        /// All possible tags.
-        /// </summary>
+        /// <summary>All possible tags.</summary>
         HashSet<string> _allTags = new HashSet<string>();
 
-        /// <summary>
-        /// Filter by these tags.
-        /// </summary>
+        /// <summary>Filter by these tags.</summary>
         HashSet<string> _activeFilters = new HashSet<string>();
 
-        /// <summary>
-        /// Manage cosmetics.
-        /// </summary>
+        /// <summary>Manage cosmetics.</summary>
         TreeNode _lastSelectedNode = null;
         #endregion
 
         #region Properties - client sets these before calling Init().
-        /// <summary>
-        /// Key is path to file or directory, value is space separated associated tags.
-        /// </summary>
+        /// <summary>Key is path to file or directory, value is space separated associated tags.</summary>
         public List<(string path, string tags)> TaggedPaths { get; set; } = new List<(string, string)>();
 
-        /// <summary>
-        /// All possible tags.
-        /// </summary>
+        /// <summary>All possible tags.</summary>
         public List<string> AllTags { get; set; } = new List<string>();
 
-        /// <summary>
-        /// Base path(s) for the tree.
-        /// </summary>
+        /// <summary>Base path(s) for the tree.</summary>
         public List<string> RootPaths { get; set; } = new List<string>();
 
-        /// <summary>
-        /// Show only these file types.
-        /// </summary>
+        /// <summary>Show only these file types.</summary>
         public List<string> FilterExts { get; set; } = new List<string>();
 
-        /// <summary>
-        /// Generate event for single or double click.
-        /// </summary>
+        /// <summary>Generate event for single or double click.</summary>
         public bool DoubleClickSelect { get; set; } = false;
         #endregion
 
         #region Events
-        /// <summary>
-        /// User has selected a file.
-        /// </summary>
+        /// <summary>User has selected a file.</summary>
         public event EventHandler<string> FileSelectedEvent = null;
         #endregion
 

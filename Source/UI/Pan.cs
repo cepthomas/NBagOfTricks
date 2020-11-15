@@ -12,13 +12,18 @@ namespace NBagOfTricks.UI
     public partial class Pan : UserControl
     {
         #region Fields
+        /// <summary> </summary>
         private double _value;
+
+        /// <summary>The pen.</summary>
+        Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+
+        /// <summary>The brush.</summary>
+        SolidBrush _brush = new SolidBrush(Color.White);
         #endregion
 
         #region Properties
-        /// <summary>
-        /// The current Pan setting.
-        /// </summary>
+        /// <summary>The current Pan setting.</summary>
         public double Value
         {
             get
@@ -33,16 +38,12 @@ namespace NBagOfTricks.UI
             }
         }
 
-        /// <summary>
-        /// For styling.
-        /// </summary>
-        public Color ControlColor { get; set; } = Color.Orange;
+        /// <summary>For styling.</summary>
+        public Color DrawColor { get { return _brush.Color; } set { _brush.Color = value; } }
         #endregion
 
         #region Events
-        /// <summary>
-        /// True when pan value changed.
-        /// </summary>
+        /// <summary>True when pan value changed.</summary>
         public event EventHandler ValueChanged;
         #endregion
 
@@ -52,6 +53,16 @@ namespace NBagOfTricks.UI
         public Pan()
         {
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            Load += Pan_Load;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Pan_Load(object sender, EventArgs e)
+        {
         }
 
         /// <summary>
@@ -60,29 +71,26 @@ namespace NBagOfTricks.UI
         protected override void OnPaint(PaintEventArgs pe)
         {
             // Setup.
-            Brush brush = new SolidBrush(ControlColor);
+            pe.Graphics.Clear(BackColor);
 
             // Draw border.
-            int bw = 1;
-            Pen penBorder = new Pen(Color.Black, bw);
-            pe.Graphics.DrawRectangle(penBorder, 0, 0, Width - 1, Height - 1);
+            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
 
             // Draw data.
-            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -bw, -bw);
             string panValue;
             if (_value == 0.0)
             {
-                pe.Graphics.FillRectangle(brush, (Width / 2) - bw, bw, 2 * bw, Height - 2 * bw);
+                pe.Graphics.FillRectangle(_brush, (Width / 2) - UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH, 2 * UiDefs.BORDER_WIDTH, Height - 2 * UiDefs.BORDER_WIDTH);
                 panValue = "C";
             }
             else if (_value > 0)
             {
-                pe.Graphics.FillRectangle(brush, (Width / 2), bw, (int)((Width / 2) * _value), Height - 2 * bw);
+                pe.Graphics.FillRectangle(_brush, (Width / 2), UiDefs.BORDER_WIDTH, (int)((Width / 2) * _value), Height - 2 * UiDefs.BORDER_WIDTH);
                 panValue = $"{_value * 100:F0}%R";
             }
             else
             {
-                pe.Graphics.FillRectangle(brush, (int)((Width / 2) * (_value + bw)), bw, (int)((Width / 2) * (0 - _value)), Height - 2 * bw);
+                pe.Graphics.FillRectangle(_brush, (int)((Width / 2) * (_value + UiDefs.BORDER_WIDTH)), UiDefs.BORDER_WIDTH, (int)((Width / 2) * (0 - _value)), Height - 2 * UiDefs.BORDER_WIDTH);
                 panValue = $"{_value * -100:F0}%L";
             }
 
