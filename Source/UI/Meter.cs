@@ -182,7 +182,7 @@ namespace NBagOfTricks.UI
                     break;
             }
 
-            if (Label.Length > 0 && Orientation == Orientation.Horizontal)
+            if (Label.Length > 0)
             {
                 using (StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
                 {

@@ -133,7 +133,7 @@ namespace NBagOfTricks.UI
         }
 
         /// <summary>
-        /// Collect changes. TODOC kinda klunky.
+        /// Collect changes. Kinda klunky.
         /// </summary>
         public void FlushChanges()
         {
