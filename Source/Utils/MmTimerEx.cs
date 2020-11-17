@@ -162,7 +162,7 @@ namespace NBagOfTricks.Utils
         /// Add a new timer instance.
         /// </summary>
         /// <param name="id">Arbitrary id as string</param>
-        /// <param name="period"></param>
+        /// <param name="period">Period in msec </param>
         public void SetTimer(string id, int period)
         {
             _timers[id] = new TimerInstance

@@ -272,62 +272,35 @@ namespace NBagOfTricks.UI
 
         #region Context Menus
         /// <summary>
-        /// 
+        /// Manage menus.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Cms_Opening(object sender, CancelEventArgs e)
         {
-
-
-
-            cms.Items.Add(new ToolStripMenuItem("Select All"));
-            cms.Items.Add(new ToolStripMenuItem("Clear All"));
-
             // TODOC context menus:
-
             // Files context menu:
             // - list of all tags with checkboxes indicating tags for this file. show inherited from dir.
             // - add tag
             // - delete tag (need to remove from all files)
             // - edit tag? maybe
-
-
             // Tree context menu:
             // - Same as above for dirs.
             // - expand/compress all or 1/2/3/...
 
+            cms.Items.Clear();
+            var vvv = new ToolStripMenuItem("Select All", null, MenuItem_Click);
+            cms.Items.Add(new ToolStripMenuItem("Select All", null, MenuItem_Click));
+            cms.Items.Add(new ToolStripMenuItem("Clear All", null, MenuItem_Click));
 
+            ToolStripMenuItem checkMarginOnly = new ToolStripMenuItem("Check Margin", null, MenuItem_Click)
+            {
+                Checked = true,
+                CheckOnClick = true,
+                CheckState = CheckState.Indeterminate
+            };
 
-            //cms.Items.Clear();
-
-            // cms.ShowImageMargin = false;
-            // cms.Items.Add(new ToolStripMenuItem("Select All"));
-            // cms.Items.Add(new ToolStripMenuItem("Clear All"));
-            // cms.ItemClicked += new ToolStripItemClickedEventHandler(cms_ItemClicked);
-
-            // ToolStripMenuItem toolStripMenuItem1 = new ToolStripMenuItem("11111");
-            // toolStripMenuItem1.Checked = true;
-            // toolStripMenuItem1.CheckState = CheckState.Indeterminate;
-            // cms.Items.Add(toolStripMenuItem1);
-
-            // ToolStripMenuItem toolStripMenuItem2 = new ToolStripMenuItem("222222");
-            // cms.Items.Add(toolStripMenuItem2);
-
-            // ToolStripSeparator toolStripSeparator1 = new ToolStripSeparator();
-            // cms.Items.Add(toolStripSeparator1);
-
-            // ToolStripComboBox toolStripComboBox1 = new ToolStripComboBox();
-            // toolStripComboBox1.Items.Add("c1");
-            // toolStripComboBox1.Items.Add("c2");
-            // toolStripComboBox1.Items.Add("c3");
-            // cms.Items.Add(toolStripComboBox1);
-
-            // ToolStripTextBox toolStripTextBox1 = new ToolStripTextBox();
-            // toolStripTextBox1.Font = new Font("Segoe UI", 9F);
-            // toolStripTextBox1.Text = "Hello!";
-            // cms.Items.Add(toolStripTextBox1);
-
+            cms.Items.Add(checkMarginOnly);
         }
 
         /// <summary>
@@ -335,19 +308,17 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void Cms_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private void MenuItem_Click(object sender, EventArgs e)
         {
-            // Set/clear the assay selections based on menu selection.
-            switch (e.ClickedItem.ToString())
+            var mi = sender as ToolStripMenuItem;
+
+            switch (mi.Text)
             {
                 case "Select All":
-                    //SelectedAssays.Clear();
-                    //SelectedAssays.AddRange(AllAssays);
                     //PopulateList();
                     break;
 
                 case "Clear All":
-                    //SelectedAssays.Clear();
                     //PopulateList();
                     break;
             }
