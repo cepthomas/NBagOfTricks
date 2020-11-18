@@ -70,8 +70,8 @@ namespace NBagOfTricks.Test
             {
                 data[i] = (float)Math.Sin(MathUtils.DegreesToRadians(i));
             }
-            waveViewer1.DrawColor = Color.Green;
-            waveViewer1.Init(data, 1.0f);
+            waveViewer.DrawColor = Color.Green;
+            waveViewer.Init(data, 1.0f);
 
             timer1.Enabled = true;
         }

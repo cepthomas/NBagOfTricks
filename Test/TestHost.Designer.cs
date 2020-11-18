@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestHost));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
-            this.waveViewer1 = new NBagOfTricks.UI.WaveViewer();
+            this.waveViewer = new NBagOfTricks.UI.WaveViewer();
             this.timeBar = new NBagOfTricks.UI.TimeBar();
             this.chkCpu = new System.Windows.Forms.CheckBox();
             this.ftree = new NBagOfTricks.UI.FilTree();
@@ -67,7 +67,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.waveViewer1);
+            this.splitContainer1.Panel2.Controls.Add(this.waveViewer);
             this.splitContainer1.Panel2.Controls.Add(this.timeBar);
             this.splitContainer1.Panel2.Controls.Add(this.chkCpu);
             this.splitContainer1.Panel2.Controls.Add(this.ftree);
@@ -97,13 +97,13 @@
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.Vkbd_KeyboardEvent);
             // 
-            // waveViewer1
+            // waveViewer
             // 
-            this.waveViewer1.DrawColor = System.Drawing.Color.Orange;
-            this.waveViewer1.Location = new System.Drawing.Point(1042, 236);
-            this.waveViewer1.Name = "waveViewer1";
-            this.waveViewer1.Size = new System.Drawing.Size(254, 45);
-            this.waveViewer1.TabIndex = 14;
+            this.waveViewer.DrawColor = System.Drawing.Color.Orange;
+            this.waveViewer.Location = new System.Drawing.Point(1042, 236);
+            this.waveViewer.Name = "waveViewer";
+            this.waveViewer.Size = new System.Drawing.Size(254, 45);
+            this.waveViewer.TabIndex = 14;
             // 
             // timeBar
             // 
@@ -324,6 +324,6 @@
         private System.Windows.Forms.CheckBox chkCpu;
         private UI.TimeBar timeBar;
         private System.Windows.Forms.Timer timer1;
-        private UI.WaveViewer waveViewer1;
+        private UI.WaveViewer waveViewer;
     }
 }
