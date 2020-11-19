@@ -19,10 +19,10 @@ namespace NBagOfTricks.UI
         double _resetVal = 0.0;
 
         /// <summary>The pen.</summary>
-        Pen _pen = new Pen(Color.Black);
+        readonly Pen _pen = new Pen(Color.Black);
 
         /// <summary>The brush.</summary>
-        SolidBrush _brush = new SolidBrush(Color.White);
+        readonly SolidBrush _brush = new SolidBrush(Color.White);
         #endregion
 
         #region Properties
@@ -95,7 +95,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        System.ComponentModel.IContainer components = new System.ComponentModel.Container();
+        readonly System.ComponentModel.IContainer components = new System.ComponentModel.Container();
 
         /// <summary>
         /// Clean up any resources being used.
@@ -217,11 +217,11 @@ namespace NBagOfTricks.UI
 
                 if (e.KeyCode == Keys.Down)
                 {
-                    Value = Value - incr;
+                    Value -= incr;
                 }
                 else if (e.KeyCode == Keys.Up)
                 {
-                    Value = Value + incr;
+                    Value += incr;
                 }
             }
 

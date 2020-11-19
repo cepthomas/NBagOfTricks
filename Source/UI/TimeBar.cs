@@ -22,19 +22,19 @@ namespace NBagOfTricks.UI
         int _lastXPos = 0;
 
         /// <summary>Tooltip for mousing.</summary>
-        ToolTip toolTip = new ToolTip();
+        readonly ToolTip toolTip = new ToolTip();
 
         /// <summary>The pen.</summary>
-        Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+        readonly Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
 
         /// <summary>The brush.</summary>
-        SolidBrush _brush = new SolidBrush(Color.White);
+        readonly SolidBrush _brush = new SolidBrush(Color.White);
 
         /// <summary>Constant.</summary>
-        int LARGE_CHANGE = 1000;
+        private static readonly int LARGE_CHANGE = 1000;
 
         /// <summary>Constant.</summary>
-        int SMALL_CHANGE = 100;
+        private static readonly int SMALL_CHANGE = 100;
         #endregion
 
         #region Properties
@@ -84,7 +84,7 @@ namespace NBagOfTricks.UI
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private readonly IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.

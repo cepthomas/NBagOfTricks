@@ -132,7 +132,7 @@ namespace NBagOfTricks.Utils
         /// <returns>Double value of the Standard Deviation</returns>
         public static double StandardDeviation(List<double> inputArray)
         {
-            double sd = double.NaN;
+            double sd;
 
             if (inputArray.Count > 1)
             {

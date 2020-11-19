@@ -25,10 +25,10 @@ namespace NBagOfTricks.Utils
 
         #region Fields
         /// <summary>All the timer instances. Key is id.</summary>
-        Dictionary<string, TimerInstance> _timers = new Dictionary<string, TimerInstance>();
+        readonly Dictionary<string, TimerInstance> _timers = new Dictionary<string, TimerInstance>();
 
         /// <summary>Used for more accurate timing.</summary>
-        Stopwatch _sw = new Stopwatch();
+        readonly Stopwatch _sw = new Stopwatch();
 
         /// <summary>Indicates whether or not the timer is running.</summary>
         bool _running = false;
@@ -66,7 +66,7 @@ namespace NBagOfTricks.Utils
         /// indicates periodic events should occur with the greatest possible accuracy. To reduce system 
         /// overhead, however, you should use the maximum value appropriate for your application.
         /// </summary>
-        int _resolution = 1;
+        readonly int _resolution = 1;
 
         /// <summary>
         /// Called by Windows when a mm timer event occurs.
@@ -81,10 +81,12 @@ namespace NBagOfTricks.Utils
         /// <summary>
         /// Called by Windows when a mm timer event occurs.
         /// </summary>
-        TimeProc _timeProc;
+        readonly TimeProc _timeProc;
         #endregion
 
         #region Win32 Multimedia Timer Functions
+#pragma warning disable IDE1006 // Naming Styles
+
         [DllImport("winmm.dll")]
         private static extern int timeGetDevCaps(ref TimerCaps caps, int sizeOfTimerCaps);
 
@@ -102,6 +104,7 @@ namespace NBagOfTricks.Utils
         private static extern int timeKillEvent(int id);
 
         private const int TIMERR_NOERROR = 0;
+#pragma warning restore IDE1006 // Naming Styles
         #endregion
 
         #region Lifecycle
@@ -205,6 +208,10 @@ namespace NBagOfTricks.Utils
         {
             // Stop and destroy timer.
             int result = timeKillEvent(_timerID);
+            if(result != TIMERR_NOERROR)
+            {
+
+            }
             _running = false;
             _sw.Stop();
         }

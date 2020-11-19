@@ -23,10 +23,10 @@ namespace NBagOfTricks.UI
         int _buffIndex = 0;
 
         /// <summary>The pen.</summary>
-        Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+        readonly Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
 
         /// <summary>The brush.</summary>
-        SolidBrush _brush = new SolidBrush(Color.White);
+        readonly SolidBrush _brush = new SolidBrush(Color.White);
         #endregion
 
         #region Properties
@@ -72,7 +72,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        System.ComponentModel.IContainer components = new System.ComponentModel.Container();
+        readonly System.ComponentModel.IContainer components = new System.ComponentModel.Container();
 
         /// <summary>
         /// Clean up any resources being used.
