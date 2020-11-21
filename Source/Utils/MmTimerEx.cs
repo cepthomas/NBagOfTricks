@@ -85,7 +85,7 @@ namespace NBagOfTricks.Utils
         #endregion
 
         #region Win32 Multimedia Timer Functions
-#pragma warning disable IDE1006 // Naming Styles
+        #pragma warning disable IDE1006 // Naming Styles
 
         [DllImport("winmm.dll")]
         private static extern int timeGetDevCaps(ref TimerCaps caps, int sizeOfTimerCaps);
@@ -104,7 +104,7 @@ namespace NBagOfTricks.Utils
         private static extern int timeKillEvent(int id);
 
         private const int TIMERR_NOERROR = 0;
-#pragma warning restore IDE1006 // Naming Styles
+        #pragma warning restore IDE1006 // Naming Styles
         #endregion
 
         #region Lifecycle

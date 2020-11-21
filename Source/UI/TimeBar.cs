@@ -48,10 +48,10 @@ namespace NBagOfTricks.UI
         public Color ProgressColor { get { return _brush.Color; } set { _brush.Color = value; } }
 
         /// <summary>Big font.</summary>
-        Font FontLarge { get; set; } = new Font("Consolas", 24, FontStyle.Regular, GraphicsUnit.Point, 0);
+        Font FontLarge { get; set; } = new Font("Cascadia", 24, FontStyle.Regular, GraphicsUnit.Point, 0);
 
         /// <summary>Baby font.</summary>
-        Font FontSmall { get; set; } = new Font("Consolas", 14, FontStyle.Regular, GraphicsUnit.Point, 0);
+        Font FontSmall { get; set; } = new Font("Cascadia", 14, FontStyle.Regular, GraphicsUnit.Point, 0);
         #endregion
 
         #region Events

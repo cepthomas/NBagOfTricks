@@ -77,4 +77,21 @@ namespace NBagOfTricks.UI
 
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context) { return UITypeEditorEditStyle.DropDown; }
     }
+
+    /// <summary>Selector for monospaced fonts.</summary>
+    public class MonospaceFontEditor : UITypeEditor
+    {
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+        {
+            FontDialog dlg = new FontDialog()
+            {
+                FixedPitchOnly = true,
+                Font = value as Font
+            };
+
+            return dlg.ShowDialog() == DialogResult.OK ? dlg.Font : base.EditValue(context, provider, value);
+        }
+
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context) { return UITypeEditorEditStyle.Modal; }
+    }
 }
