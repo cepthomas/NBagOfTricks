@@ -73,19 +73,26 @@ namespace NBagOfTricks.Test
             waveViewer.DrawColor = Color.Green;
             waveViewer.Init(data, 1.0f);
 
-            clickGrid1.Init(10, 3, 80, 20);
             clickGrid1.AddStateType(10, Color.Blue, Color.AliceBlue);
             clickGrid1.AddStateType(20, Color.AliceBlue, Color.Blue);
             clickGrid1.AddStateType(30, Color.Red, Color.Salmon);
 
+            string[] names = { "dignissim", "cras", "tincidunt", "lobortis", "feugiat", "vivamus", "at", "augue", "eget" };
+
+            for (int i = 0; i < names.Count(); i++)
+            {
+                clickGrid1.AddIndicator(names[i], 10 + i);
+            }
+
             clickGrid1.IndicatorEvent += ClickGrid_IndicatorEvent;
+            clickGrid1.Show(4, 60, 20);
 
             timer1.Enabled = true;
         }
 
         private void ClickGrid_IndicatorEvent(object sender, IndicatorEventArgs e)
         {
-            clickGrid1.SetIndicator(e.Index, (e.State + 10) % 40);
+            clickGrid1.SetIndicator(e.Id, (e.State + 10) % 40);
         }
 
         private void TestHost_Shown(object sender, EventArgs e)

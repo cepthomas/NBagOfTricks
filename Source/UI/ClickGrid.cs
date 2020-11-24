@@ -13,31 +13,32 @@ namespace NBagOfTricks.UI
     public partial class ClickGrid : UserControl
     {
         #region Fields
-
-        List<int> _states = new List<int>();
-
+        /// <summary>State enumeration.</summary>
         Dictionary<int, IndicatorStateType> _stateTypes = new Dictionary<int, IndicatorStateType>();
-        
-        int _numTargets = 6;
 
+        /// <summary>All the indicators.</summary>
+        List<Indicator> _indicators = new List<Indicator>();
+
+        /// <summary> </summary>
         int _cols = 2;
+
+        /// <summary> </summary>
         int _rows = 2;
 
+        /// <summary> </summary>
         int _indWidth = 100;
 
+        /// <summary> </summary>
         int _indHeight = 25;
 
+        /// <summary> </summary>
         SolidBrush _defaultForeBrush = new SolidBrush(Color.Black);
 
+        /// <summary> </summary>
         SolidBrush _defaultBackBrush = new SolidBrush(Color.White);
 
         /// <summary>The pen.</summary>
         Pen _pen = new Pen(Color.Black);
-        #endregion
-
-        #region Properties
-        /// <summary>Optional text, in order of indicator.</summary>
-        public List<string> IndicatorText { get; set; } = new List<string>();
         #endregion
 
         #region Events
@@ -62,22 +63,10 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         void ClickGrid_Load(object sender, EventArgs e)
         {
+            BorderStyle = BorderStyle.FixedSingle;
+
             // Init the statuses.
             _stateTypes = new Dictionary<int, IndicatorStateType>();
-        }
-
-        /// <summary>
-        /// Normal construction.
-        /// </summary>
-        public void Init(int numTargets, int cols, int indWidth, int indHeight)
-        {
-            _numTargets = numTargets;
-            _cols = cols;
-            _rows = _numTargets / _cols + 1;
-            _indWidth = indWidth;
-            _indHeight = indHeight;
-            _states = new List<int>(new int[_numTargets]);
-            Invalidate();
         }
         #endregion
 
@@ -85,13 +74,37 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="which"></param>
-        /// <param name="state"></param>
-        public void SetIndicator(int which, int state)
+        /// <param name="text"></param>
+        /// <param name="id"></param>
+        public void AddIndicator(string text, int id)
         {
-            if (which >= 0 && which < _states.Count && _stateTypes.ContainsKey(state))
+            _indicators.Add(new Indicator() { Text = text, Id = id });
+        }
+
+        /// <summary>
+        /// Normal construction.
+        /// </summary>
+        public void Show(int cols, int indWidth, int indHeight)
+        {
+            _cols = cols;
+            _rows = _indicators.Count / _cols + 1;
+            _indWidth = indWidth;
+            _indHeight = indHeight;
+            Invalidate();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="state"></param>
+        public void SetIndicator(int id, int state)
+        {
+            var ind = _indicators.Find(i => i.Id == id);
+
+            if (ind != null && _stateTypes.ContainsKey(state))
             {
-                _states[which] = state;
+                ind.State = state;
                 Invalidate();
             }
         }
@@ -109,6 +122,15 @@ namespace NBagOfTricks.UI
                 ForeBrush = new SolidBrush(foreColor),
                 BackBrush = new SolidBrush(backColor)
             };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Clear()
+        {
+            _indicators.Clear();
+            Invalidate();
         }
         #endregion
 
@@ -129,28 +151,28 @@ namespace NBagOfTricks.UI
 
                     int ind = row * _cols + col;
 
-                    if(ind < _states.Count)
+                    if(ind < _indicators.Count)
                     {
-                        int state = _states[ind];
+                        int state = _indicators[ind].State;
                         if (_stateTypes.ContainsKey(state))
                         {
                             fb = _stateTypes[state].ForeBrush;
                             bb = _stateTypes[state].BackBrush;
                         }
+
+                        int x = col * _indWidth;
+                        int y = row * _indHeight;
+                        Rectangle r = new Rectangle(x, y, _indWidth, _indHeight);
+                        pe.Graphics.FillRectangle(bb, r);
+
+                        // Border
+                        pe.Graphics.DrawRectangle(_pen, r);
+
+                        // Text
+                        string text = _indicators[ind].Text;
+                        SizeF stext = pe.Graphics.MeasureString(text, Font);
+                        pe.Graphics.DrawString(text, Font, fb, x + 5, y + (_indHeight - stext.Height) / 2);
                     }
-
-                    int x = col * _indWidth;
-                    int y = row * _indHeight;
-                    Rectangle r = new Rectangle(x, y, _indWidth, _indHeight);
-                    pe.Graphics.FillRectangle(bb, r);
-
-                    // Border
-                    pe.Graphics.DrawRectangle(_pen, r);
-
-                    // Text
-                    string text = ind < IndicatorText.Count ? IndicatorText[ind] : $"Indicator{ind}";
-                    SizeF stext = pe.Graphics.MeasureString(text, Font);
-                    pe.Graphics.DrawString(text, Font, fb, x + 5, y + (_indHeight - stext.Height) / 2);
                 }
             }
         }
@@ -185,9 +207,13 @@ namespace NBagOfTricks.UI
             int row = e.Y / _indHeight;
             int ind = row * _cols + col;
 
-            if (ind < _numTargets)
+            if (ind < _indicators.Count)
             {
-                IndicatorEvent?.Invoke(this, new IndicatorEventArgs() { Index = ind, State = _states[ind] });
+                IndicatorEvent?.Invoke(this, new IndicatorEventArgs()
+                {
+                    Id = _indicators[ind].Id,
+                    State = _indicators[ind].State
+                });
             }
 
             base.OnMouseClick(e);
@@ -226,8 +252,23 @@ namespace NBagOfTricks.UI
     /// </summary>
     public class IndicatorEventArgs : EventArgs
     {
-        public int Index { get; set; }
+        public int Id { get; set; }
         public int State { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    class Indicator
+    {
+        /// <summary>User tag.</summary>
+        public int Id { get; set; } = -1;
+
+        /// <summary>The text.</summary>
+        public string Text { get; set; } = "???";
+
+        /// <summary>User tag.</summary>
+        public int State { get; set; } = 0;
     }
 
     /// <summary>

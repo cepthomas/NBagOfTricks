@@ -101,7 +101,6 @@
             // 
             // clickGrid1
             // 
-            this.clickGrid1.IndicatorText = ((System.Collections.Generic.List<string>)(resources.GetObject("clickGrid1.IndicatorText")));
             this.clickGrid1.Location = new System.Drawing.Point(546, 203);
             this.clickGrid1.Name = "clickGrid1";
             this.clickGrid1.Size = new System.Drawing.Size(356, 128);
