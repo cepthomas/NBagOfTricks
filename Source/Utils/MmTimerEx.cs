@@ -10,7 +10,6 @@ namespace NBagOfTricks.Utils
     /// The win multimedia timer is erratic. This class attempts to reduce the error by running at one msec
     /// and managing the requested periods manually. This is accomplished by using a Stopwatch to actually
     /// measure the elapsed time rather than trust the mm timer period. It seems to be an improvement.
-    /// Also see "Microsecond and Millisecond C# Timer - CodeProject.html". Good accuracy at the expense of a whole core.
     /// </summary>
     public class MmTimerEx
     {

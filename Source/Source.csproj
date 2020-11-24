@@ -52,6 +52,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\ClickGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UI\FilTree.cs">
       <SubType>UserControl</SubType>
     </Compile>

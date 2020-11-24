@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestHost));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
+            this.clickGrid1 = new NBagOfTricks.UI.ClickGrid();
             this.waveViewer = new NBagOfTricks.UI.WaveViewer();
             this.timeBar = new NBagOfTricks.UI.TimeBar();
             this.chkCpu = new System.Windows.Forms.CheckBox();
@@ -67,6 +68,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.clickGrid1);
             this.splitContainer1.Panel2.Controls.Add(this.waveViewer);
             this.splitContainer1.Panel2.Controls.Add(this.timeBar);
             this.splitContainer1.Panel2.Controls.Add(this.chkCpu);
@@ -97,10 +99,18 @@
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.Vkbd_KeyboardEvent);
             // 
+            // clickGrid1
+            // 
+            this.clickGrid1.IndicatorText = ((System.Collections.Generic.List<string>)(resources.GetObject("clickGrid1.IndicatorText")));
+            this.clickGrid1.Location = new System.Drawing.Point(546, 203);
+            this.clickGrid1.Name = "clickGrid1";
+            this.clickGrid1.Size = new System.Drawing.Size(356, 128);
+            this.clickGrid1.TabIndex = 1;
+            // 
             // waveViewer
             // 
             this.waveViewer.DrawColor = System.Drawing.Color.Orange;
-            this.waveViewer.Location = new System.Drawing.Point(1042, 236);
+            this.waveViewer.Location = new System.Drawing.Point(1042, 265);
             this.waveViewer.Name = "waveViewer";
             this.waveViewer.Size = new System.Drawing.Size(254, 45);
             this.waveViewer.TabIndex = 14;
@@ -109,7 +119,7 @@
             // 
             this.timeBar.CurrentTime = System.TimeSpan.Parse("00:00:00");
             this.timeBar.Length = System.TimeSpan.Parse("00:00:00");
-            this.timeBar.Location = new System.Drawing.Point(552, 236);
+            this.timeBar.Location = new System.Drawing.Point(908, 194);
             this.timeBar.Name = "timeBar";
             this.timeBar.ProgressColor = System.Drawing.Color.Orange;
             this.timeBar.Size = new System.Drawing.Size(388, 45);
@@ -224,11 +234,11 @@
             // 
             // txtInfo
             // 
-            this.txtInfo.Location = new System.Drawing.Point(552, 318);
+            this.txtInfo.Location = new System.Drawing.Point(552, 338);
             this.txtInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtInfo.MaxText = 5000;
             this.txtInfo.Name = "txtInfo";
-            this.txtInfo.Size = new System.Drawing.Size(754, 235);
+            this.txtInfo.Size = new System.Drawing.Size(754, 215);
             this.txtInfo.TabIndex = 4;
             this.txtInfo.WordWrap = true;
             // 
@@ -325,5 +335,6 @@
         private UI.TimeBar timeBar;
         private System.Windows.Forms.Timer timer1;
         private UI.WaveViewer waveViewer;
+        private UI.ClickGrid clickGrid1;
     }
 }
