@@ -18,9 +18,10 @@ namespace NBagOfTricks.UI
 
         Dictionary<int, IndicatorStateType> _stateTypes = new Dictionary<int, IndicatorStateType>();
         
-        int _rows = 4;
+        int _numTargets = 6;
 
         int _cols = 2;
+        int _rows = 2;
 
         int _indWidth = 100;
 
@@ -55,19 +56,6 @@ namespace NBagOfTricks.UI
         }
 
         /// <summary>
-        /// Normal construction.
-        /// </summary>
-        public void Init(int rows, int cols, int indWidth, int indHeight)
-        {
-            _rows = rows;
-            _cols = cols;
-            _indWidth = indWidth;
-            _indHeight = indHeight;
-            _states = new List<int>(new int[rows*cols]);
-            Invalidate();
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
@@ -76,6 +64,20 @@ namespace NBagOfTricks.UI
         {
             // Init the statuses.
             _stateTypes = new Dictionary<int, IndicatorStateType>();
+        }
+
+        /// <summary>
+        /// Normal construction.
+        /// </summary>
+        public void Init(int numTargets, int cols, int indWidth, int indHeight)
+        {
+            _numTargets = numTargets;
+            _cols = cols;
+            _rows = _numTargets / _cols + 1;
+            _indWidth = indWidth;
+            _indHeight = indHeight;
+            _states = new List<int>(new int[_numTargets]);
+            Invalidate();
         }
         #endregion
 
@@ -118,15 +120,14 @@ namespace NBagOfTricks.UI
         {
             // Setup.
             pe.Graphics.Clear(BackColor);
-
-            for (int col = 0; col < _cols; col++)
+            for (int row = 0; row < _rows; row++)
             {
-                for (int row = 0; row < _rows; row++)
+                for (int col = 0; col < _cols; col++)
                 {
                     SolidBrush fb = _defaultForeBrush;
                     SolidBrush bb = _defaultBackBrush;
 
-                    int ind = col * _rows + row;
+                    int ind = row * _cols + col;
 
                     if(ind < _states.Count)
                     {
@@ -182,9 +183,12 @@ namespace NBagOfTricks.UI
 
             int col = e.X / _indWidth;
             int row = e.Y / _indHeight;
-            int ind = col * _rows + row;
+            int ind = row * _cols + col;
 
-            IndicatorEvent?.Invoke(this, new IndicatorEventArgs() { Index = ind, State = _states[ind] } );
+            if (ind < _numTargets)
+            {
+                IndicatorEvent?.Invoke(this, new IndicatorEventArgs() { Index = ind, State = _states[ind] });
+            }
 
             base.OnMouseClick(e);
         }
@@ -215,7 +219,6 @@ namespace NBagOfTricks.UI
             base.Dispose(disposing);
         }
         #endregion
-
    }
 
     /// <summary>
