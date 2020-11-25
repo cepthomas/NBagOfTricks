@@ -48,6 +48,7 @@
             this.pot1 = new NBagOfTricks.UI.Pot();
             this.slider1 = new NBagOfTricks.UI.Slider();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.barBar1 = new NBagOfTricks.UI.BarBar();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -68,6 +69,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.barBar1);
             this.splitContainer1.Panel2.Controls.Add(this.clickGrid1);
             this.splitContainer1.Panel2.Controls.Add(this.waveViewer);
             this.splitContainer1.Panel2.Controls.Add(this.timeBar);
@@ -101,15 +103,16 @@
             // 
             // clickGrid1
             // 
-            this.clickGrid1.Location = new System.Drawing.Point(546, 203);
+            this.clickGrid1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.clickGrid1.Location = new System.Drawing.Point(531, 225);
             this.clickGrid1.Name = "clickGrid1";
-            this.clickGrid1.Size = new System.Drawing.Size(356, 128);
+            this.clickGrid1.Size = new System.Drawing.Size(371, 106);
             this.clickGrid1.TabIndex = 1;
             // 
             // waveViewer
             // 
             this.waveViewer.DrawColor = System.Drawing.Color.Orange;
-            this.waveViewer.Location = new System.Drawing.Point(1042, 265);
+            this.waveViewer.Location = new System.Drawing.Point(584, 174);
             this.waveViewer.Name = "waveViewer";
             this.waveViewer.Size = new System.Drawing.Size(254, 45);
             this.waveViewer.TabIndex = 14;
@@ -118,10 +121,10 @@
             // 
             this.timeBar.CurrentTime = System.TimeSpan.Parse("00:00:00");
             this.timeBar.Length = System.TimeSpan.Parse("00:00:00");
-            this.timeBar.Location = new System.Drawing.Point(908, 194);
+            this.timeBar.Location = new System.Drawing.Point(943, 187);
             this.timeBar.Name = "timeBar";
             this.timeBar.ProgressColor = System.Drawing.Color.Orange;
-            this.timeBar.Size = new System.Drawing.Size(388, 45);
+            this.timeBar.Size = new System.Drawing.Size(353, 52);
             this.timeBar.TabIndex = 13;
             this.timeBar.CurrentTimeChanged += new System.EventHandler(this.TimeBar_CurrentTimeChanged);
             // 
@@ -170,7 +173,7 @@
             this.meter2.BackColor = System.Drawing.Color.Gainsboro;
             this.meter2.DrawColor = System.Drawing.Color.Azure;
             this.meter2.Label = "meter log";
-            this.meter2.Location = new System.Drawing.Point(875, 121);
+            this.meter2.Location = new System.Drawing.Point(875, 108);
             this.meter2.Margin = new System.Windows.Forms.Padding(4);
             this.meter2.Maximum = 3D;
             this.meter2.MeterType = NBagOfTricks.UI.MeterType.Log;
@@ -216,7 +219,7 @@
             this.slider2.Name = "slider2";
             this.slider2.Orientation = System.Windows.Forms.Orientation.Vertical;
             this.slider2.ResetValue = 0D;
-            this.slider2.Size = new System.Drawing.Size(42, 144);
+            this.slider2.Size = new System.Drawing.Size(42, 131);
             this.slider2.TabIndex = 6;
             this.slider2.Value = 5.4D;
             // 
@@ -224,7 +227,7 @@
             // 
             this.pan1.BackColor = System.Drawing.Color.Gainsboro;
             this.pan1.DrawColor = System.Drawing.Color.Crimson;
-            this.pan1.Location = new System.Drawing.Point(692, 121);
+            this.pan1.Location = new System.Drawing.Point(692, 108);
             this.pan1.Margin = new System.Windows.Forms.Padding(4);
             this.pan1.Name = "pan1";
             this.pan1.Size = new System.Drawing.Size(146, 48);
@@ -246,7 +249,7 @@
             this.meter1.BackColor = System.Drawing.Color.Gainsboro;
             this.meter1.DrawColor = System.Drawing.Color.Orange;
             this.meter1.Label = "meter xyz";
-            this.meter1.Location = new System.Drawing.Point(1081, 121);
+            this.meter1.Location = new System.Drawing.Point(1081, 108);
             this.meter1.Margin = new System.Windows.Forms.Padding(4);
             this.meter1.Maximum = 100D;
             this.meter1.MeterType = NBagOfTricks.UI.MeterType.Linear;
@@ -263,7 +266,7 @@
             this.pot1.DrawColor = System.Drawing.Color.Green;
             this.pot1.ForeColor = System.Drawing.Color.Black;
             this.pot1.Label = "pot 99";
-            this.pot1.Location = new System.Drawing.Point(593, 96);
+            this.pot1.Location = new System.Drawing.Point(591, 83);
             this.pot1.Margin = new System.Windows.Forms.Padding(5);
             this.pot1.Maximum = 1D;
             this.pot1.Minimum = 0D;
@@ -293,6 +296,18 @@
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
+            // 
+            // barBar1
+            // 
+            this.barBar1.BeatsPerBar = 4;
+            this.barBar1.Length = 0;
+            this.barBar1.Location = new System.Drawing.Point(943, 262);
+            this.barBar1.Name = "barBar1";
+            this.barBar1.ProgressColor = System.Drawing.Color.White;
+            this.barBar1.Size = new System.Drawing.Size(353, 51);
+            this.barBar1.Snap = NBagOfTricks.UI.BarBar.SnapType.None;
+            this.barBar1.TabIndex = 15;
+            this.barBar1.TicksPerBeat = 8;
             // 
             // TestHost
             // 
@@ -335,5 +350,6 @@
         private System.Windows.Forms.Timer timer1;
         private UI.WaveViewer waveViewer;
         private UI.ClickGrid clickGrid1;
+        private UI.BarBar barBar1;
     }
 }

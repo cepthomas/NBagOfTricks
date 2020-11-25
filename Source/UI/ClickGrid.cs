@@ -19,22 +19,22 @@ namespace NBagOfTricks.UI
         /// <summary>All the indicators.</summary>
         List<Indicator> _indicators = new List<Indicator>();
 
-        /// <summary> </summary>
+        /// <summary>Number of columns.</summary>
         int _cols = 2;
 
-        /// <summary> </summary>
+        /// <summary>Number of rows.</summary>
         int _rows = 2;
 
-        /// <summary> </summary>
+        /// <summary>Indicator geometry.</summary>
         int _indWidth = 100;
 
-        /// <summary> </summary>
+        /// <summary>Indicator geometry.</summary>
         int _indHeight = 25;
 
-        /// <summary> </summary>
+        /// <summary>Used for unspecified states.</summary>
         SolidBrush _defaultForeBrush = new SolidBrush(Color.Black);
 
-        /// <summary> </summary>
+        /// <summary>Used for unspecified states.</summary>
         SolidBrush _defaultBackBrush = new SolidBrush(Color.White);
 
         /// <summary>The pen.</summary>
@@ -248,7 +248,7 @@ namespace NBagOfTricks.UI
    }
 
     /// <summary>
-    /// 
+    /// Click event data.
     /// </summary>
     public class IndicatorEventArgs : EventArgs
     {
@@ -257,7 +257,7 @@ namespace NBagOfTricks.UI
     }
 
     /// <summary>
-    /// 
+    /// Everything about one indicator.
     /// </summary>
     class Indicator
     {
@@ -272,7 +272,7 @@ namespace NBagOfTricks.UI
     }
 
     /// <summary>
-    /// 
+    /// Describes one state.
     /// </summary>
     class IndicatorStateType
     {

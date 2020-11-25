@@ -25,6 +25,9 @@ Targets .NET Framework 4.7.2. No dependencies on third party components.
 # General purpose UI components
 - PropertyGridEx: Added a few features.
 - FilTree: Folder/file tree control with tags/filters and notifications.
+- ClickGrid: Essentially a grid array of buttons.
+- TimeBar: Elapsed time control.
+- BarBar: Similar to TimeBar but shows music bars/beats.
 - CpuMeter: Standalone display control.
 - TextViewer: With colorizing.
 - WaitCursor: Easy to use cursor.

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -9,14 +9,18 @@ using NBagOfTricks.Utils;
 
 namespace NBagOfTricks.UI
 {
-    public partial class TimeBar : UserControl
+    public partial class BarBar : UserControl
     {
+        #region Enums
+        public enum SnapType { None, Bar, Beat }
+        #endregion
+
         #region Fields
         /// <summary>Total length.</summary>
-        TimeSpan _length = new TimeSpan();
+        int _lengthTicks = 0;
 
         /// <summary>Current time/position.</summary>
-        TimeSpan _current = new TimeSpan();
+        int _currentTick = 0;
 
         /// <summary>For tracking mouse moves.</summary>
         int _lastXPos = 0;
@@ -29,20 +33,26 @@ namespace NBagOfTricks.UI
 
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
-
-        /// <summary>Constant.</summary>
-        private static readonly int LARGE_CHANGE = 1000;
-
-        /// <summary>Constant.</summary>
-        private static readonly int SMALL_CHANGE = 100;
         #endregion
 
         #region Properties
+        /// <summary>Current bar from 0 to N.</summary>
+        public int BeatsPerBar { get; set; } = 4;
+
+        /// <summary>Our ppq aka resolution.</summary>
+        public int TicksPerBeat { get; set; } = 8;
+
+        /// <summary>Oh snap.</summary>
+        public SnapType Snap { get; set; } = SnapType.None;
+
         /// <summary>Where we be now.</summary>
-        public TimeSpan CurrentTime { get { return _current; } set { _current = value; Invalidate(); } }
+        public int CurrentTick { get { return _currentTick; } set { _currentTick = value; Invalidate(); } }
+
+        /// <summary> </summary>
+        public (int bar, int beat, int tick) CurrentTime { get { return TickToTime(_currentTick); } }
 
         /// <summary>Where we be going.</summary>
-        public TimeSpan Length { get { return _length; } set { _length = value; Invalidate(); } }
+        public int Length { get { return _lengthTicks; } set { _lengthTicks = value; Invalidate(); } }
 
         /// <summary>For styling.</summary>
         public Color ProgressColor { get { return _brush.Color; } set { _brush.Color = value; } }
@@ -63,11 +73,10 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Constructor.
         /// </summary>
-        public TimeBar()
+        public BarBar()
         {
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
-            PreviewKeyDown += TimeBar_PreviewKeyDown;
-            Load += TimeBar_Load;
+            Load += BarBar_Load;
         }
 
         /// <summary>
@@ -75,7 +84,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void TimeBar_Load(object sender, EventArgs e)
+        void BarBar_Load(object sender, EventArgs e)
         {
         }
         #endregion
@@ -112,12 +121,12 @@ namespace NBagOfTricks.UI
             // Draw border.
             pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
 
-            if (_current < _length)
+            if (_currentTick < _lengthTicks)
             {
                 pe.Graphics.FillRectangle(_brush,
                     UiDefs.BORDER_WIDTH,
                     UiDefs.BORDER_WIDTH,
-                    (Width - 2 * UiDefs.BORDER_WIDTH) * (int)_current.TotalMilliseconds / (int)_length.TotalMilliseconds,
+                    (Width - 2 * UiDefs.BORDER_WIDTH) * _currentTick / _lengthTicks,
                     Height - 2 * UiDefs.BORDER_WIDTH);
             }
 
@@ -130,8 +139,8 @@ namespace NBagOfTricks.UI
                 formatRight.LineAlignment = StringAlignment.Center;
                 formatRight.Alignment = StringAlignment.Far;
 
-                pe.Graphics.DrawString(FormatTime(_current), FontLarge, Brushes.Black, ClientRectangle, formatLeft);
-                pe.Graphics.DrawString(FormatTime(_length), FontSmall, Brushes.Black, ClientRectangle, formatRight);
+                pe.Graphics.DrawString(FormatTime(_currentTick), FontLarge, Brushes.Black, ClientRectangle, formatLeft);
+                pe.Graphics.DrawString(FormatTime(_lengthTicks), FontSmall, Brushes.Black, ClientRectangle, formatRight);
             }
         }
         #endregion
@@ -144,20 +153,16 @@ namespace NBagOfTricks.UI
         {
             if (e.Button == MouseButtons.Left)
             {
-                _current = GetTimeFromMouse(e.X);
+                _currentTick = DoSnap(GetTickFromMouse(e.X));
                 CurrentTimeChanged?.Invoke(this, new EventArgs());
             }
-            else
+            else if (e.X != _lastXPos)
             {
-                if (e.X != _lastXPos)
-                {
-                    TimeSpan ts = GetTimeFromMouse(e.X);
-                    toolTip.SetToolTip(this, FormatTime(ts));
-                    _lastXPos = e.X;
-                }
+                int ts = DoSnap(GetTickFromMouse(e.X));
+                toolTip.SetToolTip(this, FormatTime(ts));
+                _lastXPos = e.X;
             }
             Invalidate();
-
             base.OnMouseMove(e);
         }
 
@@ -166,88 +171,88 @@ namespace NBagOfTricks.UI
         /// </summary>
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            _current = GetTimeFromMouse(e.X);
+            _currentTick = DoSnap(GetTickFromMouse(e.X));
             CurrentTimeChanged?.Invoke(this, new EventArgs());
             Invalidate();
             base.OnMouseDown(e);
         }
         #endregion
 
+        #region Public functions
+        //void Advance()
+        //{
+        //    //int _lengthTicks = 0;
+        //    //int _currentTicks = 0;
+        //}
+        #endregion
+
         #region Private functions
         /// <summary>
-        /// Convert x pos to TimeSpan.
+        /// Convert x pos to tick.
         /// </summary>
         /// <param name="x"></param>
-        private TimeSpan GetTimeFromMouse(int x)
+        private int GetTickFromMouse(int x)
         {
-            int msec = 0;
+            int tick = 0;
 
-            if(_current.TotalMilliseconds < _length.TotalMilliseconds)
+            if(_currentTick < _lengthTicks)
             {
-                msec = x * (int)_length.TotalMilliseconds / Width;
-                msec = MathUtils.Constrain(msec, 0, (int)_length.TotalMilliseconds);
+                tick = x * _lengthTicks / Width;
+                tick = MathUtils.Constrain(tick, 0, _lengthTicks);
             }
 
-            return new TimeSpan(0, 0, 0, 0, msec);
+            return tick;
         }
 
         /// <summary>
-        /// Convert total msec into a TimeSpan.
+        /// Pretty print a time.
         /// </summary>
-        /// <param name="msec"></param>
-        void AdjustTime(int msec)
+        /// <param name="tick"></param>
+        string FormatTime(int tick)
         {
-            if (msec > 0)
-            {
-                _current.Add(new TimeSpan(0, 0, 0, 0, msec));
-            }
-            else if (msec < 0)
-            {
-                _current.Subtract(new TimeSpan(0, 0, 0, 0, msec));
-            }
-
-            // Sanity checks.
-            if (_current > _length)
-            {
-                _current = _length;
-            }
-
-            if (_current.TotalMilliseconds < 0)
-            {
-                _current = new TimeSpan();
-            }
-        }
-
-        /// <summary>
-        /// Pretty print a TimeSpan.
-        /// </summary>
-        /// <param name="ts"></param>
-        string FormatTime(TimeSpan ts)
-        {
-            return $"{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}";
+            var t = TickToTime(tick);
+            return $"{t.bar+1}.{t.beat+1}.{t.tick:00}";
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void TimeBar_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        /// <param name="ticks"></param>
+        /// <returns></returns>
+        (int bar, int beat, int tick) TickToTime(int ticks)
         {
-            switch (e.KeyData)
+            int bar = ticks / BeatsPerBar / TicksPerBeat;
+            int beat = (ticks / TicksPerBeat) % BeatsPerBar;
+            int tick = ticks % (BeatsPerBar * TicksPerBeat);
+
+            return (bar, beat, tick);
+        }
+
+        /// <summary>
+        /// Snap to closest boundary.
+        /// </summary>
+        /// <param name="tick"></param>
+        /// <returns></returns>
+        int DoSnap(int tick) //TODOC
+        {
+            int snapped = tick;
+
+            switch (Snap)
             {
-                case Keys.Add:
-                case Keys.Up:
-                    AdjustTime(e.Shift ? SMALL_CHANGE : LARGE_CHANGE);
-                    e.IsInputKey = true;
+                case SnapType.Bar:
+
                     break;
 
-                case Keys.Subtract:
-                case Keys.Down:
-                    AdjustTime(e.Shift ? -SMALL_CHANGE : -LARGE_CHANGE);
-                    e.IsInputKey = true;
+                case SnapType.Beat:
+
+                    break;
+
+                case SnapType.None:
+                    // Don't change it.
                     break;
             }
+
+            return snapped;
         }
         #endregion
     }

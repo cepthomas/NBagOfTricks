@@ -87,7 +87,18 @@ namespace NBagOfTricks.Test
             clickGrid1.IndicatorEvent += ClickGrid_IndicatorEvent;
             clickGrid1.Show(4, 60, 20);
 
+            barBar1.Length = 256;
+            barBar1.CurrentTick = 10;
+            barBar1.CurrentTimeChanged += BarBar1_CurrentTimeChanged;
+            barBar1.ProgressColor = Color.MediumPurple;
+            barBar1.BackColor = Color.LawnGreen;
+
             timer1.Enabled = true;
+        }
+
+        private void BarBar1_CurrentTimeChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void ClickGrid_IndicatorEvent(object sender, IndicatorEventArgs e)
@@ -165,6 +176,8 @@ namespace NBagOfTricks.Test
         {
             TimeSpan ts = timeBar.CurrentTime + new TimeSpan(0, 0, 0, 0, timer1.Interval);
             timeBar.CurrentTime = ts < timeBar.Length ? ts : timeBar.Length;
+
+            barBar1.CurrentTick = barBar1.CurrentTick < barBar1.Length ? barBar1.CurrentTick + 1 : 0;
         }
     }
 }
