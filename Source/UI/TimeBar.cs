@@ -192,7 +192,7 @@ namespace NBagOfTricks.UI
         }
 
         /// <summary>
-        /// Convert total msec into a TimeSpan.
+        /// Offset current by msec.
         /// </summary>
         /// <param name="msec"></param>
         void AdjustTime(int msec)

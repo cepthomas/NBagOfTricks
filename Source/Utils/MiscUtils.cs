@@ -148,6 +148,30 @@ namespace NBagOfTricks.Utils
         }
         #endregion
 
+        #region Time
+        /// <summary>
+        /// Convert time to TimeSpan.
+        /// </summary>
+        /// <param name="sec">Time in seconds.</param>
+        /// <returns>TimeSpan</returns>
+        public static TimeSpan SecondsToTimeSpan(double sec)
+        {
+            var v = MathUtils.SplitDouble(sec);
+            TimeSpan ts = new TimeSpan(0, 0, 0, (int)v.integral, (int)(v.fractional * 1000));
+            return ts;
+        }
+
+        /// <summary>
+        /// Convert TimeSpan to time.
+        /// </summary>
+        /// <param name="ts"></param>
+        /// <returns>Time in seconds.</returns>
+        public static double TimeSpanToSeconds(TimeSpan ts)
+        {
+            return ts.TotalSeconds;
+        }
+        #endregion
+
         #region Misc extensions
         /// <summary>Rudimentary C# source code formatter to make generated files somewhat readable.</summary>
         /// <param name="src">Lines to prettify.</param>

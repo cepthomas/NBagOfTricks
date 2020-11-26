@@ -175,7 +175,7 @@ namespace NBagOfTricks.UI
 
             foreach (FileInfo file in nodeDirInfo.GetFiles())
             {
-                if (FilterExts.Contains(Path.GetExtension(file.Name)))
+                if (FilterExts.Contains(Path.GetExtension(file.Name).ToLower()))
                 {
                     var item = new ListViewItem(new[] { file.Name, "TODO tags" });
                     item.Tag = file.FullName;
@@ -404,6 +404,5 @@ namespace NBagOfTricks.UI
             lvFiles.Columns[1].Width = -2;
         }
         #endregion
-
     }
 }

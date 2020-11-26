@@ -48,8 +48,8 @@ namespace NBagOfTricks.UI
         /// <summary>Where we be now.</summary>
         public int CurrentTick { get { return _currentTick; } set { _currentTick = value; Invalidate(); } }
 
-        /// <summary> </summary>
-        public (int bar, int beat, int tick) CurrentTime { get { return TickToTime(_currentTick); } }
+        ///// <summary> </summary>
+        //public (int bar, int beat, int tick) CurrentTime { get { return TickToTime(_currentTick); } }
 
         /// <summary>Where we be going.</summary>
         public int Length { get { return _lengthTicks; } set { _lengthTicks = value; Invalidate(); } }
