@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.IO;
 using NBagOfTricks.Utils;
 
+// TODO1 Expand when select node?
+
 namespace NBagOfTricks.UI
 {
     /// <summary>
@@ -31,12 +33,51 @@ namespace NBagOfTricks.UI
         TreeNode _lastSelectedNode = null;
         #endregion
 
-        #region Properties - client sets these before calling Init().
+        #region Properties
         /// <summary>Key is path to file or directory, value is space separated associated tags.</summary>
-        public List<(string path, string tags)> TaggedPaths { get; set; } = new List<(string, string)>();
+        public List<(string path, string tags)> TaggedPaths
+        {
+            get
+            {
+                List<(string path, string tags)> paths = new List<(string path, string tags)>();
+                _taggedPaths.ForEach(kv => { paths.Add((kv.Key, string.Join(" ", kv.Value.ToArray()))); });
+                return paths;
+            }
+            set
+            {
+                foreach ((string path, string tags) in value)
+                {
+                    // Check for valid path.
+                    if (Directory.Exists(path) || File.Exists(path))
+                    {
+                        // TODO Check for path is off one of the roots - ask user what to do.
+
+                        // Check for valid tags. If not, add to all tags.
+                        HashSet<string> h = new HashSet<string>();
+                        tags.SplitByToken(" ").ForEach(t => { _allTags.Add(t); h.Add(t); });
+                        _taggedPaths.Add(path, h);
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException($"Invalid path: {path}");
+                    }
+                }
+            }
+        }
 
         /// <summary>All possible tags.</summary>
-        public List<string> AllTags { get; set; } = new List<string>();
+        public List<string> AllTags
+        {
+            get
+            {
+                return _allTags.ToList();
+            }
+            set
+            {
+                _allTags.Clear();
+                value.ForEach(t => _allTags.Add(t));
+            }
+        }
 
         /// <summary>Base path(s) for the tree.</summary>
         public List<string> RootPaths { get; set; } = new List<string>();
@@ -78,47 +119,6 @@ namespace NBagOfTricks.UI
         /// </summary>
         public void Init()
         {
-            // Process properties into our internal structure.
-            _allTags.Clear();
-            AllTags.ForEach(t => _allTags.Add(t));
-
-            foreach ((string path, string tags) in TaggedPaths)
-            {
-                // Check for valid path.
-                if (Directory.Exists(path) || File.Exists(path))
-                {
-                    // TODOC Check for path is off one of the roots - ask user what to do.
-
-
-                    // Check for valid tags. If not, add to all tags.
-                    HashSet<string> h = new HashSet<string>();
-                    tags.SplitByToken(" ").ForEach(t => { _allTags.Add(t); h.Add(t); });
-                    _taggedPaths.Add(path, h);
-                }
-                else
-                {
-                    throw new FileNotFoundException($"Invalid path: {path}");
-                }
-            }
-
-            //_taggedDirs.Clear();
-            //_taggedFiles.Clear();
-            //foreach ((string path, string tags) in TaggedPaths)
-            //{
-            //    if (Directory.Exists(path))
-            //    {
-            //        _taggedDirs.Add(path, tags);
-            //    }
-            //    else if (File.Exists(path))
-            //    {
-            //        _taggedFiles.Add(path, tags);
-            //    }
-            //    else
-            //    {
-            //        throw new FileNotFoundException($"Invalid path: {path}");
-            //    }
-            //}
-
             // Show what we have.
             PopulateTreeView();
             if(treeView.Nodes.Count > 0)
@@ -130,21 +130,6 @@ namespace NBagOfTricks.UI
             {
                 throw new DirectoryNotFoundException($"No root directories");
             }
-        }
-
-        /// <summary>
-        /// Collect changes. Kinda klunky.
-        /// </summary>
-        public void FlushChanges()
-        {
-            AllTags = _allTags.ToList();
-
-            TaggedPaths.Clear();
-            _taggedPaths.ForEach(kv => { TaggedPaths.Add((kv.Key, string.Join(" ", kv.Value.ToArray()))); });
-
-            //Dictionary<string, string> _taggedFiles = new Dictionary<string, string>();
-            //Dictionary<string, string> _taggedDirs = new Dictionary<string, string>();
-            //HashSet<string> _allTags = new HashSet<string>();
         }
         #endregion
 
@@ -278,7 +263,7 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         private void Cms_Opening(object sender, CancelEventArgs e)
         {
-            // TODOC context menus:
+            // TODO context menus:
             // Files context menu:
             // - list of all tags with checkboxes indicating tags for this file. show inherited from dir.
             // - add tag
@@ -322,44 +307,6 @@ namespace NBagOfTricks.UI
                     //PopulateList();
                     break;
             }
-        }
-        #endregion
-
-        #region Filtering
-
-        private void FilterByTags_DropDownOpening(object sender, EventArgs e)
-        {
-            btnFilterByTags.DropDownItems.Clear();
-
-            btnFilterByTags.DropDownItems.Add(new ToolStripMenuItem("Select All", null, FilterByTags_ItemClicked));
-            btnFilterByTags.DropDownItems.Add(new ToolStripMenuItem("Clear All", null, FilterByTags_ItemClicked));
-            // cms.Items.Add(new ToolStripMenuItem("Clear All"));
-            // cms.ItemClicked += new ToolStripItemClickedEventHandler(cms_ItemClicked);
-
-
-
-            // cms.ShowImageMargin = false;
-            // cms.Items.Add(new ToolStripMenuItem("Select All"));
-            // cms.Items.Add(new ToolStripMenuItem("Clear All"));
-            // cms.ItemClicked += new ToolStripItemClickedEventHandler(cms_ItemClicked);
-
-            // ToolStripMenuItem toolStripMenuItem1 = new ToolStripMenuItem("11111");
-            // toolStripMenuItem1.Checked = true;
-            // toolStripMenuItem1.CheckState = CheckState.Indeterminate;
-            // cms.Items.Add(toolStripMenuItem1);
-
-
-        }
-
-        private void FilterByTags_ItemClicked(object sender, EventArgs e)
-        {
-
-        }
-
-        private void FilterByTags_DropDownClosed(object sender, EventArgs e)
-        {
-            // Need an active filters list
-
         }
         #endregion
 

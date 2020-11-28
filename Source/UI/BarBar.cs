@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using NBagOfTricks.Utils;
 
@@ -12,7 +13,7 @@ namespace NBagOfTricks.UI
     public partial class BarBar : UserControl
     {
         #region Enums
-        public enum SnapType { None, Bar, Beat }
+        public enum SnapType { Tick, Beat, Bar }
         #endregion
 
         #region Fields
@@ -43,13 +44,10 @@ namespace NBagOfTricks.UI
         public int TicksPerBeat { get; set; } = 8;
 
         /// <summary>Oh snap.</summary>
-        public SnapType Snap { get; set; } = SnapType.None;
+        public SnapType Snap { get; set; } = SnapType.Tick;
 
         /// <summary>Where we be now.</summary>
         public int CurrentTick { get { return _currentTick; } set { _currentTick = value; Invalidate(); } }
-
-        ///// <summary> </summary>
-        //public (int bar, int beat, int tick) CurrentTime { get { return TickToTime(_currentTick); } }
 
         /// <summary>Where we be going.</summary>
         public int Length { get { return _lengthTicks; } set { _lengthTicks = value; Invalidate(); } }
@@ -191,7 +189,7 @@ namespace NBagOfTricks.UI
         /// Convert x pos to tick.
         /// </summary>
         /// <param name="x"></param>
-        private int GetTickFromMouse(int x)
+        int GetTickFromMouse(int x)
         {
             int tick = 0;
 
@@ -211,21 +209,34 @@ namespace NBagOfTricks.UI
         string FormatTime(int tick)
         {
             var t = TickToTime(tick);
-            return $"{t.bar+1}.{t.beat+1}.{t.tick:00}";
+            return $"{t.bar+1}.{t.beat+1}.{t.tick+1:00}";
         }
 
         /// <summary>
-        /// 
+        /// Conversion.
         /// </summary>
         /// <param name="ticks"></param>
-        /// <returns></returns>
+        /// <returns>0-based</returns>
         (int bar, int beat, int tick) TickToTime(int ticks)
         {
             int bar = ticks / BeatsPerBar / TicksPerBeat;
             int beat = (ticks / TicksPerBeat) % BeatsPerBar;
-            int tick = ticks % (BeatsPerBar * TicksPerBeat);
+            int tick = ticks % TicksPerBeat;
 
             return (bar, beat, tick);
+        }
+
+        /// <summary>
+        /// Conversion.
+        /// </summary>
+        /// <param name="bar">0-based</param>
+        /// <param name="beat">0-based</param>
+        /// <param name="tick">0-based</param>
+        /// <returns></returns>
+        int TimeToTick(int bar, int beat, int tick)
+        {
+            int newtick = (bar * BeatsPerBar * TicksPerBeat) + (beat * TicksPerBeat) + tick;
+            return newtick;
         }
 
         /// <summary>
@@ -233,27 +244,70 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="tick"></param>
         /// <returns></returns>
-        int DoSnap(int tick) //TODOC
+        int DoSnap(int tick)
         {
             int snapped = tick;
+
+            var tm = TickToTime(tick);
 
             switch (Snap)
             {
                 case SnapType.Bar:
-
+                    {
+                        int newbar = tm.bar;
+                        if (tm.beat >= BeatsPerBar / 2)
+                        {
+                            newbar++;
+                        }
+                        snapped = TimeToTick(newbar, 0, 0);
+                    }
                     break;
 
                 case SnapType.Beat:
-
+                    {
+                        int newbar = tm.bar;
+                        int newbeat = tm.beat;
+                        if (tm.tick >= TicksPerBeat / 2)
+                        {
+                            newbeat++;
+                            if(newbeat >= BeatsPerBar)
+                            {
+                                newbar++;
+                                newbeat = 0;
+                            }
+                        }
+                        snapped = TimeToTick(newbar, newbeat, 0);
+                    }
                     break;
 
-                case SnapType.None:
+                case SnapType.Tick:
                     // Don't change it.
                     break;
             }
 
-            return snapped;
+            return snapped > _lengthTicks ? _lengthTicks : snapped;
         }
         #endregion
+
+        //public void Test()
+        //{
+        //    Snap = SnapType.Beat;
+
+        //    List<string> res = new List<string>();
+        //    res.Add("tick,snapped_tick,tm.bar,tm.beat,tm.tick");
+
+        //    for (int tick = 0; tick < 1000; tick++)
+        //    {
+        //        if(tick == 23)
+        //        {
+        //        }
+        //        int newtick = DoSnap(tick);
+        //        var tm = TickToTime(newtick);
+
+        //        string s = $"{tick},{newtick},{tm.bar},{tm.beat},{tm.tick}";
+        //        res.Add(s);
+        //    }
+        //    File.WriteAllText("bars.csv", string.Join(Environment.NewLine, res));
+        //}
     }
 }

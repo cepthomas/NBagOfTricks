@@ -11,7 +11,7 @@ namespace NBagOfTricks.UI
     public enum MeterType { Linear, Log, ContinuousLine, ContinuousDots }
 
     /// <summary>
-    /// Implements a rudimentary volume meter. TODO-Feature Add damping?
+    /// Implements a rudimentary volume meter. TODO Feature Add damping?
     /// </summary>
     public partial class Meter : UserControl
     {

@@ -34,8 +34,6 @@
             this.dvcolFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.dvcolTags = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.btnFilterByTags = new System.Windows.Forms.ToolStripDropDownButton();
-            this.btnEditTags = new System.Windows.Forms.ToolStripButton();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.cms = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,7 +42,6 @@
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
-            this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -58,7 +55,7 @@
             this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView.Location = new System.Drawing.Point(0, 0);
             this.treeView.Name = "treeView";
-            this.treeView.Size = new System.Drawing.Size(257, 585);
+            this.treeView.Size = new System.Drawing.Size(257, 587);
             this.treeView.TabIndex = 0;
             this.treeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.TreeView_DrawNode);
             this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterSelect);
@@ -75,7 +72,7 @@
             this.lvFiles.HideSelection = false;
             this.lvFiles.Location = new System.Drawing.Point(0, 0);
             this.lvFiles.Name = "lvFiles";
-            this.lvFiles.Size = new System.Drawing.Size(327, 585);
+            this.lvFiles.Size = new System.Drawing.Size(327, 587);
             this.lvFiles.TabIndex = 1;
             this.lvFiles.UseCompatibleStateImageBehavior = false;
             this.lvFiles.View = System.Windows.Forms.View.Details;
@@ -95,37 +92,16 @@
             // toolStrip1
             // 
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnFilterByTags,
-            this.btnEditTags});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(588, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(588, 25);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
-            // 
-            // btnFilterByTags
-            // 
-            this.btnFilterByTags.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnFilterByTags.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnFilterByTags.Name = "btnFilterByTags";
-            this.btnFilterByTags.Size = new System.Drawing.Size(56, 24);
-            this.btnFilterByTags.Text = "Filter";
-            this.btnFilterByTags.DropDownClosed += new System.EventHandler(this.FilterByTags_DropDownClosed);
-            this.btnFilterByTags.DropDownOpening += new System.EventHandler(this.FilterByTags_DropDownOpening);
-            // 
-            // btnEditTags
-            // 
-            this.btnEditTags.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnEditTags.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnEditTags.Name = "btnEditTags";
-            this.btnEditTags.Size = new System.Drawing.Size(72, 24);
-            this.btnEditTags.Text = "Edit Tags";
             // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 27);
+            this.splitContainer2.Location = new System.Drawing.Point(0, 25);
             this.splitContainer2.Name = "splitContainer2";
             // 
             // splitContainer2.Panel1
@@ -135,7 +111,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.lvFiles);
-            this.splitContainer2.Size = new System.Drawing.Size(588, 585);
+            this.splitContainer2.Size = new System.Drawing.Size(588, 587);
             this.splitContainer2.SplitterDistance = 257;
             this.splitContainer2.TabIndex = 4;
             // 
@@ -184,7 +160,6 @@
             // 
             // toolStripTextBox1
             // 
-            this.toolStripTextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(100, 27);
             this.toolStripTextBox1.Text = "New one here";
@@ -200,8 +175,6 @@
             this.Size = new System.Drawing.Size(588, 612);
             this.Load += new System.EventHandler(this.FilTree_Load);
             this.Resize += new System.EventHandler(this.FilTree_Resize);
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -228,7 +201,5 @@
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
-        private System.Windows.Forms.ToolStripDropDownButton btnFilterByTags;
-        private System.Windows.Forms.ToolStripButton btnEditTags;
     }
 }

@@ -93,6 +93,8 @@ namespace NBagOfTricks.Test
             barBar1.ProgressColor = Color.MediumPurple;
             barBar1.BackColor = Color.LawnGreen;
 
+            //barBar1.Test();
+
             timer1.Enabled = true;
         }
 
