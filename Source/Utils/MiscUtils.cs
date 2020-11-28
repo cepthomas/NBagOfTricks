@@ -4,7 +4,7 @@ using System.IO;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.Serialization.Formatters.Binary;
-
+using System.ComponentModel;
 
 namespace NBagOfTricks.Utils
 {
@@ -235,6 +235,35 @@ namespace NBagOfTricks.Utils
             Array.Copy(source, start, subset, 0, length);
             return subset;
         }
+
+        /// <summary>
+        /// Invoke helper. See http://stackoverflow.com/a/29497681
+        /// Usage:
+        /// progressBar1.InvokeIfRequired(o => 
+        /// {
+        ///     o.Style = ProgressBarStyle.Marquee;
+        ///     o.MarqueeAnimationSpeed = 40;
+        /// });
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="action"></param>
+        public static void InvokeIfRequired<T>(this T obj, InvokeIfRequiredDelegate<T> action) where T : ISynchronizeInvoke
+        {
+            if (obj != null)
+            {
+                if (obj.InvokeRequired)
+                {
+                    obj.Invoke(action, new object[] { obj });
+                }
+                else
+                {
+                    action(obj);
+                }
+            }
+        }
+        public delegate void InvokeIfRequiredDelegate<T>(T obj) where T : ISynchronizeInvoke;
+
         #endregion
 
         #region Extensions borrowed from MoreLinq

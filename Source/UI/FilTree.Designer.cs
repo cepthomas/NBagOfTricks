@@ -42,6 +42,7 @@
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.dvcolSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -66,6 +67,7 @@
             this.lvFiles.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lvFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.dvcolFile,
+            this.dvcolSize,
             this.dvcolTags});
             this.lvFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvFiles.FullRowSelect = true;
@@ -160,9 +162,15 @@
             // 
             // toolStripTextBox1
             // 
+            this.toolStripTextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(100, 27);
             this.toolStripTextBox1.Text = "New one here";
+            // 
+            // dvcolSize
+            // 
+            this.dvcolSize.Text = "Size (kb)";
+            this.dvcolSize.Width = 70;
             // 
             // FilTree
             // 
@@ -201,5 +209,6 @@
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+        private System.Windows.Forms.ColumnHeader dvcolSize;
     }
 }

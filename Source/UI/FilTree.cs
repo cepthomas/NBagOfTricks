@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using NBagOfTricks.Utils;
 
-// TODO1 Expand when select node?
+// TODOC Expand when select node?
 
 namespace NBagOfTricks.UI
 {
@@ -50,7 +50,7 @@ namespace NBagOfTricks.UI
                     // Check for valid path.
                     if (Directory.Exists(path) || File.Exists(path))
                     {
-                        // TODO Check for path is off one of the roots - ask user what to do.
+                        // TODOC Check for path is off one of the roots - ask user what to do.
 
                         // Check for valid tags. If not, add to all tags.
                         HashSet<string> h = new HashSet<string>();
@@ -162,8 +162,10 @@ namespace NBagOfTricks.UI
             {
                 if (FilterExts.Contains(Path.GetExtension(file.Name).ToLower()))
                 {
-                    var item = new ListViewItem(new[] { file.Name, "TODO tags" });
-                    item.Tag = file.FullName;
+                    var item = new ListViewItem(new[] { file.Name, (file.Length / 1024).ToString(), ">>> tags" })
+                    {
+                        Tag = file.FullName
+                    };
                     lvFiles.Items.Add(item);
                 }
             }
@@ -263,7 +265,7 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         private void Cms_Opening(object sender, CancelEventArgs e)
         {
-            // TODO context menus:
+            // TODOC context menus:
             // Files context menu:
             // - list of all tags with checkboxes indicating tags for this file. show inherited from dir.
             // - add tag
