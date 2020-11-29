@@ -39,9 +39,11 @@ namespace NBagOfTricks.UI
 
         #region Properties
         /// <summary>Where we be now.</summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
         public TimeSpan CurrentTime { get { return _current; } set { _current = value; Invalidate(); } }
 
         /// <summary>Where we be going.</summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
         public TimeSpan Length { get { return _length; } set { _length = value; Invalidate(); } }
 
         /// <summary>For styling.</summary>

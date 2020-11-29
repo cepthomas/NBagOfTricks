@@ -59,7 +59,6 @@
             this.treeView.Size = new System.Drawing.Size(257, 587);
             this.treeView.TabIndex = 0;
             this.treeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.TreeView_DrawNode);
-            this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterSelect);
             this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseClick);
             // 
             // lvFiles

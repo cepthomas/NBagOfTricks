@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using System.IO;
 using NBagOfTricks.Utils;
 
-// TODOC Expand when select node?
 
 namespace NBagOfTricks.UI
 {
@@ -29,60 +28,37 @@ namespace NBagOfTricks.UI
         /// <summary>Filter by these tags.</summary>
         HashSet<string> _activeFilters = new HashSet<string>();
 
-        /// <summary>Manage cosmetics.</summary>
-        TreeNode _lastSelectedNode = null;
+        ///// <summary>Manage cosmetics.</summary>
+        //TreeNode _lastSelectedNode = null;
         #endregion
 
         #region Properties
         /// <summary>Key is path to file or directory, value is space separated associated tags.</summary>
-        public List<(string path, string tags)> TaggedPaths
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public Dictionary<string, string> TaggedPaths
         {
-            get
-            {
-                List<(string path, string tags)> paths = new List<(string path, string tags)>();
-                _taggedPaths.ForEach(kv => { paths.Add((kv.Key, string.Join(" ", kv.Value.ToArray()))); });
-                return paths;
-            }
-            set
-            {
-                foreach ((string path, string tags) in value)
-                {
-                    // Check for valid path.
-                    if (Directory.Exists(path) || File.Exists(path))
-                    {
-                        // TODOC Check for path is off one of the roots - ask user what to do.
-
-                        // Check for valid tags. If not, add to all tags.
-                        HashSet<string> h = new HashSet<string>();
-                        tags.SplitByToken(" ").ForEach(t => { _allTags.Add(t); h.Add(t); });
-                        _taggedPaths.Add(path, h);
-                    }
-                    else
-                    {
-                        throw new FileNotFoundException($"Invalid path: {path}");
-                    }
-                }
-            }
+            get { return GetTaggedPaths(); }
+            set { SetTaggedPaths(value); }
         }
 
         /// <summary>All possible tags.</summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
         public List<string> AllTags
         {
-            get
-            {
-                return _allTags.ToList();
-            }
-            set
-            {
-                _allTags.Clear();
-                value.ForEach(t => _allTags.Add(t));
-            }
+            get { return _allTags.ToList(); }
+            set { _allTags.Clear(); value.ForEach(t => _allTags.Add(t)); }
         }
 
         /// <summary>Base path(s) for the tree.</summary>
-        public List<string> RootPaths { get; set; } = new List<string>();
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        public List<string> RootDirs { get; set; } = new List<string>();
 
         /// <summary>Show only these file types.</summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
         public List<string> FilterExts { get; set; } = new List<string>();
 
         /// <summary>Generate event for single or double click.</summary>
@@ -124,7 +100,7 @@ namespace NBagOfTricks.UI
             if(treeView.Nodes.Count > 0)
             {
                 treeView.SelectedNode = treeView.Nodes[0];
-                PopulateNode(treeView.Nodes[0]);
+                PopulateFiles(treeView.Nodes[0]);
             }
             else
             {
@@ -135,23 +111,48 @@ namespace NBagOfTricks.UI
 
         #region Tree View
         /// <summary>
-        /// 
+        /// Drill down through dirs/files.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        void TreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                PopulateNode(e.Node);
+                //Console.WriteLine($"IsExpanded:{e.Node.IsExpanded} IsSelected:{e.Node.IsSelected}");
+
+                if(e.Node.FirstNode == null)
+                {
+                    // No subnodes therefore plain file.
+                    PopulateFiles(e.Node);
+                }
+                else
+                {
+                    // More to go.
+                    // Click +:
+                    // 1-IsExpanded:True IsSelected:False
+                    // 2-IsExpanded:False IsSelected:False
+                    // Click name:
+                    // 1-IsExpanded:False IsSelected:False
+                    // 2-IsExpanded:False IsSelected:True
+
+                    //if (e.Node.IsExpanded == false)
+                    //{
+                    //    e.Node.Expand();
+                    //}
+                    //else
+                    //{
+                    //    e.Node.Collapse();
+                    //}
+                }
             }
         }
 
         /// <summary>
-        /// 
+        /// Populate the file selector.
         /// </summary>
         /// <param name="node"></param>
-        private void PopulateNode(TreeNode node)
+        void PopulateFiles(TreeNode node)
         {
             TreeNode clickedNode = node;
 
@@ -178,7 +179,7 @@ namespace NBagOfTricks.UI
         {
             treeView.Nodes.Clear();
 
-            foreach (string path in RootPaths)
+            foreach (string path in RootDirs)
             {
                 TreeNode rootNode;
 
@@ -235,7 +236,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ListFiles_MouseClick(object sender, MouseEventArgs e)
+        void ListFiles_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left && !DoubleClickSelect && FileSelectedEvent != null)
             {
@@ -263,7 +264,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Cms_Opening(object sender, CancelEventArgs e)
+        void Cms_Opening(object sender, CancelEventArgs e)
         {
             // TODOC context menus:
             // Files context menu:
@@ -295,7 +296,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MenuItem_Click(object sender, EventArgs e)
+        void MenuItem_Click(object sender, EventArgs e)
         {
             var mi = sender as ToolStripMenuItem;
 
@@ -312,32 +313,32 @@ namespace NBagOfTricks.UI
         }
         #endregion
 
-        #region Misc
-        /// <summary>
-        /// Ensure tree selection is always visible. Kludgy...
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            // Select new node
-            e.Node.BackColor = SystemColors.Highlight;
-            e.Node.ForeColor = SystemColors.HighlightText;
-            if (_lastSelectedNode != null)
-            {
-                // Deselect old node
-                _lastSelectedNode.BackColor = SystemColors.Window;
-                _lastSelectedNode.ForeColor = SystemColors.WindowText;
-            }
-            _lastSelectedNode = e.Node;
-        }
+        #region Misc privates
+        ///// <summary>
+        ///// Ensure tree selection is always visible. Kludgy...
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        //{
+        //    // Select new node
+        //    e.Node.BackColor = SystemColors.Highlight;
+        //    e.Node.ForeColor = SystemColors.HighlightText;
+        //    if (_lastSelectedNode != null)
+        //    {
+        //        // Deselect old node
+        //        _lastSelectedNode.BackColor = SystemColors.Window;
+        //        _lastSelectedNode.ForeColor = SystemColors.WindowText;
+        //    }
+        //    _lastSelectedNode = e.Node;
+        //}
 
         /// <summary>
         /// See above.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TreeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
+        void TreeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
         {
             e.DrawDefault = true;
         }
@@ -347,10 +348,45 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void FilTree_Resize(object sender, EventArgs e)
+        void FilTree_Resize(object sender, EventArgs e)
         {
             lvFiles.Columns[0].Width = lvFiles.Width / 2;
             lvFiles.Columns[1].Width = -2;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Dictionary<string, string> GetTaggedPaths()
+        {
+            Dictionary<string, string> paths = new Dictionary<string, string>();
+            _taggedPaths.ForEach(kv => { paths[kv.Key] = string.Join(" ", kv.Value.ToArray()); });
+            return paths;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="paths"></param>
+        void SetTaggedPaths(Dictionary<string, string> paths)
+        {
+            foreach (var kv in paths)
+            {
+                // Check for valid path.
+                if (Directory.Exists(kv.Key) || File.Exists(kv.Key))
+                {
+                    // TODOC Check for path is off one of the roots - ask user what to do.
+                    // TODOC Check for valid tags. If not, add to all tags? or remove?
+                    HashSet<string> h = new HashSet<string>();
+                    kv.Value.SplitByToken(" ").ForEach(t => { _allTags.Add(t); h.Add(t); });
+                    _taggedPaths.Add(kv.Key, h);
+                }
+                else
+                {
+                    throw new FileNotFoundException($"Invalid path: {kv.Key}");
+                }
+            }
         }
         #endregion
     }

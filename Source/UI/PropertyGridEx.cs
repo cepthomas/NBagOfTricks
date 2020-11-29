@@ -34,25 +34,43 @@ namespace NBagOfTricks.UI
         }
         #endregion
 
-        #region Properties
+        #region Propertie]
         /// <summary>Gets the tool strip.</summary>
-        [Category("Appearance"), DisplayName("Toolstrip"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content), DescriptionAttribute("Toolbar object"), Browsable(true)]
+        [Category("Appearance")]
+        [DisplayName("Toolstrip")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Description("Toolbar object")]
+        [Browsable(true)]
         public ToolStrip ToolStrip { get { return _toolstrip; } }
 
         /// <summary>Gets the doc comment.</summary>
-        [Category("Appearance"), DisplayName("Doc"), DescriptionAttribute("DocComment object. Represent the comments area of the PropertyGrid."), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
+        [Category("Appearance")]
+        [DisplayName("Doc")]
+        [Description("DocComment object. Represent the comments area of the PropertyGrid.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
         public Control DocComment { get { return (Control)_docComment; } }
 
         /// <summary>Gets the doc comment title.</summary>
-        [Category("Appearance"), DisplayName("HelpTitle"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content), DescriptionAttribute("Doc Title Label."), Browsable(true)]
+        [Category("Appearance")]
+        [DisplayName("HelpTitle")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Description("Doc Title Label.")]
+        [Browsable(true)]
         public Label DocCommentTitle { get { return _docCommentTitle; } }
 
         /// <summary>Gets the doc comment description.</summary>
-        [Category("Appearance"), DisplayName("DocDescription"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content), DescriptionAttribute("Doc Description Label."), Browsable(true)]
+        [Category("Appearance")]
+        [DisplayName("DocDescription")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Description("Doc Description Label.")]
+        [Browsable(true)]
         public Label DocCommentDescription { get { return _docCommentDescription; } }
 
         /// <summary>Gets or sets the help comment image.</summary>
-        [Category("Appearance"), DisplayName("DocImageBackground"), DescriptionAttribute("Doc Image Background.")]
+        [Category("Appearance")]
+        [DisplayName("DocImageBackground")]
+        [Description("Doc Image Background.")]
         public Image DocCommentImage
         {
             get { return ((Control)_docComment).BackgroundImage; }

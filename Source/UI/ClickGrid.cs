@@ -166,7 +166,7 @@ namespace NBagOfTricks.UI
                         pe.Graphics.FillRectangle(bb, r);
 
                         // Border
-                        pe.Graphics.DrawRectangle(_pen, r);
+                        //pe.Graphics.DrawRectangle(_pen, r);
 
                         // Text
                         string text = _indicators[ind].Text;
