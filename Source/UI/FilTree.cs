@@ -268,13 +268,20 @@ namespace NBagOfTricks.UI
         {
             // TODOC context menus:
             // Files context menu:
-            // - list of all tags with checkboxes indicating tags for this file. show inherited from dir.
+            // - list of all tags with checkboxes indicating tags for this file. 
+            // TODOC show inherited from dir.
             // - add tag
             // - delete tag (need to remove from all files)
             // - edit tag? maybe
             // Tree context menu:
             // - Same as above for dirs.
             // - expand/compress all or 1/2/3/...
+
+            // Get current path.
+            // Get tags for path if any.
+            // Make menu of all tags with this one's checked
+            // If file
+            //    Get
 
             cms.Items.Clear();
             var vvv = new ToolStripMenuItem("Select All", null, MenuItem_Click);
