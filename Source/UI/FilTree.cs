@@ -22,14 +22,8 @@ namespace NBagOfTricks.UI
         /// <summary>Key is file or dir path, value is associated tags.</summary>
         Dictionary<string, HashSet<string>> _taggedPaths = new Dictionary<string, HashSet<string>>();
 
-        /// <summary>All possible tags.</summary>
-        HashSet<string> _allTags = new HashSet<string>();
-
         /// <summary>Filter by these tags.</summary>
         HashSet<string> _activeFilters = new HashSet<string>();
-
-        ///// <summary>Manage cosmetics.</summary>
-        //TreeNode _lastSelectedNode = null;
         #endregion
 
         #region Properties
@@ -42,14 +36,10 @@ namespace NBagOfTricks.UI
             set { SetTaggedPaths(value); }
         }
 
-        /// <summary>All possible tags.</summary>
+        /// <summary>All possible tags and whether they are active.</summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Browsable(false)]
-        public List<string> AllTags
-        {
-            get { return _allTags.ToList(); }
-            set { _allTags.Clear(); value.ForEach(t => _allTags.Add(t)); }
-        }
+        public Dictionary<string, bool> AllTags { get; set; } = new Dictionary<string, bool>();
 
         /// <summary>Base path(s) for the tree.</summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -96,6 +86,8 @@ namespace NBagOfTricks.UI
         public void Init()
         {
             // Show what we have.
+            PopulateFilters();
+
             PopulateTreeView();
             if(treeView.Nodes.Count > 0)
             {
@@ -163,11 +155,24 @@ namespace NBagOfTricks.UI
             {
                 if (FilterExts.Contains(Path.GetExtension(file.Name).ToLower()))
                 {
-                    var item = new ListViewItem(new[] { file.Name, (file.Length / 1024).ToString(), ">>> tags" })
+                    bool show = true;
+
+                    // Is it in our tagged files?
+                    if(TaggedPaths.ContainsKey(file.FullName))
                     {
-                        Tag = file.FullName
-                    };
-                    lvFiles.Items.Add(item);
+                        var match = TaggedPaths.Where(p => _activeFilters.Contains(p.Value));
+                        show = match.Count() > 0;
+                    }
+
+                    if(show)
+                    {
+                        string stags = TaggedPaths.ContainsKey(file.FullName) ? string.Join(" ", TaggedPaths[file.FullName]) : "";
+                        var item = new ListViewItem(new[] { file.Name, (file.Length / 1024).ToString(), stags })
+                        {
+                            Tag = file.FullName
+                        };
+                        lvFiles.Items.Add(item);
+                    }
                 }
             }
         }
@@ -258,44 +263,106 @@ namespace NBagOfTricks.UI
         }
         #endregion
 
-        #region Context Menus
+        #region Filters
         /// <summary>
-        /// Manage menus.
+        /// Add filter buttons for each tag type.
+        /// </summary>
+        void PopulateFilters()
+        {
+            _activeFilters.Clear();
+
+            foreach (var item in toolStrip1.Items)
+            {
+                // TODOC remove old event handlers?
+            }
+            toolStrip1.Items.Clear();
+
+            foreach (var tag in AllTags)
+            {
+                ToolStripButton btn = new ToolStripButton()
+                {
+                    CheckOnClick = true,
+                    DisplayStyle = ToolStripItemDisplayStyle.Text,
+                    //Size = new System.Drawing.Size(43, 24);
+                    Name = tag.Key,
+                    Text = tag.Key + " x",
+                    Checked = tag.Value
+                };
+                btn.CheckedChanged += Filters_CheckedChanged;
+
+                if(btn.Checked)
+                {
+                    _activeFilters.Add(tag.Key);
+                }
+
+                toolStrip1.Items.Add(btn);
+            }
+        }
+
+        /// <summary>
+        /// Update the file list for filters.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void Cms_Opening(object sender, CancelEventArgs e)
+        void Filters_CheckedChanged(object sender, EventArgs e)
         {
-            // TODOC context menus:
-            // Files context menu:
-            // - list of all tags with checkboxes indicating tags for this file. 
-            // TODOC show inherited from dir.
-            // - add tag
-            // - delete tag (need to remove from all files)
-            // - edit tag? maybe
-            // Tree context menu:
-            // - Same as above for dirs.
-            // - expand/compress all or 1/2/3/...
+            _activeFilters.Clear();
+            foreach (var item in toolStrip1.Items)
+            {
+                var btn = item as ToolStripButton;
 
-            // Get current path.
-            // Get tags for path if any.
-            // Make menu of all tags with this one's checked
-            // If file
-            //    Get
+                if (btn != null && btn.Checked)
+                {
+                    _activeFilters.Add(btn.Name);
+                }
+            }
+            PopulateFiles(treeView.SelectedNode);
+        }
+        #endregion
+
+        #region Context Menus
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void MenuFiles_Opening(object sender, CancelEventArgs e)
+        {
+            // TODOC list of all tags with checkboxes indicating tags for this file. 
+            // inherit from dir?
+
+            var cms = sender as ContextMenuStrip;
 
             cms.Items.Clear();
-            var vvv = new ToolStripMenuItem("Select All", null, MenuItem_Click);
-            cms.Items.Add(new ToolStripMenuItem("Select All", null, MenuItem_Click));
-            cms.Items.Add(new ToolStripMenuItem("Clear All", null, MenuItem_Click));
+            cms.Items.Add(new ToolStripMenuItem("Select1", null, MenuItem_Click));
+            cms.Items.Add(new ToolStripMenuItem("Select2", null, MenuItem_Click));
 
-            ToolStripMenuItem checkMarginOnly = new ToolStripMenuItem("Check Margin", null, MenuItem_Click)
+            ToolStripMenuItem checkMarginOnly = new ToolStripMenuItem("Check1", null, MenuItem_Click)
             {
                 Checked = true,
                 CheckOnClick = true,
                 CheckState = CheckState.Indeterminate
             };
-
             cms.Items.Add(checkMarginOnly);
+
+            // Process menu selection.
+            void MenuItem_Click(object click_sender, EventArgs click_args)// TODOC per menu type.
+            {
+                var mi = click_sender as ToolStripMenuItem;
+
+                switch (mi.Text)
+                {
+                    case "Select1":
+                        //Do something
+                        break;
+
+                    case "Select2":
+                        break;
+
+                    case "Check1":
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -303,43 +370,33 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void MenuItem_Click(object sender, EventArgs e)
+        void MenuTree_Opening(object sender, CancelEventArgs e)
         {
-            var mi = sender as ToolStripMenuItem;
+            // TODOC list of all tags with checkboxes indicating tags for this dir. 
+            // - expand/compress all or 1/2/3/...
 
-            switch (mi.Text)
-            {
-                case "Select All":
-                    //PopulateList();
-                    break;
 
-                case "Clear All":
-                    //PopulateList();
-                    break;
-            }
+            CheckedListBox cb = new CheckedListBox();
+            
+
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void MenuFilters_Opening(object sender, CancelEventArgs e)
+        {
+            // - add tag
+            // - delete tag (need to remove from all files)
+            // TODOC edit tag? maybe
+
         }
         #endregion
 
         #region Misc privates
-        ///// <summary>
-        ///// Ensure tree selection is always visible. Kludgy...
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        //void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
-        //{
-        //    // Select new node
-        //    e.Node.BackColor = SystemColors.Highlight;
-        //    e.Node.ForeColor = SystemColors.HighlightText;
-        //    if (_lastSelectedNode != null)
-        //    {
-        //        // Deselect old node
-        //        _lastSelectedNode.BackColor = SystemColors.Window;
-        //        _lastSelectedNode.ForeColor = SystemColors.WindowText;
-        //    }
-        //    _lastSelectedNode = e.Node;
-        //}
-
         /// <summary>
         /// See above.
         /// </summary>
@@ -362,7 +419,7 @@ namespace NBagOfTricks.UI
         }
 
         /// <summary>
-        /// 
+        /// Property accessor helper.
         /// </summary>
         /// <returns></returns>
         Dictionary<string, string> GetTaggedPaths()
@@ -373,7 +430,7 @@ namespace NBagOfTricks.UI
         }
 
         /// <summary>
-        /// 
+        /// Property accessor helper.
         /// </summary>
         /// <param name="paths"></param>
         void SetTaggedPaths(Dictionary<string, string> paths)
@@ -384,10 +441,17 @@ namespace NBagOfTricks.UI
                 if (Directory.Exists(kv.Key) || File.Exists(kv.Key))
                 {
                     // TODOC Check for path is off one of the roots - ask user what to do.
-                    // TODOC Check for valid tags. If not, add to all tags? or remove?
                     HashSet<string> h = new HashSet<string>();
-                    kv.Value.SplitByToken(" ").ForEach(t => { _allTags.Add(t); h.Add(t); });
                     _taggedPaths.Add(kv.Key, h);
+
+                    // Check for valid tags.
+                    foreach (string tag in kv.Value.SplitByToken(" "))
+                    {
+                        if(!AllTags.ContainsKey(tag))
+                        {
+                            AllTags[tag] = false;
+                        }
+                    }
                 }
                 else
                 {
@@ -396,5 +460,15 @@ namespace NBagOfTricks.UI
             }
         }
         #endregion
+
+        private void toolStripTextBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripLabel1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
