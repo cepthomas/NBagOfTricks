@@ -30,17 +30,14 @@
         {
             this.components = new System.ComponentModel.Container();
             this.treeView = new System.Windows.Forms.TreeView();
-            this.menuTree = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.menuFiles = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.lvFiles = new System.Windows.Forms.ListView();
             this.dvcolFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.dvcolSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.dvcolTags = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.menuFiles = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.menuFilters = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.lblActiveFilters = new System.Windows.Forms.ToolStripLabel();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -51,21 +48,21 @@
             // treeView
             // 
             this.treeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.treeView.ContextMenuStrip = this.menuTree;
+            this.treeView.ContextMenuStrip = this.menuFiles;
             this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView.Location = new System.Drawing.Point(0, 0);
             this.treeView.Name = "treeView";
-            this.treeView.Size = new System.Drawing.Size(257, 585);
+            this.treeView.Size = new System.Drawing.Size(257, 587);
             this.treeView.TabIndex = 0;
             this.treeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.TreeView_DrawNode);
             this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView_NodeMouseClick);
             // 
-            // menuTree
+            // menuFiles
             // 
-            this.menuTree.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.menuTree.Name = "menuTree";
-            this.menuTree.Size = new System.Drawing.Size(61, 4);
-            this.menuTree.Opening += new System.ComponentModel.CancelEventHandler(this.MenuTree_Opening);
+            this.menuFiles.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.menuFiles.Name = "menuTree";
+            this.menuFiles.Size = new System.Drawing.Size(211, 32);
+            this.menuFiles.Opening += new System.ComponentModel.CancelEventHandler(this.MenuFiles_Opening);
             // 
             // lvFiles
             // 
@@ -80,7 +77,7 @@
             this.lvFiles.HideSelection = false;
             this.lvFiles.Location = new System.Drawing.Point(0, 0);
             this.lvFiles.Name = "lvFiles";
-            this.lvFiles.Size = new System.Drawing.Size(327, 585);
+            this.lvFiles.Size = new System.Drawing.Size(327, 587);
             this.lvFiles.TabIndex = 1;
             this.lvFiles.UseCompatibleStateImageBehavior = false;
             this.lvFiles.View = System.Windows.Forms.View.Details;
@@ -102,37 +99,28 @@
             this.dvcolTags.Text = "Tags";
             this.dvcolTags.Width = 365;
             // 
-            // menuFiles
-            // 
-            this.menuFiles.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.menuFiles.Name = "menuFiles";
-            this.menuFiles.Size = new System.Drawing.Size(61, 4);
-            this.menuFiles.Opening += new System.ComponentModel.CancelEventHandler(this.MenuFiles_Opening);
-            // 
             // toolStrip1
             // 
-            this.toolStrip1.ContextMenuStrip = this.menuFilters;
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel1,
-            this.toolStripTextBox1});
+            this.lblActiveFilters});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(588, 27);
+            this.toolStrip1.Size = new System.Drawing.Size(588, 25);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // menuFilters
+            // lblActiveFilters
             // 
-            this.menuFilters.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.menuFilters.Name = "menuFilters";
-            this.menuFilters.Size = new System.Drawing.Size(61, 4);
-            this.menuFilters.Opening += new System.ComponentModel.CancelEventHandler(this.MenuFilters_Opening);
+            this.lblActiveFilters.Name = "lblActiveFilters";
+            this.lblActiveFilters.Size = new System.Drawing.Size(93, 22);
+            this.lblActiveFilters.Text = "Active Filters";
+            this.lblActiveFilters.Click += new System.EventHandler(this.ActiveFilters_Click);
             // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 27);
+            this.splitContainer2.Location = new System.Drawing.Point(0, 25);
             this.splitContainer2.Name = "splitContainer2";
             // 
             // splitContainer2.Panel1
@@ -142,23 +130,9 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.lvFiles);
-            this.splitContainer2.Size = new System.Drawing.Size(588, 585);
+            this.splitContainer2.Size = new System.Drawing.Size(588, 587);
             this.splitContainer2.SplitterDistance = 257;
             this.splitContainer2.TabIndex = 4;
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(111, 24);
-            this.toolStripLabel1.Text = "toolStripLabel1";
-            this.toolStripLabel1.Click += new System.EventHandler(this.toolStripLabel1_Click);
-            // 
-            // toolStripTextBox1
-            // 
-            this.toolStripTextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 27);
-            this.toolStripTextBox1.Click += new System.EventHandler(this.toolStripTextBox1_Click);
             // 
             // FilTree
             // 
@@ -190,10 +164,7 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.ColumnHeader dvcolSize;
-        private System.Windows.Forms.ContextMenuStrip menuTree;
         private System.Windows.Forms.ContextMenuStrip menuFiles;
-        private System.Windows.Forms.ContextMenuStrip menuFilters;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
-        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+        private System.Windows.Forms.ToolStripLabel lblActiveFilters;
     }
 }

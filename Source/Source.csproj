@@ -67,6 +67,12 @@
     <Compile Include="UI\CpuMeter.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="UI\OptionsEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\OptionsEditor.Designer.cs">
+      <DependentUpon>OptionsEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\TimeBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -115,6 +121,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\FilTree.resx">
       <DependentUpon>FilTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\OptionsEditor.resx">
+      <DependentUpon>OptionsEditor.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

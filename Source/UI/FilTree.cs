@@ -120,14 +120,6 @@ namespace NBagOfTricks.UI
                 }
                 else
                 {
-                    // More to go.
-                    // Click +:
-                    // 1-IsExpanded:True IsSelected:False
-                    // 2-IsExpanded:False IsSelected:False
-                    // Click name:
-                    // 1-IsExpanded:False IsSelected:False
-                    // 2-IsExpanded:False IsSelected:True
-
                     //if (e.Node.IsExpanded == false)
                     //{
                     //    e.Node.Expand();
@@ -261,6 +253,39 @@ namespace NBagOfTricks.UI
                 FileSelectedEvent.Invoke(this, lvFiles.SelectedItems[0].Tag.ToString());
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void MenuFiles_Opening(object sender, CancelEventArgs e)
+        {
+            menuFiles.Items.Clear();
+            menuFiles.Items.Add("Edit Tags", null, Recent_Click);
+
+            void Recent_Click(object csender, EventArgs ce)
+            {
+                ToolStripMenuItem item = csender as ToolStripMenuItem;
+                string fn = lvFiles.SelectedItems[0].Tag.ToString();
+
+                switch (csender.ToString())
+                {
+                    case "Edit Tags":
+                        var tags = _taggedPaths.ContainsKey(fn) ? _taggedPaths[fn] : new HashSet<string>();
+                        {
+                            xxx
+                        }
+
+
+                        break;
+                }
+                //string fn = sender.ToString();
+                //OpenFile(fn);
+            }
+        }
+
+
         #endregion
 
         #region Filters
@@ -271,128 +296,36 @@ namespace NBagOfTricks.UI
         {
             _activeFilters.Clear();
 
-            foreach (var item in toolStrip1.Items)
-            {
-                // TODOC remove old event handlers?
-            }
-            toolStrip1.Items.Clear();
-
             foreach (var tag in AllTags)
             {
-                ToolStripButton btn = new ToolStripButton()
-                {
-                    CheckOnClick = true,
-                    DisplayStyle = ToolStripItemDisplayStyle.Text,
-                    //Size = new System.Drawing.Size(43, 24);
-                    Name = tag.Key,
-                    Text = tag.Key + " x",
-                    Checked = tag.Value
-                };
-                btn.CheckedChanged += Filters_CheckedChanged;
-
-                if(btn.Checked)
+                if (tag.Value)
                 {
                     _activeFilters.Add(tag.Key);
                 }
-
-                toolStrip1.Items.Add(btn);
             }
+
+            lblActiveFilters.Text = string.Join("  ", _activeFilters);
         }
 
-        /// <summary>
-        /// Update the file list for filters.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Filters_CheckedChanged(object sender, EventArgs e)
-        {
-            _activeFilters.Clear();
-            foreach (var item in toolStrip1.Items)
-            {
-                var btn = item as ToolStripButton;
-
-                if (btn != null && btn.Checked)
-                {
-                    _activeFilters.Add(btn.Name);
-                }
-            }
-            PopulateFiles(treeView.SelectedNode);
-        }
-        #endregion
-
-        #region Context Menus
         /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void MenuFiles_Opening(object sender, CancelEventArgs e)
+        void ActiveFilters_Click(object sender, EventArgs e)
         {
-            // TODOC list of all tags with checkboxes indicating tags for this file. 
-            // inherit from dir?
-
-            var cms = sender as ContextMenuStrip;
-
-            cms.Items.Clear();
-            cms.Items.Add(new ToolStripMenuItem("Select1", null, MenuItem_Click));
-            cms.Items.Add(new ToolStripMenuItem("Select2", null, MenuItem_Click));
-
-            ToolStripMenuItem checkMarginOnly = new ToolStripMenuItem("Check1", null, MenuItem_Click)
+            OptionsEditor oped = new OptionsEditor()
             {
-                Checked = true,
-                CheckOnClick = true,
-                CheckState = CheckState.Indeterminate
+                Title = "Edit All Filters",
+                Values = AllTags
             };
-            cms.Items.Add(checkMarginOnly);
 
-            // Process menu selection.
-            void MenuItem_Click(object click_sender, EventArgs click_args)// TODOC per menu type.
+            if (oped.ShowDialog() == DialogResult.OK)
             {
-                var mi = click_sender as ToolStripMenuItem;
-
-                switch (mi.Text)
-                {
-                    case "Select1":
-                        //Do something
-                        break;
-
-                    case "Select2":
-                        break;
-
-                    case "Check1":
-                        break;
-                }
+                AllTags = oped.Values;
+                PopulateFilters();
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void MenuTree_Opening(object sender, CancelEventArgs e)
-        {
-            // TODOC list of all tags with checkboxes indicating tags for this dir. 
-            // - expand/compress all or 1/2/3/...
-
-
-            CheckedListBox cb = new CheckedListBox();
-            
-
-
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void MenuFilters_Opening(object sender, CancelEventArgs e)
-        {
-            // - add tag
-            // - delete tag (need to remove from all files)
-            // TODOC edit tag? maybe
-
+            //else never mind
         }
         #endregion
 
@@ -460,15 +393,5 @@ namespace NBagOfTricks.UI
             }
         }
         #endregion
-
-        private void toolStripTextBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void toolStripLabel1_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
