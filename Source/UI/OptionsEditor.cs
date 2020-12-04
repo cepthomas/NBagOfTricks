@@ -13,18 +13,25 @@ namespace NBagOfTricks.UI
 {
     public partial class OptionsEditor : Form
     {
-        /// <summary>The values to edit. Key is tet, value is bool enable.</summary>
+        #region Fields
+        /// <summary>Working values so we don't destroy originals.</summary>
+        Dictionary<string, bool> _values;
+        #endregion
+
+        #region Properties
+        /// <summary>The values to edit. Key is text, value is bool enable. Clone in case user cancels.</summary>
         public Dictionary<string, bool> Values
         { 
             get { return _values; }
-            set { _values = value.DeepClone(); _values.ForEach(kv => lbValues.Items.Add(kv.Key, kv.Value)); }
+            set { _values = new Dictionary<string, bool>(value); _values.ForEach(kv => lbValues.Items.Add(kv.Key, kv.Value)); }
         }
 
         /// <summary>Custom label.</summary>
         public string Title { get; set; } = "Options Editor";
 
-        /// <summary>Working values so we don't destroy originals.</summary>
-        Dictionary<string, bool> _values;
+        /// <summary>If true, user can add and delete values, otherwise just select.</summary>
+        public bool AllowEdit { get; set; } = false;
+        #endregion
 
         /// <summary>
         /// Constructor.
@@ -32,6 +39,21 @@ namespace NBagOfTricks.UI
         public OptionsEditor()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Initialization. If editing not allowed, adjust the ui.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void OptionsEditor_Load(object sender, EventArgs e)
+        {
+            if(!AllowEdit)
+            {
+                btnAdd.Visible = false;
+                txtAdd.Visible = false;
+                lbValues.Height = lbValues.Top + btnAdd.Bottom;
+            }
         }
 
         /// <summary>
@@ -56,7 +78,7 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         void Values_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Delete)
+            if(AllowEdit && e.KeyCode == Keys.Delete)
             {
                 lbValues.Items.RemoveAt(lbValues.SelectedIndex);
                 e.Handled = true;

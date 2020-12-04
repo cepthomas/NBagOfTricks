@@ -38,7 +38,7 @@ namespace NBagOfTricks.UI
             // 
             // txtAdd
             // 
-            this.txtAdd.Location = new System.Drawing.Point(82, 205);
+            this.txtAdd.Location = new System.Drawing.Point(82, 204);
             this.txtAdd.Name = "txtAdd";
             this.txtAdd.Size = new System.Drawing.Size(89, 22);
             this.txtAdd.TabIndex = 9;
@@ -101,6 +101,7 @@ namespace NBagOfTricks.UI
             this.Name = "OptionsEditor";
             this.Text = "Option Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OptionsEditor_FormClosing);
+            this.Load += new System.EventHandler(this.OptionsEditor_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

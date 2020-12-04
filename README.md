@@ -25,9 +25,10 @@ Targets .NET Framework 4.7.2. No dependencies on third party components.
 # General purpose UI components
 - PropertyGridEx: Added a few features.
 - FilTree: Folder/file tree control with tags/filters and notifications.
+- OptionsEditor: User can select from a list of strings, or add/delete elements.
 - ClickGrid: Essentially a grid array of buttons.
 - TimeBar: Elapsed time control.
-- BarBar: Similar to TimeBar but shows music bars/beats.
+- BarBar: Similar to TimeBar but shows musical bars and beats.
 - CpuMeter: Standalone display control.
 - TextViewer: With colorizing.
 - WaitCursor: Easy to use cursor.
@@ -38,6 +39,7 @@ Targets .NET Framework 4.7.2. No dependencies on third party components.
 # Various utilities and extensions
 - KeyUtils: Keyboard input.
 - MathUtils: Numbers are good.
+- UiUtils: Control helpers.
 - MiscUtils: Things that don't fit anywhere else.
 - StringUtils: Mostly extensions.
 - Dumper: Writes object tree contents.

@@ -20,7 +20,7 @@ namespace NBagOfTricks.UI
     {
         #region Fields
         /// <summary>Key is file or dir path, value is associated tags.</summary>
-        Dictionary<string, HashSet<string>> _taggedPaths = new Dictionary<string, HashSet<string>>();
+        Dictionary<string, List<string>> _taggedPaths = new Dictionary<string, List<string>>();
 
         /// <summary>Filter by these tags.</summary>
         HashSet<string> _activeFilters = new HashSet<string>();
@@ -51,7 +51,7 @@ namespace NBagOfTricks.UI
         [Browsable(false)]
         public List<string> FilterExts { get; set; } = new List<string>();
 
-        /// <summary>Generate event for single or double click.</summary>
+        /// <summary>Generate event with single or double click.</summary>
         public bool DoubleClickSelect { get; set; } = false;
         #endregion
 
@@ -133,43 +133,6 @@ namespace NBagOfTricks.UI
         }
 
         /// <summary>
-        /// Populate the file selector.
-        /// </summary>
-        /// <param name="node"></param>
-        void PopulateFiles(TreeNode node)
-        {
-            TreeNode clickedNode = node;
-
-            lvFiles.Items.Clear();
-            var nodeDirInfo = clickedNode.Tag as DirectoryInfo;
-
-            foreach (FileInfo file in nodeDirInfo.GetFiles())
-            {
-                if (FilterExts.Contains(Path.GetExtension(file.Name).ToLower()))
-                {
-                    bool show = true;
-
-                    // Is it in our tagged files?
-                    if(TaggedPaths.ContainsKey(file.FullName))
-                    {
-                        var match = TaggedPaths.Where(p => _activeFilters.Contains(p.Value));
-                        show = match.Count() > 0;
-                    }
-
-                    if(show)
-                    {
-                        string stags = TaggedPaths.ContainsKey(file.FullName) ? string.Join(" ", TaggedPaths[file.FullName]) : "";
-                        var item = new ListViewItem(new[] { file.Name, (file.Length / 1024).ToString(), stags })
-                        {
-                            Tag = file.FullName
-                        };
-                        lvFiles.Items.Add(item);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         void PopulateTreeView()
@@ -229,6 +192,43 @@ namespace NBagOfTricks.UI
 
         #region File List
         /// <summary>
+        /// Populate the file selector.
+        /// </summary>
+        /// <param name="node">Selected directory.</param>
+        void PopulateFiles(TreeNode node)
+        {
+            TreeNode clickedNode = node;
+
+            lvFiles.Items.Clear();
+            var nodeDirInfo = clickedNode.Tag as DirectoryInfo;
+
+            foreach (FileInfo file in nodeDirInfo.GetFiles())
+            {
+                if (FilterExts.Contains(Path.GetExtension(file.Name).ToLower()))
+                {
+                    bool show = true;
+
+                    // Is it in our tagged files?
+                    if (TaggedPaths.ContainsKey(file.FullName))
+                    {
+                        var match = TaggedPaths.Where(p => _activeFilters.Contains(p.Value));
+                        show = match.Count() > 0;
+                    }
+
+                    if (show)
+                    {
+                        string stags = TaggedPaths.ContainsKey(file.FullName) ? string.Join(" ", TaggedPaths[file.FullName]) : "";
+                        var item = new ListViewItem(new[] { file.Name, (file.Length / 1024).ToString(), stags })
+                        {
+                            Tag = file.FullName
+                        };
+                        lvFiles.Items.Add(item);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Single click file selection.
         /// </summary>
         /// <param name="sender"></param>
@@ -255,42 +255,76 @@ namespace NBagOfTricks.UI
         }
 
         /// <summary>
-        /// 
+        /// Populate the context menu.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void MenuFiles_Opening(object sender, CancelEventArgs e)
         {
             menuFiles.Items.Clear();
-            menuFiles.Items.Add("Edit Tags", null, Recent_Click);
-
-            void Recent_Click(object csender, EventArgs ce)
-            {
-                ToolStripMenuItem item = csender as ToolStripMenuItem;
-                string fn = lvFiles.SelectedItems[0].Tag.ToString();
-
-                switch (csender.ToString())
-                {
-                    case "Edit Tags":
-                        var tags = _taggedPaths.ContainsKey(fn) ? _taggedPaths[fn] : new HashSet<string>();
-                        {
-                            xxx
-                        }
-
-
-                        break;
-                }
-                //string fn = sender.ToString();
-                //OpenFile(fn);
-            }
+            menuFiles.Items.Add("Edit Tags", null, MenuFiles_Click);
         }
 
+        /// <summary>
+        /// Context menu handler.
+        /// Select the tags for this file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void MenuFiles_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = sender as ToolStripMenuItem;
+            string fn = lvFiles.SelectedItems[0].Tag.ToString();
 
+            switch (sender.ToString())
+            {
+                case "Edit Tags":
+                    // Make a collection of all tags associated with this file.
+                    var pathTags = _taggedPaths.ContainsKey(fn) ? _taggedPaths[fn] : new List<string>();
+                    var options = new Dictionary<string, bool>();
+                    AllTags.ForEach(kv => { options[kv.Key] = pathTags.Contains(kv.Key); });
+
+                    OptionsEditor oped = new OptionsEditor()
+                    {
+                        Title = "Edit Tags",
+                        AllowEdit = false, // select only
+                        Values = options
+                    };
+
+                    if (oped.ShowDialog() == DialogResult.OK)
+                    {
+                        // Process the user selections.
+                        if(oped.Values.Count == 0) // None.
+                        {
+                            // None selected.
+                            _taggedPaths.Remove(fn);
+                            lvFiles.SelectedItems[0].SubItems[2].Text = "";
+                        }
+                        else // One or more selected.
+                        {
+                            // Update the tags for this file selection.
+                            List<string> tags = new List<string>();
+                            foreach(var v in oped.Values)
+                            {
+                                if(v.Value)
+                                {
+                                    tags.Add(v.Key);
+                                }
+                            }
+                            _taggedPaths[fn] = tags;
+                            string stags = string.Join(" ", tags);
+                            lvFiles.SelectedItems[0].SubItems[2].Text = stags;
+                        }
+                    }
+                    //else never mind
+                    break;
+            }
+        }
         #endregion
 
         #region Filters
         /// <summary>
-        /// Add filter buttons for each tag type.
+        /// Update the clickable label showing active filters.
         /// </summary>
         void PopulateFilters()
         {
@@ -305,10 +339,12 @@ namespace NBagOfTricks.UI
             }
 
             lblActiveFilters.Text = string.Join("  ", _activeFilters);
+
+            PopulateFiles(treeView.SelectedNode);
         }
 
         /// <summary>
-        /// 
+        /// Edit the tag filters for this file.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -316,14 +352,22 @@ namespace NBagOfTricks.UI
         {
             OptionsEditor oped = new OptionsEditor()
             {
-                Title = "Edit All Filters",
+                Title = "Edit Active Filters",
+                AllowEdit = true,
                 Values = AllTags
             };
 
             if (oped.ShowDialog() == DialogResult.OK)
             {
+                // Go through all files and update their tags collections.
+                List<string> removed = new List<string>();
+                AllTags.ForEach(kv => { if (!oped.Values.ContainsKey(kv.Key)) removed.Add(kv.Key); });
+                _taggedPaths.ForEach(kv => kv.Value.RemoveAll(s => removed.Contains(s)));
+                
                 AllTags = oped.Values;
                 PopulateFilters();
+
+                PopulateFiles(treeView.SelectedNode);
             }
             //else never mind
         }
@@ -374,7 +418,7 @@ namespace NBagOfTricks.UI
                 if (Directory.Exists(kv.Key) || File.Exists(kv.Key))
                 {
                     // TODOC Check for path is off one of the roots - ask user what to do.
-                    HashSet<string> h = new HashSet<string>();
+                    List<string> h = new List<string>();
                     _taggedPaths.Add(kv.Key, h);
 
                     // Check for valid tags.
