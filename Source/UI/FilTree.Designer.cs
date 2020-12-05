@@ -61,7 +61,7 @@
             // 
             this.menuFiles.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuFiles.Name = "menuTree";
-            this.menuFiles.Size = new System.Drawing.Size(211, 32);
+            this.menuFiles.Size = new System.Drawing.Size(61, 4);
             this.menuFiles.Opening += new System.ComponentModel.CancelEventHandler(this.MenuFiles_Opening);
             // 
             // lvFiles

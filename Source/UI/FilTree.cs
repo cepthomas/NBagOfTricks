@@ -111,24 +111,7 @@ namespace NBagOfTricks.UI
         {
             if (e.Button == MouseButtons.Left)
             {
-                //Console.WriteLine($"IsExpanded:{e.Node.IsExpanded} IsSelected:{e.Node.IsSelected}");
-
-                if(e.Node.FirstNode == null)
-                {
-                    // No subnodes therefore plain file.
-                    PopulateFiles(e.Node);
-                }
-                else
-                {
-                    //if (e.Node.IsExpanded == false)
-                    //{
-                    //    e.Node.Expand();
-                    //}
-                    //else
-                    //{
-                    //    e.Node.Collapse();
-                    //}
-                }
+                PopulateFiles(e.Node);
             }
         }
 
@@ -206,19 +189,26 @@ namespace NBagOfTricks.UI
             {
                 if (FilterExts.Contains(Path.GetExtension(file.Name).ToLower()))
                 {
-                    bool show = true;
+                    bool show = false;
+                    List<string> stags = _taggedPaths.Where(p => p.Key == file.FullName).FirstOrDefault().Value;
 
-                    // Is it in our tagged files?
-                    if (TaggedPaths.ContainsKey(file.FullName))
+                    // Filters on?
+                    if (_activeFilters.Count > 0)
                     {
-                        var match = TaggedPaths.Where(p => _activeFilters.Contains(p.Value));
-                        show = match.Count() > 0;
+                        if(stags != null)
+                        {
+                            var match = stags.Where(p => _activeFilters.Contains(p));
+                            show = match.Count() > 0;
+                        }
+                    }
+                    else // no filters, show all.
+                    {
+                        show = true;
                     }
 
                     if (show)
                     {
-                        string stags = TaggedPaths.ContainsKey(file.FullName) ? string.Join(" ", TaggedPaths[file.FullName]) : "";
-                        var item = new ListViewItem(new[] { file.Name, (file.Length / 1024).ToString(), stags })
+                        var item = new ListViewItem(new[] { file.Name, (file.Length / 1024).ToString(), stags != null ? string.Join(" ", stags ) : ""})
                         {
                             Tag = file.FullName
                         };
@@ -338,9 +328,7 @@ namespace NBagOfTricks.UI
                 }
             }
 
-            lblActiveFilters.Text = string.Join("  ", _activeFilters);
-
-            PopulateFiles(treeView.SelectedNode);
+            lblActiveFilters.Text = "Filters: " + (_activeFilters.Count == 0 ? "None" : string.Join(" | ", _activeFilters));
         }
 
         /// <summary>
@@ -417,16 +405,16 @@ namespace NBagOfTricks.UI
                 // Check for valid path.
                 if (Directory.Exists(kv.Key) || File.Exists(kv.Key))
                 {
-                    // TODOC Check for path is off one of the roots - ask user what to do.
+                    // Check for path is off one of the roots - ask user what to do?
                     List<string> h = new List<string>();
                     _taggedPaths.Add(kv.Key, h);
 
                     // Check for valid tags.
                     foreach (string tag in kv.Value.SplitByToken(" "))
                     {
-                        if(!AllTags.ContainsKey(tag))
+                        if(AllTags.ContainsKey(tag))
                         {
-                            AllTags[tag] = false;
+                            _taggedPaths[kv.Key].Add(tag);
                         }
                     }
                 }
