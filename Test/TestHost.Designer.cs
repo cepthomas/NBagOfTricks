@@ -301,7 +301,7 @@
             this.barBar1.Name = "barBar1";
             this.barBar1.ProgressColor = System.Drawing.Color.White;
             this.barBar1.Size = new System.Drawing.Size(353, 51);
-            this.barBar1.Snap = NBagOfTricks.UI.BarBar.SnapType.None;
+            this.barBar1.Snap = NBagOfTricks.UI.BarBar.SnapType.Bar;
             this.barBar1.TabIndex = 15;
             this.barBar1.TicksPerBeat = 8;
             // 

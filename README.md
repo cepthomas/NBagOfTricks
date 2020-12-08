@@ -3,6 +3,8 @@ C# things collected over the years.
 
 Targets .NET Framework 4.7.2. No dependencies on third party components.
 
+Probably I should make this into a nuget package at some point.
+
 ![logo](https://github.com/cepthomas/NBagOfTricks/blob/master/felix.jpg)
 
 # NStateMachine

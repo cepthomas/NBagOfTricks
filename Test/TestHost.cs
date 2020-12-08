@@ -43,22 +43,22 @@ namespace NBagOfTricks.Test
             slider2.ValueChanged += Slider2_ValueChanged;
 
             string root = $@"C:\Dev\repos\NBagOfTricks\Test";
-            ftree.RootPaths = new List<string>() { root };
+            ftree.RootDirs = new List<string>() { root };
             ftree.FilterExts = ".txt;.md;.xml;.cs".SplitByToken(";");
-            ftree.AllTags = new List<string>() { "abc", "123", "xyz" };
+            ftree.AllTags = new Dictionary<string, bool>() { { "abc", true }, { "123", false }, { "xyz", true } };
             ftree.DoubleClickSelect = false;
 
             // Good files
-            ftree.TaggedPaths.Add(($@"{root}\Test_CMD.cs", ""));
-            ftree.TaggedPaths.Add(($@"{root}\Test_PNUT.cs", "abc"));
-            ftree.TaggedPaths.Add(($@"{root}\bin\Debug\testout.txt", "123 xyz"));
+            ftree.TaggedPaths[$@"{root}\Test_CMD.cs"] = "";
+            ftree.TaggedPaths[$@"{root}\Test_PNUT.cs"] = "abc";
+            ftree.TaggedPaths[$@"{root}\bin\Debug\testout.txt"] = "123 xyz";
 
             // Bad paths.
             //ftree.TaggedPaths.Add(($@"{root}\bad_file.txt", "xyz"));
             //ftree.TaggedPaths.Add(($@"{root}\bin\bad_path", ""));
 
             // Bad tags.
-            ftree.TaggedPaths.Add(($@"{root}\bin\Debug\NBagOfTricks.xml", "333333 abc"));
+            ftree.TaggedPaths[$@"{root}\bin\Debug\NBagOfTricks.xml"] = "333333 abc";
 
             ftree.Init();
 
@@ -115,8 +115,6 @@ namespace NBagOfTricks.Test
 
         private void TestHost_FormClosing(object sender, FormClosingEventArgs e)
         {
-            ftree.FlushChanges();
-
             // Inspect.
             var at = ftree.AllTags;
             var tp = ftree.TaggedPaths;

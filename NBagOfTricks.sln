@@ -1,16 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2046
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{2D9D04C2-1637-4D29-AF9D-63103912EEEB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Source", "Source\Source.csproj", "{D90BF3A3-41D7-4AC4-9FBE-D75277338426}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9042B3C6-B057-400A-866C-6207EB5B0CF9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{49FCC300-E957-452F-BE7C-F75E050B1B80}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
-		Test\bin\Debug\testout.txt = Test\bin\Debug\testout.txt
 	EndProjectSection
 EndProject
 Global
