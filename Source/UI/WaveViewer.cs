@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NBagOfTricks.Utils;
-
+using System.IO;
 
 namespace NBagOfTricks.UI
 {
@@ -84,10 +84,12 @@ namespace NBagOfTricks.UI
         /// <param name="max"></param>
         public void Init(float[] vals, float max)
         {
+            Dump(vals, "raw.csv");
             _rawVals = vals;
             _rawMax = max;
 
             Rescale();
+            Dump(_buff, "buff.csv");
             Invalidate();
         }
         #endregion
@@ -104,25 +106,55 @@ namespace NBagOfTricks.UI
             }
             else
             {
-                int fitWidth = Width - 2 * UiDefs.BORDER_WIDTH;
+                int fitWidth = Width - (2 * UiDefs.BORDER_WIDTH);
                 _buff = new float[fitWidth];
+                // Bin to fit UI x axis.
                 int smplPerPixel = _rawVals.Length / fitWidth;
 
                 int r = 0; // index into raw
                 for (int i = 0; i < fitWidth; i++)
                 {
+                    // Find the largest value in the bin.
                     double max = 0;
                     for (int d = 0; d < smplPerPixel; d++)
                     {
-                        max = Math.Max(max, Math.Abs(_rawVals[r]));
+                        if (Math.Abs(_rawVals[r]) > Math.Abs(max))
+                        {
+                            max = _rawVals[r];
+                        }
                         r++;
                     }
-                    double y = max;
+                    _buff[i] = (float)max;
 
-                    // Limits?
-                    y = Math.Min(y, _rawMax);
-                    y = Math.Max(y, -_rawMax);
-                    _buff[i] = (float)y;
+                    //// Find the absolute largest value in the bin.
+                    //double max = 0;
+                    //for (int d = 0; d < smplPerPixel; d++)
+                    //{
+                    //    max = Math.Max(max, Math.Abs(_rawVals[r]));
+                    //    r++;
+                    //}
+                    //_buff[i] = (float)max;
+                    ////double y = max;
+                    ////// Limits?
+                    ////y = Math.Min(y, _rawMax);
+                    ////y = Math.Max(y, -_rawMax);
+                    ////_buff[i] = (float)y;
+
+                    //// Find the average value in the bin.
+                    //double val = 0;
+                    //for (int d = 0; d < smplPerPixel; d++)
+                    //{
+                    //    val += _rawVals[r];
+                    //    r++;
+                    //}
+                    //_buff[i] = (float)val / smplPerPixel;
+
+                    //// Find the median value in the bin.
+                    //for (int d = 0; d < smplPerPixel; d++)
+                    //{
+                    //    r++;
+                    //}
+                    //_buff[i] = _rawVals[r - smplPerPixel / 2];
                 }
             }
         }
@@ -151,9 +183,19 @@ namespace NBagOfTricks.UI
 
                     // Draw data point.
                     double x = i + UiDefs.BORDER_WIDTH;
+
+                    // Line from val to 0
                     double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH);
-                    double y2 = MathUtils.Map(val, -_rawMax, _rawMax, UiDefs.BORDER_WIDTH, Height - 2 * UiDefs.BORDER_WIDTH);
+                    double y2 = Height / 2;
                     pe.Graphics.DrawLine(_penDraw, (float)x, (float)y1, (float)x, (float)y2);
+
+                    // Line from +val to -val
+                    //double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH);
+                    //double y2 = MathUtils.Map(val, -_rawMax, _rawMax, UiDefs.BORDER_WIDTH, Height - 2 * UiDefs.BORDER_WIDTH);
+                    //pe.Graphics.DrawLine(_penDraw, (float)x, (float)y1, (float)x, (float)y2);
+
+                    // Simple dot
+                    //pe.Graphics.DrawRectangle(_penDraw, (float)x, (float)y1, 1, 1);
                 }
             }
         }
@@ -166,6 +208,24 @@ namespace NBagOfTricks.UI
             base.OnResize(e);
             Rescale();
             Invalidate();
+        }
+
+        /// <summary>
+        /// Simple utility.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="fn"></param>
+        void Dump(float[] data, string fn)
+        {
+            if (data != null)
+            {
+                List<string> ss = new List<string>();
+                for (int i = 0; i < data.Length; i++)
+                {
+                    ss.Add($"{i + 1}, {data[i]}");
+                }
+                File.WriteAllLines(fn, ss);
+            }
         }
         #endregion
     }
