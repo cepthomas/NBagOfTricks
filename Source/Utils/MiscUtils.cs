@@ -157,7 +157,9 @@ namespace NBagOfTricks.Utils
         public static TimeSpan SecondsToTimeSpan(double sec)
         {
             var v = MathUtils.SplitDouble(sec);
-            TimeSpan ts = new TimeSpan(0, 0, 0, (int)v.integral, (int)(v.fractional * 1000));
+            int isec = (int)(v.integral);
+            int imsec = (int)(v.fractional * 1000);
+            TimeSpan ts = new TimeSpan(0, 0, 0, isec, imsec);
             return ts;
         }
 

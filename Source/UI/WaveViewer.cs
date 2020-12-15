@@ -24,11 +24,11 @@ namespace NBagOfTricks.UI
         /// <summary>Storage for display.</summary>
         float[] _buff = null;
 
-        /// <summary>The pen.</summary>
-        Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+        /// <summary>The border pen.</summary>
+        Pen _penBorder = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
 
         /// <summary>The other pen.</summary>
-        Pen _penDraw = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+        Pen _penDraw = new Pen(Color.Black, 1);
         #endregion
 
         #region Properties
@@ -60,7 +60,7 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        System.ComponentModel.IContainer components = new System.ComponentModel.Container();
+        IContainer components = new Container();
 
         /// <summary>
         /// Clean up any resources being used.
@@ -168,7 +168,7 @@ namespace NBagOfTricks.UI
             pe.Graphics.Clear(BackColor);
 
             // Draw border.
-            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
+            pe.Graphics.DrawRectangle(_penBorder, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
 
             if (_buff == null)
             {
