@@ -53,7 +53,7 @@ namespace NBagOfTricks.UI
         int _logicalProcessors = 0;
 
         /// <summary>The pen.</summary>
-        Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+        Pen _pen = new Pen(Color.Black, 1);
         #endregion
 
         #region Properties
@@ -122,7 +122,7 @@ namespace NBagOfTricks.UI
         {
             pe.Graphics.Clear(BackColor);
 
-            pe.Graphics.DrawRectangle(Pens.Black, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
+            pe.Graphics.DrawRectangle(Pens.Black, 0, 0, Width - _pen.Width, Height - _pen.Width);
 
             // Draw data.
             // TODO for each process?
@@ -139,10 +139,10 @@ namespace NBagOfTricks.UI
                     double val = _cpuBuff[index];
 
                     // Draw data point.
-                    double x = i + UiDefs.BORDER_WIDTH;
-                    double y = MathUtils.Map(val, _min, _max, Height - 2 * UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH);
+                    double x = i + _pen.Width;
+                    double y = MathUtils.Map(val, _min, _max, Height - 2 * _pen.Width, _pen.Width);
 
-                    pe.Graphics.DrawLine(_pen, (float)x, (float)y, (float)x, Height - 2 * UiDefs.BORDER_WIDTH);
+                    pe.Graphics.DrawLine(_pen, (float)x, (float)y, (float)x, Height - 2 * _pen.Width);
                     // or: pe.Graphics.FillRectangle(brush, (float)x, (float)y, 2, 2);
                 }
             }
@@ -173,7 +173,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         void SetBuffs()
         {
-            int size = Width - 2 * UiDefs.BORDER_WIDTH;
+            int size = (int)(Width - 2 * _pen.Width);
             for (int i = 0; i < _processesBuffs.Count(); i++)
             {
                 _processesBuffs[i] = new double[size];

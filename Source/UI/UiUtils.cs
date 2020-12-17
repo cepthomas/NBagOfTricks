@@ -13,12 +13,6 @@ using NBagOfTricks.Utils;
 
 namespace NBagOfTricks.UI
 {
-    public class UiDefs
-    {
-        /// <summary>A number.</summary>
-        public const int BORDER_WIDTH = 1;
-    }
-
     /// <summary>Custom renderer for toolstrip checkbox color.</summary>
     public class CheckBoxRenderer : ToolStripSystemRenderer
     {

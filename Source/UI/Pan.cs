@@ -16,7 +16,7 @@ namespace NBagOfTricks.UI
         private double _value;
 
         /// <summary>The pen.</summary>
-        readonly Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+        readonly Pen _pen = new Pen(Color.Black, 1);
 
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
@@ -74,23 +74,23 @@ namespace NBagOfTricks.UI
             pe.Graphics.Clear(BackColor);
 
             // Draw border.
-            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
+            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - _pen.Width, Height - _pen.Width);
 
             // Draw data.
             string panValue;
             if (_value == 0.0)
             {
-                pe.Graphics.FillRectangle(_brush, (Width / 2) - UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH, 2 * UiDefs.BORDER_WIDTH, Height - 2 * UiDefs.BORDER_WIDTH);
+                pe.Graphics.FillRectangle(_brush, (Width / 2) - _pen.Width, _pen.Width, 2 * _pen.Width, Height - 2 * _pen.Width);
                 panValue = "C";
             }
             else if (_value > 0)
             {
-                pe.Graphics.FillRectangle(_brush, (Width / 2), UiDefs.BORDER_WIDTH, (int)((Width / 2) * _value), Height - 2 * UiDefs.BORDER_WIDTH);
+                pe.Graphics.FillRectangle(_brush, (Width / 2), _pen.Width, (int)((Width / 2) * _value), Height - 2 * _pen.Width);
                 panValue = $"{_value * 100:F0}%R";
             }
             else
             {
-                pe.Graphics.FillRectangle(_brush, (int)((Width / 2) * (_value + UiDefs.BORDER_WIDTH)), UiDefs.BORDER_WIDTH, (int)((Width / 2) * (0 - _value)), Height - 2 * UiDefs.BORDER_WIDTH);
+                pe.Graphics.FillRectangle(_brush, (int)((Width / 2) * (_value + _pen.Width)), _pen.Width, (int)((Width / 2) * (0 - _value)), Height - 2 * _pen.Width);
                 panValue = $"{_value * -100:F0}%L";
             }
 

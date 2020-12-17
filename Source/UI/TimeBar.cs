@@ -9,14 +9,20 @@ using NBagOfTricks.Utils;
 
 namespace NBagOfTricks.UI
 {
-    public partial class TimeBar : UserControl
+    public partial class TimeBar : UserControl // TODOC snap function?
     {
         #region Fields
         /// <summary>Total length.</summary>
-        TimeSpan _length = new TimeSpan();
+        TimeSpan _lengthX = new TimeSpan();
 
         /// <summary>Current time/position.</summary>
         TimeSpan _current = new TimeSpan();
+
+        /// <summary>One marker.</summary>
+        TimeSpan _marker1 = new TimeSpan();
+
+        /// <summary>Other marker.</summary>
+        TimeSpan _marker2 = new TimeSpan();
 
         /// <summary>For tracking mouse moves.</summary>
         int _lastXPos = 0;
@@ -24,8 +30,11 @@ namespace NBagOfTricks.UI
         /// <summary>Tooltip for mousing.</summary>
         readonly ToolTip toolTip = new ToolTip();
 
-        /// <summary>The pen.</summary>
-        readonly Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+        /// <summary>The border pen.</summary>
+        readonly Pen _penBorder = new Pen(Color.Black, 1);
+
+        /// <summary>The marker pen.</summary>
+        readonly Pen _penMarker = new Pen(Color.Black, 1);
 
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
@@ -40,11 +49,19 @@ namespace NBagOfTricks.UI
         #region Properties
         /// <summary>Where we be now.</summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-        public TimeSpan CurrentTime { get { return _current; } set { _current = value; Invalidate(); } }
+        public TimeSpan CurrentTime { get { return _current; } set { _current = value; UpdateTime(); } }
 
-        /// <summary>Where we be going.</summary>
+        /// <summary>Total length.</summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-        public TimeSpan Length { get { return _length; } set { _length = value; Invalidate(); } }
+        public TimeSpan Length { get { return _lengthX; } set { _lengthX = value; UpdateTime(); } }
+
+        /// <summary>One marker.</summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
+        public TimeSpan Marker1 { get { return _marker1; } set { _marker1 = value; UpdateTime(); } }
+
+        /// <summary>Other marker.</summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
+        public TimeSpan Marker2 { get { return _marker2; } set { _marker2 = value; UpdateTime(); } }
 
         /// <summary>For styling.</summary>
         public Color ProgressColor { get { return _brush.Color; } set { _brush.Color = value; } }
@@ -60,6 +77,14 @@ namespace NBagOfTricks.UI
         /// <summary>Value changed by user.</summary>
         public event EventHandler CurrentTimeChanged;
         #endregion
+
+
+        void UpdateTime()
+        {
+
+
+            Invalidate();
+        }
 
         #region Lifecycle
         /// <summary>
@@ -96,6 +121,9 @@ namespace NBagOfTricks.UI
         {
             if (disposing && (components != null))
             {
+                _penBorder.Dispose();
+                _penMarker.Dispose();
+                _brush.Dispose();
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -112,15 +140,15 @@ namespace NBagOfTricks.UI
             pe.Graphics.Clear(BackColor);
 
             // Draw border.
-            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
+            pe.Graphics.DrawRectangle(_penBorder, 0, 0, Width - _penBorder.Width, Height - _penBorder.Width);
 
-            if (_current < _length)
+            if (_current < _lengthX)
             {
                 pe.Graphics.FillRectangle(_brush,
-                    UiDefs.BORDER_WIDTH,
-                    UiDefs.BORDER_WIDTH,
-                    (Width - 2 * UiDefs.BORDER_WIDTH) * (int)_current.TotalMilliseconds / (int)_length.TotalMilliseconds,
-                    Height - 2 * UiDefs.BORDER_WIDTH);
+                    _penBorder.Width,
+                    _penBorder.Width,
+                    (Width - 2 * _penBorder.Width) * (int)_current.TotalMilliseconds / (int)_lengthX.TotalMilliseconds,
+                    Height - 2 * _penBorder.Width);
             }
 
             // Text.
@@ -133,7 +161,7 @@ namespace NBagOfTricks.UI
                 formatRight.Alignment = StringAlignment.Far;
 
                 pe.Graphics.DrawString(FormatTime(_current), FontLarge, Brushes.Black, ClientRectangle, formatLeft);
-                pe.Graphics.DrawString(FormatTime(_length), FontSmall, Brushes.Black, ClientRectangle, formatRight);
+                pe.Graphics.DrawString(FormatTime(_lengthX), FontSmall, Brushes.Black, ClientRectangle, formatRight);
             }
         }
         #endregion
@@ -158,7 +186,7 @@ namespace NBagOfTricks.UI
                     _lastXPos = e.X;
                 }
             }
-            Invalidate();
+            UpdateTime();
 
             base.OnMouseMove(e);
         }
@@ -170,7 +198,7 @@ namespace NBagOfTricks.UI
         {
             _current = GetTimeFromMouse(e.X);
             CurrentTimeChanged?.Invoke(this, new EventArgs());
-            Invalidate();
+            UpdateTime();
             base.OnMouseDown(e);
         }
         #endregion
@@ -184,10 +212,10 @@ namespace NBagOfTricks.UI
         {
             int msec = 0;
 
-            if(_current.TotalMilliseconds < _length.TotalMilliseconds)
+            if(_current.TotalMilliseconds < _lengthX.TotalMilliseconds)
             {
-                msec = x * (int)_length.TotalMilliseconds / Width;
-                msec = MathUtils.Constrain(msec, 0, (int)_length.TotalMilliseconds);
+                msec = x * (int)_lengthX.TotalMilliseconds / Width;
+                msec = MathUtils.Constrain(msec, 0, (int)_lengthX.TotalMilliseconds);
             }
 
             return new TimeSpan(0, 0, 0, 0, msec);
@@ -209,9 +237,9 @@ namespace NBagOfTricks.UI
             }
 
             // Sanity checks.
-            if (_current > _length)
+            if (_current > _lengthX)
             {
-                _current = _length;
+                _current = _lengthX;
             }
 
             if (_current.TotalMilliseconds < 0)

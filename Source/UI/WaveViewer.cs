@@ -25,7 +25,7 @@ namespace NBagOfTricks.UI
         float[] _buff = null;
 
         /// <summary>The border pen.</summary>
-        Pen _penBorder = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+        Pen _penBorder = new Pen(Color.Black, 1);
 
         /// <summary>The other pen.</summary>
         Pen _penDraw = new Pen(Color.Black, 1);
@@ -106,7 +106,7 @@ namespace NBagOfTricks.UI
             }
             else
             {
-                int fitWidth = Width - (2 * UiDefs.BORDER_WIDTH);
+                int fitWidth = (int)(Width - (2 * _penBorder.Width));
                 _buff = new float[fitWidth];
                 // Bin to fit UI x axis.
                 int smplPerPixel = _rawVals.Length / fitWidth;
@@ -168,7 +168,7 @@ namespace NBagOfTricks.UI
             pe.Graphics.Clear(BackColor);
 
             // Draw border.
-            pe.Graphics.DrawRectangle(_penBorder, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
+            pe.Graphics.DrawRectangle(_penBorder, 0, 0, Width - _penBorder.Width, Height - _penBorder.Width);
 
             if (_buff == null)
             {
@@ -182,16 +182,16 @@ namespace NBagOfTricks.UI
                     double val = _buff[i];
 
                     // Draw data point.
-                    double x = i + UiDefs.BORDER_WIDTH;
+                    double x = i + _penBorder.Width;
 
                     // Line from val to 0
-                    double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH);
+                    double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * _penBorder.Width, _penBorder.Width);
                     double y2 = Height / 2;
                     pe.Graphics.DrawLine(_penDraw, (float)x, (float)y1, (float)x, (float)y2);
 
                     // Line from +val to -val
-                    //double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH);
-                    //double y2 = MathUtils.Map(val, -_rawMax, _rawMax, UiDefs.BORDER_WIDTH, Height - 2 * UiDefs.BORDER_WIDTH);
+                    //double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * _penBorder.Width, _penBorder.Width);
+                    //double y2 = MathUtils.Map(val, -_rawMax, _rawMax, _penBorder.Width, Height - 2 * _penBorder.Width);
                     //pe.Graphics.DrawLine(_penDraw, (float)x, (float)y1, (float)x, (float)y2);
 
                     // Simple dot

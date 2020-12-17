@@ -20,6 +20,12 @@ namespace NBagOfTricks.UI
         /// <summary>Total length.</summary>
         int _lengthTicks = 0;
 
+        /// <summary>One marker.</summary>
+        int _marker1 = 0;
+
+        /// <summary>Other marker.</summary>
+        int _marker2 = 0;
+
         /// <summary>Current time/position.</summary>
         int _currentTick = 0;
 
@@ -30,14 +36,17 @@ namespace NBagOfTricks.UI
         readonly ToolTip toolTip = new ToolTip();
 
         /// <summary>The pen.</summary>
-        readonly Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+        readonly Pen _penBorder = new Pen(Color.Black, 1);
+
+        /// <summary>The marker pen.</summary>
+        readonly Pen _penMarker = new Pen(Color.Black, 1);
 
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
         #endregion
 
         #region Properties
-        /// <summary>Current bar from 0 to N.</summary>
+        /// <summary>Only tested with 4.</summary>
         public int BeatsPerBar { get; set; } = 4;
 
         /// <summary>Our ppq aka resolution.</summary>
@@ -46,11 +55,20 @@ namespace NBagOfTricks.UI
         /// <summary>Oh snap.</summary>
         public SnapType Snap { get; set; } = SnapType.Tick;
 
-        /// <summary>Where we be now.</summary>
-        public int CurrentTick { get { return _currentTick; } set { _currentTick = value; Invalidate(); } }
+        /// <summary>Total length.</summary>
+        public int Length { get { return _lengthTicks; } set { _lengthTicks = value; UpdateBar(); } }
 
-        /// <summary>Where we be going.</summary>
-        public int Length { get { return _lengthTicks; } set { _lengthTicks = value; Invalidate(); } }
+        /// <summary>One marker.</summary>
+        public int Marker1 { get { return _marker1; } set { _marker1 = value; UpdateBar(); } }
+
+        /// <summary>Other marker.</summary>
+        public int Marker2 { get { return _marker2; } set { _marker2 = value; UpdateBar(); } }
+
+        /// <summary>Where we be now.</summary>
+        public int CurrentTick { get { return _currentTick; } set { _currentTick = value; UpdateBar(); } }
+
+        ///// <summary>Where we be going.</summary>
+        //public int Length { get { return _lengthTicks; } set { _lengthTicks = value; UpdateBar(); } }
 
         /// <summary>For styling.</summary>
         public Color ProgressColor { get { return _brush.Color; } set { _brush.Color = value; } }
@@ -61,6 +79,17 @@ namespace NBagOfTricks.UI
         /// <summary>Baby font.</summary>
         Font FontSmall { get; set; } = new Font("Cascadia", 14, FontStyle.Regular, GraphicsUnit.Point, 0);
         #endregion
+
+
+        void UpdateBar()
+        {
+
+
+            Invalidate();
+        }
+
+
+
 
         #region Events
         /// <summary>Value changed by user.</summary>
@@ -101,6 +130,9 @@ namespace NBagOfTricks.UI
         {
             if (disposing && (components != null))
             {
+                _penBorder.Dispose();
+                _penMarker.Dispose();
+                _brush.Dispose();
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -117,15 +149,15 @@ namespace NBagOfTricks.UI
             pe.Graphics.Clear(BackColor);
 
             // Draw border.
-            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
+            pe.Graphics.DrawRectangle(_penBorder, 0, 0, Width - _penBorder.Width, Height - _penBorder.Width);
 
             if (_currentTick < _lengthTicks)
             {
                 pe.Graphics.FillRectangle(_brush,
-                    UiDefs.BORDER_WIDTH,
-                    UiDefs.BORDER_WIDTH,
-                    (Width - 2 * UiDefs.BORDER_WIDTH) * _currentTick / _lengthTicks,
-                    Height - 2 * UiDefs.BORDER_WIDTH);
+                    _penBorder.Width,
+                    _penBorder.Width,
+                    (Width - 2 * _penBorder.Width) * _currentTick / _lengthTicks,
+                    Height - 2 * _penBorder.Width);
             }
 
             // Text.
@@ -160,7 +192,7 @@ namespace NBagOfTricks.UI
                 toolTip.SetToolTip(this, FormatTime(ts));
                 _lastXPos = e.X;
             }
-            Invalidate();
+            UpdateBar();
             base.OnMouseMove(e);
         }
 
@@ -171,7 +203,7 @@ namespace NBagOfTricks.UI
         {
             _currentTick = DoSnap(GetTickFromMouse(e.X));
             CurrentTimeChanged?.Invoke(this, new EventArgs());
-            Invalidate();
+            UpdateBar();
             base.OnMouseDown(e);
         }
         #endregion

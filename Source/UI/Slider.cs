@@ -19,7 +19,7 @@ namespace NBagOfTricks.UI
         double _resetVal = 0.0;
 
         /// <summary>The pen.</summary>
-        readonly Pen _pen = new Pen(Color.Black);
+        readonly Pen _pen = new Pen(Color.Black, 1);
 
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
@@ -123,7 +123,7 @@ namespace NBagOfTricks.UI
             pe.Graphics.Clear(BackColor);
 
             // Draw data.
-            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -UiDefs.BORDER_WIDTH, -UiDefs.BORDER_WIDTH);
+            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -(int)_pen.Width, -(int)_pen.Width);
 
             // Draw the bar.
             if (Orientation == Orientation.Horizontal)
@@ -138,8 +138,8 @@ namespace NBagOfTricks.UI
             }
 
             // Draw border.
-            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
-            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
+            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - _pen.Width, Height - _pen.Width);
+            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - _pen.Width, Height - _pen.Width);
 
             // Text.
             string sval = _value.ToString("#0." + new string('0', DecPlaces));

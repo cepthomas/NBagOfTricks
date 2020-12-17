@@ -23,7 +23,7 @@ namespace NBagOfTricks.UI
         int _buffIndex = 0;
 
         /// <summary>The pen.</summary>
-        readonly Pen _pen = new Pen(Color.Black, UiDefs.BORDER_WIDTH);
+        readonly Pen _pen = new Pen(Color.Black, 1);
 
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
@@ -132,10 +132,10 @@ namespace NBagOfTricks.UI
         {
             pe.Graphics.Clear(BackColor);
             // Border
-            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH);
+            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - _pen.Width, Height - _pen.Width);
 
             // Draw data.
-            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -UiDefs.BORDER_WIDTH, -UiDefs.BORDER_WIDTH);
+            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -(int)_pen.Width, -(int)_pen.Width);
 
             switch (MeterType)
             {
@@ -147,13 +147,13 @@ namespace NBagOfTricks.UI
                     {
                         int w = (int)(drawArea.Width * percent);
                         int h = drawArea.Height;
-                        pe.Graphics.FillRectangle(_brush, UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH, w, h);
+                        pe.Graphics.FillRectangle(_brush, _pen.Width, _pen.Width, w, h);
                     }
                     else
                     {
                         int w = drawArea.Width;
                         int h = (int)(drawArea.Height * percent);
-                        pe.Graphics.FillRectangle(_brush, UiDefs.BORDER_WIDTH, Height - UiDefs.BORDER_WIDTH - h, w, h);
+                        pe.Graphics.FillRectangle(_brush, _pen.Width, Height - _pen.Width - h, w, h);
                     }
                     break;
 
@@ -167,12 +167,12 @@ namespace NBagOfTricks.UI
                         double val = _buff[index];
 
                         // Draw data point.
-                        double x = i + UiDefs.BORDER_WIDTH;
-                        double y = MathUtils.Map(val, Minimum, Maximum, drawArea.Height - UiDefs.BORDER_WIDTH, UiDefs.BORDER_WIDTH);
+                        double x = i + _pen.Width;
+                        double y = MathUtils.Map(val, Minimum, Maximum, drawArea.Height - _pen.Width, _pen.Width);
 
                         if(MeterType == MeterType.ContinuousLine)
                         {
-                            pe.Graphics.DrawLine(_pen, (float)x, (float)y, (float)x, drawArea.Height - 2 * UiDefs.BORDER_WIDTH);
+                            pe.Graphics.DrawLine(_pen, (float)x, (float)y, (float)x, drawArea.Height - 2 * _pen.Width);
                         }
                         else
                         {
@@ -197,7 +197,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         protected override void OnResize(EventArgs e)
         {
-            int buffSize = Width - 2 * UiDefs.BORDER_WIDTH;
+            int buffSize = (int)(Width - 2 * _pen.Width);
             _buff = new double[buffSize];
             for(int i = 0; i < buffSize; i++)
             {
