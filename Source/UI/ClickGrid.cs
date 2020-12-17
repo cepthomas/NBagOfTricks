@@ -68,6 +68,20 @@ namespace NBagOfTricks.UI
             // Init the statuses.
             _stateTypes = new Dictionary<int, IndicatorStateType>();
         }
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _defaultForeBrush.Dispose();
+                _defaultBackBrush.Dispose();
+                _stateTypes.ForEach(st => { st.Value.ForeBrush.Dispose(); st.Value.BackBrush.Dispose(); });
+            }
+            base.Dispose(disposing);
+        }
         #endregion
 
         #region Public functions
@@ -217,32 +231,6 @@ namespace NBagOfTricks.UI
             }
 
             base.OnMouseClick(e);
-        }
-        #endregion
-
-        #region Designer boilerplate
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        readonly System.ComponentModel.IContainer components = new System.ComponentModel.Container();
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (components != null)
-                {
-                    components.Dispose();
-                }
-
-                _defaultForeBrush.Dispose();
-                _defaultBackBrush.Dispose();
-                _stateTypes.ForEach(st => { st.Value.ForeBrush.Dispose(); st.Value.BackBrush.Dispose(); });
-            }
-            base.Dispose(disposing);
         }
         #endregion
    }

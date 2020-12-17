@@ -54,13 +54,6 @@ namespace NBagOfTricks.UI
         void WaveViewer_Load(object sender, EventArgs e)
         {
         }
-        #endregion
-
-        #region Designer boilerplate
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        IContainer components = new Container();
 
         /// <summary>
         /// Clean up any resources being used.
@@ -68,9 +61,10 @@ namespace NBagOfTricks.UI
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-           if (disposing && (components != null))
+           if (disposing)
            {
-               components.Dispose();
+                _penBorder.Dispose();
+                _penDraw.Dispose();
            }
            base.Dispose(disposing);
         }

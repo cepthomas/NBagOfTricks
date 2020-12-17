@@ -47,6 +47,7 @@ namespace NBagOfTricks.UI
         public event EventHandler ValueChanged;
         #endregion
 
+        #region Lifecycle
         /// <summary>
         /// Creates a new PanSlider control.
         /// </summary>
@@ -64,6 +65,21 @@ namespace NBagOfTricks.UI
         void Pan_Load(object sender, EventArgs e)
         {
         }
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _pen.Dispose();
+                _brush.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+        #endregion
 
         /// <summary>
         /// Draw control.
@@ -161,26 +177,5 @@ namespace NBagOfTricks.UI
 
             base.OnKeyDown(e);
         }
-
-
-        #region Designer boilerplate
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        readonly System.ComponentModel.IContainer components = new System.ComponentModel.Container();
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-        #endregion
     }
 }

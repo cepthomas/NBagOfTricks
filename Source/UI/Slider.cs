@@ -89,13 +89,6 @@ namespace NBagOfTricks.UI
         void Slider_Load(object sender, EventArgs e)
         {
         }
-        #endregion
-
-        #region Designer boilerplate
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        readonly System.ComponentModel.IContainer components = new System.ComponentModel.Container();
 
         /// <summary>
         /// Clean up any resources being used.
@@ -104,10 +97,8 @@ namespace NBagOfTricks.UI
         {
             if (disposing)
             {
-                if (components != null)
-                {
-                    components.Dispose();
-                }
+                _pen.Dispose();
+                _brush.Dispose();
             }
             base.Dispose(disposing);
         }

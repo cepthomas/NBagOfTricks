@@ -66,13 +66,6 @@ namespace NBagOfTricks.UI
         private void Meter_Load(object sender, EventArgs e)
         {
         }
-        #endregion
-
-        #region Designer boilerplate
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        readonly System.ComponentModel.IContainer components = new System.ComponentModel.Container();
 
         /// <summary>
         /// Clean up any resources being used.
@@ -80,9 +73,10 @@ namespace NBagOfTricks.UI
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _pen.Dispose();
+                _brush.Dispose();
             }
             base.Dispose(disposing);
         }

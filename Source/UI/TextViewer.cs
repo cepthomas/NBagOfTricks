@@ -107,20 +107,15 @@ namespace NBagOfTricks.UI
             _rtb.Clear();
         }
 
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        IContainer components = new Container();
-
         /// <summary>5
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _rtb.Dispose();
             }
             base.Dispose(disposing);
         }

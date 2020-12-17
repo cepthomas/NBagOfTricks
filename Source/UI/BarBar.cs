@@ -33,7 +33,7 @@ namespace NBagOfTricks.UI
         int _lastXPos = 0;
 
         /// <summary>Tooltip for mousing.</summary>
-        readonly ToolTip toolTip = new ToolTip();
+        readonly ToolTip _toolTip = new ToolTip();
 
         /// <summary>The pen.</summary>
         readonly Pen _penBorder = new Pen(Color.Black, 1);
@@ -55,7 +55,7 @@ namespace NBagOfTricks.UI
         /// <summary>Oh snap.</summary>
         public SnapType Snap { get; set; } = SnapType.Tick;
 
-        /// <summary>Total length.</summary>
+        /// <summary>Total length in ticks.</summary>
         public int Length { get { return _lengthTicks; } set { _lengthTicks = value; UpdateBar(); } }
 
         /// <summary>One marker.</summary>
@@ -66,9 +66,6 @@ namespace NBagOfTricks.UI
 
         /// <summary>Where we be now.</summary>
         public int CurrentTick { get { return _currentTick; } set { _currentTick = value; UpdateBar(); } }
-
-        ///// <summary>Where we be going.</summary>
-        //public int Length { get { return _lengthTicks; } set { _lengthTicks = value; UpdateBar(); } }
 
         /// <summary>For styling.</summary>
         public Color ProgressColor { get { return _brush.Color; } set { _brush.Color = value; } }
@@ -114,13 +111,6 @@ namespace NBagOfTricks.UI
         void BarBar_Load(object sender, EventArgs e)
         {
         }
-        #endregion
-
-        #region Designer boilerplate
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -128,12 +118,12 @@ namespace NBagOfTricks.UI
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
+                _toolTip.Dispose();
                 _penBorder.Dispose();
                 _penMarker.Dispose();
                 _brush.Dispose();
-                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -161,14 +151,9 @@ namespace NBagOfTricks.UI
             }
 
             // Text.
-            using (StringFormat formatLeft = new StringFormat())
-            using (StringFormat formatRight = new StringFormat())
+            using (StringFormat formatLeft = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near })
+            using (StringFormat formatRight = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far })
             {
-                formatLeft.LineAlignment = StringAlignment.Center;
-                formatLeft.Alignment = StringAlignment.Near;
-                formatRight.LineAlignment = StringAlignment.Center;
-                formatRight.Alignment = StringAlignment.Far;
-
                 pe.Graphics.DrawString(FormatTime(_currentTick), FontLarge, Brushes.Black, ClientRectangle, formatLeft);
                 pe.Graphics.DrawString(FormatTime(_lengthTicks), FontSmall, Brushes.Black, ClientRectangle, formatRight);
             }
@@ -184,12 +169,12 @@ namespace NBagOfTricks.UI
             if (e.Button == MouseButtons.Left)
             {
                 _currentTick = DoSnap(GetTickFromMouse(e.X));
-                CurrentTimeChanged?.Invoke(this, new EventArgs());
+                //CurrentTimeChanged?.Invoke(this, new EventArgs());
             }
             else if (e.X != _lastXPos)
             {
                 int ts = DoSnap(GetTickFromMouse(e.X));
-                toolTip.SetToolTip(this, FormatTime(ts));
+                _toolTip.SetToolTip(this, FormatTime(ts));
                 _lastXPos = e.X;
             }
             UpdateBar();
@@ -247,13 +232,13 @@ namespace NBagOfTricks.UI
         /// <summary>
         /// Conversion.
         /// </summary>
-        /// <param name="ticks"></param>
+        /// <param name="itick"></param>
         /// <returns>0-based</returns>
-        (int bar, int beat, int tick) TickToTime(int ticks)
+        (int bar, int beat, int tick) TickToTime(int itick)
         {
-            int bar = ticks / BeatsPerBar / TicksPerBeat;
-            int beat = (ticks / TicksPerBeat) % BeatsPerBar;
-            int tick = ticks % TicksPerBeat;
+            int bar = itick / BeatsPerBar / TicksPerBeat;
+            int beat = (itick / TicksPerBeat) % BeatsPerBar;
+            int tick = itick % TicksPerBeat;
 
             return (bar, beat, tick);
         }

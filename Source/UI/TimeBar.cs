@@ -28,7 +28,7 @@ namespace NBagOfTricks.UI
         int _lastXPos = 0;
 
         /// <summary>Tooltip for mousing.</summary>
-        readonly ToolTip toolTip = new ToolTip();
+        readonly ToolTip _toolTip = new ToolTip();
 
         /// <summary>The border pen.</summary>
         readonly Pen _penBorder = new Pen(Color.Black, 1);
@@ -86,6 +86,8 @@ namespace NBagOfTricks.UI
             Invalidate();
         }
 
+
+
         #region Lifecycle
         /// <summary>
         /// Constructor.
@@ -104,14 +106,9 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         void TimeBar_Load(object sender, EventArgs e)
         {
-        }
-        #endregion
+            _current = TimeSpan.MinValue;
 
-        #region Designer boilerplate
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private readonly IContainer components = null;
+        }
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -119,12 +116,12 @@ namespace NBagOfTricks.UI
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
+                _toolTip.Dispose();
                 _penBorder.Dispose();
                 _penMarker.Dispose();
                 _brush.Dispose();
-                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -152,14 +149,9 @@ namespace NBagOfTricks.UI
             }
 
             // Text.
-            using (StringFormat formatLeft = new StringFormat())
-            using (StringFormat formatRight = new StringFormat())
+            using (StringFormat formatLeft = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near })
+            using (StringFormat formatRight = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far })
             {
-                formatLeft.LineAlignment = StringAlignment.Center;
-                formatLeft.Alignment = StringAlignment.Near;
-                formatRight.LineAlignment = StringAlignment.Center;
-                formatRight.Alignment = StringAlignment.Far;
-
                 pe.Graphics.DrawString(FormatTime(_current), FontLarge, Brushes.Black, ClientRectangle, formatLeft);
                 pe.Graphics.DrawString(FormatTime(_lengthX), FontSmall, Brushes.Black, ClientRectangle, formatRight);
             }
@@ -175,14 +167,14 @@ namespace NBagOfTricks.UI
             if (e.Button == MouseButtons.Left)
             {
                 _current = GetTimeFromMouse(e.X);
-                CurrentTimeChanged?.Invoke(this, new EventArgs());
+                //CurrentTimeChanged?.Invoke(this, new EventArgs());
             }
             else
             {
                 if (e.X != _lastXPos)
                 {
                     TimeSpan ts = GetTimeFromMouse(e.X);
-                    toolTip.SetToolTip(this, FormatTime(ts));
+                    _toolTip.SetToolTip(this, FormatTime(ts));
                     _lastXPos = e.X;
                 }
             }

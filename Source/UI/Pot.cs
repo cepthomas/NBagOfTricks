@@ -110,13 +110,6 @@ namespace NBagOfTricks.UI
         void Pot_Load(object sender, EventArgs e)
         {
         }
-        #endregion
-
-        #region Designer boilerplate
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        System.ComponentModel.IContainer components = new System.ComponentModel.Container();
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -124,9 +117,9 @@ namespace NBagOfTricks.UI
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _pen.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -157,7 +150,7 @@ namespace NBagOfTricks.UI
             double y = (diameter / 2.0) * Math.Sin(Math.PI * degrees / 180);
             e.Graphics.DrawLine(_pen, 0, 0, (float)x, (float)y);
 
-            using(StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
+            using (StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
             {
                 Rectangle srect = new Rectangle(0, 7, 0, 0);
                 string sValue = _value.ToString("#." + new string('0', DecPlaces));

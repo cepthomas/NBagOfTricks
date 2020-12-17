@@ -53,7 +53,7 @@ namespace NBagOfTricks.UI
         int _logicalProcessors = 0;
 
         /// <summary>The pen.</summary>
-        Pen _pen = new Pen(Color.Black, 1);
+        readonly Pen _pen = new Pen(Color.Black, 1);
         #endregion
 
         #region Properties
@@ -68,26 +68,6 @@ namespace NBagOfTricks.UI
 
         /// <summary>For styling.</summary>
         public Color DrawColor { get { return _pen.Color; } set { _pen.Color = value; } }
-        #endregion
-
-        #region Designer boilerplate
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        System.ComponentModel.IContainer components = new System.ComponentModel.Container();
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
         #endregion
 
         #region Lifecycle
@@ -111,6 +91,21 @@ namespace NBagOfTricks.UI
             _timer.Tick += Timer_Tick;
             _timer.Interval = 500;
             _timer.Start();
+        }
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _pen.Dispose();
+                _cpuPerf.Dispose();
+                _processesPerf.ForEach(p => p.Dispose());
+            }
+            base.Dispose(disposing);
         }
         #endregion
 
