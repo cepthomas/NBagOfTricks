@@ -121,8 +121,6 @@ namespace NBagOfTricks.UI
         {
             pe.Graphics.Clear(BackColor);
 
-            pe.Graphics.DrawRectangle(Pens.Black, 0, 0, Width - _pen.Width, Height - _pen.Width);
-
             // Draw data.
             // TODO for each process?
             // The Processor (% Processor Time) counter will be out of 100 and will give the total usage across all
@@ -138,11 +136,8 @@ namespace NBagOfTricks.UI
                     double val = _cpuBuff[index];
 
                     // Draw data point.
-                    double x = i + _pen.Width;
-                    double y = MathUtils.Map(val, _min, _max, Height - 2 * _pen.Width, _pen.Width);
-
-                    pe.Graphics.DrawLine(_pen, (float)x, (float)y, (float)x, Height - 2 * _pen.Width);
-                    // or: pe.Graphics.FillRectangle(brush, (float)x, (float)y, 2, 2);
+                    double y = MathUtils.Map(val, _min, _max, Height, 0);
+                    pe.Graphics.DrawLine(_pen, (float)i, (float)y, (float)i, Height);
                 }
             }
 
@@ -169,7 +164,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         void SetBuffs()
         {
-            int size = (int)(Width - 2 * _pen.Width);
+            int size = Width;
             for (int i = 0; i < _processesBuffs.Count(); i++)
             {
                 _processesBuffs[i] = new double[size];

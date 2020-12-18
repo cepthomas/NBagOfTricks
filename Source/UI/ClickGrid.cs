@@ -36,9 +36,6 @@ namespace NBagOfTricks.UI
 
         /// <summary>Used for unspecified states.</summary>
         SolidBrush _defaultBackBrush = new SolidBrush(Color.White);
-
-        /// <summary>The pen.</summary>
-        Pen _pen = new Pen(Color.Black);
         #endregion
 
         #region Events
@@ -178,9 +175,6 @@ namespace NBagOfTricks.UI
                         int y = row * _indHeight;
                         Rectangle r = new Rectangle(x, y, _indWidth, _indHeight);
                         pe.Graphics.FillRectangle(bb, r);
-
-                        // Border
-                        //pe.Graphics.DrawRectangle(_pen, r);
 
                         // Text
                         string text = _indicators[ind].Text;

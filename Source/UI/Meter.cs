@@ -129,12 +129,8 @@ namespace NBagOfTricks.UI
         protected override void OnPaint(PaintEventArgs pe)
         {
             pe.Graphics.Clear(BackColor);
-            // Border
-            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - _pen.Width, Height - _pen.Width);
 
             // Draw data.
-            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -(int)_pen.Width, -(int)_pen.Width);
-
             switch (MeterType)
             {
                 case MeterType.Log:
@@ -143,15 +139,15 @@ namespace NBagOfTricks.UI
 
                     if (Orientation == Orientation.Horizontal)
                     {
-                        int w = (int)(drawArea.Width * percent);
-                        int h = drawArea.Height;
-                        pe.Graphics.FillRectangle(_brush, _pen.Width, _pen.Width, w, h);
+                        int w = (int)(ClientRectangle.Width * percent);
+                        int h = ClientRectangle.Height;
+                        pe.Graphics.FillRectangle(_brush, 0, 0, w, h);
                     }
                     else
                     {
-                        int w = drawArea.Width;
-                        int h = (int)(drawArea.Height * percent);
-                        pe.Graphics.FillRectangle(_brush, _pen.Width, Height - _pen.Width - h, w, h);
+                        int w = ClientRectangle.Width;
+                        int h = (int)(ClientRectangle.Height * percent);
+                        pe.Graphics.FillRectangle(_brush, 0, Height - h, w, h);
                     }
                     break;
 
@@ -165,16 +161,15 @@ namespace NBagOfTricks.UI
                         double val = _buff[index];
 
                         // Draw data point.
-                        double x = i + _pen.Width;
-                        double y = MathUtils.Map(val, Minimum, Maximum, drawArea.Height - _pen.Width, _pen.Width);
+                        double y = MathUtils.Map(val, Minimum, Maximum, ClientRectangle.Height, 0);
 
-                        if(MeterType == MeterType.ContinuousLine)
+                        if (MeterType == MeterType.ContinuousLine)
                         {
-                            pe.Graphics.DrawLine(_pen, (float)x, (float)y, (float)x, drawArea.Height - 2 * _pen.Width);
+                            pe.Graphics.DrawLine(_pen, (float)i, (float)y, (float)i, ClientRectangle.Height);
                         }
                         else
                         {
-                            pe.Graphics.FillRectangle(_brush, (float)x, (float)y, 2, 2);
+                            pe.Graphics.FillRectangle(_brush, (float)i, (float)y, 2, 2);
                         }
                     }
                     break;
@@ -192,7 +187,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         protected override void OnResize(EventArgs e)
         {
-            int buffSize = (int)(Width - 2 * _pen.Width);
+            int buffSize = Width;
             _buff = new double[buffSize];
             for(int i = 0; i < buffSize; i++)
             {

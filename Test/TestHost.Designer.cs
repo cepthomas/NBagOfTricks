@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestHost));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
+            this.barBar1 = new NBagOfTricks.UI.BarBar();
             this.clickGrid1 = new NBagOfTricks.UI.ClickGrid();
             this.waveViewer = new NBagOfTricks.UI.WaveViewer();
             this.timeBar = new NBagOfTricks.UI.TimeBar();
@@ -48,7 +48,6 @@
             this.pot1 = new NBagOfTricks.UI.Pot();
             this.slider1 = new NBagOfTricks.UI.Slider();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.barBar1 = new NBagOfTricks.UI.BarBar();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -101,6 +100,21 @@
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.Vkbd_KeyboardEvent);
             // 
+            // barBar1
+            // 
+            this.barBar1.BeatsPerBar = 4;
+            this.barBar1.CurrentTick = 0;
+            this.barBar1.Length = 0;
+            this.barBar1.Location = new System.Drawing.Point(943, 262);
+            this.barBar1.Marker1 = 0;
+            this.barBar1.Marker2 = 0;
+            this.barBar1.Name = "barBar1";
+            this.barBar1.ProgressColor = System.Drawing.Color.White;
+            this.barBar1.Size = new System.Drawing.Size(353, 51);
+            this.barBar1.Snap = NBagOfTricks.UI.BarBar.SnapType.Bar;
+            this.barBar1.TabIndex = 15;
+            this.barBar1.TicksPerBeat = 8;
+            // 
             // clickGrid1
             // 
             this.clickGrid1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -111,6 +125,7 @@
             // 
             // waveViewer
             // 
+            this.waveViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.waveViewer.DrawColor = System.Drawing.Color.Orange;
             this.waveViewer.Location = new System.Drawing.Point(584, 174);
             this.waveViewer.Name = "waveViewer";
@@ -119,8 +134,7 @@
             // 
             // timeBar
             // 
-            this.timeBar.CurrentTime = System.TimeSpan.Parse("00:00:00");
-            this.timeBar.Length = System.TimeSpan.Parse("00:00:00");
+            this.timeBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.timeBar.Location = new System.Drawing.Point(943, 187);
             this.timeBar.Name = "timeBar";
             this.timeBar.ProgressColor = System.Drawing.Color.Orange;
@@ -275,6 +289,7 @@
             // slider1
             // 
             this.slider1.BackColor = System.Drawing.Color.Gainsboro;
+            this.slider1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.slider1.DecPlaces = 2;
             this.slider1.DrawColor = System.Drawing.Color.Orange;
             this.slider1.Label = "Horizontal";
@@ -292,18 +307,6 @@
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
-            // 
-            // barBar1
-            // 
-            this.barBar1.BeatsPerBar = 4;
-            this.barBar1.Length = 0;
-            this.barBar1.Location = new System.Drawing.Point(943, 262);
-            this.barBar1.Name = "barBar1";
-            this.barBar1.ProgressColor = System.Drawing.Color.White;
-            this.barBar1.Size = new System.Drawing.Size(353, 51);
-            this.barBar1.Snap = NBagOfTricks.UI.BarBar.SnapType.Bar;
-            this.barBar1.TabIndex = 15;
-            this.barBar1.TicksPerBeat = 8;
             // 
             // TestHost
             // 

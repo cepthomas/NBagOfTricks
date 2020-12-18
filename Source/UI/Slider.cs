@@ -18,9 +18,6 @@ namespace NBagOfTricks.UI
         /// <summary> </summary>
         double _resetVal = 0.0;
 
-        /// <summary>The pen.</summary>
-        readonly Pen _pen = new Pen(Color.Black, 1);
-
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
 
@@ -100,7 +97,6 @@ namespace NBagOfTricks.UI
         {
             if (disposing)
             {
-                _pen.Dispose();
                 _brush.Dispose();
                 _format.Dispose();
             }
@@ -117,24 +113,17 @@ namespace NBagOfTricks.UI
             // Setup.
             pe.Graphics.Clear(BackColor);
 
-            // Draw data.
-            Rectangle drawArea = Rectangle.Inflate(ClientRectangle, -(int)_pen.Width, -(int)_pen.Width);
-
             // Draw the bar.
             if (Orientation == Orientation.Horizontal)
             {
                 double x = (_value - Minimum) / (Maximum - Minimum);
-                pe.Graphics.FillRectangle(_brush, drawArea.Left, drawArea.Top, drawArea.Width * (float)x, drawArea.Height);
+                pe.Graphics.FillRectangle(_brush, ClientRectangle.Left, ClientRectangle.Top, ClientRectangle.Width * (float)x, ClientRectangle.Height);
             }
             else
             {
                 double y = 1.0 - (_value - Minimum) / (Maximum - Minimum);
-                pe.Graphics.FillRectangle(_brush, drawArea.Left, drawArea.Height * (float)y, drawArea.Width, drawArea.Bottom);
+                pe.Graphics.FillRectangle(_brush, ClientRectangle.Left, ClientRectangle.Height * (float)y, ClientRectangle.Width, ClientRectangle.Bottom);
             }
-
-            // Draw border.
-            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - _pen.Width, Height - _pen.Width);
-            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - _pen.Width, Height - _pen.Width);
 
             // Text.
             string sval = _value.ToString("#0." + new string('0', DecPlaces));
@@ -142,6 +131,7 @@ namespace NBagOfTricks.UI
             {
                 Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
                 pe.Graphics.DrawString(Label, Font, Brushes.Black, r, _format);
+
                 r = new Rectangle(ClientRectangle.X, ClientRectangle.Height / 2, ClientRectangle.Width, ClientRectangle.Height / 2);
                 pe.Graphics.DrawString(sval, Font, Brushes.Black, r, _format);
             }

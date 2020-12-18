@@ -15,9 +15,6 @@ namespace NBagOfTricks.UI
         /// <summary> </summary>
         private double _value;
 
-        /// <summary>The pen.</summary>
-        readonly Pen _pen = new Pen(Color.Black, 1);
-
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
 
@@ -77,7 +74,6 @@ namespace NBagOfTricks.UI
         {
             if (disposing)
             {
-                _pen.Dispose();
                 _brush.Dispose();
                 _format.Dispose();
             }
@@ -93,24 +89,21 @@ namespace NBagOfTricks.UI
             // Setup.
             pe.Graphics.Clear(BackColor);
 
-            // Draw border.
-            pe.Graphics.DrawRectangle(_pen, 0, 0, Width - _pen.Width, Height - _pen.Width);
-
             // Draw data.
             string panValue;
             if (_value == 0.0)
             {
-                pe.Graphics.FillRectangle(_brush, (Width / 2) - _pen.Width, _pen.Width, 2 * _pen.Width, Height - 2 * _pen.Width);
+                pe.Graphics.FillRectangle(_brush, Width / 2, 0, 0, Height);
                 panValue = "C";
             }
             else if (_value > 0)
             {
-                pe.Graphics.FillRectangle(_brush, (Width / 2), _pen.Width, (int)((Width / 2) * _value), Height - 2 * _pen.Width);
+                pe.Graphics.FillRectangle(_brush, Width / 2, 0, (int)(Width / 2 * _value), Height);
                 panValue = $"{_value * 100:F0}%R";
             }
             else
             {
-                pe.Graphics.FillRectangle(_brush, (int)((Width / 2) * (_value + _pen.Width)), _pen.Width, (int)((Width / 2) * (0 - _value)), Height - 2 * _pen.Width);
+                pe.Graphics.FillRectangle(_brush, (int)(Width / 2 * _value), 0, (int)(Width / 2 * (0 - _value)), Height);
                 panValue = $"{_value * -100:F0}%L";
             }
 

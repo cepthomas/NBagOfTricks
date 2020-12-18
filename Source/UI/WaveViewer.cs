@@ -24,10 +24,7 @@ namespace NBagOfTricks.UI
         /// <summary>Storage for display.</summary>
         float[] _buff = null;
 
-        /// <summary>The border pen.</summary>
-        Pen _penBorder = new Pen(Color.Black, 1);
-
-        /// <summary>The other pen.</summary>
+        /// <summary>For drawing.</summary>
         Pen _penDraw = new Pen(Color.Black, 1);
 
         /// <summary>For drawing text.</summary>
@@ -69,7 +66,6 @@ namespace NBagOfTricks.UI
         {
            if (disposing)
            {
-                _penBorder.Dispose();
                 _penDraw.Dispose();
                 _textFont.Dispose();
                 _format.Dispose();
@@ -105,9 +101,6 @@ namespace NBagOfTricks.UI
             // Setup.
             pe.Graphics.Clear(BackColor);
 
-            // Draw border.
-            pe.Graphics.DrawRectangle(_penBorder, 0, 0, Width - _penBorder.Width, Height - _penBorder.Width);
-
             if (_buff == null)
             {
                 pe.Graphics.DrawString("No data", _textFont, Brushes.Red, ClientRectangle, _format);
@@ -119,20 +112,18 @@ namespace NBagOfTricks.UI
                     double val = _buff[i];
 
                     // Draw data point.
-                    double x = i + _penBorder.Width;
-
                     // Line from val to 0
-                    double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * _penBorder.Width, _penBorder.Width);
+                    double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height, 0);
                     double y2 = Height / 2;
-                    pe.Graphics.DrawLine(_penDraw, (float)x, (float)y1, (float)x, (float)y2);
+                    pe.Graphics.DrawLine(_penDraw, (float)i, (float)y1, (float)i, (float)y2);
 
                     // Line from +val to -val
                     //double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * _penBorder.Width, _penBorder.Width);
                     //double y2 = MathUtils.Map(val, -_rawMax, _rawMax, _penBorder.Width, Height - 2 * _penBorder.Width);
-                    //pe.Graphics.DrawLine(_penDraw, (float)x, (float)y1, (float)x, (float)y2);
+                    //pe.Graphics.DrawLine(_penDraw, (float)i, (float)y1, (float)i, (float)y2);
 
                     // Simple dot
-                    //pe.Graphics.DrawRectangle(_penDraw, (float)x, (float)y1, 1, 1);
+                    //pe.Graphics.DrawRectangle(_penDraw, (float)i, (float)y1, 1, 1);
                 }
             }
         }
@@ -150,8 +141,9 @@ namespace NBagOfTricks.UI
             }
             else
             {
-                int fitWidth = (int)(Width - (2 * _penBorder.Width));
+                int fitWidth = Width;
                 _buff = new float[fitWidth];
+
                 // Bin to fit UI x axis.
                 int smplPerPixel = _rawVals.Length / fitWidth;
 
@@ -202,7 +194,6 @@ namespace NBagOfTricks.UI
                 }
             }
         }
-
 
         /// <summary>
         /// Update drawing area.

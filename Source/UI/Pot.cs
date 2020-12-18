@@ -39,7 +39,7 @@ namespace NBagOfTricks.UI
         /// <summary> </summary>
         bool _dragging = false;
 
-        /// <summary> </summary>
+        /// <summary>For drawing.</summary>
         Pen _pen = new Pen(Color.Black, 3.0f) { LineJoin = System.Drawing.Drawing2D.LineJoin.Round };
 
         /// <summary>For drawing text.</summary>
