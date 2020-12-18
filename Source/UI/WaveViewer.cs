@@ -29,6 +29,12 @@ namespace NBagOfTricks.UI
 
         /// <summary>The other pen.</summary>
         Pen _penDraw = new Pen(Color.Black, 1);
+
+        /// <summary>For drawing text.</summary>
+        Font _textFont = new Font("Cascadia", 14, FontStyle.Regular, GraphicsUnit.Point, 0);
+
+        /// <summary>For drawing text.</summary>
+        StringFormat _format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
         #endregion
 
         #region Properties
@@ -65,6 +71,8 @@ namespace NBagOfTricks.UI
            {
                 _penBorder.Dispose();
                 _penDraw.Dispose();
+                _textFont.Dispose();
+                _format.Dispose();
            }
            base.Dispose(disposing);
         }
@@ -85,6 +93,48 @@ namespace NBagOfTricks.UI
             Rescale();
             Dump(_buff, "buff.csv");
             Invalidate();
+        }
+        #endregion
+
+        #region Drawing
+        /// <summary>
+        /// Paints the waveform.
+        /// </summary>
+        protected override void OnPaint(PaintEventArgs pe)
+        {
+            // Setup.
+            pe.Graphics.Clear(BackColor);
+
+            // Draw border.
+            pe.Graphics.DrawRectangle(_penBorder, 0, 0, Width - _penBorder.Width, Height - _penBorder.Width);
+
+            if (_buff == null)
+            {
+                pe.Graphics.DrawString("No data", _textFont, Brushes.Red, ClientRectangle, _format);
+            }
+            else
+            {
+                for (int i = 0; i < _buff.Length; i++)
+                {
+                    double val = _buff[i];
+
+                    // Draw data point.
+                    double x = i + _penBorder.Width;
+
+                    // Line from val to 0
+                    double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * _penBorder.Width, _penBorder.Width);
+                    double y2 = Height / 2;
+                    pe.Graphics.DrawLine(_penDraw, (float)x, (float)y1, (float)x, (float)y2);
+
+                    // Line from +val to -val
+                    //double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * _penBorder.Width, _penBorder.Width);
+                    //double y2 = MathUtils.Map(val, -_rawMax, _rawMax, _penBorder.Width, Height - 2 * _penBorder.Width);
+                    //pe.Graphics.DrawLine(_penDraw, (float)x, (float)y1, (float)x, (float)y2);
+
+                    // Simple dot
+                    //pe.Graphics.DrawRectangle(_penDraw, (float)x, (float)y1, 1, 1);
+                }
+            }
         }
         #endregion
 
@@ -153,46 +203,6 @@ namespace NBagOfTricks.UI
             }
         }
 
-        /// <summary>
-        /// Paints the waveform.
-        /// </summary>
-        protected override void OnPaint(PaintEventArgs pe)
-        {
-            // Setup.
-            pe.Graphics.Clear(BackColor);
-
-            // Draw border.
-            pe.Graphics.DrawRectangle(_penBorder, 0, 0, Width - _penBorder.Width, Height - _penBorder.Width);
-
-            if (_buff == null)
-            {
-                Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
-                pe.Graphics.DrawString("No data", Font, Brushes.Red, r);
-            }
-            else
-            {
-                for (int i = 0; i < _buff.Length; i++)
-                {
-                    double val = _buff[i];
-
-                    // Draw data point.
-                    double x = i + _penBorder.Width;
-
-                    // Line from val to 0
-                    double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * _penBorder.Width, _penBorder.Width);
-                    double y2 = Height / 2;
-                    pe.Graphics.DrawLine(_penDraw, (float)x, (float)y1, (float)x, (float)y2);
-
-                    // Line from +val to -val
-                    //double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * _penBorder.Width, _penBorder.Width);
-                    //double y2 = MathUtils.Map(val, -_rawMax, _rawMax, _penBorder.Width, Height - 2 * _penBorder.Width);
-                    //pe.Graphics.DrawLine(_penDraw, (float)x, (float)y1, (float)x, (float)y2);
-
-                    // Simple dot
-                    //pe.Graphics.DrawRectangle(_penDraw, (float)x, (float)y1, 1, 1);
-                }
-            }
-        }
 
         /// <summary>
         /// Update drawing area.

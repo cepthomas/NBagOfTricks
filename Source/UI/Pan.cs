@@ -20,6 +20,9 @@ namespace NBagOfTricks.UI
 
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
+
+        /// <summary>For drawing text.</summary>
+        StringFormat _format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
         #endregion
 
         #region Properties
@@ -76,6 +79,7 @@ namespace NBagOfTricks.UI
             {
                 _pen.Dispose();
                 _brush.Dispose();
+                _format.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -111,10 +115,7 @@ namespace NBagOfTricks.UI
             }
 
             // Draw text.
-            using (StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
-            {
-                pe.Graphics.DrawString(panValue, Font, Brushes.Black, ClientRectangle, format);
-            }
+            pe.Graphics.DrawString(panValue, Font, Brushes.Black, ClientRectangle, _format);
         }
 
         /// <summary>

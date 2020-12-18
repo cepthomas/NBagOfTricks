@@ -23,6 +23,9 @@ namespace NBagOfTricks.UI
 
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
+
+        /// <summary>For drawing text.</summary>
+        StringFormat _format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
         #endregion
 
         #region Properties
@@ -99,6 +102,7 @@ namespace NBagOfTricks.UI
             {
                 _pen.Dispose();
                 _brush.Dispose();
+                _format.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -134,19 +138,16 @@ namespace NBagOfTricks.UI
 
             // Text.
             string sval = _value.ToString("#0." + new string('0', DecPlaces));
-            using (StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
+            if (Label != "")
             {
-                if (Label != "")
-                {
-                    Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
-                    pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
-                    r = new Rectangle(ClientRectangle.X, ClientRectangle.Height / 2, ClientRectangle.Width, ClientRectangle.Height / 2);
-                    pe.Graphics.DrawString(sval, Font, Brushes.Black, r, format);
-                }
-                else
-                {
-                    pe.Graphics.DrawString(sval, Font, Brushes.Black, ClientRectangle, format);
-                }
+                Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
+                pe.Graphics.DrawString(Label, Font, Brushes.Black, r, _format);
+                r = new Rectangle(ClientRectangle.X, ClientRectangle.Height / 2, ClientRectangle.Width, ClientRectangle.Height / 2);
+                pe.Graphics.DrawString(sval, Font, Brushes.Black, r, _format);
+            }
+            else
+            {
+                pe.Graphics.DrawString(sval, Font, Brushes.Black, ClientRectangle, _format);
             }
         }
         #endregion

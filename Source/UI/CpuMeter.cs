@@ -54,6 +54,9 @@ namespace NBagOfTricks.UI
 
         /// <summary>The pen.</summary>
         readonly Pen _pen = new Pen(Color.Black, 1);
+
+        /// <summary>For drawing text.</summary>
+        StringFormat _format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
         #endregion
 
         #region Properties
@@ -103,6 +106,7 @@ namespace NBagOfTricks.UI
             {
                 _pen.Dispose();
                 _cpuPerf.Dispose();
+                _format.Dispose();
                 _processesPerf.ForEach(p => p.Dispose());
             }
             base.Dispose(disposing);
@@ -142,11 +146,8 @@ namespace NBagOfTricks.UI
                 }
             }
 
-            using (StringFormat format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center })
-            {
-                Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
-                pe.Graphics.DrawString(Label, Font, Brushes.Black, r, format);
-            }
+            Rectangle r = new Rectangle(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height / 2);
+            pe.Graphics.DrawString(Label, Font, Brushes.Black, r, _format);
         }
 
         /// <summary>
