@@ -13,16 +13,16 @@ namespace NBagOfTricks.UI
     {
         #region Fields
         /// <summary>Total length.</summary>
-        TimeSpan _lengthX = new TimeSpan();
+        TimeSpan _length = new TimeSpan();
 
         /// <summary>Current time/position.</summary>
         TimeSpan _current = new TimeSpan();
 
         /// <summary>One marker.</summary>
-        TimeSpan _marker1 = new TimeSpan();
+        TimeSpan _start = new TimeSpan();
 
         /// <summary>Other marker.</summary>
-        TimeSpan _marker2 = new TimeSpan();
+        TimeSpan _end = new TimeSpan();
 
         /// <summary>For tracking mouse moves.</summary>
         int _lastXPos = 0;
@@ -30,14 +30,23 @@ namespace NBagOfTricks.UI
         /// <summary>Tooltip for mousing.</summary>
         readonly ToolTip _toolTip = new ToolTip();
 
-        /// <summary>The border pen.</summary>
-        readonly Pen _penBorder = new Pen(Color.Black, 1);
+        ///// <summary>The border pen.</summary>
+        //readonly Pen _penBorder = new Pen(Color.Black, 1);
 
-        /// <summary>The marker pen.</summary>
-        readonly Pen _penMarker = new Pen(Color.Black, 1);
+        ///// <summary>The marker pen.</summary>
+        //readonly Pen _penMarker = new Pen(Color.Black, 1);
 
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
+
+        /// <summary>The pen.</summary>
+        readonly Pen _pen = new Pen(Color.Black, 1);
+
+        /// <summary>For drawing text.</summary>
+        StringFormat _formatLeft = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
+
+        /// <summary>For drawing text.</summary>
+        StringFormat _formatRight = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far };
 
         /// <summary>Constant.</summary>
         private static readonly int LARGE_CHANGE = 1000;
@@ -49,19 +58,19 @@ namespace NBagOfTricks.UI
         #region Properties
         /// <summary>Where we be now.</summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-        public TimeSpan CurrentTime { get { return _current; } set { _current = value; UpdateTime(); } }
+        public TimeSpan Current { get { return _current; } set { _current = value; Invalidate(); } }
 
         /// <summary>Total length.</summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-        public TimeSpan Length { get { return _lengthX; } set { _lengthX = value; UpdateTime(); } }
+        public TimeSpan Length { get { return _length; } set { _length = value; Invalidate(); } }
 
         /// <summary>One marker.</summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-        public TimeSpan Marker1 { get { return _marker1; } set { _marker1 = value; UpdateTime(); } }
+        public TimeSpan Start { get { return _start; } set { _start = value; Invalidate(); } }
 
         /// <summary>Other marker.</summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-        public TimeSpan Marker2 { get { return _marker2; } set { _marker2 = value; UpdateTime(); } }
+        public TimeSpan End { get { return _end; } set { _end = value; Invalidate(); } }
 
         /// <summary>For styling.</summary>
         public Color ProgressColor { get { return _brush.Color; } set { _brush.Color = value; } }
@@ -79,12 +88,6 @@ namespace NBagOfTricks.UI
         #endregion
 
 
-        void UpdateTime()
-        {
-
-
-            Invalidate();
-        }
 
 
 
@@ -107,7 +110,6 @@ namespace NBagOfTricks.UI
         void TimeBar_Load(object sender, EventArgs e)
         {
             _current = TimeSpan.MinValue;
-
         }
 
         /// <summary> 
@@ -119,9 +121,11 @@ namespace NBagOfTricks.UI
             if (disposing)
             {
                 _toolTip.Dispose();
-                _penBorder.Dispose();
-                _penMarker.Dispose();
+                //_penBorder.Dispose();
+                //_penMarker.Dispose();
                 _brush.Dispose();
+                _formatLeft.Dispose();
+                _formatRight.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -137,24 +141,25 @@ namespace NBagOfTricks.UI
             pe.Graphics.Clear(BackColor);
 
             // Draw border.
-            pe.Graphics.DrawRectangle(_penBorder, 0, 0, Width - _penBorder.Width, Height - _penBorder.Width);
+            //pe.Graphics.DrawRectangle(_penBorder, 0, 0, Width - _penBorder.Width, Height - _penBorder.Width);
 
-            if (_current < _lengthX)
+            if (_current < _length)
             {
+                //pe.Graphics.FillRectangle(_brush,
+                //    _penBorder.Width,
+                //    _penBorder.Width,
+                //    (Width - 2 * _penBorder.Width) * (int)_current.TotalMilliseconds / (int)_lengthX.TotalMilliseconds,
+                //    Height - 2 * _penBorder.Width);
                 pe.Graphics.FillRectangle(_brush,
-                    _penBorder.Width,
-                    _penBorder.Width,
-                    (Width - 2 * _penBorder.Width) * (int)_current.TotalMilliseconds / (int)_lengthX.TotalMilliseconds,
-                    Height - 2 * _penBorder.Width);
+                    0,
+                    0,
+                    _length.TotalMilliseconds > 0 ? Width * (int)_current.TotalMilliseconds / (int)_length.TotalMilliseconds : 0,
+                    Height);
             }
 
             // Text.
-            using (StringFormat formatLeft = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near })
-            using (StringFormat formatRight = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far })
-            {
-                pe.Graphics.DrawString(FormatTime(_current), FontLarge, Brushes.Black, ClientRectangle, formatLeft);
-                pe.Graphics.DrawString(FormatTime(_lengthX), FontSmall, Brushes.Black, ClientRectangle, formatRight);
-            }
+            pe.Graphics.DrawString(FormatTime(_current), FontLarge, Brushes.Black, ClientRectangle, _formatLeft);
+            pe.Graphics.DrawString(FormatTime(_length), FontSmall, Brushes.Black, ClientRectangle, _formatRight);
         }
         #endregion
 
@@ -167,7 +172,7 @@ namespace NBagOfTricks.UI
             if (e.Button == MouseButtons.Left)
             {
                 _current = GetTimeFromMouse(e.X);
-                //CurrentTimeChanged?.Invoke(this, new EventArgs());
+                CurrentTimeChanged?.Invoke(this, new EventArgs());
             }
             else
             {
@@ -178,7 +183,7 @@ namespace NBagOfTricks.UI
                     _lastXPos = e.X;
                 }
             }
-            UpdateTime();
+            Invalidate();
 
             base.OnMouseMove(e);
         }
@@ -190,7 +195,7 @@ namespace NBagOfTricks.UI
         {
             _current = GetTimeFromMouse(e.X);
             CurrentTimeChanged?.Invoke(this, new EventArgs());
-            UpdateTime();
+            Invalidate();
             base.OnMouseDown(e);
         }
         #endregion
@@ -204,10 +209,10 @@ namespace NBagOfTricks.UI
         {
             int msec = 0;
 
-            if(_current.TotalMilliseconds < _lengthX.TotalMilliseconds)
+            if(_current.TotalMilliseconds < _length.TotalMilliseconds)
             {
-                msec = x * (int)_lengthX.TotalMilliseconds / Width;
-                msec = MathUtils.Constrain(msec, 0, (int)_lengthX.TotalMilliseconds);
+                msec = x * (int)_length.TotalMilliseconds / Width;
+                msec = MathUtils.Constrain(msec, 0, (int)_length.TotalMilliseconds);
             }
 
             return new TimeSpan(0, 0, 0, 0, msec);
@@ -229,9 +234,9 @@ namespace NBagOfTricks.UI
             }
 
             // Sanity checks.
-            if (_current > _lengthX)
+            if (_current > _length)
             {
-                _current = _lengthX;
+                _current = _length;
             }
 
             if (_current.TotalMilliseconds < 0)

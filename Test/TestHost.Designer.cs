@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
-            this.barBar1 = new NBagOfTricks.UI.BarBar();
+            this.barBar = new NBagOfTricks.UI.BarBar();
             this.clickGrid1 = new NBagOfTricks.UI.ClickGrid();
             this.waveViewer = new NBagOfTricks.UI.WaveViewer();
             this.timeBar = new NBagOfTricks.UI.TimeBar();
@@ -68,7 +68,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.barBar1);
+            this.splitContainer1.Panel2.Controls.Add(this.barBar);
             this.splitContainer1.Panel2.Controls.Add(this.clickGrid1);
             this.splitContainer1.Panel2.Controls.Add(this.waveViewer);
             this.splitContainer1.Panel2.Controls.Add(this.timeBar);
@@ -102,18 +102,15 @@
             // 
             // barBar1
             // 
-            this.barBar1.BeatsPerBar = 4;
-            this.barBar1.CurrentTick = 0;
-            this.barBar1.Length = 0;
-            this.barBar1.Location = new System.Drawing.Point(943, 262);
-            this.barBar1.Marker1 = 0;
-            this.barBar1.Marker2 = 0;
-            this.barBar1.Name = "barBar1";
-            this.barBar1.ProgressColor = System.Drawing.Color.White;
-            this.barBar1.Size = new System.Drawing.Size(353, 51);
-            this.barBar1.Snap = NBagOfTricks.UI.BarBar.SnapType.Bar;
-            this.barBar1.TabIndex = 15;
-            this.barBar1.TicksPerBeat = 8;
+            this.barBar.BeatsPerBar = 4;
+            this.barBar.Current = 0;
+            this.barBar.Location = new System.Drawing.Point(943, 262);
+            this.barBar.Name = "barBar1";
+            this.barBar.ProgressColor = System.Drawing.Color.White;
+            this.barBar.Size = new System.Drawing.Size(353, 51);
+            this.barBar.Snap = NBagOfTricks.UI.BarBar.SnapType.Bar;
+            this.barBar.TabIndex = 15;
+            this.barBar.TicksPerBeat = 8;
             // 
             // clickGrid1
             // 
@@ -349,6 +346,6 @@
         private System.Windows.Forms.Timer timer1;
         private UI.WaveViewer waveViewer;
         private UI.ClickGrid clickGrid1;
-        private UI.BarBar barBar1;
+        private UI.BarBar barBar;
     }
 }

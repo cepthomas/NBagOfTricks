@@ -63,7 +63,7 @@ namespace NBagOfTricks.Test
             ftree.Init();
 
             timeBar.Length = new TimeSpan(0, 12, 34);
-            timeBar.CurrentTime = new TimeSpan(0);
+            timeBar.Current = new TimeSpan(0);
 
             float[] data = new float[1000];
             for(int i = 0; i < data.Length; i ++)
@@ -87,11 +87,13 @@ namespace NBagOfTricks.Test
             clickGrid1.IndicatorEvent += ClickGrid_IndicatorEvent;
             clickGrid1.Show(4, 60, 20);
 
-            barBar1.Length = 256;
-            barBar1.CurrentTick = 10;
-            barBar1.CurrentTimeChanged += BarBar1_CurrentTimeChanged;
-            barBar1.ProgressColor = Color.MediumPurple;
-            barBar1.BackColor = Color.LawnGreen;
+            barBar.Length = 300;
+            barBar.Start = 40;
+            barBar.End = 150;
+            barBar.Current = 10;
+            barBar.CurrentTimeChanged += BarBar1_CurrentTimeChanged;
+            barBar.ProgressColor = Color.MediumPurple;
+            barBar.BackColor = Color.LawnGreen;
 
             //barBar1.Test();
 
@@ -174,10 +176,20 @@ namespace NBagOfTricks.Test
 
         void Timer1_Tick(object sender, EventArgs e)
         {
-            TimeSpan ts = timeBar.CurrentTime + new TimeSpan(0, 0, 0, 0, timer1.Interval);
-            timeBar.CurrentTime = ts < timeBar.Length ? ts : timeBar.Length;
+            TimeSpan ts = timeBar.Current + new TimeSpan(0, 0, 0, 0, timer1.Interval);
 
-            barBar1.CurrentTick = barBar1.CurrentTick < barBar1.Length ? barBar1.CurrentTick + 1 : 0;
+            // Update time bar.
+            timeBar.Current = ts < timeBar.Length ? ts : timeBar.Length;
+
+            // Update bar bar.
+            if(barBar.Current < barBar.End)
+            {
+                barBar.Current++;
+            }
+            else // done/reset
+            {
+                barBar.Current = barBar.Start;
+            }
         }
     }
 }
