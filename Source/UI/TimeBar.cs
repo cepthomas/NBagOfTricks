@@ -9,25 +9,9 @@ using NBagOfTricks.Utils;
 
 namespace NBagOfTricks.UI
 {
-
-    //static class TimeUtils
-    //{
-
-    //    public static void Constrain(this TimeSpan ts, TimeSpan lower, TimeSpan upper)
-    //    {
-    //        ts.TotalMilliseconds = MathUtils.Constrain(numChars, 0, str.Length);
-    //        return str.Substring(str.Length - numChars, numChars);
-    //    }
-    //}
-
-
-
     /// <summary>The control.</summary>
     public partial class TimeBar : UserControl // TODOC snap function
     {
-        ///// <summary>A useful constant.</summary>
-        //public static readonly TimeSpan TS_ZERO = new TimeSpan();
-
         #region Fields
         /// <summary>Total length.</summary>
         TimeSpan _length = new TimeSpan();
@@ -51,13 +35,10 @@ namespace NBagOfTricks.UI
         readonly SolidBrush _brush = new SolidBrush(Color.White);
 
         /// <summary>The pen.</summary>
-        readonly Pen _pen = new Pen(Color.Black, 1);
+        readonly Pen _penMarker = new Pen(Color.Gray, 1);
 
         /// <summary>For drawing text.</summary>
-        readonly StringFormat _formatLeft = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
-
-        /// <summary>For drawing text.</summary>
-        readonly StringFormat _formatRight = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far };
+        readonly StringFormat _format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
 
         /// <summary>Constant.</summary>
         private static readonly int LARGE_CHANGE = 1000;
@@ -93,10 +74,10 @@ namespace NBagOfTricks.UI
         public Color ProgressColor { get { return _brush.Color; } set { _brush.Color = value; } }
 
         /// <summary>Big font.</summary>
-        Font FontLarge { get; set; } = new Font("Cascadia", 24, FontStyle.Regular, GraphicsUnit.Point, 0);
+        Font FontLarge { get; set; } = new Font("Cascadia", 20, FontStyle.Regular, GraphicsUnit.Point, 0);
 
         /// <summary>Baby font.</summary>
-        Font FontSmall { get; set; } = new Font("Cascadia", 14, FontStyle.Regular, GraphicsUnit.Point, 0);
+        Font FontSmall { get; set; } = new Font("Cascadia", 10, FontStyle.Regular, GraphicsUnit.Point, 0);
         #endregion
 
         #region Events
@@ -122,10 +103,9 @@ namespace NBagOfTricks.UI
             if (disposing)
             {
                 _toolTip.Dispose();
-                _pen.Dispose();
+                _penMarker.Dispose();
                 _brush.Dispose();
-                _formatLeft.Dispose();
-                _formatRight.Dispose();
+                _format.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -138,16 +118,8 @@ namespace NBagOfTricks.UI
         /// <param name="msec"></param>
         public void IncrementCurrent(int msec)
         {
-            if (msec > 0)
-            {
-                _current = _current.Add(new TimeSpan(0, 0, 0, 0, msec));
-            }
-            else if (msec < 0)
-            {
-                _current = _current.Subtract(new TimeSpan(0, 0, 0, 0, -msec));
-            }
+            _current = (msec > 0) ? _current.Add(new TimeSpan(0, 0, 0, 0, msec)) : _current.Subtract(new TimeSpan(0, 0, 0, 0, -msec));
 
-            // Sanity checks.
             if (_current > _length)
             {
                 _current = _length;
@@ -157,11 +129,19 @@ namespace NBagOfTricks.UI
             {
                 _current = TimeSpan.Zero;
             }
+            else if (_current >= _length)
+            {
+                _current = _length;
+            }
+            else if (_end != TimeSpan.Zero && _current >= _end)
+            {
+                _current = _end;
+            }
 
             Invalidate();
         }
-
         #endregion
+
         #region Drawing
         /// <summary>
         /// Draw the slider.
@@ -176,6 +156,7 @@ namespace NBagOfTricks.UI
             _start = Constrain(_start, TimeSpan.Zero, _end);
             _end = Constrain(_end, TimeSpan.Zero, _length);
             _end = Constrain(_end, _start, _length);
+            _current = Constrain(_current, _start, _end);
 
             if (_end == TimeSpan.Zero && _length != TimeSpan.Zero)
             {
@@ -185,25 +166,28 @@ namespace NBagOfTricks.UI
             // Draw the bar.
             if (_current < _length)
             {
-                int len = _current > _end ? Scale(_end) : Scale(_current);
-                int start = Scale(_current);
+                int dstart = Scale(_start);
+                int dend = _current > _end ? Scale(_end) : Scale(_current);
 
-                pe.Graphics.FillRectangle(_brush, start, 0, len, Height);
+                pe.Graphics.FillRectangle(_brush, dstart, 0, dend - dstart, Height);
             }
-            // TODOC else????
 
             // Draw start/end markers.
-            if (_start != TimeSpan.Zero || _end != TimeSpan.Zero)
+            if (_start != TimeSpan.Zero || _end != _length)
             {
-                int start = Scale(_start);
-                int end = Scale(_end);
-                pe.Graphics.DrawLine(_pen, start, 0, start, Height);
-                pe.Graphics.DrawLine(_pen, end, 0, end, Height);
+                int mstart = Scale(_start);
+                int mend = Scale(_end);
+                pe.Graphics.DrawLine(_penMarker, mstart, 0, mstart, Height);
+                pe.Graphics.DrawLine(_penMarker, mend, 0, mend, Height);
             }
 
             // Text.
-            pe.Graphics.DrawString(_current.ToString(TS_FORMAT), FontLarge, Brushes.Black, ClientRectangle, _formatLeft);
-            pe.Graphics.DrawString(_length.ToString(TS_FORMAT), FontSmall, Brushes.Black, ClientRectangle, _formatRight);
+            _format.Alignment = StringAlignment.Center;
+            pe.Graphics.DrawString(_current.ToString(TS_FORMAT), FontLarge, Brushes.Black, ClientRectangle, _format);
+            _format.Alignment = StringAlignment.Near;
+            pe.Graphics.DrawString(_start.ToString(TS_FORMAT), FontSmall, Brushes.Black, ClientRectangle, _format);
+            _format.Alignment = StringAlignment.Far;
+            pe.Graphics.DrawString(_end.ToString(TS_FORMAT), FontSmall, Brushes.Black, ClientRectangle, _format);
         }
         #endregion
 

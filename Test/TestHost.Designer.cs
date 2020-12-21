@@ -122,7 +122,7 @@
             this.barBar.Location = new System.Drawing.Point(943, 242);
             this.barBar.Name = "barBar";
             this.barBar.ProgressColor = System.Drawing.Color.White;
-            this.barBar.Size = new System.Drawing.Size(353, 51);
+            this.barBar.Size = new System.Drawing.Size(428, 51);
             this.barBar.TabIndex = 15;
             // 
             // clickGrid1
@@ -144,11 +144,10 @@
             // 
             // timeBar
             // 
-            this.timeBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.timeBar.Location = new System.Drawing.Point(943, 174);
             this.timeBar.Name = "timeBar";
             this.timeBar.ProgressColor = System.Drawing.Color.Orange;
-            this.timeBar.Size = new System.Drawing.Size(353, 52);
+            this.timeBar.Size = new System.Drawing.Size(428, 52);
             this.timeBar.SnapMsec = 0;
             this.timeBar.TabIndex = 13;
             this.timeBar.CurrentTimeChanged += new System.EventHandler(this.TimeBar_CurrentTimeChanged);

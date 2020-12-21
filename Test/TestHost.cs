@@ -89,8 +89,12 @@ namespace NBagOfTricks.Test
             clickGrid1.Show(4, 60, 20);
 
             ///// Time bar.
-            timeBar.Length = new TimeSpan(0, 1, 23);
-            timeBar.Current = new TimeSpan(0);
+            timeBar.Length = new TimeSpan(0, 0, 1, 23, 456);
+            timeBar.Start = new TimeSpan(0, 0, 0, 10, 333);
+            timeBar.End = new TimeSpan(0, 0, 0, 44, 777);
+            timeBar.CurrentTimeChanged += TimeBar_CurrentTimeChanged1;
+            timeBar.ProgressColor = Color.CornflowerBlue;
+            timeBar.BackColor = Color.Salmon;
 
             ///// Bar bar.
             BarSpan.BeatsPerBar = 4;
@@ -100,20 +104,42 @@ namespace NBagOfTricks.Test
             barBar.Length = new BarSpan(16, 0, 0);
             barBar.Start = new BarSpan(2, 1, 11);
             barBar.End = new BarSpan(11, 3, 6);
-            //barBar.Current = 10;
             barBar.CurrentTimeChanged += BarBar1_CurrentTimeChanged;
             barBar.ProgressColor = Color.MediumPurple;
             barBar.BackColor = Color.LawnGreen;
 
             //barBar1.Test();
 
-            // Gogogo.
+            // Go-go-go.
             timer1.Enabled = true;
+        }
+
+        void Timer1_Tick(object sender, EventArgs e)
+        {
+            if (chkRunBars.Checked)
+            {
+                // Update time bar.
+                timeBar.IncrementCurrent(timer1.Interval + 3); // not-real time for testing
+                if (timeBar.Current >= timeBar.End) // done/reset
+                {
+                    timeBar.Current = timeBar.Start;
+                }
+
+                // Update bar bar.
+                barBar.IncrementCurrent(1);
+                if (barBar.Current >= barBar.End) // done/reset
+                {
+                    barBar.Current = barBar.Start;
+                }
+            }
+        }
+
+        private void TimeBar_CurrentTimeChanged1(object sender, EventArgs e)
+        {
         }
 
         private void BarBar1_CurrentTimeChanged(object sender, EventArgs e)
         {
-
         }
 
         private void ClickGrid_IndicatorEvent(object sender, IndicatorEventArgs e)
@@ -183,30 +209,6 @@ namespace NBagOfTricks.Test
         private void TimeBar_CurrentTimeChanged(object sender, EventArgs e)
         {
             //txtInfo.AddLine($"Current time:{timeBar.CurrentTime}");
-        }
-
-        void Timer1_Tick(object sender, EventArgs e)
-        {
-            if(chkRunBars.Checked)
-            {
-                // Update time bar.
-                timeBar.IncrementCurrent(timer1.Interval);
-                if (timeBar.Current >= timeBar.End) // done/reset
-                {
-                    timeBar.Current = timeBar.Start;
-                }
-
-                // Update bar bar.
-                barBar.IncrementCurrent(1);
-                if (barBar.Current < barBar.End)
-                {
-                    barBar.IncrementCurrent(1);
-                }
-                else // done/reset
-                {
-                    barBar.Current = barBar.Start;
-                }
-            }
         }
     }
 }
