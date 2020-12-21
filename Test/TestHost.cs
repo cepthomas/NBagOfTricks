@@ -31,6 +31,7 @@ namespace NBagOfTricks.Test
 
         private void TestHost_Load(object sender, EventArgs e)
         {
+            ///// Misc controls.
             txtInfo.Colors.Add("note:7", Color.Purple);
             txtInfo.Colors.Add("vel:10", Color.Green);
             txtInfo.BackColor = Color.Cornsilk;
@@ -42,6 +43,7 @@ namespace NBagOfTricks.Test
             slider1.ValueChanged += Slider1_ValueChanged;
             slider2.ValueChanged += Slider2_ValueChanged;
 
+            ///// Filter tree.
             string root = $@"C:\Dev\repos\NBagOfTricks\Test";
             ftree.RootDirs = new List<string>() { root };
             ftree.FilterExts = ".txt;.md;.xml;.cs".SplitByToken(";");
@@ -62,9 +64,7 @@ namespace NBagOfTricks.Test
 
             ftree.Init();
 
-            timeBar.Length = new TimeSpan(0, 12, 34);
-            timeBar.Current = new TimeSpan(0);
-
+            ///// Wave viewer.
             float[] data = new float[1000];
             for(int i = 0; i < data.Length; i ++)
             {
@@ -73,6 +73,7 @@ namespace NBagOfTricks.Test
             waveViewer.DrawColor = Color.Green;
             waveViewer.Init(data, 1.0f);
 
+            ///// Click grid.
             clickGrid1.AddStateType(10, Color.Blue, Color.AliceBlue);
             clickGrid1.AddStateType(20, Color.AliceBlue, Color.Blue);
             clickGrid1.AddStateType(30, Color.Red, Color.Salmon);
@@ -87,16 +88,26 @@ namespace NBagOfTricks.Test
             clickGrid1.IndicatorEvent += ClickGrid_IndicatorEvent;
             clickGrid1.Show(4, 60, 20);
 
-            barBar.Length = 300;
-            barBar.Start = 40;
-            barBar.End = 150;
-            barBar.Current = 10;
+            ///// Time bar.
+            timeBar.Length = new TimeSpan(0, 1, 23);
+            timeBar.Current = new TimeSpan(0);
+
+            ///// Bar bar.
+            BarSpan.BeatsPerBar = 4;
+            BarSpan.TicksPerBeat = 16;
+            BarSpan.Snap = SnapType.Bar;
+
+            barBar.Length = new BarSpan(16, 0, 0);
+            barBar.Start = new BarSpan(2, 1, 11);
+            barBar.End = new BarSpan(11, 3, 6);
+            //barBar.Current = 10;
             barBar.CurrentTimeChanged += BarBar1_CurrentTimeChanged;
             barBar.ProgressColor = Color.MediumPurple;
             barBar.BackColor = Color.LawnGreen;
 
             //barBar1.Test();
 
+            // Gogogo.
             timer1.Enabled = true;
         }
 
@@ -176,19 +187,25 @@ namespace NBagOfTricks.Test
 
         void Timer1_Tick(object sender, EventArgs e)
         {
-            TimeSpan ts = timeBar.Current + new TimeSpan(0, 0, 0, 0, timer1.Interval);
-
-            // Update time bar.
-            timeBar.Current = ts < timeBar.Length ? ts : timeBar.Length;
-
-            // Update bar bar.
-            if(barBar.Current < barBar.End)
+            if(chkRunBars.Checked)
             {
-                barBar.Current++;
-            }
-            else // done/reset
-            {
-                barBar.Current = barBar.Start;
+                // Update time bar.
+                timeBar.IncrementCurrent(timer1.Interval);
+                if (timeBar.Current >= timeBar.End) // done/reset
+                {
+                    timeBar.Current = timeBar.Start;
+                }
+
+                // Update bar bar.
+                barBar.IncrementCurrent(1);
+                if (barBar.Current < barBar.End)
+                {
+                    barBar.IncrementCurrent(1);
+                }
+                else // done/reset
+                {
+                    barBar.Current = barBar.Start;
+                }
             }
         }
     }

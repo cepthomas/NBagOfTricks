@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
+            this.chkRunBars = new System.Windows.Forms.CheckBox();
             this.barBar = new NBagOfTricks.UI.BarBar();
             this.clickGrid1 = new NBagOfTricks.UI.ClickGrid();
             this.waveViewer = new NBagOfTricks.UI.WaveViewer();
@@ -68,6 +69,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.chkRunBars);
             this.splitContainer1.Panel2.Controls.Add(this.barBar);
             this.splitContainer1.Panel2.Controls.Add(this.clickGrid1);
             this.splitContainer1.Panel2.Controls.Add(this.waveViewer);
@@ -100,22 +102,33 @@
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.Vkbd_KeyboardEvent);
             // 
-            // barBar1
+            // chkRunBars
             // 
-            this.barBar.BeatsPerBar = 4;
-            this.barBar.Current = 0;
-            this.barBar.Location = new System.Drawing.Point(943, 262);
-            this.barBar.Name = "barBar1";
+            this.chkRunBars.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkRunBars.AutoSize = true;
+            this.chkRunBars.Checked = true;
+            this.chkRunBars.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkRunBars.Location = new System.Drawing.Point(840, 174);
+            this.chkRunBars.Name = "chkRunBars";
+            this.chkRunBars.Size = new System.Drawing.Size(77, 27);
+            this.chkRunBars.TabIndex = 16;
+            this.chkRunBars.Text = "Run Bars";
+            this.chkRunBars.UseVisualStyleBackColor = true;
+            // 
+            // barBar
+            // 
+            this.barBar.FontLarge = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barBar.FontSmall = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barBar.Location = new System.Drawing.Point(943, 242);
+            this.barBar.Name = "barBar";
             this.barBar.ProgressColor = System.Drawing.Color.White;
             this.barBar.Size = new System.Drawing.Size(353, 51);
-            this.barBar.Snap = NBagOfTricks.UI.BarBar.SnapType.Bar;
             this.barBar.TabIndex = 15;
-            this.barBar.TicksPerBeat = 8;
             // 
             // clickGrid1
             // 
             this.clickGrid1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.clickGrid1.Location = new System.Drawing.Point(531, 225);
+            this.clickGrid1.Location = new System.Drawing.Point(546, 225);
             this.clickGrid1.Name = "clickGrid1";
             this.clickGrid1.Size = new System.Drawing.Size(371, 106);
             this.clickGrid1.TabIndex = 1;
@@ -124,7 +137,7 @@
             // 
             this.waveViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.waveViewer.DrawColor = System.Drawing.Color.Orange;
-            this.waveViewer.Location = new System.Drawing.Point(584, 174);
+            this.waveViewer.Location = new System.Drawing.Point(546, 174);
             this.waveViewer.Name = "waveViewer";
             this.waveViewer.Size = new System.Drawing.Size(254, 45);
             this.waveViewer.TabIndex = 14;
@@ -132,10 +145,11 @@
             // timeBar
             // 
             this.timeBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.timeBar.Location = new System.Drawing.Point(943, 187);
+            this.timeBar.Location = new System.Drawing.Point(943, 174);
             this.timeBar.Name = "timeBar";
             this.timeBar.ProgressColor = System.Drawing.Color.Orange;
             this.timeBar.Size = new System.Drawing.Size(353, 52);
+            this.timeBar.SnapMsec = 0;
             this.timeBar.TabIndex = 13;
             this.timeBar.CurrentTimeChanged += new System.EventHandler(this.TimeBar_CurrentTimeChanged);
             // 
@@ -143,7 +157,7 @@
             // 
             this.chkCpu.Appearance = System.Windows.Forms.Appearance.Button;
             this.chkCpu.AutoSize = true;
-            this.chkCpu.Location = new System.Drawing.Point(633, 36);
+            this.chkCpu.Location = new System.Drawing.Point(633, 27);
             this.chkCpu.Name = "chkCpu";
             this.chkCpu.Size = new System.Drawing.Size(41, 27);
             this.chkCpu.TabIndex = 12;
@@ -243,7 +257,7 @@
             // 
             // txtInfo
             // 
-            this.txtInfo.Location = new System.Drawing.Point(552, 338);
+            this.txtInfo.Location = new System.Drawing.Point(546, 338);
             this.txtInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtInfo.MaxText = 5000;
             this.txtInfo.Name = "txtInfo";
@@ -272,8 +286,8 @@
             this.pot1.DecPlaces = 2;
             this.pot1.DrawColor = System.Drawing.Color.Green;
             this.pot1.ForeColor = System.Drawing.Color.Black;
-            this.pot1.Label = "pot 99";
-            this.pot1.Location = new System.Drawing.Point(591, 83);
+            this.pot1.Label = "p99";
+            this.pot1.Location = new System.Drawing.Point(546, 83);
             this.pot1.Margin = new System.Windows.Forms.Padding(5);
             this.pot1.Maximum = 1D;
             this.pot1.Minimum = 0D;
@@ -347,5 +361,6 @@
         private UI.WaveViewer waveViewer;
         private UI.ClickGrid clickGrid1;
         private UI.BarBar barBar;
+        private System.Windows.Forms.CheckBox chkRunBars;
     }
 }

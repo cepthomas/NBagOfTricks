@@ -10,71 +10,222 @@ using NBagOfTricks.Utils;
 
 namespace NBagOfTricks.UI
 {
-    public class BarSpan
-    {
-        public int Bar { get; private set; } = 0;
-        public int Beat { get; private set; } = 0;
-        public int Tick { get; private set; } = 0;
+    #region Enums
+    public enum SnapType { Tick, Beat, Bar }
+    #endregion
 
-        /// <summary>Only tested with 4.</summary>
+    /// <summary>Sort of like TimeSpan.</summary>
+    public struct BarSpan
+    {
+        #region Fields
+        /// <summary>For hashing.</summary>
+        int _id;
+
+        /// <summary>Increment for unique value.</summary>
+        static int _all_ids = 1;
+        #endregion
+
+        #region Properties
+        /// <summary>The core.</summary>
+        public int TotalTicks { get; private set; }
+
+        /// <summary>Global - set before using. Only tested with 4.</summary>
         public static int BeatsPerBar { get; set; } = 4;
 
-        /// <summary>Our resolution.</summary>
+        /// <summary>Global - set before using. Our resolution.</summary>
         public static int TicksPerBeat { get; set; } = 8;
 
+        /// <summary>Global - set before using.</summary>
+        public static SnapType Snap { get; set; } = SnapType.Tick;
+
+        /// <summary>A useful constant.</summary>
         public static readonly BarSpan BAR_ONE = new BarSpan();
 
-        public int TotalTicks
+        /// <summary>The bar.</summary>
+        public int Bar { get { return TotalTicks / BeatsPerBar / TicksPerBeat; } }
+
+        /// <summary>The beat.</summary>
+        public int Beat { get { return (TotalTicks / TicksPerBeat) % BeatsPerBar; } }
+
+        /// <summary>The tick.</summary>
+        public int Tick { get { return TotalTicks % TicksPerBeat; } }
+        #endregion
+
+        #region Lifecycle
+        /// <summary>
+        /// Constructor from args.
+        /// </summary>
+        /// <param name="bar"></param>
+        /// <param name="beat"></param>
+        /// <param name="tick"></param>
+        public BarSpan(int bar, int beat, int tick)
         {
-            get
-            {
-                int newtick = (Bar * BeatsPerBar * TicksPerBeat) + (Beat * TicksPerBeat) + Tick;
-                return newtick;
-            }
-            set
-            {
-                Bar = value / BeatsPerBar / TicksPerBeat;
-                Beat = (value / TicksPerBeat) % BeatsPerBar;
-                Tick = value % TicksPerBeat;
-            }
+            TotalTicks = (bar * BeatsPerBar * TicksPerBeat) + (beat * TicksPerBeat) + tick;
+            _id = _all_ids++;
         }
 
+        /// <summary>
+        /// Constructor from args.
+        /// </summary>
+        /// <param name="ticks"></param>
+        BarSpan(int ticks)
+        {
+            TotalTicks = ticks;
+            _id = _all_ids++;
+        }
+        #endregion
+
+        #region Public functions
+        /// <summary>
+        /// 
+        /// </summary>
         public void Reset()
         {
-            Bar = 0;
-            Beat = 0;
-            Tick = 0;
+            TotalTicks = 0;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lower"></param>
+        /// <param name="upper"></param>
         public void Constrain(BarSpan lower, BarSpan upper)
         {
-            //TODOC Start = MathUtils.Constrain(Start, 0, Length);
+            TotalTicks = MathUtils.Constrain(TotalTicks, lower.TotalTicks, upper.TotalTicks);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="num"></param>
+        public void Increment(int num)
+        {
+            TotalTicks += num;
+            if(TotalTicks < 0)
+            {
+                TotalTicks = 0;
+            }
+        }
+
+        /// <summary>
+        /// Snap to closest boundary.
+        /// </summary>
+        /// <param name="tick"></param>
+        public void DoSnap(int tick)
+        {
+            //int snapped = tick;
+            BarSpan bspan = new BarSpan();
+            bspan.TotalTicks = tick;
+            int newbar = bspan.Bar;
+            int newbeat = bspan.Beat;
+
+            switch (Snap)
+            {
+                case SnapType.Bar:
+                    {
+                        if (newbeat >= BeatsPerBar / 2)
+                        {
+                            newbar++;
+                        }
+                    }
+                    TotalTicks = (newbar * BeatsPerBar * TicksPerBeat);
+                    break;
+
+                case SnapType.Beat:
+                    {
+                        if (bspan.Tick >= TicksPerBeat / 2)
+                        {
+                            newbeat++;
+                            if (newbeat >= BeatsPerBar)
+                            {
+                                newbar++;
+                                newbeat = 0;
+                            }
+                        }
+                        TotalTicks = (newbar * BeatsPerBar * TicksPerBeat) + (newbeat * TicksPerBeat);
+                    }
+                    break;
+
+                case SnapType.Tick:
+                    // Don't change it.
+                    TotalTicks = tick;
+                    break;
+            }
         }
 
         public override string ToString()
         {
             return $"{Bar + 1}.{Beat + 1}.{Tick + 1:00}";
         }
-    }
-
-
-    public partial class BarBar : UserControl
-    {
-        #region Enums
-        public enum SnapType { Tick, Beat, Bar }
         #endregion
 
+        #region Standard comparable stuff
+        public override bool Equals(object obj)
+        {
+            return obj is BarSpan && ((BarSpan)obj).TotalTicks == TotalTicks;
+        }
+
+        public override int GetHashCode()
+        {
+            return _id;
+        }
+
+        public static bool operator ==(BarSpan a, BarSpan b)
+        {
+            return a.TotalTicks == b.TotalTicks;
+        }
+
+        public static bool operator !=(BarSpan a, BarSpan b)
+        {
+            return !(a == b);
+        }
+
+        public static BarSpan operator +(BarSpan a, BarSpan b)
+        {
+            return new BarSpan(a.TotalTicks + b.TotalTicks);
+        }
+
+        public static BarSpan operator -(BarSpan a, BarSpan b)
+        {
+            return new BarSpan(a.TotalTicks - b.TotalTicks);
+        }
+
+        public static bool operator <(BarSpan a, BarSpan b)
+        {
+            return a.TotalTicks < b.TotalTicks;
+        }
+
+        public static bool operator >(BarSpan a, BarSpan b)
+        {
+            return a.TotalTicks > b.TotalTicks;
+        }
+
+        public static bool operator <=(BarSpan a, BarSpan b)
+        {
+            return a.TotalTicks <= b.TotalTicks;
+        }
+
+        public static bool operator >=(BarSpan a, BarSpan b)
+        {
+            return a.TotalTicks >= b.TotalTicks;
+        }
+        #endregion
+    }
+
+    /// <summary>The control.</summary>
+    public partial class BarBar : UserControl
+    {
         #region Fields
-        ///// <summary>Total length in ticks.</summary>
-        //int _length = 0;
+        /// <summary>Total length.</summary>
+        BarSpan _length = new BarSpan();
 
-        ///// <summary>One marker.</summary>
-        //int _start = 0;
+        /// <summary>One marker.</summary>
+        BarSpan _start = new BarSpan();
 
-        ///// <summary>Other marker.</summary>
-        //int _end = 0;
+        /// <summary>Other marker.</summary>
+        BarSpan _end = new BarSpan();
 
-        /// <summary>Current tick.</summary>
+        /// <summary>Current.</summary>
         BarSpan _current = new BarSpan();
 
         /// <summary>For tracking mouse moves.</summary>
@@ -97,52 +248,27 @@ namespace NBagOfTricks.UI
         #endregion
 
         #region Properties
-        ///// <summary>Only tested with 4.</summary>
-        //public int BeatsPerBar { get; set; } = 4;
-
-        ///// <summary>Our resolution.</summary>
-        //public int TicksPerBeat { get; set; } = 8;
-
-        /// <summary>Oh snap.</summary>
-        public SnapType Snap { get; set; } = SnapType.Tick;
-
-        ///// <summary>Total length in ticks. TODOC not changeable?</summary>
-        public BarSpan Length { get; set; } = new BarSpan();
-        //public int Length { get { return _length; } set { _length = value; Invalidate(); } }
+        /// <summary>Total length.</summary>
+        public BarSpan Length { get { return _length; } set { _length = value; Invalidate(); } }
 
         /// <summary>One marker.</summary>
-        public BarSpan Start { get; set; } = new BarSpan();
-        //public int Start { get { return _start; } set { _start = value; Invalidate(); } }
+        public BarSpan Start { get { return _start; } set { _start = value; Invalidate(); } }
 
         /// <summary>Other marker.</summary>
-        public BarSpan End { get; set; } = new BarSpan();
-        // public int End { get { return _end; } set { _end = value; Invalidate(); } }
+        public BarSpan End { get { return _end; } set { _end = value; Invalidate(); } }
 
         /// <summary>Where we be now.</summary>
-        //public int _current { get; set; } = 0;
         public BarSpan Current { get { return _current; } set { _current = value; Invalidate(); } }
 
         /// <summary>For styling.</summary>
         public Color ProgressColor { get { return _brush.Color; } set { _brush.Color = value; } }
 
         /// <summary>Big font.</summary>
-        Font FontLarge { get; set; } = new Font("Cascadia", 24, FontStyle.Regular, GraphicsUnit.Point, 0);
+        public Font FontLarge { get; set; } = new Font("Cascadia", 24, FontStyle.Regular, GraphicsUnit.Point, 0);
 
         /// <summary>Baby font.</summary>
-        Font FontSmall { get; set; } = new Font("Cascadia", 14, FontStyle.Regular, GraphicsUnit.Point, 0);
+        public Font FontSmall { get; set; } = new Font("Cascadia", 14, FontStyle.Regular, GraphicsUnit.Point, 0);
         #endregion
-
-        ///// <summary>
-        ///// Check current values.
-        ///// </summary>
-        ///// <param name="redraw"></param>
-        //void UpdateValues(bool redraw)
-        //{
-        //    if(redraw)
-        //    {
-        //        Invalidate();
-        //    }
-        //}
 
         #region Events
         /// <summary>Value changed by user.</summary>
@@ -156,32 +282,6 @@ namespace NBagOfTricks.UI
         public BarBar()
         {
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
-            Load += BarBar_Load;
-            KeyDown += BarBar_KeyDown;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BarBar_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyData == Keys.Escape)
-            {
-                Start.Reset();
-                End.Reset();
-                Invalidate();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void BarBar_Load(object sender, EventArgs e)
-        {
         }
 
         /// <summary> 
@@ -212,42 +312,57 @@ namespace NBagOfTricks.UI
             pe.Graphics.Clear(BackColor);
 
             // Validate times.
-            Start.Constrain(BarSpan.BAR_ONE, Length);
-            Start.Constrain(BarSpan.BAR_ONE, End);
-            End.Constrain(BarSpan.BAR_ONE, Length);
-            End.Constrain(Start, Length);
+            _start.Constrain(BarSpan.BAR_ONE, _length);
+            _start.Constrain(BarSpan.BAR_ONE, _end);
+            _end.Constrain(BarSpan.BAR_ONE, _length);
+            _end.Constrain(_start, _length);
 
-            if(End == BarSpan.BAR_ONE && Length != BarSpan.BAR_ONE)
+            if(_end == BarSpan.BAR_ONE && _length != BarSpan.BAR_ONE)
             {
-                End = Length; //TODOC clone?
+                _end = _length;
             }
 
             // Draw the bar.
-            if (_current.TotalTicks < Length.TotalTicks)
+            if (_current < _length)
             {
-                int len = 0;//_current > End ? Width * End / Length : Width * _current / Length
-                int start = 0; //Start
+                int len = _current > _end ? Scale(_end) : Scale(_current);
+                int start = Scale(_current);
 
                 pe.Graphics.FillRectangle(_brush, start, 0, len, Height);
             }
             // TODOC else????
 
             // Draw start/end markers.
-            if (Start.TotalTicks != 0 || End.TotalTicks != 0)
+            if (_start != BarSpan.BAR_ONE || _end != BarSpan.BAR_ONE)
             {
-                int start = 0; //Start
-                int end = 0; //End
+                int start = Scale(_start);
+                int end = Scale(_end);
                 pe.Graphics.DrawLine(_pen, start, 0, start, Height);
                 pe.Graphics.DrawLine(_pen, end, 0, end, Height);
             }
 
             // Text.
             pe.Graphics.DrawString(_current.ToString(), FontLarge, Brushes.Black, ClientRectangle, _formatLeft);
-            pe.Graphics.DrawString(Length.ToString(), FontSmall, Brushes.Black, ClientRectangle, _formatRight);
+            pe.Graphics.DrawString(_length.ToString(), FontSmall, Brushes.Black, ClientRectangle, _formatRight);
         }
         #endregion
 
         #region UI handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if(e.KeyData == Keys.Escape)
+            {
+                // Reset.
+                _start.Reset();
+                _end.Reset();
+                Invalidate();
+            }
+        }
+
         /// <summary>
         /// Handle mouse position changes.
         /// </summary>
@@ -255,13 +370,13 @@ namespace NBagOfTricks.UI
         {
             if (e.Button == MouseButtons.Left)
             {
-                _current = DoSnap(GetTickFromMouse(e.X));
+                _current.DoSnap(GetTickFromMouse(e.X));
                 CurrentTimeChanged?.Invoke(this, new EventArgs());
             }
             else if (e.X != _lastXPos)
             {
-                var ts = DoSnap(GetTickFromMouse(e.X));
-                _toolTip.SetToolTip(this, ts.ToString());
+                _current.DoSnap(GetTickFromMouse(e.X));
+                _toolTip.SetToolTip(this, _current.ToString());
                 _lastXPos = e.X;
             }
 
@@ -274,7 +389,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            _current = DoSnap(GetTickFromMouse(e.X));
+            _current.DoSnap(GetTickFromMouse(e.X));
             CurrentTimeChanged?.Invoke(this, new EventArgs());
 
             Invalidate();
@@ -283,11 +398,23 @@ namespace NBagOfTricks.UI
         #endregion
 
         #region Public functions
-        //void Advance()
-        //{
-        //    //int _lengthTicks = 0;
-        //    //int _currentTicks = 0;
-        //}
+        /// <summary>
+        /// 
+        /// </summary>
+        public void IncrementCurrent(int num)
+        {
+            _current.Increment(num);
+            if (_current < BarSpan.BAR_ONE)
+            {
+                _current = BarSpan.BAR_ONE;
+            }
+            if (_current >= _length)
+            {
+                _current = _length;
+            }
+
+            Invalidate();
+        }
         #endregion
 
         #region Private functions
@@ -299,62 +426,23 @@ namespace NBagOfTricks.UI
         {
             int tick = 0;
 
-            if(_current.TotalTicks < Length.TotalTicks)
+            if(_current < _length)
             {
-                tick = x * Length.TotalTicks / Width;
-                tick = MathUtils.Constrain(tick, 0, Length.TotalTicks);
+                tick = x * _length.TotalTicks / Width;
+                tick = MathUtils.Constrain(tick, 0, _length.TotalTicks);
             }
 
             return tick;
         }
 
         /// <summary>
-        /// Snap to closest boundary.
+        /// Map from time to UI pixels.
         /// </summary>
-        /// <param name="tick"></param>
+        /// <param name="val"></param>
         /// <returns></returns>
-        BarSpan DoSnap(int tick)
+        public int Scale(BarSpan val)
         {
-            //int snapped = tick;
-            BarSpan bspan = new BarSpan();
-            bspan.TotalTicks = tick;
-
-            switch (Snap)
-            {
-                case SnapType.Bar:
-                    {
-                        int newbar = bspan.Bar;
-                        if (bspan.Beat >= BarSpan.BeatsPerBar / 2)
-                        {
-                            newbar++;
-                        }
-                        snapped = TimeToTick(newbar, 0, 0);
-                    }
-                    break;
-
-                case SnapType.Beat:
-                    {
-                        int newbar = bspan.Bar;
-                        int newbeat = bspan.Beat;
-                        if (bspan.Tick >= BarSpan.TicksPerBeat / 2)
-                        {
-                            newbeat++;
-                            if(newbeat >= BarSpan.BeatsPerBar)
-                            {
-                                newbar++;
-                                newbeat = 0;
-                            }
-                        }
-                        snapped = TimeToTick(newbar, newbeat, 0);
-                    }
-                    break;
-
-                case SnapType.Tick:
-                    // Don't change it.
-                    break;
-            }
-
-            return snapped > Length ? Length : snapped;
+            return val.TotalTicks * Width / _length.TotalTicks;
         }
         #endregion
 

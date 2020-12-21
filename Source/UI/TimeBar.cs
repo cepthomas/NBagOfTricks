@@ -9,8 +9,25 @@ using NBagOfTricks.Utils;
 
 namespace NBagOfTricks.UI
 {
-    public partial class TimeBar : UserControl // TODOC snap function?
+
+    //static class TimeUtils
+    //{
+
+    //    public static void Constrain(this TimeSpan ts, TimeSpan lower, TimeSpan upper)
+    //    {
+    //        ts.TotalMilliseconds = MathUtils.Constrain(numChars, 0, str.Length);
+    //        return str.Substring(str.Length - numChars, numChars);
+    //    }
+    //}
+
+
+
+    /// <summary>The control.</summary>
+    public partial class TimeBar : UserControl // TODOC snap function
     {
+        ///// <summary>A useful constant.</summary>
+        //public static readonly TimeSpan TS_ZERO = new TimeSpan();
+
         #region Fields
         /// <summary>Total length.</summary>
         TimeSpan _length = new TimeSpan();
@@ -30,12 +47,6 @@ namespace NBagOfTricks.UI
         /// <summary>Tooltip for mousing.</summary>
         readonly ToolTip _toolTip = new ToolTip();
 
-        ///// <summary>The border pen.</summary>
-        //readonly Pen _penBorder = new Pen(Color.Black, 1);
-
-        ///// <summary>The marker pen.</summary>
-        //readonly Pen _penMarker = new Pen(Color.Black, 1);
-
         /// <summary>The brush.</summary>
         readonly SolidBrush _brush = new SolidBrush(Color.White);
 
@@ -43,16 +54,19 @@ namespace NBagOfTricks.UI
         readonly Pen _pen = new Pen(Color.Black, 1);
 
         /// <summary>For drawing text.</summary>
-        StringFormat _formatLeft = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
+        readonly StringFormat _formatLeft = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
 
         /// <summary>For drawing text.</summary>
-        StringFormat _formatRight = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far };
+        readonly StringFormat _formatRight = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far };
 
         /// <summary>Constant.</summary>
         private static readonly int LARGE_CHANGE = 1000;
 
         /// <summary>Constant.</summary>
         private static readonly int SMALL_CHANGE = 100;
+
+        /// <summary>For viewing purposes.</summary>
+        const string TS_FORMAT = @"mm\:ss\.fff";
         #endregion
 
         #region Properties
@@ -72,6 +86,9 @@ namespace NBagOfTricks.UI
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
         public TimeSpan End { get { return _end; } set { _end = value; Invalidate(); } }
 
+        /// <summary>Snap to this increment value.</summary>
+        public int SnapMsec { get; set; } = 10;
+
         /// <summary>For styling.</summary>
         public Color ProgressColor { get { return _brush.Color; } set { _brush.Color = value; } }
 
@@ -87,10 +104,6 @@ namespace NBagOfTricks.UI
         public event EventHandler CurrentTimeChanged;
         #endregion
 
-
-
-
-
         #region Lifecycle
         /// <summary>
         /// Constructor.
@@ -98,18 +111,6 @@ namespace NBagOfTricks.UI
         public TimeBar()
         {
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
-            PreviewKeyDown += TimeBar_PreviewKeyDown;
-            Load += TimeBar_Load;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void TimeBar_Load(object sender, EventArgs e)
-        {
-            _current = TimeSpan.MinValue;
         }
 
         /// <summary> 
@@ -121,8 +122,7 @@ namespace NBagOfTricks.UI
             if (disposing)
             {
                 _toolTip.Dispose();
-                //_penBorder.Dispose();
-                //_penMarker.Dispose();
+                _pen.Dispose();
                 _brush.Dispose();
                 _formatLeft.Dispose();
                 _formatRight.Dispose();
@@ -131,6 +131,37 @@ namespace NBagOfTricks.UI
         }
         #endregion
 
+        #region Public functions
+        /// <summary>
+        /// Offset current by msec.
+        /// </summary>
+        /// <param name="msec"></param>
+        public void IncrementCurrent(int msec)
+        {
+            if (msec > 0)
+            {
+                _current = _current.Add(new TimeSpan(0, 0, 0, 0, msec));
+            }
+            else if (msec < 0)
+            {
+                _current = _current.Subtract(new TimeSpan(0, 0, 0, 0, -msec));
+            }
+
+            // Sanity checks.
+            if (_current > _length)
+            {
+                _current = _length;
+            }
+
+            if (_current < TimeSpan.Zero)
+            {
+                _current = TimeSpan.Zero;
+            }
+
+            Invalidate();
+        }
+
+        #endregion
         #region Drawing
         /// <summary>
         /// Draw the slider.
@@ -140,30 +171,93 @@ namespace NBagOfTricks.UI
             // Setup.
             pe.Graphics.Clear(BackColor);
 
-            // Draw border.
-            //pe.Graphics.DrawRectangle(_penBorder, 0, 0, Width - _penBorder.Width, Height - _penBorder.Width);
+            // Validate times.
+            _start = Constrain(_start, TimeSpan.Zero, _length);
+            _start = Constrain(_start, TimeSpan.Zero, _end);
+            _end = Constrain(_end, TimeSpan.Zero, _length);
+            _end = Constrain(_end, _start, _length);
 
+            if (_end == TimeSpan.Zero && _length != TimeSpan.Zero)
+            {
+                _end = _length;
+            }
+
+            // Draw the bar.
             if (_current < _length)
             {
-                //pe.Graphics.FillRectangle(_brush,
-                //    _penBorder.Width,
-                //    _penBorder.Width,
-                //    (Width - 2 * _penBorder.Width) * (int)_current.TotalMilliseconds / (int)_lengthX.TotalMilliseconds,
-                //    Height - 2 * _penBorder.Width);
-                pe.Graphics.FillRectangle(_brush,
-                    0,
-                    0,
-                    _length.TotalMilliseconds > 0 ? Width * (int)_current.TotalMilliseconds / (int)_length.TotalMilliseconds : 0,
-                    Height);
+                int len = _current > _end ? Scale(_end) : Scale(_current);
+                int start = Scale(_current);
+
+                pe.Graphics.FillRectangle(_brush, start, 0, len, Height);
+            }
+            // TODOC else????
+
+            // Draw start/end markers.
+            if (_start != TimeSpan.Zero || _end != TimeSpan.Zero)
+            {
+                int start = Scale(_start);
+                int end = Scale(_end);
+                pe.Graphics.DrawLine(_pen, start, 0, start, Height);
+                pe.Graphics.DrawLine(_pen, end, 0, end, Height);
             }
 
             // Text.
-            pe.Graphics.DrawString(FormatTime(_current), FontLarge, Brushes.Black, ClientRectangle, _formatLeft);
-            pe.Graphics.DrawString(FormatTime(_length), FontSmall, Brushes.Black, ClientRectangle, _formatRight);
+            pe.Graphics.DrawString(_current.ToString(TS_FORMAT), FontLarge, Brushes.Black, ClientRectangle, _formatLeft);
+            pe.Graphics.DrawString(_length.ToString(TS_FORMAT), FontSmall, Brushes.Black, ClientRectangle, _formatRight);
         }
         #endregion
 
         #region UI handlers
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            switch (e.KeyData)
+            {
+                case Keys.Add:
+                case Keys.Up:
+                    IncrementCurrent(e.Shift ? SMALL_CHANGE : LARGE_CHANGE);
+                    e.Handled = true;
+                    break;
+
+                case Keys.Subtract:
+                case Keys.Down:
+                    IncrementCurrent(e.Shift ? -SMALL_CHANGE : -LARGE_CHANGE);
+                    e.Handled = true;
+                    break;
+
+                case Keys.Escape:
+                    // Reset.
+                    //Start.Reset();
+                    //End.Reset();
+                    e.Handled = true;
+                    Invalidate();
+                    break;
+            }
+
+            if(e.Handled)
+            {
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
+        {
+            switch (e.KeyData)
+            {
+                case Keys.Up:
+                case Keys.Down:
+                    e.IsInputKey = true;
+                    break;
+            }
+        }
+
         /// <summary>
         /// Handle mouse position changes.
         /// </summary>
@@ -179,12 +273,12 @@ namespace NBagOfTricks.UI
                 if (e.X != _lastXPos)
                 {
                     TimeSpan ts = GetTimeFromMouse(e.X);
-                    _toolTip.SetToolTip(this, FormatTime(ts));
+                    _toolTip.SetToolTip(this, ts.ToString(TS_FORMAT));
                     _lastXPos = e.X;
                 }
             }
-            Invalidate();
 
+            Invalidate();
             base.OnMouseMove(e);
         }
 
@@ -219,62 +313,25 @@ namespace NBagOfTricks.UI
         }
 
         /// <summary>
-        /// Offset current by msec.
-        /// </summary>
-        /// <param name="msec"></param>
-        void AdjustTime(int msec)
-        {
-            if (msec > 0)
-            {
-                _current.Add(new TimeSpan(0, 0, 0, 0, msec));
-            }
-            else if (msec < 0)
-            {
-                _current.Subtract(new TimeSpan(0, 0, 0, 0, msec));
-            }
-
-            // Sanity checks.
-            if (_current > _length)
-            {
-                _current = _length;
-            }
-
-            if (_current.TotalMilliseconds < 0)
-            {
-                _current = new TimeSpan();
-            }
-        }
-
-        /// <summary>
-        /// Pretty print a TimeSpan.
-        /// </summary>
-        /// <param name="ts"></param>
-        string FormatTime(TimeSpan ts)
-        {
-            return $"{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}";
-        }
-
-        /// <summary>
         /// 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void TimeBar_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        /// <param name="val"></param>
+        /// <param name="lower"></param>
+        /// <param name="upper"></param>
+        /// <returns></returns>
+        TimeSpan Constrain(TimeSpan val, TimeSpan lower, TimeSpan upper)
         {
-            switch (e.KeyData)
-            {
-                case Keys.Add:
-                case Keys.Up:
-                    AdjustTime(e.Shift ? SMALL_CHANGE : LARGE_CHANGE);
-                    e.IsInputKey = true;
-                    break;
+            return TimeSpan.FromMilliseconds(MathUtils.Constrain(val.TotalMilliseconds, lower.TotalMilliseconds, upper.TotalMilliseconds));
+        }
 
-                case Keys.Subtract:
-                case Keys.Down:
-                    AdjustTime(e.Shift ? -SMALL_CHANGE : -LARGE_CHANGE);
-                    e.IsInputKey = true;
-                    break;
-            }
+        /// <summary>
+        /// Map from time to UI pixels.
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public int Scale(TimeSpan val)
+        {
+            return (int)(val.TotalMilliseconds * Width / _length.TotalMilliseconds);
         }
         #endregion
     }
