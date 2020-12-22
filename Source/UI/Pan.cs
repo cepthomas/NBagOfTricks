@@ -93,7 +93,7 @@ namespace NBagOfTricks.UI
             string panValue;
             if (_value == 0.0)
             {
-                pe.Graphics.FillRectangle(_brush, Width / 2, 0, 0, Height);
+                pe.Graphics.FillRectangle(_brush, Width / 2 - 1, 0, 2, Height);
                 panValue = "C";
             }
             else if (_value > 0)
@@ -101,9 +101,10 @@ namespace NBagOfTricks.UI
                 pe.Graphics.FillRectangle(_brush, Width / 2, 0, (int)(Width / 2 * _value), Height);
                 panValue = $"{_value * 100:F0}%R";
             }
-            else
+            else // < 0
             {
-                pe.Graphics.FillRectangle(_brush, (int)(Width / 2 * _value), 0, (int)(Width / 2 * (0 - _value)), Height);
+                int w = (int)(Width / 2 * -_value);
+                pe.Graphics.FillRectangle(_brush, (Width / 2 - w), 0, w, Height);
                 panValue = $"{_value * -100:F0}%L";
             }
 
