@@ -117,13 +117,17 @@
             // 
             // barBar
             // 
-            this.barBar.FontLarge = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.barBar.FontSmall = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barBar.BeatsPerBar = 4;
+            this.barBar.FontLarge = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.barBar.FontSmall = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.barBar.Location = new System.Drawing.Point(943, 242);
+            this.barBar.MarkerColor = System.Drawing.Color.Black;
             this.barBar.Name = "barBar";
             this.barBar.ProgressColor = System.Drawing.Color.White;
-            this.barBar.Size = new System.Drawing.Size(428, 51);
+            this.barBar.Size = new System.Drawing.Size(353, 51);
+            this.barBar.Snap = NBagOfTricks.UI.BarBar.SnapType.Tick;
             this.barBar.TabIndex = 15;
+            this.barBar.TicksPerBeat = 8;
             // 
             // clickGrid1
             // 
@@ -144,13 +148,15 @@
             // 
             // timeBar
             // 
+            this.timeBar.FontLarge = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.timeBar.FontSmall = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.timeBar.Location = new System.Drawing.Point(943, 174);
+            this.timeBar.MarkerColor = System.Drawing.Color.Black;
             this.timeBar.Name = "timeBar";
             this.timeBar.ProgressColor = System.Drawing.Color.Orange;
-            this.timeBar.Size = new System.Drawing.Size(428, 52);
+            this.timeBar.Size = new System.Drawing.Size(353, 52);
             this.timeBar.SnapMsec = 0;
             this.timeBar.TabIndex = 13;
-            this.timeBar.CurrentTimeChanged += new System.EventHandler(this.TimeBar_CurrentTimeChanged);
             // 
             // chkCpu
             // 

@@ -89,6 +89,7 @@ namespace NBagOfTricks.Test
             clickGrid1.Show(4, 60, 20);
 
             ///// Time bar.
+            timeBar.SnapMsec = 10;
             timeBar.Length = new TimeSpan(0, 0, 1, 23, 456);
             timeBar.Start = new TimeSpan(0, 0, 0, 10, 333);
             timeBar.End = new TimeSpan(0, 0, 0, 44, 777);
@@ -97,18 +98,16 @@ namespace NBagOfTricks.Test
             timeBar.BackColor = Color.Salmon;
 
             ///// Bar bar.
-            BarSpan.BeatsPerBar = 4;
-            BarSpan.TicksPerBeat = 16;
-            BarSpan.Snap = SnapType.Bar;
-
+            barBar.BeatsPerBar = 4;
+            barBar.TicksPerBeat = 16;
+            barBar.Snap = BarBar.SnapType.Bar;
             barBar.Length = new BarSpan(16, 0, 0);
             barBar.Start = new BarSpan(2, 1, 11);
             barBar.End = new BarSpan(11, 3, 6);
             barBar.CurrentTimeChanged += BarBar1_CurrentTimeChanged;
             barBar.ProgressColor = Color.MediumPurple;
             barBar.BackColor = Color.LawnGreen;
-
-            //barBar1.Test();
+            //barBar.Test();
 
             // Go-go-go.
             timer1.Enabled = true;

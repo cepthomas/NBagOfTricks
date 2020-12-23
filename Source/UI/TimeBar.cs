@@ -10,7 +10,7 @@ using NBagOfTricks.Utils;
 namespace NBagOfTricks.UI
 {
     /// <summary>The control.</summary>
-    public partial class TimeBar : UserControl // TODOC snap function
+    public partial class TimeBar : UserControl
     {
         #region Fields
         /// <summary>Total length.</summary>
@@ -35,16 +35,16 @@ namespace NBagOfTricks.UI
         readonly SolidBrush _brush = new SolidBrush(Color.White);
 
         /// <summary>The pen.</summary>
-        readonly Pen _penMarker = new Pen(Color.Gray, 1);
+        readonly Pen _penMarker = new Pen(Color.Black, 1);
 
         /// <summary>For drawing text.</summary>
         readonly StringFormat _format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
 
         /// <summary>Constant.</summary>
-        private static readonly int LARGE_CHANGE = 1000;
+        static readonly int LARGE_CHANGE = 1000;
 
         /// <summary>Constant.</summary>
-        private static readonly int SMALL_CHANGE = 100;
+        static readonly int SMALL_CHANGE = 100;
 
         /// <summary>For viewing purposes.</summary>
         const string TS_FORMAT = @"mm\:ss\.fff";
@@ -68,16 +68,19 @@ namespace NBagOfTricks.UI
         public TimeSpan End { get { return _end; } set { _end = value; Invalidate(); } }
 
         /// <summary>Snap to this increment value.</summary>
-        public int SnapMsec { get; set; } = 10;
+        public int SnapMsec { get; set; } = 0;
 
         /// <summary>For styling.</summary>
         public Color ProgressColor { get { return _brush.Color; } set { _brush.Color = value; } }
 
+        /// <summary>For styling.</summary>
+        public Color MarkerColor { get { return _penMarker.Color; } set { _penMarker.Color = value; } }
+
         /// <summary>Big font.</summary>
-        Font FontLarge { get; set; } = new Font("Cascadia", 20, FontStyle.Regular, GraphicsUnit.Point, 0);
+        public Font FontLarge { get; set; } = new Font("Microsoft Sans Serif", 20, FontStyle.Regular, GraphicsUnit.Point, 0);
 
         /// <summary>Baby font.</summary>
-        Font FontSmall { get; set; } = new Font("Cascadia", 10, FontStyle.Regular, GraphicsUnit.Point, 0);
+        public Font FontSmall { get; set; } = new Font("Microsoft Sans Serif", 10, FontStyle.Regular, GraphicsUnit.Point, 0);
         #endregion
 
         #region Events
@@ -118,7 +121,8 @@ namespace NBagOfTricks.UI
         /// <param name="msec"></param>
         public void IncrementCurrent(int msec)
         {
-            _current = (msec > 0) ? _current.Add(new TimeSpan(0, 0, 0, 0, msec)) : _current.Subtract(new TimeSpan(0, 0, 0, 0, -msec));
+            int smsec = DoSnap(msec);
+            _current = (smsec > 0) ? _current.Add(new TimeSpan(0, 0, 0, 0, smsec)) : _current.Subtract(new TimeSpan(0, 0, 0, 0, -smsec));
 
             if (_current > _length)
             {
@@ -168,7 +172,6 @@ namespace NBagOfTricks.UI
             {
                 int dstart = Scale(_start);
                 int dend = _current > _end ? Scale(_end) : Scale(_current);
-
                 pe.Graphics.FillRectangle(_brush, dstart, 0, dend - dstart, Height);
             }
 
@@ -214,8 +217,8 @@ namespace NBagOfTricks.UI
 
                 case Keys.Escape:
                     // Reset.
-                    //Start.Reset();
-                    //End.Reset();
+                    _start = TimeSpan.Zero;
+                    _end = _length;
                     e.Handled = true;
                     Invalidate();
                     break;
@@ -271,7 +274,19 @@ namespace NBagOfTricks.UI
         /// </summary>
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            _current = GetTimeFromMouse(e.X);
+            if (ModifierKeys.HasFlag(Keys.Control))
+            {
+                _start = GetTimeFromMouse(e.X);
+            }
+            else if (ModifierKeys.HasFlag(Keys.Alt))
+            {
+                _end = GetTimeFromMouse(e.X);
+            }
+            else
+            {
+                _current = GetTimeFromMouse(e.X);
+            }
+
             CurrentTimeChanged?.Invoke(this, new EventArgs());
             Invalidate();
             base.OnMouseDown(e);
@@ -283,7 +298,7 @@ namespace NBagOfTricks.UI
         /// Convert x pos to TimeSpan.
         /// </summary>
         /// <param name="x"></param>
-        private TimeSpan GetTimeFromMouse(int x)
+        TimeSpan GetTimeFromMouse(int x)
         {
             int msec = 0;
 
@@ -291,9 +306,29 @@ namespace NBagOfTricks.UI
             {
                 msec = x * (int)_length.TotalMilliseconds / Width;
                 msec = MathUtils.Constrain(msec, 0, (int)_length.TotalMilliseconds);
+                msec = DoSnap(msec);
+            }
+            return new TimeSpan(0, 0, 0, 0, msec);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="msec"></param>
+        /// <returns></returns>
+        int DoSnap(int msec)
+        {
+            int smsec = 0;
+            if (SnapMsec > 0)
+            {
+                smsec = (msec / SnapMsec) * SnapMsec;
+                if(SnapMsec > (msec % SnapMsec) / 2)
+                {
+                    smsec += SnapMsec;
+                }
             }
 
-            return new TimeSpan(0, 0, 0, 0, msec);
+            return smsec;
         }
 
         /// <summary>

@@ -25,13 +25,13 @@ namespace NBagOfTricks.UI
         float[] _buff = null;
 
         /// <summary>For drawing.</summary>
-        Pen _penDraw = new Pen(Color.Black, 1);
+        readonly Pen _penDraw = new Pen(Color.Black, 1);
 
         /// <summary>For drawing text.</summary>
-        Font _textFont = new Font("Cascadia", 14, FontStyle.Regular, GraphicsUnit.Point, 0);
+        readonly Font _textFont = new Font("Cascadia", 14, FontStyle.Regular, GraphicsUnit.Point, 0);
 
         /// <summary>For drawing text.</summary>
-        StringFormat _format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
+        readonly StringFormat _format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
         #endregion
 
         #region Properties
