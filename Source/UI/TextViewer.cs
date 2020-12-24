@@ -44,7 +44,7 @@ namespace NBagOfTricks.UI
         {
             Controls.Add(_rtb);
             Font = new Font("Consolas", 10);
-            Load += new System.EventHandler(TextViewer_Load);
+            Load += new EventHandler(TextViewer_Load);
         }
 
         /// <summary>
@@ -54,7 +54,10 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         private void TextViewer_Load(object sender, EventArgs e)
         {
+            BorderStyle = BorderStyle.None;
+
             _rtb.Text = "";
+            _rtb.BorderStyle = BorderStyle.None;
             _rtb.ForeColor = Color.Black;
             _rtb.Dock = DockStyle.Fill;
             _rtb.ReadOnly = true;
@@ -68,7 +71,7 @@ namespace NBagOfTricks.UI
         /// <param name="trim">True to truncate continuous displays.</param>
         public void AddLine(string text, bool trim = true)
         {
-            Add(text + Environment.NewLine, trim);
+            Add($"{text}{Environment.NewLine}", trim);
         }
 
         /// <summary>
