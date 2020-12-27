@@ -420,7 +420,7 @@ namespace NBagOfTricks.UI
                 }
                 else
                 {
-                    throw new FileNotFoundException($"Invalid path: {kv.Key}");
+                    //TODO? throw new FileNotFoundException($"Invalid path: {kv.Key}");
                 }
             }
         }
