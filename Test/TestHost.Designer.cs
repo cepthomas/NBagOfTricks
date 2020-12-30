@@ -40,7 +40,6 @@
             this.ftree = new NBagOfTricks.UI.FilTree();
             this.meter3 = new NBagOfTricks.UI.Meter();
             this.meter2 = new NBagOfTricks.UI.Meter();
-            this.btnUT = new System.Windows.Forms.Button();
             this.cpuMeter1 = new NBagOfTricks.UI.CpuMeter();
             this.slider2 = new NBagOfTricks.UI.Slider();
             this.pan1 = new NBagOfTricks.UI.Pan();
@@ -78,7 +77,6 @@
             this.splitContainer1.Panel2.Controls.Add(this.ftree);
             this.splitContainer1.Panel2.Controls.Add(this.meter3);
             this.splitContainer1.Panel2.Controls.Add(this.meter2);
-            this.splitContainer1.Panel2.Controls.Add(this.btnUT);
             this.splitContainer1.Panel2.Controls.Add(this.cpuMeter1);
             this.splitContainer1.Panel2.Controls.Add(this.slider2);
             this.splitContainer1.Panel2.Controls.Add(this.pan1);
@@ -208,18 +206,6 @@
             this.meter2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.meter2.Size = new System.Drawing.Size(180, 48);
             this.meter2.TabIndex = 9;
-            // 
-            // btnUT
-            // 
-            this.btnUT.BackColor = System.Drawing.Color.HotPink;
-            this.btnUT.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnUT.Location = new System.Drawing.Point(546, 27);
-            this.btnUT.Name = "btnUT";
-            this.btnUT.Size = new System.Drawing.Size(58, 46);
-            this.btnUT.TabIndex = 8;
-            this.btnUT.Text = "UT";
-            this.btnUT.UseVisualStyleBackColor = false;
-            this.btnUT.Click += new System.EventHandler(this.UT_Click);
             // 
             // cpuMeter1
             // 
@@ -356,7 +342,6 @@
         private UI.Pan pan1;
         private UI.Slider slider2;
         private UI.CpuMeter cpuMeter1;
-        private System.Windows.Forms.Button btnUT;
         private UI.Meter meter2;
         private UI.Meter meter3;
         private UI.FilTree ftree;

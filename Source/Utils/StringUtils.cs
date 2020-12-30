@@ -110,6 +110,52 @@ namespace NBagOfTricks.Utils
         }
 
         /// <summary>
+        /// Specialized splitter, mainly for cmd line args.
+        /// Input: 12345 "I HAVE SPACES" aaa bbb  "me too" ccc ddd "  and the last  "
+        /// Output: 12345,I HAVE SPACES,aaa,bbb,me too,ccc,ddd,and the last
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns>Properly split values</returns>
+        public static List<string> SplitQuotedString(this string text)
+        {
+            var ret = new List<string>();
+
+            bool inquoted = false;
+            string acc = "";
+
+            foreach(char c in text)
+            {
+                if(c == '\"') // delimiter
+                {
+                    if(inquoted) // finish quoted
+                    {
+                        if(acc.Length > 0) { ret.Add(acc); }
+                    }
+                    else // start quoted
+                    {
+                        if (acc.Length > 0) { ret.AddRange(acc.SplitByToken(" ")); }
+                    }
+
+                    acc = "";
+                    inquoted = !inquoted;
+                }
+                else // just accumulate
+                {
+                    acc += c;
+                }
+            }
+
+            // Leftovers?
+            if (acc.Length > 0)
+            {
+                if (inquoted) { ret.Add(acc); }
+                else { ret.AddRange(acc.SplitByToken(" ")); }
+            }
+
+            return ret;
+        }
+
+        /// <summary>
         /// Update the MRU.
         /// </summary>
         /// <param name="mruList">The MRU.</param>

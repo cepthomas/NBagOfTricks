@@ -105,8 +105,6 @@ namespace NBagOfTricks.PNUT
             // Locate the test cases.
             Dictionary<string, TestSuite> suites = new Dictionary<string, TestSuite>();
 
-            // GetExecutingAssembly()
-
             foreach (Type t in Assembly.GetCallingAssembly().GetTypes())
             {
                 if (t.BaseType != null && t.BaseType.Name.Contains("TestSuite"))

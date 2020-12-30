@@ -21,14 +21,6 @@ namespace NBagOfTricks.Test
             InitializeComponent();
         }
 
-        public void RunTests()
-        {
-            // Use pnut for automated lib tests.
-            TestRunner runner = new TestRunner(OutputFormat.Readable);
-            var cases = new[] { "PNUT", "SM", "CMD" };
-            runner.RunSuites(cases);
-        }
-
         private void TestHost_Load(object sender, EventArgs e)
         {
             ///// Misc controls.
@@ -193,11 +185,6 @@ namespace NBagOfTricks.Test
             txtInfo.AddLine(s);
 
             meter3.AddValue(e.NoteId / 8.0 - 10.0);
-        }
-
-        private void UT_Click(object sender, EventArgs e)
-        {
-            RunTests();
         }
 
         private void ChkCpu_CheckedChanged(object sender, EventArgs e)
