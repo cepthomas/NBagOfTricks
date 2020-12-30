@@ -19,7 +19,7 @@ namespace NBagOfTricks.Test
             List<string> txtFiles = new List<string>();
             List<string> docFiles = new List<string>();
             Dictionary<string, string> args = new Dictionary<string, string>();
-            void ClearArgs()
+            void ClearCapture()
             {
                 txtFiles.Clear();
                 docFiles.Clear();
@@ -36,7 +36,7 @@ namespace NBagOfTricks.Test
                 Description = "what do you want to know",    
                 Args = new Arguments
                 {
-                    { "cmd", "specific command or empty for all commands",  Arg.Opt, Param.Opt,  (v) => { Console.Write(cp.GetUsage(v)); return true; } },
+                    { "cmd", "specific command or empty for all commands",  false, false,  (v) => { Console.Write(cp.GetUsage(v)); return true; } },
                 }
             });
 
@@ -46,10 +46,10 @@ namespace NBagOfTricks.Test
                 Description = "just a command that does amazing things with some arguments",
                 Args = new Arguments
                 {
-                    { "abc", "arg with optional param",     Arg.Opt, Param.Opt,  (v) => { args.Add("abc", v);  return true; } },
-                    { "def", "arg no param",                Arg.Req, Param.None, (v) => { args.Add("def", ""); return true; } },
-                    { "ghi", "arg without optional param",  Arg.Opt, Param.Opt,  (v) => { args.Add("ghi", ""); return true; } },
-                    { "jkl", "arg with requred parameter",  Arg.Req, Param.Req,  (v) => { args.Add("jkl", v);  return true; } },
+                    { "abc", "optional arg with no value",  false, false, (v) => { args.Add("abc", v);  return true; } },
+                    { "def", "required arg with no value",  true,  false, (v) => { args.Add("def", v); return true; } },
+                    { "ghi", "optional arg with value",     false, true,  (v) => { args.Add("ghi", v); return true; } },
+                    { "jkl", "required arg with value",     true,  true,  (v) => { args.Add("jkl", v);  return true; } },
                 },
                 TailInfo = "Filename(s) to process",
                 TailFunc = (v) =>
@@ -66,14 +66,14 @@ namespace NBagOfTricks.Test
                 Description = "another command",
                 Args = new Arguments
                 {
-                    { "darg1", "up side",      Arg.Opt, Param.Opt,  (v) => { args.Add("darg1", v); return true; } },
-                    { "darg2", "down side",    Arg.Opt, Param.Opt,  (v) => { args.Add("darg2", v); return true; } },
+                    { "darg1", "up side",      false, true,   (v) => { args.Add("darg1", v);  return true; } },
+                    { "darg2", "down side",    false, false,  (v) => { args.Add("darg2", ""); return true; } },
                 }
             });
 
             /////// Basic processing ///////
-            ClearArgs();
-            string testCmd = "\"real main cmd\" -def -jkl \"thing one\" -ghi -abc mememe InputFile1.txt InputFile2.doc InputFile3.doc";
+            ClearCapture();
+            string testCmd = "\"real main cmd\" -def -jkl \"thing one\" -ghi purple -abc InputFile1.txt InputFile2.doc InputFile3.doc";
             string cmd = cp.Parse(testCmd);
 
             UT_EQUAL(cp.Errors.Count, 0);
@@ -90,16 +90,16 @@ namespace NBagOfTricks.Test
 
             UT_EQUAL(args.Count, 4);
             UT_TRUE(args.ContainsKey("abc"));
-            UT_EQUAL(args["abc"], "mememe");
+            UT_EQUAL(args["abc"], "");
             UT_TRUE(args.ContainsKey("def"));
             UT_EQUAL(args["def"], "");
             UT_TRUE(args.ContainsKey("ghi"));
-            UT_EQUAL(args["ghi"], "");
+            UT_EQUAL(args["ghi"], "purple");
             UT_TRUE(args.ContainsKey("jkl"));
             UT_EQUAL(args["jkl"], "thing one");
 
             /////// Alias ///////
-            ClearArgs();
+            ClearCapture();
             testCmd = "d -darg1 \"shiny monster\" -darg2";
             UT_EQUAL(cp.Parse(testCmd), "dooda");
 
@@ -110,16 +110,15 @@ namespace NBagOfTricks.Test
             UT_EQUAL(args["darg2"], "");
 
             /////// Usage ///////
+            UT_EQUAL(cp.GetUsage().Length, 170);
+            UT_EQUAL(cp.GetUsage("?").Length, 79);
+            UT_EQUAL(cp.GetUsage("dooda").Length, 78);
+            UT_EQUAL(cp.GetUsage("realcmd").Length, 170);
 
-            //UT_EQUAL(cp.GetUsage().Length, 169);
-            //UT_EQUAL(cp.GetUsage("?").Length, 83);
-            //UT_EQUAL(cp.GetUsage("dooda").Length, 85);
-            //UT_EQUAL(cp.GetUsage("realcmd").Length, 199);
-
-            UT_TRUE(cp.GetUsage().StartsWith("xxx"));
-            UT_TRUE(cp.GetUsage("?").StartsWith("xxx"));
-            UT_TRUE(cp.GetUsage("dooda").StartsWith("xxx"));
-            UT_TRUE(cp.GetUsage("real main cmd").StartsWith("xxx"));
+            UT_EQUAL(cp.GetUsage().Substring(0, 70).Replace(Environment.NewLine, "#"), "Commands:#  help | h | ?: what do you want to know#  real main cmd |");
+            UT_EQUAL(cp.GetUsage("?").Substring(0, 70).Replace(Environment.NewLine, "#"), "Usage: help | h | ? [-cmd]#  cmd: specific command or empty for all c");
+            UT_EQUAL(cp.GetUsage("dooda").Substring(0, 70).Replace(Environment.NewLine, "#"), "Usage: dooda | d [-darg1 val] [-darg2]#  darg1: up side#  darg2: dow");
+            UT_EQUAL(cp.GetUsage("real main cmd").Substring(0, 70).Replace(Environment.NewLine, "#"), "Usage: real main cmd | go | r [-abc] -def [-ghi val] -jkl val Filename");
         }
     }
 
@@ -140,10 +139,10 @@ namespace NBagOfTricks.Test
                 Description = "Just a command that does amazing things with some arguments",
                 Args = new Arguments
                 {
-                    { "def", "required arg missing",             Arg.Req, Param.None, (v) => { return true; } },
-                    { "jkl", "arg with missing required param",  Arg.Req, Param.Req,  (v) => { return true; } },
-                    { "abc", "extraneous param",                 Arg.Req, Param.None, (v) => { return true; } },
-                    { "ghi", "arg with bad validate",            Arg.Opt, Param.Opt,  (v) => { return false; } },
+                    { "def", "required arg missing",             true, false,  (v) => { return true; } },
+                    { "jkl", "arg with missing required value",  true, true,   (v) => { return true; } },
+                    { "abc", "extraneous value",                 true, false,  (v) => { return true; } },
+                    { "ghi", "arg with bad validate",            false, false, (v) => { return false; } },
                 }
             });
 
@@ -156,8 +155,9 @@ namespace NBagOfTricks.Test
             //cp.Errors.ForEach(err => UT_INFO(err));
             UT_TRUE(cp.Errors.Contains("Unexpected arg:unexpctedarg"));
             UT_TRUE(cp.Errors.Contains("Extraneous value:xtra"));
-            UT_TRUE(cp.Errors.Contains("Missing param for arg:jkl"));
-            UT_TRUE(cp.Errors.Contains("Problem with arg:ghi"));
+            UT_TRUE(cp.Errors.Contains("Extraneous value:some1"));
+            UT_TRUE(cp.Errors.Contains("Missing value for arg:jkl"));
+            //UT_TRUE(cp.Errors.Contains("Problem with arg:ghi"));//missing
             UT_TRUE(cp.Errors.Contains("Missing arg:def"));
 
             testCmd = "badcmd -fff";
@@ -182,26 +182,27 @@ namespace NBagOfTricks.Test
             // Captured values
             List<string> txtFiles = new List<string>();
             List<string> docFiles = new List<string>();
-            bool abcFlag = false;
-            string abcObj = "";
-            bool defFlag = false;
-            bool ghiFlag = false;
-            bool jklFlag = false;
-            string jklObj = "";
+            Dictionary<string, string> args = new Dictionary<string, string>();
+            void ClearCapture()
+            {
+                txtFiles.Clear();
+                docFiles.Clear();
+                args.Clear();
+            }
 
             // Create the specs for the command processor.
             var cp = new Processor();
 
             cp.Commands.Add(new Command()
             {
-                Name = null,
+               // Name = null,
                 Description = "Just a default command",
                 Args = new Arguments
                 {
-                    { "abc", "arg with optional param",     Arg.Opt, Param.Opt,  (v) => { abcFlag = true; abcObj = v; return true; } },
-                    { "def", "arg no param",                Arg.Req, Param.None, (v) => { defFlag = true; return true; } },
-                    { "ghi", "arg without optional param",  Arg.Opt, Param.Opt,  (v) => { ghiFlag = true; return true; } },
-                    { "jkl", "arg with requred parameter",  Arg.Req, Param.Req,  (v) => { jklFlag = true; jklObj = v; return true; } },
+                    { "abc", "optional arg with no value",  false, false, (v) => { args.Add("abc", v);  return true; } },
+                    { "def", "required arg with no value",  true,  false, (v) => { args.Add("def", v); return true; } },
+                    { "ghi", "optional arg with value",     false, true,  (v) => { args.Add("ghi", v); return true; } },
+                    { "jkl", "required arg with value",     true,  true,  (v) => { args.Add("jkl", v);  return true; } },
                 },
                 TailInfo = "Filename(s) to process",
                 TailFunc = (v) =>
@@ -213,6 +214,7 @@ namespace NBagOfTricks.Test
             });
 
             /////// Basic processing ///////
+            ClearCapture();
             string testCmd = "-def -jkl some1 -ghi -abc some2 InputFile1.txt InputFile2.doc InputFile3.doc";
             cp.Parse(testCmd);
 
@@ -226,16 +228,15 @@ namespace NBagOfTricks.Test
             UT_EQUAL(docFiles[0], "InputFile2.doc");
             UT_EQUAL(docFiles[1], "InputFile3.doc");
 
-            UT_TRUE(abcFlag);
-            UT_TRUE(defFlag);
-            UT_TRUE(ghiFlag);
-            UT_TRUE(jklFlag);
-
-            UT_EQUAL(abcObj, "some2");
-            UT_EQUAL(jklObj, "some1");
-
-            UT_TRUE(cp.GetUsage().StartsWith("xxx"));
-            UT_TRUE(cp.GetUsage("?").StartsWith("xxx"));
+            UT_EQUAL(args.Count, 4);
+            UT_TRUE(args.ContainsKey("abc"));
+            UT_EQUAL(args["abc"], "");
+            UT_TRUE(args.ContainsKey("def"));
+            UT_EQUAL(args["def"], "");
+            UT_TRUE(args.ContainsKey("ghi"));
+            UT_EQUAL(args["ghi"], "purple");
+            UT_TRUE(args.ContainsKey("jkl"));
+            UT_EQUAL(args["jkl"], "thing one");
         }
     }
 }
