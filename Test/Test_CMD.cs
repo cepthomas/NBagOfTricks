@@ -8,24 +8,23 @@ using NBagOfTricks.CommandProcessor;
 
 namespace NBagOfTricks.Test
 {
+    ////////////////////////////////////////////////////////////////////////
     public class CMD_HAPPY : TestSuite
     {
-        ////////////////////////////////////////////////////////////////////////
         public override void RunSuite()
         {
             UT_INFO("Test the happy path for the Command Processor.");
 
-            // Captured values
+            // Captured values.
             List<string> txtFiles = new List<string>();
             List<string> docFiles = new List<string>();
-            bool abcFlag = false;
-            string abcObj = "";    
-            bool defFlag = false;
-            bool ghiFlag = false;
-            bool jklFlag = false;
-            string jklObj = "";
-            string doodaFlag = "";
-            string doodaParam = "";
+            Dictionary<string, string> args = new Dictionary<string, string>();
+            void ClearArgs()
+            {
+                txtFiles.Clear();
+                docFiles.Clear();
+                args.Clear();
+            }
 
             // Create the specs for the command processor.
             var cp = new Processor();
@@ -43,16 +42,16 @@ namespace NBagOfTricks.Test
 
             cp.Commands.Add(new Command()
             {
-                Name = new string[]{ "realcmd", "go", "r" },
-                Description = "Just a command that does amazing things with some arguments",
-                Tail = "Files to process...",
+                Name = new string[]{ "real main cmd", "go", "r" },
+                Description = "just a command that does amazing things with some arguments",
                 Args = new Arguments
                 {
-                    { "abc", "arg with optional param",     Arg.Opt, Param.Opt,  (v) => { abcFlag = true; abcObj = v; return true; } },
-                    { "def", "arg no param",                Arg.Req, Param.None, (v) => { defFlag = true; return true; } },
-                    { "ghi", "arg without optional param",  Arg.Opt, Param.Opt,  (v) => { ghiFlag = true; return true; } },
-                    { "jkl", "arg with requred parameter",  Arg.Req, Param.Req,  (v) => { jklFlag = true; jklObj = v; return true; } },
+                    { "abc", "arg with optional param",     Arg.Opt, Param.Opt,  (v) => { args.Add("abc", v);  return true; } },
+                    { "def", "arg no param",                Arg.Req, Param.None, (v) => { args.Add("def", ""); return true; } },
+                    { "ghi", "arg without optional param",  Arg.Opt, Param.Opt,  (v) => { args.Add("ghi", ""); return true; } },
+                    { "jkl", "arg with requred parameter",  Arg.Req, Param.Req,  (v) => { args.Add("jkl", v);  return true; } },
                 },
+                TailInfo = "Filename(s) to process",
                 TailFunc = (v) =>
                 {
                     if (v.EndsWith(".txt")) { txtFiles.Add(v); return true; }
@@ -64,21 +63,23 @@ namespace NBagOfTricks.Test
             cp.Commands.Add(new Command()
             {
                 Name = new string[] { "dooda", "d" },
-                Description = "just another command",
+                Description = "another command",
                 Args = new Arguments
                 {
-                    { "thing1", "up side",         Arg.Opt, Param.Opt,  (v) => { doodaFlag = "thing1"; doodaParam = v; return true; } },
-                    { "thing2", "down side",       Arg.Opt, Param.Opt,  (v) => { doodaFlag = "thing2"; doodaParam = v; return true; } },
+                    { "darg1", "up side",      Arg.Opt, Param.Opt,  (v) => { args.Add("darg1", v); return true; } },
+                    { "darg2", "down side",    Arg.Opt, Param.Opt,  (v) => { args.Add("darg2", v); return true; } },
                 }
             });
 
-
             /////// Basic processing ///////
-            string testCmd = "realcmd -def -jkl some1 -ghi -abc some2 InputFile1.txt InputFile2.doc InputFile3.doc";
-            cp.Parse(testCmd);
+            ClearArgs();
+            string testCmd = "\"real main cmd\" -def -jkl \"thing one\" -ghi -abc mememe InputFile1.txt InputFile2.doc InputFile3.doc";
+            string cmd = cp.Parse(testCmd);
 
             UT_EQUAL(cp.Errors.Count, 0);
-            //cp.Errors.ForEach(err => UT_INFO(err));
+            cp.Errors.ForEach(err => UT_INFO(err));
+
+            UT_EQUAL(cmd, "real main cmd");
 
             UT_EQUAL(txtFiles.Count, 1);
             UT_EQUAL(txtFiles[0], "InputFile1.txt");
@@ -87,34 +88,38 @@ namespace NBagOfTricks.Test
             UT_EQUAL(docFiles[0], "InputFile2.doc");
             UT_EQUAL(docFiles[1], "InputFile3.doc");
 
-            UT_TRUE(abcFlag);
-            UT_TRUE(defFlag);
-            UT_TRUE(ghiFlag);
-            UT_TRUE(jklFlag);
-
-            UT_EQUAL(abcObj, "some2");
-            UT_EQUAL(jklObj, "some1");
-
+            UT_EQUAL(args.Count, 4);
+            UT_TRUE(args.ContainsKey("abc"));
+            UT_EQUAL(args["abc"], "mememe");
+            UT_TRUE(args.ContainsKey("def"));
+            UT_EQUAL(args["def"], "");
+            UT_TRUE(args.ContainsKey("ghi"));
+            UT_EQUAL(args["ghi"], "");
+            UT_TRUE(args.ContainsKey("jkl"));
+            UT_EQUAL(args["jkl"], "thing one");
 
             /////// Alias ///////
-            testCmd = "d -thing2 shiny";
+            ClearArgs();
+            testCmd = "d -darg1 \"shiny monster\" -darg2";
             UT_EQUAL(cp.Parse(testCmd), "dooda");
 
-            UT_EQUAL(cp.Errors.Count, 0);
-            UT_EQUAL(doodaFlag, "thing2");
-            UT_EQUAL(doodaParam, "shiny");
-
+            UT_EQUAL(args.Count, 2);
+            UT_TRUE(args.ContainsKey("darg1"));
+            UT_EQUAL(args["darg1"], "shiny monster");
+            UT_TRUE(args.ContainsKey("darg2"));
+            UT_EQUAL(args["darg2"], "");
 
             /////// Usage ///////
-            //UT_INFO(cp.GetUsage());
-            //UT_INFO(cp.GetUsage("?"));
-            //UT_INFO(cp.GetUsage("dooda"));
-            //UT_INFO(cp.GetUsage("realcmd"));
 
-            UT_EQUAL(cp.GetUsage().Length, 169);
-            UT_EQUAL(cp.GetUsage("?").Length, 83);
-            UT_EQUAL(cp.GetUsage("dooda").Length, 85);
-            UT_EQUAL(cp.GetUsage("realcmd").Length, 199);
+            //UT_EQUAL(cp.GetUsage().Length, 169);
+            //UT_EQUAL(cp.GetUsage("?").Length, 83);
+            //UT_EQUAL(cp.GetUsage("dooda").Length, 85);
+            //UT_EQUAL(cp.GetUsage("realcmd").Length, 199);
+
+            UT_TRUE(cp.GetUsage().StartsWith("xxx"));
+            UT_TRUE(cp.GetUsage("?").StartsWith("xxx"));
+            UT_TRUE(cp.GetUsage("dooda").StartsWith("xxx"));
+            UT_TRUE(cp.GetUsage("real main cmd").StartsWith("xxx"));
         }
     }
 
@@ -162,79 +167,75 @@ namespace NBagOfTricks.Test
             //cp.Errors.ForEach(err => UT_INFO(err));
             UT_TRUE(cp.Errors.Contains("Invalid command:badcmd"));
 
-
             /////// Usage ///////
             UT_EQUAL(cp.GetUsage("ng-cmd").Length, 89);
         }
     }
 
-
     ////////////////////////////////////////////////////////////////////////
-    //public class CMD_CONS : TestSuite
-    //{
-    //    Consolette _console = new Consolette();
-    //    Processor _cp = new Processor();
+    public class CMD_NONE : TestSuite
+    {
+        public override void RunSuite()
+        {
+            UT_INFO("Test the no-specific-command.");
 
-    //    // Command parameters.
-    //    string _cmdHelp = "";
+            // Captured values
+            List<string> txtFiles = new List<string>();
+            List<string> docFiles = new List<string>();
+            bool abcFlag = false;
+            string abcObj = "";
+            bool defFlag = false;
+            bool ghiFlag = false;
+            bool jklFlag = false;
+            string jklObj = "";
 
-    //    public override void RunSuite()
-    //    {
-    //        UT_INFO("Not really a unit test, more of an example.");
+            // Create the specs for the command processor.
+            var cp = new Processor();
 
-    //        _cp.Commands.Add(new Command()
-    //        {
-    //            Name = new string[] { "help", "h", "?" },
-    //            Description = "What do you want to know?",
-    //            Tail = "Optional cmd name",
-    //            TailFunc = (v) => { _cmdHelp = v; return true; }
-    //        });
+            cp.Commands.Add(new Command()
+            {
+                Name = null,
+                Description = "Just a default command",
+                Args = new Arguments
+                {
+                    { "abc", "arg with optional param",     Arg.Opt, Param.Opt,  (v) => { abcFlag = true; abcObj = v; return true; } },
+                    { "def", "arg no param",                Arg.Req, Param.None, (v) => { defFlag = true; return true; } },
+                    { "ghi", "arg without optional param",  Arg.Opt, Param.Opt,  (v) => { ghiFlag = true; return true; } },
+                    { "jkl", "arg with requred parameter",  Arg.Req, Param.Req,  (v) => { jklFlag = true; jklObj = v; return true; } },
+                },
+                TailInfo = "Filename(s) to process",
+                TailFunc = (v) =>
+                {
+                    if (v.EndsWith(".txt")) { txtFiles.Add(v); return true; }
+                    else if (v.EndsWith(".doc")) { docFiles.Add(v); return true; }
+                    else { return false; }
+                }
+            });
 
+            /////// Basic processing ///////
+            string testCmd = "-def -jkl some1 -ghi -abc some2 InputFile1.txt InputFile2.doc InputFile3.doc";
+            cp.Parse(testCmd);
 
-    //        _cp.Commands.Add(new Command()
-    //        {
-    //            Name = new string[] { "clear", "cls", "c" },
-    //            Description = "Clear screen.",
-    //        });
+            UT_EQUAL(cp.Errors.Count, 0);
+            //cp.Errors.ForEach(err => UT_INFO(err));
 
-    //        _console.UserCommand += Console_UserCommand;
-    //        _console.Run();
-    //    }
+            UT_EQUAL(txtFiles.Count, 1);
+            UT_EQUAL(txtFiles[0], "InputFile1.txt");
 
-    //    void Console_UserCommand(object sender, Consolette.UserCommandArgs e)
-    //    {
-    //        _cmdHelp = "";
+            UT_EQUAL(docFiles.Count, 2);
+            UT_EQUAL(docFiles[0], "InputFile2.doc");
+            UT_EQUAL(docFiles[1], "InputFile3.doc");
 
-    //        List<string> cmdResults = new List<string>();
+            UT_TRUE(abcFlag);
+            UT_TRUE(defFlag);
+            UT_TRUE(ghiFlag);
+            UT_TRUE(jklFlag);
 
-    //        try
-    //        {
-    //            string cmd = _cp.Parse(e.Command);
+            UT_EQUAL(abcObj, "some2");
+            UT_EQUAL(jklObj, "some1");
 
-    //            switch (cmd)
-    //            {
-    //                case "help":
-    //                    cmdResults.Add(_cp.GetUsage(_cmdHelp));
-    //                    break;
-
-    //                case "cls":
-    //                    _console.Clear();
-    //                    break;
-
-    //                case "": // something wrong with the args...
-    //                    cmdResults.Add("Errors:");
-    //                    cmdResults.AddRange(_cp.Errors);
-    //                    break;
-    //            }
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            cmdResults.Add("Exception:");
-    //            cmdResults.Add(ex.Message);
-    //            cmdResults.Add(ex.StackTrace);
-    //        }
-
-    //        e.Response = string.Join(Environment.NewLine, cmdResults);
-    //    }
-    //}
+            UT_TRUE(cp.GetUsage().StartsWith("xxx"));
+            UT_TRUE(cp.GetUsage("?").StartsWith("xxx"));
+        }
+    }
 }

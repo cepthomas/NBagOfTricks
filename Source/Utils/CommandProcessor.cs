@@ -17,8 +17,8 @@ namespace NBagOfTricks.CommandProcessor
     public class Processor
     {
         #region Properties
-        /// <summary>Designate the set of values that are used to denote the start of an argument.</summary>
-        public static char[] ArgumentPrefixList { get; set; } = new char[] { '-', '/' };
+        /// <summary>Denotes the start of an argument.</summary>
+        public static string ArgumentPrefix { get; set; } = "-";
 
         /// <summary>All the commands.</summary>
         public List<Command> Commands { get; set; } = new List<Command>();
@@ -38,7 +38,7 @@ namespace NBagOfTricks.CommandProcessor
             Commands.ForEach(c => c.Errors.Clear());
             string cmdname = "";
 
-            List<string> parts = cmdString.SplitByToken(" "); // TODO Support delimited quotes for strings with spaces.
+            List<string> parts = cmdString.SplitQuotedString();
 
             if (parts.Count > 0)
             {
@@ -119,7 +119,7 @@ namespace NBagOfTricks.CommandProcessor
                         argInfo.Add($"  {a.Name}: {a.Description}");
                     }
 
-                    sb.Append($" {cmd.Tail}");
+                    sb.Append(cmd.TailInfo != "" ? $" {cmd.TailInfo}" : "");
                     sb.AppendLine("");
 
                     argInfo.ForEach(ai => sb.AppendLine(ai));
@@ -145,37 +145,41 @@ namespace NBagOfTricks.CommandProcessor
     public class Command
     {
         #region Properties - filled in by client
-        /// <summary>The command name(s). The first one is the main command and aliases follow.</summary>
-        public string[] Name { get; set; } = { "???" };
+        /// <summary>
+        /// The command name(s). The first one is the main command name and aliases follow.
+        /// If it's null, there is no separate command name.
+        /// </summary>
+        public string[] Name { get; set; } = null;
 
         /// <summary>For usage.</summary>
-        public string Description { get; set; } = "???";
-
-        /// <summary>For usage. Optional</summary>
-        public string Tail { get; set; } = "";
+        public string Description { get; set; } = null;
 
         /// <summary>Possible arguments for this command.</summary>
         public Arguments Args { get; set; } = new Arguments();
 
-        /// <summary>Handler for stuff at the end.</summary>
+        /// <summary>Handler for processing stuff at the end, typically file names.</summary>
         public Func<string, bool> TailFunc { get; set; } = null;
+
+        /// <summary>For usage. Optional</summary>
+        public string TailInfo { get; set; } = "";
         #endregion
 
         #region Properties - filled in by Parser
         /// <summary>Missing args etc.</summary>
-        public List<string> Errors { get; private set; } = new List<string>();
+        public List<string> Errors { get; internal set; } = new List<string>();
         #endregion
 
         /// <summary>Parse the argument collection.</summary>
         public void Parse(List<string> args)
         {
             Argument currentArg = null;
+            string sarg = "";
 
             for (int i = 0; i < args.Count; i++)
             {
-                string sarg = args[i].Trim();
+                sarg = args[i].Trim();
 
-                if (Processor.ArgumentPrefixList.Contains(sarg[0])) ///// New argument.
+                if (sarg.StartsWith(Processor.ArgumentPrefix)) ///// New argument.
                 {
                     // Clean up any in process.
                     if (currentArg != null)
@@ -205,7 +209,7 @@ namespace NBagOfTricks.CommandProcessor
                     }
 
                     ///// Start new cmd.
-                    string argName = sarg.Substring(1, sarg.Length - 1);
+                    string argName = sarg.Replace(Processor.ArgumentPrefix, "");
 
                     // Find the new arg in our list.
                     var qry = from ca in Args
@@ -236,7 +240,7 @@ namespace NBagOfTricks.CommandProcessor
                             break;
 
                         case Param.None: // it's a file or other thing
-                            if(TailFunc != null)
+                            if (TailFunc != null)
                             {
                                 if (TailFunc.Invoke(sarg) == false)
                                 {
@@ -273,6 +277,20 @@ namespace NBagOfTricks.CommandProcessor
                 }
             }
 
+            //if (currentArg != null) ///// Cleanup command in process.
+            //{
+            //    switch (currentArg.ParamReq)
+            //    {
+            //        case Param.Req:
+            //        case Param.Opt:
+            //            if (currentArg.ArgFunc?.Invoke(sarg) == false)
+            //            {
+            //                Errors.Add($"Problem with arg:{currentArg.Name}");
+            //            }
+            //            break;
+            //    }
+            //}
+
             // Look for missing required args.
             foreach (Argument ca in Args)
             {
@@ -289,10 +307,10 @@ namespace NBagOfTricks.CommandProcessor
     {
         #region Properties - filled in by client
         /// <summary>The command line value.</summary>
-        public string Name { get; set; } = "???";
+        public string Name { get; set; } = null;
 
         /// <summary>For usage.</summary>
-        public string Description { get; set; } = "???";
+        public string Description { get; set; } = null;
 
         /// <summary>Argument requirement.</summary>
         public Arg ArgReq { get; set; } = Arg.Opt;
@@ -300,13 +318,13 @@ namespace NBagOfTricks.CommandProcessor
         /// <summary>Parameter requirement.</summary>
         public Param ParamReq { get; set; } = Param.None;
 
-        /// <summary>How to process the arg. Can include validation.</summary>
+        /// <summary>How to process the arg. Can include validation - returns true/false.</summary>
         public Func<string, bool> ArgFunc { get; set; } = null;
         #endregion
 
         #region Properties - filled in by Parser
         /// <summary>Does it appear in the command line.</summary>
-        public bool Valid { get; set; } = false;
+        public bool Valid { get; internal set; } = false;
         #endregion
     }
 

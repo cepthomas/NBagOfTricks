@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using NBagOfTricks.PNUT;
+using NBagOfTricks.Utils;
+
+
+namespace NBagOfTricks.Test
+{
+    public class UTILS_ONE : TestSuite
+    {
+        public override void RunSuite()
+        {
+            UT_INFO("Tests various util functions.");
+
+            string input = "12345 \"I HAVE SPACES\" aaa bbb  \"me too\" ccc ddd \"  and the last  \"";
+            /// Output: 12345,I HAVE SPACES,aaa,bbb,me too,ccc,ddd,and the last
+
+            var splits = input.SplitQuotedString();
+
+            UT_EQUAL(splits.Count, 8);
+            UT_EQUAL(splits[0], "12345");
+            UT_EQUAL(splits[1], "I HAVE SPACES");
+            UT_EQUAL(splits[2], "aaa");
+            UT_EQUAL(splits[3], "bbb");
+            UT_EQUAL(splits[4], "me too");
+            UT_EQUAL(splits[5], "ccc");
+            UT_EQUAL(splits[6], "ddd");
+            UT_EQUAL(splits[7], "  and the last  ");
+
+            input = " \"aaa ttt uuu\" 84ss \"  dangling quote  ";
+            splits = input.SplitQuotedString();
+
+            UT_EQUAL(splits.Count, 3);
+            UT_EQUAL(splits[0], "aaa ttt uuu");
+            UT_EQUAL(splits[1], "84ss");
+            UT_EQUAL(splits[2], "  dangling quote  ");
+        }
+    }
+}
