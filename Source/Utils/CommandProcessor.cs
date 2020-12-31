@@ -7,12 +7,6 @@ using NBagOfTricks.Utils;
 
 namespace NBagOfTricks.CommandProcessor
 {
-    ///// <summary>Argument Options.</summary>
-    //public enum Arg { Req, Opt }
-
-    ///// <summary>Parameter Options.</summary>
-    //public enum Param { Req, Opt, None }
-
     /// <summary>Main processor.</summary>
     public class Processor
     {
@@ -156,7 +150,7 @@ namespace NBagOfTricks.CommandProcessor
         /// <summary>Handler for processing stuff at the end, typically file names.</summary>
         public Func<string, bool> TailFunc { get; set; } = null;
 
-        /// <summary>For usage. Optional</summary>
+        /// <summary>For usage. Optional.</summary>
         public string TailInfo { get; set; } = "";
         #endregion
 

@@ -74,12 +74,9 @@ namespace NBagOfTricks.Test
             /////// Basic processing ///////
             ClearCapture();
             string testCmd = "\"real main cmd\" -def -jkl \"thing one\" -ghi purple -abc InputFile1.txt InputFile2.doc InputFile3.doc";
-            string cmd = cp.Parse(testCmd);
-
-            UT_EQUAL(cp.Errors.Count, 0);
+            UT_TRUE(cp.Parse(testCmd));
+            UT_EQUAL(cp.CommandName, "real main cmd");
             cp.Errors.ForEach(err => UT_INFO(err));
-
-            UT_EQUAL(cmd, "real main cmd");
 
             UT_EQUAL(txtFiles.Count, 1);
             UT_EQUAL(txtFiles[0], "InputFile1.txt");
@@ -101,7 +98,8 @@ namespace NBagOfTricks.Test
             /////// Alias ///////
             ClearCapture();
             testCmd = "d -darg1 \"shiny monster\" -darg2";
-            UT_EQUAL(cp.Parse(testCmd), "dooda");
+            UT_TRUE(cp.Parse(testCmd));
+            UT_EQUAL(cp.CommandName, "dooda");
 
             UT_EQUAL(args.Count, 2);
             UT_TRUE(args.ContainsKey("darg1"));
@@ -149,8 +147,9 @@ namespace NBagOfTricks.Test
 
             /////// Basic processing ///////
             string testCmd = "cmderrors -unexpctedarg -abc xtra -jkl -ghi some1";
+            UT_FALSE(cp.Parse(testCmd));
+            UT_EQUAL(cp.CommandName, "cmderrors");
 
-            UT_EQUAL(cp.Parse(testCmd), "");
             UT_EQUAL(cp.Errors.Count, 5);
             //cp.Errors.ForEach(err => UT_INFO(err));
             UT_TRUE(cp.Errors.Contains("Unexpected arg:unexpctedarg"));
