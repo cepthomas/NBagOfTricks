@@ -430,7 +430,7 @@ namespace NBagOfTricks.PNUT
             bool pass = true;
             if (value1.CompareTo(value2) != 0)
             {
-                RecordResult(false, $"[{value1}] != [{value2}]", file, line);
+                RecordResult(false, $"[{value1}] should be [{value2}]", file, line);
                 pass = false;
             }
             else
@@ -454,7 +454,7 @@ namespace NBagOfTricks.PNUT
             bool pass = true;
             if (value1.CompareTo(value2) == 0)
             {
-                RecordResult(false, $"[{value1}] == [{value2}]", file, line);
+                RecordResult(false, $"should not be [{value2}]", file, line);
                 pass = false;
             }
             else
@@ -478,7 +478,7 @@ namespace NBagOfTricks.PNUT
             bool pass = true;
             if (value1.CompareTo(value2) != -1)
             {
-                RecordResult(false, $"[{value1}] not less than [{value2}]", file, line);
+                RecordResult(false, $"[{value1}] should be less than [{value2}]", file, line);
                 pass = false;
             }
             else
@@ -502,7 +502,7 @@ namespace NBagOfTricks.PNUT
             bool pass = true;
             if (value1.CompareTo(value2) == 1)
             {
-                RecordResult(false, $"[{value1}] not less than or equal [{value2}]", file, line);
+                RecordResult(false, $"[{value1}] should be less than or equal to [{value2}]", file, line);
                 pass = false;
             }
             else
@@ -526,7 +526,7 @@ namespace NBagOfTricks.PNUT
             bool pass = true;
             if (value1.CompareTo(value2) != 1)
             {
-                RecordResult(false, $"[{value1}] not greater than [{value2}]", file, line);
+                RecordResult(false, $"[{value1}] should be greater than [{value2}]", file, line);
                 pass = false;
             }
             else
@@ -550,7 +550,7 @@ namespace NBagOfTricks.PNUT
             bool pass = true;
             if (value1.CompareTo(value2) == -1)
             {
-                RecordResult(false, $"[{value1}] not greater than or equal [{value2}]", file, line);
+                RecordResult(false, $"[{value1}] should be greater than or equal to [{value2}]", file, line);
                 pass = false;
             }
             else

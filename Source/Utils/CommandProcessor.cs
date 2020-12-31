@@ -22,11 +22,12 @@ namespace NBagOfTricks.CommandProcessor
         /// <summary>Denotes the start of an argument.</summary>
         public static string ArgumentPrefix { get; set; } = "-";
 
-        /// <summary>Selected command.</summary>
-        public string CommandName { get; set; } = "";
+        /// <summary>Selected command name.</summary>
+        public string CommandName { get; private set; } = "";
 
         /// <summary>All the commands.</summary>
-        public List<Command> Commands { get; private set; } = new List<Command>();
+        public Commands Commands { get; set; } = new Commands();
+//        public List<Command> Commands { get; private set; } = new List<Command>();
 
         /// <summary>Missing args etc.</summary>
         public List<string> Errors { get; private set; } = new List<string>();
@@ -48,14 +49,22 @@ namespace NBagOfTricks.CommandProcessor
             {
                 // Find the cmd in our list.
                 var vcmd = from c in Commands
-                           where c.Name == null || c.Name.Contains(parts[0])
+                           where string.IsNullOrEmpty(c.Name) || c.NameParts.Contains(parts[0])
                            select c;
 
                 if (vcmd.Any())
                 {
                     Command cmd = vcmd.First();
-                    CommandName = cmd.Name == null ? "" : cmd.Name[0];
-                    parts.RemoveAt(0);
+                    if(string.IsNullOrEmpty(cmd.Name))
+                    {
+                        // No command name.
+                        CommandName = "";
+                    }
+                    else
+                    {
+                        CommandName = cmd.NameParts[0];
+                        parts.RemoveAt(0);
+                    }
                     cmd.Parse(parts);
                     Errors.AddRange(cmd.Errors);
                 }
@@ -83,7 +92,7 @@ namespace NBagOfTricks.CommandProcessor
             {
                 // Find the cmd in our list.
                 var vcmd = from c in Commands
-                           where c.Name.Contains(scmd)
+                           where c.NameParts.Contains(scmd)
                            select c;
 
                 if (vcmd.Any())
@@ -92,7 +101,7 @@ namespace NBagOfTricks.CommandProcessor
 
                     Command cmd = vcmd.First();
 
-                    sb.Append($"Usage: {string.Join(" | ", cmd.Name)}");
+                    sb.Append($"Usage: {string.Join(" | ", cmd.NameParts)}");
 
                     foreach (var a in cmd.Args)
                     {
@@ -147,7 +156,7 @@ namespace NBagOfTricks.CommandProcessor
         /// The command name(s). The first one is the main command name and aliases follow.
         /// If it's empty or null, there is no separate command name.
         /// </summary>
-        public string[] Name { get; set; } = null;
+        public string Name { get; set; } = null;
 
         /// <summary>For usage.</summary>
         public string Description { get; set; } = null;
@@ -165,6 +174,9 @@ namespace NBagOfTricks.CommandProcessor
         #region Properties - filled in by Parser
         /// <summary>Missing args etc.</summary>
         public List<string> Errors { get; internal set; } = new List<string>();
+
+        /// <summary>Split version of Name.</summary>
+        public List<string> NameParts { get; internal set; } = new List<string>();
         #endregion
 
         /// <summary>Parse the argument collection.</summary>
@@ -279,19 +291,19 @@ namespace NBagOfTricks.CommandProcessor
     {
         #region Properties - filled in by client
         /// <summary>The command line value.</summary>
-        public string Name { get; set; } = null;
+        public string Name { get; internal set; } = null;
 
         /// <summary>For usage.</summary>
-        public string Description { get; set; } = null;
+        public string Description { get; internal set; } = null;
 
         /// <summary>Argument requirement.</summary>
-        public bool ArgReq { get; set; } = false;
+        public bool ArgReq { get; internal set; } = false;
 
         /// <summary>Value requirement.</summary>
-        public bool ArgValReq { get; set; } = false;
+        public bool ArgValReq { get; internal set; } = false;
 
         /// <summary>How to process the arg. Can include validation - returns true/false.</summary>
-        public Func<string, bool> ArgFunc { get; set; } = null;
+        public Func<string, bool> ArgFunc { get; internal set; } = null;
         #endregion
 
         #region Properties - filled in by Parser
@@ -303,14 +315,15 @@ namespace NBagOfTricks.CommandProcessor
     /// <summary>Specialized container. Has Add() to support initialization.</summary>
     public class Commands : List<Command>
     {
-        public void Add(string[] name, string desc, Arguments args = null)
+        public void Add(string name, string desc, Arguments args = null)
         {
-            Add(new Command()
+            var cmd = new Command()
             {
                 Name = name,
                 Description = desc,
                 Args = args
-            });
+            };
+            cmd.NameParts = name.SplitQuotedString();
         }
     }
 

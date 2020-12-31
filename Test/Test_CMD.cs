@@ -30,9 +30,20 @@ namespace NBagOfTricks.Test
             var cp = new Processor();
 
             ///////// Happy path //////////
+            cp.Commands = new Commands
+            {
+                { "help h ?", "what do you want to know", new Arguments
+                    {
+                        { "cmd", "specific command or empty for all commands",  false, false,  (v) => { Console.Write(cp.GetUsage(v)); return true; } },
+                    }
+                },
+
+
+            };
+
             cp.Commands.Add(new Command()
             {
-                Name = new string[] { "help", "h", "?" },
+                Name = "help h ?",
                 Description = "what do you want to know",    
                 Args = new Arguments
                 {
@@ -42,7 +53,7 @@ namespace NBagOfTricks.Test
 
             cp.Commands.Add(new Command()
             {
-                Name = new string[]{ "real main cmd", "go", "r" },
+                Name = "\"real main cmd\" go r",
                 Description = "just a command that does amazing things with some arguments",
                 Args = new Arguments
                 {
@@ -62,7 +73,7 @@ namespace NBagOfTricks.Test
 
             cp.Commands.Add(new Command()
             {
-                Name = new string[] { "dooda", "d" },
+                Name = "dooda d",
                 Description = "another command",
                 Args = new Arguments
                 {
@@ -133,7 +144,7 @@ namespace NBagOfTricks.Test
             ///////// Sad path //////////
             cp.Commands.Add(new Command()
             {
-                Name = new string[] { "cmderrors", "g" },
+                Name = "cmderrors g",
                 Description = "Just a command that does amazing things with some arguments",
                 Args = new Arguments
                 {
@@ -219,6 +230,7 @@ namespace NBagOfTricks.Test
 
             UT_EQUAL(cp.Errors.Count, 0);
             //cp.Errors.ForEach(err => UT_INFO(err));
+            UT_EQUAL(cp.CommandName, "");
 
             UT_EQUAL(txtFiles.Count, 1);
             UT_EQUAL(txtFiles[0], "InputFile1.txt");
