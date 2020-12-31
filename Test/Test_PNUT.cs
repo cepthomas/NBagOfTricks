@@ -30,7 +30,7 @@ namespace NBagOfTricks.Test
 
             UT_INFO("Test UT_INFO. Visually inspect that this appears in the output.");
 
-            UT_INFO("Test UT_INFO with parms.", int1, dbl2);
+            UT_INFO("Test UT_INFO with args", int1, dbl2);
 
             UT_INFO("Should fail on UT_STR_EQUAL.");
             UT_EQUAL(str1, str2);
@@ -92,7 +92,7 @@ namespace NBagOfTricks.Test
             int val1 = 1;
             int val2 = 2;
 
-            UT_INFO("Visually inspect that this appears in the output with parm == 2.", val2);
+            UT_INFO("Visually inspect that this appears in the output with arg", val2);
 
             UT_EQUAL(val1 + val2, 3);
 

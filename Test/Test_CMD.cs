@@ -194,14 +194,14 @@ namespace NBagOfTricks.Test
 
             cp.Commands.Add(new Command()
             {
-               // Name = null,
-                Description = "Just a default command",
+                // Name = null,
+                Description = "No specific command, use default",
                 Args = new Arguments
                 {
-                    { "abc", "optional arg with no value",  false, false, (v) => { args.Add("abc", v);  return true; } },
-                    { "def", "required arg with no value",  true,  false, (v) => { args.Add("def", v); return true; } },
-                    { "ghi", "optional arg with value",     false, true,  (v) => { args.Add("ghi", v); return true; } },
-                    { "jkl", "required arg with value",     true,  true,  (v) => { args.Add("jkl", v);  return true; } },
+                    { "abc", "optional arg with no value",      false, false, (v) => { args.Add("abc", v);  return true; } },
+                    { "def", "required arg with no value",      true,  false, (v) => { args.Add("def", v); return true; } },
+                    { "ghi", "optional arg with req value",     false, true,  (v) => { args.Add("ghi", v); return true; } },
+                    { "jkl", "required arg with req value",     true,  true,  (v) => { args.Add("jkl", v);  return true; } },
                 },
                 TailInfo = "Filename(s) to process",
                 TailFunc = (v) =>
@@ -212,9 +212,9 @@ namespace NBagOfTricks.Test
                 }
             });
 
-            /////// Basic processing ///////
+            /////// Basic valid processing ///////
             ClearCapture();
-            string testCmd = "-def -jkl some1 -ghi -abc some2 InputFile1.txt InputFile2.doc InputFile3.doc";
+            string testCmd = "-def -jkl some1 -ghi some2 -abc InputFile1.txt InputFile2.doc InputFile3.doc";
             cp.Parse(testCmd);
 
             UT_EQUAL(cp.Errors.Count, 0);
@@ -233,9 +233,9 @@ namespace NBagOfTricks.Test
             UT_TRUE(args.ContainsKey("def"));
             UT_EQUAL(args["def"], "");
             UT_TRUE(args.ContainsKey("ghi"));
-            UT_EQUAL(args["ghi"], "purple");
+            UT_EQUAL(args["ghi"], "some2");
             UT_TRUE(args.ContainsKey("jkl"));
-            UT_EQUAL(args["jkl"], "thing one");
+            UT_EQUAL(args["jkl"], "some1");
         }
     }
 }

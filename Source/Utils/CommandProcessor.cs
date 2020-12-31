@@ -5,6 +5,14 @@ using System.Text;
 using NBagOfTricks.Utils;
 
 
+//TODO argval optional? like help?
+///// <summary>Argument Options.</summary>
+//public enum ArgReq { Req, Opt }
+
+///// <summary>Parameter Options.</summary>
+//public enum ValReq { Req, Opt, None }
+
+
 namespace NBagOfTricks.CommandProcessor
 {
     /// <summary>Main processor.</summary>
@@ -245,7 +253,7 @@ namespace NBagOfTricks.CommandProcessor
                     {
                         if (TailFunc.Invoke(sarg) == false)
                         {
-                            Errors.Add($"Problem with tail:{Name[0]}");
+                            Errors.Add($"Problem with tail:{sarg}");
                         }
                     }
                     else
