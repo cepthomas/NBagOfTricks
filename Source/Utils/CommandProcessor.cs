@@ -5,16 +5,28 @@ using System.Text;
 using NBagOfTricks.Utils;
 
 
-//TODO argval optional? like help?
 ///// <summary>Argument Options.</summary>
 //public enum ArgReq { Req, Opt }
 
 ///// <summary>Parameter Options.</summary>
 //public enum ValReq { Req, Opt, None }
 
+// Tail  ReqReq ReqOpt ReqNone OptReq  OptOpt OptNone
+
 
 namespace NBagOfTricks.CommandProcessor
 {
+    /// <summary>Argument and value options.</summary>
+    public enum ArgOptType
+    {
+        /// <summary>Arg or value is required</summary>
+        Req,
+        /// <summary>Arg or value is optional</summary>
+        Opt,
+        /// <summary>Arg has no value</summary>
+        None
+    }
+
     /// <summary>Main processor.</summary>
     public class Processor
     {
@@ -27,7 +39,6 @@ namespace NBagOfTricks.CommandProcessor
 
         /// <summary>All the commands.</summary>
         public Commands Commands { get; set; } = new Commands();
-//        public List<Command> Commands { get; private set; } = new List<Command>();
 
         /// <summary>Missing args etc.</summary>
         public List<string> Errors { get; private set; } = new List<string>();
@@ -86,7 +97,7 @@ namespace NBagOfTricks.CommandProcessor
         /// <returns></returns>
         public string GetUsage(string scmd = "")
         {
-            StringBuilder sb = new StringBuilder();
+            List<string> lines = new List<string>();
 
             if(scmd != "")
             {
@@ -97,38 +108,31 @@ namespace NBagOfTricks.CommandProcessor
 
                 if (vcmd.Any())
                 {
-                    List<string> argInfo = new List<string>();
-
                     Command cmd = vcmd.First();
-
-                    sb.Append($"Usage: {string.Join(" | ", cmd.NameParts)}");
+                    StringBuilder sb = new StringBuilder($"Usage: {string.Join("|", cmd.NameParts)}");
 
                     foreach (var a in cmd.Args)
                     {
-                        if (a.ArgReq && a.ArgValReq)
-                        {
-                            sb.Append($" -{a.Name} val");
-                        }
-                        else if (a.ArgReq && !a.ArgValReq)
-                        {
-                            sb.Append($" -{a.Name}");
-                        }
-                        else if (!a.ArgReq && a.ArgValReq)
-                        {
-                            sb.Append($" [-{a.Name} val]");
-                        }
-                        else if (!a.ArgReq && !a.ArgValReq)
-                        {
-                            sb.Append($" [-{a.Name}]");
-                        }
+                        string sval = "";
+                        if (a.ValOpt == ArgOptType.Req) sval = $" val";
+                        else if (a.ValOpt == ArgOptType.Opt) sval = $" [val]";
 
-                        argInfo.Add($"  {a.Name}: {a.Description}");
+                        if (a.ArgOpt == ArgOptType.Req) sb.Append($" -{a.Name}{sval}");
+                        else if (a.ArgOpt == ArgOptType.Opt) sb.Append($" [-{a.Name}{sval}]");
+                        else sb.Append("!Invalid arg!");
                     }
 
-                    sb.Append(cmd.TailInfo != "" ? $" {cmd.TailInfo}" : "");
-                    sb.AppendLine("");
+                    // Tail info?
+                    if(cmd.FileFunc != null)
+                    {
+                        sb.Append(" file(s)...");
+                    }
+                    lines.Add(sb.ToString());
 
-                    argInfo.ForEach(ai => sb.AppendLine(ai));
+                    foreach (var a in cmd.Args)
+                    {
+                        lines.Add($"  {a.Name}: {a.Description}");
+                    }
                 }
                 else
                 {
@@ -140,11 +144,11 @@ namespace NBagOfTricks.CommandProcessor
             if (scmd == "")
             {
                 // Show all commands.
-                sb.AppendLine("Commands:");
-                Commands.ForEach(c => sb.AppendLine($"  {string.Join(" | ", c.Name)}: {c.Description}"));
+                lines.Add("Commands:");
+                Commands.ForEach(c => lines.Add($"  {string.Join("|", c.NameParts)}: {c.Description}"));
             }
 
-            return sb.ToString();
+            return string.Join(Environment.NewLine, lines);
         }
     }
 
@@ -165,10 +169,7 @@ namespace NBagOfTricks.CommandProcessor
         public Arguments Args { get; set; } = new Arguments();
 
         /// <summary>Handler for processing stuff at the end, typically file names.</summary>
-        public Func<string, bool> TailFunc { get; set; } = null;
-
-        /// <summary>For usage. Optional.</summary>
-        public string TailInfo { get; set; } = "";
+        public Func<string, bool> FileFunc { get; set; } = null;
         #endregion
 
         #region Properties - filled in by Parser
@@ -209,63 +210,67 @@ namespace NBagOfTricks.CommandProcessor
                         currentArg = null;
                     }
 
-                    if(currentArg != null)
+                    if (currentArg != null)
                     {
-                        if (currentArg.ArgValReq)
+                        string lookAhead = i + 1 < args.Count ? args[i + 1] : "";
+
+                        switch(currentArg.ValOpt)
                         {
-                            i++; // look ahead
-
-                            if (i < args.Count)
-                            {
-                                string val = args[i];
-
-                                if(!val.StartsWith(Processor.ArgumentPrefix))
+                            case ArgOptType.Req:
+                                if (!lookAhead.StartsWith(Processor.ArgumentPrefix))
                                 {
-                                    // Execute any requested func.
-                                    if (currentArg.ArgFunc != null)
+                                    if (currentArg.ArgFunc.Invoke(lookAhead) == false)
                                     {
-                                        if (currentArg.ArgFunc.Invoke(val) == false)
-                                        {
-                                            Errors.Add($"Problem with arg:{currentArg.Name}");
-                                            currentArg = null;
-                                        }
+                                        Errors.Add($"Problem with arg:{currentArg.Name}");
+                                        currentArg = null;
                                     }
                                     else
                                     {
-                                        Errors.Add($"Missing func for arg:{currentArg.Name}");
-                                        currentArg = null;
+                                        i++; // bump ahead
                                     }
                                 }
                                 else
                                 {
-                                    Errors.Add($"Missing value for arg:{currentArg.Name}");
+                                    Errors.Add($"Missing required value for arg:{currentArg.Name}");
                                     currentArg = null;
                                 }
-                            }
-                            else
-                            {
-                                Errors.Add($"Missing value for arg:{currentArg.Name}");
-                                currentArg = null;
-                            }
-                        }
-                        else
-                        {
-                            // Execute any requested func with no val.
-                            if (currentArg.ArgFunc?.Invoke("") == false)
-                            {
-                                Errors.Add($"Problem with arg:{currentArg.Name}");
-                                currentArg = null;
-                            }
+                                break;
+
+                            case ArgOptType.Opt:
+                                if (!lookAhead.StartsWith(Processor.ArgumentPrefix))
+                                {
+                                    // Valid (maybe) arg val. Execute any requested func.
+                                    if (currentArg.ArgFunc.Invoke(lookAhead) == false)
+                                    {
+                                        Errors.Add($"Problem with arg:{currentArg.Name}");
+                                        currentArg = null;
+                                    }
+                                    else
+                                    {
+                                        i++; // bump ahead
+                                    }
+                                }
+                                // else ignore
+                                break;
+
+                            case ArgOptType.None:
+                                // Execute any requested func with no val.
+                                if (currentArg.ArgFunc.Invoke("") == false)
+                                {
+                                    Errors.Add($"Problem with arg:{currentArg.Name}");
+                                    currentArg = null;
+                                }
+                                break;
                         }
                     }
                 }
-                else // it's a file or other thing
+                else // it's a file or extra thing
                 {
-                    if (TailFunc != null)
+                    if(FileFunc != null)
                     {
-                        if (TailFunc.Invoke(sarg) == false)
+                        if (FileFunc.Invoke(sarg) == false)
                         {
-                            Errors.Add($"Problem with tail:{sarg}");
+                            Errors.Add($"Problem with:{sarg}");
                         }
                     }
                     else
@@ -278,7 +283,7 @@ namespace NBagOfTricks.CommandProcessor
             // Look for missing required args.
             foreach (Argument ca in Args)
             {
-                if (ca.ArgReq && !ca.Valid)
+                if (ca.ArgOpt == ArgOptType.Req && !ca.Valid)
                 {
                     Errors.Add($"Missing arg:{ca.Name}");
                 }
@@ -296,11 +301,11 @@ namespace NBagOfTricks.CommandProcessor
         /// <summary>For usage.</summary>
         public string Description { get; internal set; } = null;
 
-        /// <summary>Argument requirement.</summary>
-        public bool ArgReq { get; internal set; } = false;
+        /// <summary>Argument options.</summary>
+        public ArgOptType ArgOpt { get; internal set; } = ArgOptType.None;
 
-        /// <summary>Value requirement.</summary>
-        public bool ArgValReq { get; internal set; } = false;
+        /// <summary>Value options.</summary>
+        public ArgOptType ValOpt { get; internal set; } = ArgOptType.None;
 
         /// <summary>How to process the arg. Can include validation - returns true/false.</summary>
         public Func<string, bool> ArgFunc { get; internal set; } = null;
@@ -315,31 +320,34 @@ namespace NBagOfTricks.CommandProcessor
     /// <summary>Specialized container. Has Add() to support initialization.</summary>
     public class Commands : List<Command>
     {
-        public void Add(string name, string desc, Arguments args = null)
+        public void Add(string name, string desc, Arguments args, Func<string, bool> func = null)
         {
             var cmd = new Command()
             {
                 Name = name,
                 Description = desc,
-                Args = args
+                Args = args,
+                FileFunc = func
             };
             cmd.NameParts = name.SplitQuotedString();
+            Add(cmd);
         }
     }
 
     /// <summary>Specialized container. Has Add() to support initialization.</summary>
     public class Arguments : List<Argument>
     {
-        public void Add(string name, string desc, bool areq, bool avreq, Func<string, bool> func = null)
+        public void Add(string name, string desc, ArgOptType argopt, ArgOptType valopt, Func<string, bool> func = null)
         {
-            Add(new Argument()
+            var arg = new Argument()
             {
                 Name = name,
                 Description = desc,
-                ArgReq = areq,
-                ArgValReq = avreq,
+                ArgOpt = argopt,
+                ValOpt = valopt,
                 ArgFunc = func
-            });
+            };
+            Add(arg);
         }
     }
 }
