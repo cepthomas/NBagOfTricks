@@ -157,9 +157,9 @@ namespace NBagOfTricks.Test
             };
 
             /////// Basic processing ///////
-            string testCmd = "cmderrors -unexpctedarg -jkl2 -abc2 xtra -ghi2 some1";
+            string testCmd = "my.exe cmderrors -unexpctedarg -jkl2 -abc2 xtra -ghi2 some1";
 
-            UT_FALSE(cp.Parse(testCmd));
+            UT_FALSE(cp.Parse(testCmd, true));
             UT_EQUAL(cp.CommandName, "cmderrors");
 
             UT_EQUAL(cp.Errors.Count, 6);

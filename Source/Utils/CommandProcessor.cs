@@ -5,40 +5,23 @@ using System.Text;
 using NBagOfTricks.Utils;
 
 
-///// <summary>Argument Options.</summary>
-//public enum ArgReq { Req, Opt }
-
-///// <summary>Parameter Options.</summary>
-//public enum ValReq { Req, Opt, None }
-
-// Tail  ReqReq ReqOpt ReqNone OptReq  OptOpt OptNone
-
-
 namespace NBagOfTricks.CommandProcessor
 {
-    /// <summary>Argument and value options.</summary>
-    public enum ArgOptType
-    {
-        /// <summary>Arg or value is required</summary>
-        Req,
-        /// <summary>Arg or value is optional</summary>
-        Opt,
-        /// <summary>Arg has no value</summary>
-        None
-    }
+    /// <summary>Argument and value options: None, required, optional.</summary>
+    public enum ArgOptType { Req, Opt, None }
 
     /// <summary>Main processor.</summary>
     public class Processor
     {
         #region Properties
-        /// <summary>Denotes the start of an argument.</summary>
+        /// <summary>Denotes the start of an argument name.</summary>
         public static string ArgumentPrefix { get; set; } = "-";
-
-        /// <summary>Selected command name.</summary>
-        public string CommandName { get; private set; } = "";
 
         /// <summary>All the commands.</summary>
         public Commands Commands { get; set; } = new Commands();
+
+        /// <summary>Selected command name.</summary>
+        public string CommandName { get; private set; } = "";
 
         /// <summary>Missing args etc.</summary>
         public List<string> Errors { get; private set; } = new List<string>();
@@ -48,13 +31,18 @@ namespace NBagOfTricks.CommandProcessor
         /// Parse the cmd string using our definitions.
         /// </summary>
         /// <param name="cmdString">String to parse.</param>
+        /// <param name="skipFirst">Ignore first string, usually the exe name.</param>
         /// <returns>The main command name or empty if failed.</returns>
-        public bool Parse(string cmdString)
+        public bool Parse(string cmdString, bool skipFirst = false)
         {
             Errors.Clear();
             Commands.ForEach(c => c.Errors.Clear());
 
             List<string> parts = cmdString.SplitQuotedString();
+            if(parts.Count > 0 && skipFirst)
+            {
+                parts.RemoveAt(0);
+            }
 
             if (parts.Count > 0)
             {
@@ -99,51 +87,42 @@ namespace NBagOfTricks.CommandProcessor
         {
             List<string> lines = new List<string>();
 
-            if(scmd != "")
+            // Find the cmd in our list.
+            var vcmd = from c in Commands
+                        where string.IsNullOrEmpty(c.Name) || c.NameParts.Contains(scmd)
+                        select c;
+
+            if (vcmd.Any())
             {
-                // Find the cmd in our list.
-                var vcmd = from c in Commands
-                           where c.NameParts.Contains(scmd)
-                           select c;
+                Command cmd = vcmd.First();
+                StringBuilder sb = new StringBuilder($"Usage: {string.Join("|", cmd.NameParts)}");
 
-                if (vcmd.Any())
+                foreach (var a in cmd.Args)
                 {
-                    Command cmd = vcmd.First();
-                    StringBuilder sb = new StringBuilder($"Usage: {string.Join("|", cmd.NameParts)}");
+                    string sval = "";
+                    if (a.ValOpt == ArgOptType.Req) sval = $" val";
+                    else if (a.ValOpt == ArgOptType.Opt) sval = $" [val]";
 
-                    foreach (var a in cmd.Args)
-                    {
-                        string sval = "";
-                        if (a.ValOpt == ArgOptType.Req) sval = $" val";
-                        else if (a.ValOpt == ArgOptType.Opt) sval = $" [val]";
-
-                        if (a.ArgOpt == ArgOptType.Req) sb.Append($" -{a.Name}{sval}");
-                        else if (a.ArgOpt == ArgOptType.Opt) sb.Append($" [-{a.Name}{sval}]");
-                        else sb.Append("!Invalid arg!");
-                    }
-
-                    // Tail info?
-                    if(cmd.FileFunc != null)
-                    {
-                        sb.Append(" file(s)...");
-                    }
-                    lines.Add(sb.ToString());
-
-                    foreach (var a in cmd.Args)
-                    {
-                        lines.Add($"  {a.Name}: {a.Description}");
-                    }
+                    if (a.ArgOpt == ArgOptType.Req) sb.Append($" -{a.Name}{sval}");
+                    else if (a.ArgOpt == ArgOptType.Opt) sb.Append($" [-{a.Name}{sval}]");
+                    else sb.Append("!Invalid arg!");
                 }
-                else
+
+                // Tail info?
+                if(cmd.FileFunc != null)
                 {
-                    // NG - drop through.
-                    scmd = "";
+                    sb.Append(" file(s)...");
+                }
+                lines.Add(sb.ToString());
+
+                foreach (var a in cmd.Args)
+                {
+                    lines.Add($"  {a.Name}: {a.Description}");
                 }
             }
-
-            if (scmd == "")
+            else
             {
-                // Show all commands.
+                // NG - Show all commands.
                 lines.Add("Commands:");
                 Commands.ForEach(c => lines.Add($"  {string.Join("|", c.NameParts)}: {c.Description}"));
             }
