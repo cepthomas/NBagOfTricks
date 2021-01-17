@@ -5,7 +5,7 @@ Targets .NET Framework 4.7.2. No dependencies on third party components.
 
 Probably I should make this into a nuget package at some point.
 
-![logo](https://github.com/cepthomas/NBagOfTricks/blob/master/felix.jpg)
+![logo](felix.jpg)
 
 # NStateMachine
 - Semi-hierarchical state machine for .NET.
@@ -45,6 +45,3 @@ Probably I should make this into a nuget package at some point.
 - MiscUtils: Things that don't fit anywhere else.
 - StringUtils: Mostly extensions.
 - Dumper: Writes object tree contents.
-
-# License
-https://github.com/cepthomas/NBagOfTricks/blob/master/LICENSE
