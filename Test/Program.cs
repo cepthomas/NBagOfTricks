@@ -12,15 +12,14 @@ namespace NBagOfTricks.Test
         static void Main(string[] args)
         {
             ///// Use pnut for automated lib tests.
-            //TestRunner runner = new TestRunner(OutputFormat.Readable);
-            //var cases = new[] { "CMD" };
-            ////var cases = new[] { "UTILS", "PNUT", "SM", "CMD" };
-            //runner.RunSuites(cases);
-            //File.WriteAllLines("test.txt", runner.Context.OutputLines);
+            TestRunner runner = new TestRunner(OutputFormat.Readable);
+            var cases = new[] { "UTILS", "PNUT", "CMD" };
+            runner.RunSuites(cases);
+            File.WriteAllLines("test.txt", runner.Context.OutputLines);
 
             ///// Use test host for debugging UI components.
-            TestHost w = new TestHost();
-            w.ShowDialog();
+            //TestHost w = new TestHost();
+            //w.ShowDialog();
         }
     }
 }

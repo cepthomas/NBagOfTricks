@@ -55,7 +55,6 @@
     </Compile>
     <Compile Include="Test_CMD.cs" />
     <Compile Include="Test_PNUT.cs" />
-    <Compile Include="Test_SM.cs" />
     <Compile Include="Test_UTILS.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -7,11 +7,6 @@ Probably I should make this into a nuget package at some point.
 
 ![logo](felix.jpg)
 
-# NStateMachine
-- Semi-hierarchical state machine for .NET.
-- Generates diagrams via dot.
-- See [test suite](https://github.com/cepthomas/NBagOfTricks/blob/master/Test/Test_SM.cs) for an example of usage.
-
 # Components
 - MmTimerEx: A theoretically better multimedia timer with improved accuracy for sub 10 msec period.
 - MultiFileWatcher: Multiple file change watcher.
