@@ -11,7 +11,7 @@ Probably I should make this into a nuget package at some point.
 - MmTimerEx: A theoretically better multimedia timer with improved accuracy for sub 10 msec period.
 - MultiFileWatcher: Multiple file change watcher.
 - TimingAnalyzer: High speed event statistics.
-- Command line arg parser and a companion console application.
+- Command line arg parser.
 
 # UI controls for audio (or other) apps
 - Meter: Linear or log.

@@ -76,18 +76,29 @@ namespace NBagOfTricks.UI
 
         #region Public functions
         /// <summary>
-        /// 
+        /// Populate with data.
         /// </summary>
         /// <param name="vals"></param>
         /// <param name="max"></param>
         public void Init(float[] vals, float max)
         {
-            Dump(vals, "raw.csv");
+            //Dump(vals, "raw.csv");
             _rawVals = vals;
             _rawMax = max;
 
             Rescale();
-            Dump(_buff, "buff.csv");
+            //Dump(_buff, "buff.csv");
+            Invalidate();
+        }
+
+        /// <summary>
+        /// Hard reset.
+        /// </summary>
+        public void Reset()
+        {
+            _rawVals = null;
+            _buff = null;
+            _rawMax = 0;
             Invalidate();
         }
         #endregion
@@ -161,36 +172,6 @@ namespace NBagOfTricks.UI
                         r++;
                     }
                     _buff[i] = (float)max;
-
-                    //// Find the absolute largest value in the bin.
-                    //double max = 0;
-                    //for (int d = 0; d < smplPerPixel; d++)
-                    //{
-                    //    max = Math.Max(max, Math.Abs(_rawVals[r]));
-                    //    r++;
-                    //}
-                    //_buff[i] = (float)max;
-                    ////double y = max;
-                    ////// Limits?
-                    ////y = Math.Min(y, _rawMax);
-                    ////y = Math.Max(y, -_rawMax);
-                    ////_buff[i] = (float)y;
-
-                    //// Find the average value in the bin.
-                    //double val = 0;
-                    //for (int d = 0; d < smplPerPixel; d++)
-                    //{
-                    //    val += _rawVals[r];
-                    //    r++;
-                    //}
-                    //_buff[i] = (float)val / smplPerPixel;
-
-                    //// Find the median value in the bin.
-                    //for (int d = 0; d < smplPerPixel; d++)
-                    //{
-                    //    r++;
-                    //}
-                    //_buff[i] = _rawVals[r - smplPerPixel / 2];
                 }
             }
         }
