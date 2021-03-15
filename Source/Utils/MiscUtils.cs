@@ -174,6 +174,63 @@ namespace NBagOfTricks.Utils
         }
         #endregion
 
+        #region File utils
+        /// <summary>
+        /// Reports non-ascii characters in a file. UTF-8 only.
+        /// </summary>
+        /// <param name="fn"></param>
+        /// <returns></returns>
+        public static List<string> SniffBin(string fn)
+        {
+            List<string> res = new List<string>();
+
+            using (var fo = File.OpenRead(fn))
+            {
+                int i = 0;
+                int row = 1;
+                int col = 1;
+                bool done = false;
+
+                while (!done)
+                {
+                    int b = fo.ReadByte();
+
+                    switch (b)
+                    {
+                        case -1:
+                            done = true;
+                            break;
+
+                        case '\n':
+                            // Ignore ok binaries
+                            row++;
+                            col = 1;
+                            break;
+
+                        case '\r':
+                        case '\t':
+                            // Ignore ok binaries
+                            break;
+
+                        default:
+                            //‭ Everything else is binary.
+                            if (b < 32 || b > 126) //32  SPACE  126  ~
+                            {
+                                //done = true;
+                                res.Add($"row:{row} col:{col} val:{i}({i:X}) b:{b:X}");
+                            }
+                            col++;
+                            break;
+                    }
+
+                    i++;
+                }
+            }
+
+            return res;
+        }
+        #endregion
+
         #region Misc extensions
         /// <summary>Rudimentary C# source code formatter to make generated files somewhat readable.</summary>
         /// <param name="src">Lines to prettify.</param>

@@ -13,7 +13,7 @@ using NBagOfTricks.Utils;
 
 namespace NBagOfTricks.Test
 {
-    public class UTILS_ONE : TestSuite
+    public class UTILS_EXTENSIONS : TestSuite
     {
         public override void RunSuite()
         {
@@ -41,6 +41,21 @@ namespace NBagOfTricks.Test
             UT_EQUAL(splits[0], "aaa ttt uuu");
             UT_EQUAL(splits[1], "84ss");
             UT_EQUAL(splits[2], "  dangling quote  ");
+        }
+    }
+
+    public class UTILS_SNIFF : TestSuite
+    {
+        public override void RunSuite()
+        {
+            UT_INFO("Tests file sniffer.");
+
+            string fn = @".\Files\nonascii.txt";
+
+            var res = MiscUtils.SniffBin(fn);
+
+            UT_EQUAL(res.Count, 1);
+            UT_EQUAL(res[0], "row:3 col:8 val:11(B) b:0");
         }
     }
 }
