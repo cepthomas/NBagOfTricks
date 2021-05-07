@@ -31,7 +31,13 @@ Probably I should make this into a nuget package at some point.
 - WaitCursor: Easy to use cursor.
 
 # PNUT
-- A super lightweight [unit test framework for C#](https://github.com/cepthomas/NBagOfTricks/blob/master/Source/PNUT/PNUT.md).
+A super lightweight [unit test framework for C#](https://github.com/cepthomas/NBagOfTricks/blob/master/Source/PNUT/PNUT.md).
+
+# Parser
+A simple roll your own parser. I have always meant to build one of these for odd jobs.
+Code Project informed me about [Easier Hand Rolled Parsers](https://www.codeproject.com/Articles/1280230/Easier-Hand-Rolled-Parsers)
+so I digested, then regurgitated, rinsed and repeated. The basic structure and concepts are hers (CPOL) but most of it
+is pretty much mine.
 
 # Various utilities and extensions
 - KeyUtils: Keyboard input.

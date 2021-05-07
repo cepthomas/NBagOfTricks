@@ -156,6 +156,17 @@ namespace NBagOfTricks.Utils
         }
 
         /// <summary>
+        /// Because .NET framework doesn't have this.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static bool Contains(this string s, char c)
+        {
+            return s.IndexOf(c) != -1;
+        }
+
+        /// <summary>
         /// Update the MRU.
         /// </summary>
         /// <param name="mruList">The MRU.</param>

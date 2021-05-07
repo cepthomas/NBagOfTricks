@@ -111,6 +111,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\WaitCursor.cs" />
+    <Compile Include="Parser\ParserCore.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

@@ -56,9 +56,13 @@
     <Compile Include="Test_CMD.cs" />
     <Compile Include="Test_PNUT.cs" />
     <Compile Include="Test_UTILS.cs" />
+    <Compile Include="Test_PARSER.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="Files\test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Source\Source.csproj">
