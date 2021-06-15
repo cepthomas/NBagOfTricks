@@ -41,6 +41,26 @@ namespace NBagOfTricks.UI
         }
     }
 
+    /// <summary>Toolstrip checkbox button colorizer.</summary>
+    class TsRenderer : ToolStripProfessionalRenderer
+    {
+        protected override void OnRenderButtonBackground(ToolStripItemRenderEventArgs e)
+        {
+            if (e.Item is ToolStripButton btn && btn.CheckOnClick)
+            {
+                using (var brush = new SolidBrush(btn.Checked ? Color.LightSalmon : SystemColors.Control))
+                {
+                    var bounds = new Rectangle(Point.Empty, e.Item.Size);
+                    e.Graphics.FillRectangle(brush, bounds);
+                }
+        }
+            else
+            {
+                base.OnRenderButtonBackground(e);
+            }
+        }
+    }
+
     /// <summary>Generic property editor for lists of strings.</summary>
     public class ListEditor : UITypeEditor
     {

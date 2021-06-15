@@ -12,7 +12,6 @@ namespace NBagOfTricks.UI
     /// </summary>
     public static class GraphicsUtils
     {
-        #region Image processing
         /// <summary>
         /// Resize the image to the specified width and height.
         /// </summary>
@@ -71,9 +70,7 @@ namespace NBagOfTricks.UI
 
             return newbmp;
         }
-        #endregion
 
-        #region Colors
         /// <summary>
         /// Helper to get next contrast color in the sequence.
         /// From http://colorbrewer2.org qualitative.
@@ -114,6 +111,5 @@ namespace NBagOfTricks.UI
                 (one.G + two.G) >> 1,
                 (one.B + two.B) >> 1);
         }
-        #endregion
     }
 }

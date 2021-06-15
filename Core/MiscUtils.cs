@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.ComponentModel;
-
+using System.Diagnostics;
 
 namespace NBagOfTricks
 {
@@ -69,93 +69,7 @@ namespace NBagOfTricks
         }
         #endregion
 
-        #region File utils
-        /// <summary>
-        /// Reports non-ascii characters in a file. UTF-8 only.
-        /// </summary>
-        /// <param name="fn"></param>
-        /// <returns></returns>
-        public static List<string> SniffBin(string fn)
-        {
-            List<string> res = new List<string>();
-
-            using (var fo = File.OpenRead(fn))
-            {
-                int i = 0;
-                int row = 1;
-                int col = 1;
-                bool done = false;
-
-                while (!done)
-                {
-                    int b = fo.ReadByte();
-
-                    switch (b)
-                    {
-                        case -1:
-                            done = true;
-                            break;
-
-                        case '\n':
-                            // Ignore ok binaries
-                            row++;
-                            col = 1;
-                            break;
-
-                        case '\r':
-                        case '\t':
-                            // Ignore ok binaries
-                            break;
-
-                        default:
-                            //‭ Everything else is binary.
-                            if (b < 32 || b > 126) //32  SPACE  126  ~
-                            {
-                                //done = true;
-                                res.Add($"row:{row} col:{col} val:{i}({i:X}) b:{b:X}");
-                            }
-                            col++;
-                            break;
-                    }
-
-                    i++;
-                }
-            }
-
-            return res;
-        }
-        #endregion
-
         #region Misc extensions
-        /// <summary>Rudimentary C# source code formatter to make generated files somewhat readable.</summary>
-        /// <param name="src">Lines to prettify.</param>
-        /// <returns>Formatted lines.</returns>
-        public static List<string> FormatSourceCode(List<string> src)
-        {
-            List<string> fmt = new List<string>();
-            int indent = 0;
-
-            src.ForEach(s =>
-            {
-                if (s.StartsWith("{") && !s.Contains("}"))
-                {
-                    fmt.Add(new string(' ', indent * 4) + s);
-                    indent++;
-                }
-                else if (s.StartsWith("}") && indent > 0)
-                {
-                    indent--;
-                    fmt.Add(new string(' ', indent * 4) + s);
-                }
-                else
-                {
-                    fmt.Add(new string(' ', indent * 4) + s);
-                }
-            });
-
-            return fmt;
-        }
-
         /// <summary>
         /// Perform a blind deep copy of an object. The class must be marked as [Serializable] in order for this to work.
         /// There are many ways to do this: http://stackoverflow.com/questions/129389/how-do-you-do-a-deep-copy-an-object-in-net-c-specifically/11308879
@@ -228,11 +142,10 @@ namespace NBagOfTricks
         /// <param name="action">The action to execute on each element</param>
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (action == null) throw new ArgumentNullException(nameof(action));
-
             foreach (var element in source)
+            {
                 action(element);
+            }
         }
 
         /// <summary>
@@ -246,12 +159,11 @@ namespace NBagOfTricks
 
         public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (action == null) throw new ArgumentNullException(nameof(action));
-
             var index = 0;
             foreach (var element in source)
+            {
                 action(element, index++);
+            }
         }
         #endregion
     }

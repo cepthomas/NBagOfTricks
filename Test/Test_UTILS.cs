@@ -51,7 +51,7 @@ namespace NBagOfTricks.Test
 
             string fn = @".\Files\nonascii.txt";
 
-            var res = MiscUtils.SniffBin(fn);
+            var res = Tools.SniffBin(fn);
 
             UT_EQUAL(res.Count, 1);
             UT_EQUAL(res[0], "row:3 col:8 val:11(B) b:0");

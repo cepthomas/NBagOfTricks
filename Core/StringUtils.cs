@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Text;
 
 namespace NBagOfTricks
 {
@@ -111,6 +111,45 @@ namespace NBagOfTricks
         }
 
         /// <summary>
+        /// Split by any of the delims but keep the delim.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="delims"></param>
+        /// <returns></returns>
+        public static List<string> SplitKeepDelims(string s, string delims)
+        {
+            var parts = new List<string>();
+            StringBuilder acc = new StringBuilder();
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (!char.IsWhiteSpace(s[i])) // skip ws
+                {
+                    if (delims.Contains(s[i])) // at delim
+                    {
+                        if (acc.Length > 0)
+                        {
+                            parts.Add(acc.ToString());
+                            acc.Clear();
+                        }
+                        parts.Add(s[i].ToString());
+                    }
+                    else
+                    {
+                        acc.Append(s[i]);
+                    }
+                }
+            }
+
+            if (acc.Length > 0) // straggler?
+            {
+                parts.Add(acc.ToString());
+            }
+
+            return parts;
+        }
+
+        /// <summary>
         /// Specialized splitter, mainly for cmd line args.
         /// Input: 12345 "I HAVE SPACES" aaa bbb  "me too" ccc ddd "  and the last  "
         /// Output: 12345,I HAVE SPACES,aaa,bbb,me too,ccc,ddd,and the last
@@ -191,6 +230,35 @@ namespace NBagOfTricks
             {
                 mruList.RemoveAt(mruList.Count - 1);
             }
+        }
+
+        /// <summary>
+        /// Gets the format specifier based upon the range of data.
+        /// </summary>
+        /// <param name="range">Data range</param>
+        /// <returns>Format specifier</returns>
+        public static string FormatSpecifier(float range)
+        {
+            string format = "";
+
+            if (range >= 100)
+            {
+                format = "0;-0;0";
+            }
+            else if (range < 100 && range >= 10)
+            {
+                format = "0.0;-0.0;0";
+            }
+            else if (range < 10 && range >= 1)
+            {
+                format = "0.00;-0.00;0";
+            }
+            else if (range < 1)
+            {
+                format = "0.000;-0.000;0";
+            }
+
+            return format;
         }
     }
 }
