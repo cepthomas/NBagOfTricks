@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace NBagOfTricks.Core
+namespace NBagOfTricks
 {
    /// <summary>
    /// Misc string extension methods.

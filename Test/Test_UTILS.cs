@@ -7,8 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using NBagOfTricks.PNUT;
-using NBagOfTricks.Core;
+using NBagOfTricks;
 
 
 namespace NBagOfTricks.Test

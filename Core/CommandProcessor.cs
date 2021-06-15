@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace NBagOfTricks.Core
+namespace NBagOfTricks
 {
     /// <summary>Argument and value options: None, required, optional.</summary>
     public enum ArgOptType { Req, Opt, None }

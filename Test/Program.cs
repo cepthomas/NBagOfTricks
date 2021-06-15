@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using NBagOfTricks.UI;
-using NBagOfTricks.PNUT;
+using NBagOfTricks;
+
 
 namespace NBagOfTricks.Test
 {

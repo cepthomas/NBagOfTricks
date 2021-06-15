@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.ComponentModel;
 
 
-namespace NBagOfTricks.Core
+namespace NBagOfTricks
 {
     /// <summary>
     /// Static general utility functions.

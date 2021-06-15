@@ -8,8 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
-using NBagOfTricks.PNUT;
-using NBagOfTricks.Core;
+using NBagOfTricks;
 using NBagOfTricks.UI;
 
 

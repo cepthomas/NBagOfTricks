@@ -2,8 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.IO;
-using NBagOfTricks.PNUT;
-using NBagOfTricks.Core;
+using NBagOfTricks;
 
 
 namespace NBagOfTricks.Test

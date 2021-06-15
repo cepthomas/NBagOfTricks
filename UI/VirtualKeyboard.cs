@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
-using NBagOfTricks.Core;
+using NBagOfTricks;
 
 
 namespace NBagOfTricks.UI

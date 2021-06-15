@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NBagOfTricks.Core")]
+[assembly: AssemblyTitle("NBagOfTricks")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tyrell Corp")]
-[assembly: AssemblyProduct("NBagOfTricks.Core")]
+[assembly: AssemblyProduct("NBagOfTricks")]
 [assembly: AssemblyCopyright("MIT License")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

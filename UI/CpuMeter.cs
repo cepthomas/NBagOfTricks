@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Linq;
-using NBagOfTricks.Core;
+using NBagOfTricks;
 
 
 namespace NBagOfTricks.UI
