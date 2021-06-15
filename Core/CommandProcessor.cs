@@ -2,10 +2,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
-using NBagOfTricks.Utils;
 
 
-namespace NBagOfTricks.CommandProcessor
+namespace NBagOfTricks.Core
 {
     /// <summary>Argument and value options: None, required, optional.</summary>
     public enum ArgOptType { Req, Opt, None }

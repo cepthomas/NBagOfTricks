@@ -6,11 +6,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 using NBagOfTricks.PNUT;
-using NBagOfTricks.Utils;
+using NBagOfTricks.Core;
 using NBagOfTricks.UI;
-using System.IO;
+
 
 namespace NBagOfTricks.Test
 {

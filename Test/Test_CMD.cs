@@ -3,7 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.IO;
 using NBagOfTricks.PNUT;
-using NBagOfTricks.CommandProcessor;
+using NBagOfTricks.Core;
 
 
 namespace NBagOfTricks.Test

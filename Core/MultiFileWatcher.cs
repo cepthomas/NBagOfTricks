@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 
-namespace NBagOfTricks.Utils
+namespace NBagOfTricks.Core
 {
     /// <summary>
     /// A watcher for multiple file changes. The underlying FileSystemWatcher is a bit sensitive to OS file system ops.

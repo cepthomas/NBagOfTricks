@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace NBagOfTricks.Utils
+namespace NBagOfTricks.Core
 {
     /// <summary>
     /// Static math utility functions.

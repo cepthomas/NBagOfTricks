@@ -4,7 +4,7 @@ using System.Linq;
 using System.Diagnostics;
 
 
-namespace NBagOfTricks.Utils
+namespace NBagOfTricks.Core
 {
     /// <summary>
     /// Diagnostics for timing measurement.

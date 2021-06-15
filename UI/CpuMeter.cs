@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
-using NBagOfTricks.Utils;
+using System.Linq;
+using NBagOfTricks.Core;
 
 
 namespace NBagOfTricks.UI

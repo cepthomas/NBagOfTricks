@@ -7,8 +7,8 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using NBagOfTricks.PNUT;
-using NBagOfTricks.Utils;
-using NBagOfTricks.Parser;
+using NBagOfTricks.UI;
+using NBagOfTricks.Core;
 
 
 namespace NBagOfTricks.Test

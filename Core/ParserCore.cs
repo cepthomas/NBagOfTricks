@@ -6,10 +6,9 @@ using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
-using NBagOfTricks.Utils;
 
 
-namespace NBagOfTricks.Parser
+namespace NBagOfTricks.Core
 {
     public class ParserCore
     {
