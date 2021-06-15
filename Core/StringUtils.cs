@@ -116,7 +116,7 @@ namespace NBagOfTricks
         /// <param name="s"></param>
         /// <param name="delims"></param>
         /// <returns></returns>
-        public static List<string> SplitKeepDelims(string s, string delims)
+        public static List<string> SplitKeepDelims(this string s, string delims)
         {
             var parts = new List<string>();
             StringBuilder acc = new StringBuilder();

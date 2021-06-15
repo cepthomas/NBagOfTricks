@@ -42,7 +42,7 @@ namespace NBagOfTricks.UI
     }
 
     /// <summary>Toolstrip checkbox button colorizer.</summary>
-    class TsRenderer : ToolStripProfessionalRenderer
+    public class TsRenderer : ToolStripProfessionalRenderer
     {
         protected override void OnRenderButtonBackground(ToolStripItemRenderEventArgs e)
         {
