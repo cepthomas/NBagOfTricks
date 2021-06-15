@@ -104,10 +104,10 @@ namespace NBagOfTricks.UI
         {
             if (disposing)
             {
-                _pen.Dispose();
-                _cpuPerf.Dispose();
-                _format.Dispose();
-                _processesPerf.ForEach(p => p.Dispose());
+                _pen?.Dispose();
+                _cpuPerf?.Dispose();
+                _format?.Dispose();
+                _processesPerf.ForEach(p => p?.Dispose());
             }
             base.Dispose(disposing);
         }
@@ -212,7 +212,7 @@ namespace NBagOfTricks.UI
         }
 
         /// <summary>
-        /// Defer init as they are slow processes. TODO Init on another thread?
+        /// Defer init as they are slow processes.
         /// </summary>
         void InitPerf()
         {

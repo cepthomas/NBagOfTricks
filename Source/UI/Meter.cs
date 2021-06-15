@@ -8,10 +8,10 @@ using NBagOfTricks.Utils;
 namespace NBagOfTricks.UI
 {
     /// <summary>Display types.</summary>
-    public enum MeterType { Linear, Log, ContinuousLine, ContinuousDots }
+    public enum MeterType { Linear, Log, ContinuousLine, ContinuousDots }  // TODO Add damped/vu, peak/hold
 
     /// <summary>
-    /// Implements a rudimentary volume meter. TODO Add damping/vu and/or peak/hold?
+    /// Implements a rudimentary volume meter.
     /// </summary>
     public partial class Meter : UserControl
     {
