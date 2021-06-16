@@ -142,9 +142,12 @@ namespace NBagOfTricks
         /// <param name="action">The action to execute on each element</param>
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
-            foreach (var element in source)
+            if(source != null)
             {
-                action(element);
+                foreach (var element in source)
+                {
+                    action(element);
+                }
             }
         }
 

@@ -107,7 +107,7 @@ namespace NBagOfTricks.UI
                 _pen?.Dispose();
                 _cpuPerf?.Dispose();
                 _format?.Dispose();
-                _processesPerf.ForEach(p => p?.Dispose());
+                _processesPerf?.ForEach(p => p?.Dispose());
             }
             base.Dispose(disposing);
         }
