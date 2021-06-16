@@ -48,6 +48,7 @@
             this.pot1 = new NBagOfTricks.UI.Pot();
             this.slider1 = new NBagOfTricks.UI.Slider();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.btnMarkdown = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -68,6 +69,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.btnMarkdown);
             this.splitContainer1.Panel2.Controls.Add(this.chkRunBars);
             this.splitContainer1.Panel2.Controls.Add(this.barBar);
             this.splitContainer1.Panel2.Controls.Add(this.clickGrid1);
@@ -310,6 +312,16 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
+            // btnMarkdown
+            // 
+            this.btnMarkdown.Location = new System.Drawing.Point(546, 27);
+            this.btnMarkdown.Name = "btnMarkdown";
+            this.btnMarkdown.Size = new System.Drawing.Size(42, 36);
+            this.btnMarkdown.TabIndex = 17;
+            this.btnMarkdown.Text = "md";
+            this.btnMarkdown.UseVisualStyleBackColor = true;
+            this.btnMarkdown.Click += new System.EventHandler(this.BtnMarkdown_Click);
+            // 
             // TestHost
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -352,5 +364,6 @@
         private UI.ClickGrid clickGrid1;
         private UI.BarBar barBar;
         private System.Windows.Forms.CheckBox chkRunBars;
+        private System.Windows.Forms.Button btnMarkdown;
     }
 }

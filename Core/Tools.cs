@@ -97,20 +97,26 @@ namespace NBagOfTricks
             return res;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public static string MarkdownToHtml(List<string> body, string bgcolor) //TODO font
-        {
-            // Make some markdown.
-            //var mdText = new List<string> { body };
+        // <summary>
+        // Conversion function.
+        // </summary>
 
+        /// <summary>
+        /// Convert list of markdown lines to html.
+        /// </summary>
+        /// <param name="body">The md text.</param>
+        /// <param name="bgcolor">Background color for page.</param>
+        /// <param name="font">Main font-family.</param>
+        /// <param name="show">If true open in browser.</param>
+        /// <returns></returns>
+        public static string MarkdownToHtml(List<string> body, string bgcolor, string font, bool show)
+        {
             // Put it together.
             var htmlText = new List<string>()
             {
                 // Boilerplate
                 $"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
-                $"<style>body {{ background-color: {bgcolor}; font-family: \"Arial\", Helvetica, sans-serif; }}",
+                $"<style>body {{ background-color: {bgcolor}; font-family: {font}; }}",
                 $"</style></head><body>"
             };
 
@@ -118,11 +124,18 @@ namespace NBagOfTricks
             htmlText.AddRange(body);
 
             // Bottom.
-            string ss = $"<!-- Markdeep: --><style class=\"fallback\">body{{visibility:hidden;white-space:pre;font-family:monospace}}</style><script src=\"markdeep.min.js\" charset=\"utf-8\"></script><script src=\"https://casual-effects.com/markdeep/latest/markdeep.min.js\" charset=\"utf-8\"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=\"visible\")</script>";
-            htmlText.Add(ss);
+            htmlText.Add($"<!-- Markdeep: --><style class=\"fallback\">body{{visibility:hidden;white-space:pre;font-family:{font}}}</style><script src=\"markdeep.min.js\" charset=\"utf-8\"></script><script src=\"https://casual-effects.com/markdeep/latest/markdeep.min.js\" charset=\"utf-8\"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=\"visible\")</script>");
             htmlText.Add($"</body></html>");
+            string sret = string.Join(Environment.NewLine, htmlText);
 
-            return string.Join(Environment.NewLine, htmlText);
+            if (show)
+            {
+                string fn = Path.GetTempFileName() + ".html";
+                File.WriteAllText(fn, string.Join(Environment.NewLine, htmlText));
+                new Process { StartInfo = new ProcessStartInfo(fn) { UseShellExecute = true } }.Start();
+            }
+
+            return sret;
         }
     }
 }

@@ -10,7 +10,7 @@ using System.IO;
 using System.Windows.Forms;
 using NBagOfTricks;
 using NBagOfTricks.UI;
-
+using System.Diagnostics;
 
 namespace NBagOfTricks.Test
 {
@@ -195,6 +195,14 @@ namespace NBagOfTricks.Test
         private void TimeBar_CurrentTimeChanged(object sender, EventArgs e)
         {
             //txtInfo.AddLine($"Current time:{timeBar.CurrentTime}");
+        }
+
+        private void BtnMarkdown_Click(object sender, EventArgs e)
+        {
+            // Main help file.
+            var mdText = new List<string>();
+            mdText.AddRange(File.ReadAllLines(@"..\..\..\README.md"));
+            var htmlText = Tools.MarkdownToHtml(mdText, "lightgreen", "helvetica", true); // arial, helvetica, sans-serif
         }
     }
 }
