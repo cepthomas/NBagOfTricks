@@ -16,9 +16,6 @@ Probably I should make this into a nuget package at some point.
 - MultiFileWatcher: Multiple file change watcher.
 - TimingAnalyzer: High speed event statistics.
 - Command line arg parser.
-- Parser: A simple roll your own parser for odd jobs.
-  Inspired by [Easier Hand Rolled Parsers](https://www.codeproject.com/Articles/1280230/Easier-Hand-Rolled-Parsers).
-  The basic structure and concepts are hers (CPOL) but most of it is pretty much mine.
 
 ## Various utilities and extensions
 - MathUtils: Numbers are good.
@@ -28,7 +25,31 @@ Probably I should make this into a nuget package at some point.
 - Dumper: Writes object tree contents.
 
 
-## PNUT
+# UI
+
+## Controls for audio (or other) apps
+- Meter: Linear or log.
+- Pot: Just like on your guitar.
+- Slider: Just like on your mixer.
+- VirtualKeyboard: Piano control based loosely on Leslie Sanford's [Midi Toolkit](https://github.com/tebjan/Sanford.Multimedia.Midi).
+
+## General purpose UI components
+- PropertyGridEx: Added a few features.
+- FilTree: Folder/file tree control with tags/filters and notifications.
+- OptionsEditor: User can select from a list of strings, or add/delete elements.
+- ClickGrid: Essentially a grid array of buttons.
+- TimeBar: Elapsed time control.
+- BarBar: Similar to TimeBar but shows musical bars and beats.
+- CpuMeter: Standalone display control.
+- TextViewer: With colorizing.
+- WaitCursor: Easy to use cursor.
+
+## Various utilities and extensions
+- KeyUtils: Keyboard input.
+- UiUtils: Control helpers, formatters, etc.
+
+
+# PNUT
 Practically Nonexistent Unit Tester
 
 A public version of a super lightweight unit test framework for C#. It has gone through many 
@@ -36,7 +57,7 @@ useful and successful iterations and may as well bring you joy also.
 
 It is based on a [C/C++ version](https://github.com/cepthomas/c-bag-of-tricks) which was inspired by [Quicktest](http://quicktest.sourceforge.net/) from long ago.
 
-### Test Format
+## Test Format
 See the [test suite](https://github.com/cepthomas/NBagOfTricks/blob/master/Test/Test_PNUT.cs) for how to use this.
 
 File look something like this:
@@ -63,7 +84,7 @@ public class PNUT_ONE : TestSuite
 }
 ```
 
-### Output Formats
+## Output Formats
 There are two formats supported.
 
 Readable text For humans. ! indicates a test failure.
@@ -91,30 +112,6 @@ A JUnit style intended for consumption by CI. Not tested yet but looks nice.
     </testsuite>
 </testsuites>
 ```
-
-# UI
-
-## Controls for audio (or other) apps
-- Meter: Linear or log.
-- Pot: Just like on your guitar.
-- Slider: Just like on your mixer.
-- VirtualKeyboard: Piano control based loosely on Leslie Sanford's [Midi Toolkit](https://github.com/tebjan/Sanford.Multimedia.Midi).
-
-## General purpose UI components
-- PropertyGridEx: Added a few features.
-- FilTree: Folder/file tree control with tags/filters and notifications.
-- OptionsEditor: User can select from a list of strings, or add/delete elements.
-- ClickGrid: Essentially a grid array of buttons.
-- TimeBar: Elapsed time control.
-- BarBar: Similar to TimeBar but shows musical bars and beats.
-- CpuMeter: Standalone display control.
-- TextViewer: With colorizing.
-- WaitCursor: Easy to use cursor.
-
-## Various utilities and extensions
-- KeyUtils: Keyboard input.
-- UiUtils: Control helpers, formatters, etc.
-
 
 # License
 https://github.com/cepthomas/NBagOfTricks/blob/master/LICENSE

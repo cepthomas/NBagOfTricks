@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace NBagOfTricks
 {
@@ -25,11 +26,13 @@ namespace NBagOfTricks
         /// <summary>
         /// Get the user app dir.
         /// </summary>
+        /// <param name="appName"></param>
+        /// <param name="company">Optional nest under company name.</param>
         /// <returns></returns>
-        public static string GetAppDataDir(string appName)
+        public static string GetAppDataDir(string appName, string company = "")
         {
             string localdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            return Path.Combine(localdir, appName);
+            return Path.Combine(localdir, company, appName);
         }
 
         /// <summary>

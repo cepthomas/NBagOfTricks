@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NBagOfTricks.Test")]
+[assembly: AssemblyTitle("NBagOfTricks.PNUT")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ephemera")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2d9d04c2-1637-4d29-af9d-63103912eeeb")]
+[assembly: Guid("874f828d-19bc-4d0c-a818-671cce5e528f")]
 
 // Version information for an assembly consists of the following four values:
 //

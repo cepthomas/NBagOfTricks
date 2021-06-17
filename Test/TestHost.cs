@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
+using System.Diagnostics;
 using NBagOfTricks;
 using NBagOfTricks.UI;
-using System.Diagnostics;
 
 namespace NBagOfTricks.Test
 {

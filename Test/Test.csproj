@@ -58,11 +58,10 @@
     <Compile Include="Test_CMD.cs" />
     <Compile Include="Test_PNUT.cs" />
     <Compile Include="Test_UTILS.cs" />
-    <Compile Include="Test_PARSER.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Content Include="Files\test.json">
+    <Content Include="Files\nonascii.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -76,15 +75,15 @@
       <Project>{2175a09a-b2a8-4121-b68c-bf142b07e1f0}</Project>
       <Name>Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PNUT\PNUT.csproj">
+      <Project>{874f828d-19bc-4d0c-a818-671cce5e528f}</Project>
+      <Name>PNUT</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UI\UI.csproj">
       <Project>{b20ea1b9-e8ec-40c1-a1b7-1f48c812b9c9}</Project>
       <Name>UI</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Files\nonascii.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+  
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

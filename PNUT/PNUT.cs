@@ -13,7 +13,7 @@ using System.Diagnostics;
 // The original license is GNU Lesser General Public License OR BSD-style, which allows unrestricted use of the Quicktest code.
 
 
-namespace NBagOfTricks
+namespace NBagOfTricks.PNUT
 {
     /// <summary>
     /// Generate a human readable or junit format output.

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using NBagOfTricks;
+using NBagOfTricks.PNUT;
 
 
 namespace NBagOfTricks.Test
@@ -40,6 +41,20 @@ namespace NBagOfTricks.Test
             UT_EQUAL(splits[0], "aaa ttt uuu");
             UT_EQUAL(splits[1], "84ss");
             UT_EQUAL(splits[2], "  dangling quote  ");
+        }
+    }
+
+    public class UTILS_MISC : TestSuite
+    {
+        public override void RunSuite()
+        {
+            UT_INFO("Tests misc utils.");
+
+            var dir = MiscUtils.GetAppDataDir("Foo");
+            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Local\Foo");
+
+            dir = MiscUtils.GetAppDataDir("Bar", "CCCC");
+            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Local\CCCC\Bar");
         }
     }
 
