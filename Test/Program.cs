@@ -18,9 +18,9 @@ namespace NBagOfTricks.Test
             runner.RunSuites(cases);
             File.WriteAllLines(@"..\..\test_out.txt", runner.Context.OutputLines);
 
-            /// Use test host for debugging UI components.
-            //TestHost w = new TestHost();
-            //w.ShowDialog();
+            // Use test host for debugging UI components.
+            TestHost w = new TestHost();
+            w.ShowDialog();
         }
     }
 }

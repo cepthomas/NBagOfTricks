@@ -20,7 +20,7 @@ namespace NBagOfTricks.Test
             UT_INFO("Tests various util functions.");
 
             string input = "12345 \"I HAVE SPACES\" aaa bbb  \"me too\" ccc ddd \"  and the last  \"";
-            /// Output: 12345,I HAVE SPACES,aaa,bbb,me too,ccc,ddd,and the last
+            // Output: 12345,I HAVE SPACES,aaa,bbb,me too,ccc,ddd,and the last
 
             var splits = input.SplitQuotedString();
 
