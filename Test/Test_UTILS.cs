@@ -57,19 +57,4 @@ namespace NBagOfTricks.Test
             UT_EQUAL(dir, @"C:\Users\cepth\AppData\Local\CCCC\Bar");
         }
     }
-
-    public class UTILS_SNIFF : TestSuite
-    {
-        public override void RunSuite()
-        {
-            UT_INFO("Tests file sniffer.");
-
-            string fn = @".\Files\nonascii.txt";
-
-            var res = Tools.SniffBin(fn);
-
-            UT_EQUAL(res.Count, 1);
-            UT_EQUAL(res[0], "row:3 col:8 val:11(B) b:0");
-        }
-    }
 }

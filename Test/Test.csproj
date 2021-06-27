@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="Test_CMD.cs" />
     <Compile Include="Test_PNUT.cs" />
+    <Compile Include="Test_TOOLS.cs" />
     <Compile Include="Test_UTILS.cs" />
   </ItemGroup>
   <ItemGroup>

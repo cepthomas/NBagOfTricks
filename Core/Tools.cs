@@ -13,7 +13,10 @@ namespace NBagOfTricks
     /// </summary>
     public static class Tools
     {
-        /// <summary>Rudimentary C# source code formatter to make generated files somewhat readable.</summary>
+        /// <summary>
+        /// Rudimentary C# source code formatter to make generated files somewhat readable.
+        /// TODO handle/clean ugly braces.
+        /// </summary>
         /// <param name="src">Lines to prettify.</param>
         /// <returns>Formatted lines.</returns>
         public static List<string> FormatSourceCode(List<string> src)
@@ -46,8 +49,9 @@ namespace NBagOfTricks
         /// Reports non-ascii characters in a file. UTF-8 only.
         /// </summary>
         /// <param name="fn"></param>
+        /// <param name="limit"></param>
         /// <returns></returns>
-        public static List<string> SniffBin(string fn)
+        public static List<string> SniffBin(string fn, int limit = 100)
         {
             List<string> res = new List<string>();
 
@@ -85,21 +89,21 @@ namespace NBagOfTricks
                             {
                                 //done = true;
                                 res.Add($"row:{row} col:{col} val:{i}({i:X}) b:{b:X}");
+                                if (res.Count >= limit)
+                                {
+                                    res.Add($"...... there are more ......");
+                                    done = true;
+                                }
                             }
                             col++;
                             break;
                     }
-
                     i++;
                 }
             }
 
             return res;
         }
-
-        // <summary>
-        // Conversion function.
-        // </summary>
 
         /// <summary>
         /// Convert list of markdown lines to html.
