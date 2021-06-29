@@ -7,18 +7,20 @@ using System.Runtime.InteropServices;
 namespace NBagOfTricks
 {
     /// <summary>
-    /// The win multimedia timer is erratic. This class attempts to reduce the error by running at one msec
-    /// and managing the requested periods manually. This is accomplished by using a Stopwatch to actually
-    /// measure the elapsed time rather than trust the mm timer period. It seems to be an improvement.
+    /// The win multimedia timer is erratic. Using a one msec tick (fastest), the measured interval is +-100 us.
+    /// Also note that it takes about 10 ticks to settle down after start.
+    /// This component attempts to reduce the error by running at one msec and managing the requested periods manually.
+    /// This is accomplished by using a Stopwatch to actually measure the elapsed time rather than trust the mm timer period.
+    /// It seems to be an improvement.
     /// </summary>
-    public class MmTimerEx
+    public class MmTimerEx : IDisposable
     {
         class TimerInstance
         {
             /// <summary>The time between events in msec.</summary>
             public int period = 10;
 
-            /// <summary>Accumulated msec.</summary>
+            /// <summary>Actual accumulated msec.</summary>
             public double current = 0.0;
         }
 
@@ -55,9 +57,7 @@ namespace NBagOfTricks
         #endregion
 
         #region Internal support for multimedia timer
-        /// <summary>
-        /// Multimedia timer identifier.
-        /// </summary>
+        /// <summary>Multimedia timer identifier. -1 is not inited, 0 is fail to init, other is valid id.</summary>
         int _timerID = -1;
 
         /// <summary>
@@ -122,43 +122,38 @@ namespace NBagOfTricks
         }
 
         /// <summary>
-        /// Destructor.
-        /// </summary>
-        ~MmTimerEx()
-        {
-            if (_running)
-            {
-                Stop();
-            }
-        }
-
-        /// <summary>
         /// Frees timer resources.
         /// </summary>
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>
         /// Frees timer resources.
         /// </summary>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!_disposed)
             {
                 if (disposing)
                 {
-                    // Stop and destroy timer.
-                    timeKillEvent(_timerID);
+                    Stop();
+                    GC.SuppressFinalize(this);
                 }
-
                 _disposed = true;
             }
         }
+
+        /// <summary>
+        /// Finalizer.
+        /// </summary>
+        ~MmTimerEx()
+        {
+            Dispose(false);
+        }
         #endregion
-        
+
         #region Public functions
         /// <summary>
         /// Add a new timer instance.
@@ -184,8 +179,11 @@ namespace NBagOfTricks
                 t.current = 0;
             }
 
+            // Clean up first.
+            Stop();
+
             // Create and start periodic timer.
-            _timerID = timeSetEvent(MMTIMER_PERIOD, _resolution, _timeProc, IntPtr.Zero, 1); // TIME_PERIODIC
+            _timerID = timeSetEvent(MMTIMER_PERIOD, _resolution, _timeProc, IntPtr.Zero, 1); // 1=TIME_PERIODIC
 
             // If the timer was created successfully.
             if (_timerID != 0)
@@ -206,10 +204,10 @@ namespace NBagOfTricks
         public void Stop()
         {
             // Stop and destroy timer.
-            int result = timeKillEvent(_timerID);
-            if(result != TIMERR_NOERROR)
+            if(_timerID <= 0)
             {
-
+                int result = timeKillEvent(_timerID); // result != TIMERR_NOERROR
+                _timerID = -1;
             }
             _running = false;
             _sw.Stop();

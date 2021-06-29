@@ -17,11 +17,17 @@ namespace NBagOfTricks
 
         /// <summary>Last grab time for calculating diff.</summary>
         long _lastTicks = -1;
+
+        /// <summary>Delay at start.</summary>
+        int _skipCount = 0;
         #endregion
 
         #region Properties
         /// <summary>Number of data points to grab for statistics.</summary>
         public long SampleSize { get; set; } = 10;
+
+        /// <summary>Number of initial data points to exclude from stats.</summary>
+        public int Skip { get; set; } = 0;
 
         /// <summary>Accumulated data points.</summary>
         public List<double> Times { get; set; } = new List<double>();
@@ -86,7 +92,7 @@ namespace NBagOfTricks
                 Times.Clear();
             }
 
-            if (_lastTicks != -1)
+            if (_lastTicks != -1 && _skipCount-- < 0)
             {
                 dt = TicksToMsec(t - _lastTicks);
                 Times.Add(dt);
@@ -117,7 +123,7 @@ namespace NBagOfTricks
 
             long et = _watch.ElapsedTicks; // snap!
 
-            if (_lastTicks != -1)
+            if (_lastTicks != -1 && _skipCount-- < 0)
             {
                 double dt = TicksToMsec(et - _lastTicks);
                 Times.Add(dt);
