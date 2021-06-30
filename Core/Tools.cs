@@ -14,38 +14,6 @@ namespace NBagOfTricks
     public static class Tools
     {
         /// <summary>
-        /// Rudimentary C# source code formatter to make generated files somewhat readable.
-        /// TODO handle/clean ugly braces.
-        /// </summary>
-        /// <param name="src">Lines to prettify.</param>
-        /// <returns>Formatted lines.</returns>
-        public static List<string> FormatSourceCode(List<string> src)
-        {
-            List<string> fmt = new List<string>();
-            int indent = 0;
-
-            src.ForEach(s =>
-            {
-                if (s.StartsWith("{") && !s.Contains("}"))
-                {
-                    fmt.Add(new string(' ', indent * 4) + s);
-                    indent++;
-                }
-                else if (s.StartsWith("}") && indent > 0)
-                {
-                    indent--;
-                    fmt.Add(new string(' ', indent * 4) + s);
-                }
-                else
-                {
-                    fmt.Add(new string(' ', indent * 4) + s);
-                }
-            });
-
-            return fmt;
-        }
-
-        /// <summary>
         /// Reports non-ascii characters in a file. UTF-8 only.
         /// </summary>
         /// <param name="fn"></param>
