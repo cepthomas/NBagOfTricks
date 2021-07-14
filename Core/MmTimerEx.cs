@@ -186,7 +186,7 @@ namespace NBagOfTricks
             _timerID = timeSetEvent(MMTIMER_PERIOD, _resolution, _timeProc, IntPtr.Zero, 1); // 1=TIME_PERIODIC
 
             // If the timer was created successfully.
-            if (_timerID != 0)
+            if (_timerID > 0)
             {
                 _sw.Start();
                 _running = true;
@@ -194,6 +194,7 @@ namespace NBagOfTricks
             else
             {
                 _running = false;
+                _timerID = -1;
                 throw new Exception("Unable to start periodic multimedia Timer.");
             }
         }
@@ -204,9 +205,10 @@ namespace NBagOfTricks
         public void Stop()
         {
             // Stop and destroy timer.
-            if(_timerID <= 0)
+            if(_timerID > 0)
             {
-                int result = timeKillEvent(_timerID); // result != TIMERR_NOERROR
+                int result = timeKillEvent(_timerID);
+                // result != TIMERR_NOERROR
                 _timerID = -1;
             }
             _running = false;
