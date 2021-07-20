@@ -15,18 +15,27 @@ namespace NBagOfTricks
     /// </summary>
     public class MmTimerEx : IDisposable
     {
-        //class TimerInstance
-        //{
-        //    /// <summary>The requested time between events in msec.</summary>
-        //    public int period = 10;
+        #region Types
+        /// <summary>Client callback occurs when the time period has elapsed.</summary>
+        public delegate void TimeProc(double totalElapsed, double periodElapsed);
 
-        //    /// <summary>Actual accumulated msec.</summary> 
-        //    public double current = 0.0;
-        //}
+        /// <summary>Tracking instances of client timers.</summary>
+        class TimerInstance
+        {
+            /// <summary>The requested time between events in msec.</summary>
+            public int period = 10;
+
+            /// <summary>User handler.</summary>
+            public TimeProc handler = null;
+
+            /// <summary>Actual accumulated msec since last event.</summary> 
+            public double elapsed = 0.0;
+        }
+        #endregion
 
         #region Fields
         /// <summary>All the timer instances. Key is id.</summary>
-        //readonly Dictionary<string, TimerInstance> _timers = new Dictionary<string, TimerInstance>();
+        List<TimerInstance> _timers = new List<TimerInstance>();
 
         /// <summary>Used for more accurate timing.</summary>
         readonly Stopwatch _sw = new Stopwatch();
@@ -69,31 +78,9 @@ namespace NBagOfTricks
 
 
 
-        //public event EventHandler<TimerEventArgs> TimerElapsedEventX;
-        public delegate void TimeProcX(double totalElapsed, double periodElapsed);
 
-        class TimerInstanceX
-        {
-            /// <summary>The requested time between events in msec.</summary>
-            public int period = 10;
 
-            /// <summary>User handler.</summary>
-            public TimeProcX handler = null;
 
-            /// <summary>Actual accumulated msec since last event.</summary> 
-            public double elapsed = 0.0;
-        }
-
-        List<TimerInstanceX> _timersX = new List<TimerInstanceX>();
-
-        public void SetTimer(int period, TimeProcX handler)
-        {
-            _timersX.Add(new TimerInstanceX
-            {
-                period = period,
-                handler = handler
-            });
-        }
 
 
 
@@ -194,26 +181,26 @@ namespace NBagOfTricks
         #endregion
 
         #region Public functions
-        ///// <summary>
-        ///// Add a new timer instance.
-        ///// </summary>
-        ///// <param name="id">Arbitrary id as string</param>
-        ///// <param name="period">Period in msec </param>
-        //public void SetTimer(string id, int period)
-        //{
-        //    _timers[id] = new TimerInstance
-        //    {
-        //        period = period,
-        //        current = 0
-        //    };
-        //}
+        /// <summary>
+        /// Add a new timer instance.
+        /// </summary>
+        /// <param name="period">Period in msec </param>
+        /// <param name="handler">Client callback</param>
+        public void SetTimer(int period, TimeProc handler)
+        {
+            _timers.Add(new TimerInstance
+            {
+                period = period,
+                handler = handler
+            });
+        }
 
         /// <summary>
         /// Starts the periodic timer.
         /// </summary>
         public void Start()
         {
-            foreach (TimerInstanceX t in _timersX)
+            foreach (TimerInstance t in _timers)
             {
                 t.elapsed = 0;
             }
@@ -280,8 +267,7 @@ namespace NBagOfTricks
                     // Check for expirations. Allow for a bit of jitter around 0.
                     double allowance = 0.5; // msec
 
-
-                    foreach (var timer in _timersX)
+                    foreach (var timer in _timers)
                     {
                         timer.elapsed += periodMsec;
                         if ((timer.period - timer.elapsed) < allowance)
@@ -291,22 +277,6 @@ namespace NBagOfTricks
                             timer.elapsed = 0.0;
                         }
                     }
-
-                    //foreach(string tid in _timers.Keys)
-                    //{
-                    //    TimerInstance timer = _timers[tid];
-                    //    timer.current += msec;
-                    //    if ((timer.period - timer.current) < allowance)
-                    //    {
-                    //        elapsed.Add(tid);
-                    //        timer.current = 0.0;
-                    //    }
-                    //}
-
-                    //if (elapsed.Count > 0)
-                    //{
-                    //    TimerElapsedEvent?.Invoke(this, new TimerEventArgs() { ElapsedTimers = elapsed });
-                    //}
                 }
                 else
                 {

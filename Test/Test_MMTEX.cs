@@ -31,8 +31,9 @@ namespace NBagOfTricks.Test
 
             // Fast mm timer under test.
             _timer = new MmTimerEx();
-            _timer.SetTimer("NEB", 10); // msecPerTick
-            _timer.TimerElapsedEvent += TimerElapsedEvent;
+
+            _timer.SetTimer(10, TimerElapsedEvent);
+
             _running = true;
             _tan.SampleSize = NUM_SAMPLES;
             _tan.Grab(); // this starts the tan.
@@ -85,7 +86,7 @@ namespace NBagOfTricks.Test
         /// <summary>
         /// Multimedia timer tick handler.
         /// </summary>
-        void TimerElapsedEvent(object sender, MmTimerEx.TimerEventArgs e)
+        void TimerElapsedEvent(double totalElapsed, double periodElapsed)
         {
             if (_tan.Grab())
             {
