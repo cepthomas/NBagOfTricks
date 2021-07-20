@@ -11,6 +11,17 @@ namespace NBagOfTricks.UI
     /// </summary>
     public static class KeyUtils
     {
+        /// <summary>Api version of win32.</summary>
+        public enum KeyState
+        {
+            /// <summary>Nothing going on.</summary>
+            NotPressed,
+            /// <summary>Transient press.</summary>
+            Pressed,
+            /// <summary>e.g. caps lock.</summary>
+            Toggled
+        }
+
         /// <summary>
         /// Generic UI helper. Allows user to enter only integer or double values.
         /// s</summary>
@@ -128,34 +139,39 @@ namespace NBagOfTricks.UI
 
             return (ch, keyCodes);
         }
+        //        public enum KeyState { NotPressed, Pressed, Toggled }
 
         /// <summary>Key state query. Based on https://stackoverflow.com/a/9356006. </summary>
         /// <param name="key">Which key.</param>
         /// <returns></returns>
-        public static KeyStates GetKeyState(Keys key)
+        public static KeyState GetKeyState(Keys key)
         {
-            KeyStates state = KeyStates.None;
+            KeyState state = KeyState.NotPressed;
 
-            short retVal = GetKeyStateW32((int)key);
+            short retVal = NativeMethods.GetKeyStateW32((int)key);
 
             // If the high-order bit is 1, the key is down otherwise, it is up.
             if ((retVal & 0x8000) == 0x8000)
             {
-                state |= KeyStates.Down;
+                state = KeyState.Pressed;
             }
 
             // If the low-order bit is 1, the key is toggled.
             if ((retVal & 1) == 1)
             {
-                state |= KeyStates.Toggled;
+                state = KeyState.Toggled;
             }
 
             return state;
         }
 
-        [Flags]
-        public enum KeyStates { None = 0, Down = 1, Toggled = 2 }
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        public static extern short GetKeyStateW32(int keyCode);
+        internal class NativeMethods
+        {
+            [Flags]
+            public enum KeyStates { None = 0, Down = 1, Toggled = 2 }
+
+            [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+            public static extern short GetKeyStateW32(int keyCode);
+        }
     }
 }
