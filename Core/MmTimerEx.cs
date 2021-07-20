@@ -62,29 +62,6 @@ namespace NBagOfTricks
         readonly NativeMethods.TimeProc _timeProc;
         #endregion
 
-
-        #region Events
-        ///// <summary>Occurs when the time period has elapsed.</summary>
-        //public event EventHandler<TimerEventArgs> TimerElapsedEvent;
-
-        ///// <summary>Timer event args.</summary>
-        //public class TimerEventArgs : EventArgs
-        //{
-        //    /// <summary>Elapsed timers.</summary>
-        //    public List<string> ElapsedTimers { get; set; } = new List<string>();
-        //}
-        #endregion
-
-
-
-
-
-
-
-
-
-
-
         #region Native Methods
         /// <summary>Win32 Multimedia Timer Functions.</summary>
         internal class NativeMethods
@@ -182,12 +159,24 @@ namespace NBagOfTricks
 
         #region Public functions
         /// <summary>
-        /// Add a new timer instance.
+        /// Add or update a timer instance.
         /// </summary>
         /// <param name="period">Period in msec </param>
         /// <param name="handler">Client callback</param>
         public void SetTimer(int period, TimeProc handler)
         {
+            // Check for update or new.
+            foreach(var timer in _timers)
+            {
+                if(timer.handler == handler)
+                {
+                    // Update.
+                    timer.period = period;
+                    return;
+                }
+            }
+
+            // New one.
             _timers.Add(new TimerInstance
             {
                 period = period,
