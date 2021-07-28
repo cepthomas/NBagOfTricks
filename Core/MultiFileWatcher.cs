@@ -104,7 +104,6 @@ namespace NBagOfTricks
         /// <param name="e"></param>
         void Watcher_Changed(object sender, FileSystemEventArgs e)
         {
-            //NLog.LogManager.GetCurrentClassLogger().Info("Changed:" + e.FullPath);
             _touchedFiles.Add(e.FullPath);
             // Reset timer.
             _timer.Interval = DELAY;
