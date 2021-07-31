@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{B20E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PNUT", "PNUT\PNUT.csproj", "{874F828D-19BC-4D0C-A818-671CCE5E528F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleIpc", "SimpleIpc\SimpleIpc.csproj", "{046C923A-5198-4AB7-91ED-73DB98E14B93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,14 +35,10 @@ Global
 		{874F828D-19BC-4D0C-A818-671CCE5E528F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{874F828D-19BC-4D0C-A818-671CCE5E528F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{874F828D-19BC-4D0C-A818-671CCE5E528F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{685BDE2B-44AE-4912-B6AD-9FB2B2165CE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{685BDE2B-44AE-4912-B6AD-9FB2B2165CE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{685BDE2B-44AE-4912-B6AD-9FB2B2165CE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{685BDE2B-44AE-4912-B6AD-9FB2B2165CE7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8383230B-3C4F-4AC2-B5C6-FBC4936646C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8383230B-3C4F-4AC2-B5C6-FBC4936646C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8383230B-3C4F-4AC2-B5C6-FBC4936646C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8383230B-3C4F-4AC2-B5C6-FBC4936646C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{046C923A-5198-4AB7-91ED-73DB98E14B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{046C923A-5198-4AB7-91ED-73DB98E14B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{046C923A-5198-4AB7-91ED-73DB98E14B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{046C923A-5198-4AB7-91ED-73DB98E14B93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

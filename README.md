@@ -49,6 +49,12 @@ Probably I should make this into a nuget package at some point.
 - UiUtils: Control helpers, formatters, etc.
 
 
+# Simple IPC
+- A simple IPC client/server mechanism is used to send a single string one-way. That's all.
+- To support development of the IPC there is a rudimentary cross-process logger.
+- Primary usage is for a single instance app (ClipPlayer) to send command args to itself.
+
+
 # PNUT
 Practically Nonexistent Unit Tester
 
