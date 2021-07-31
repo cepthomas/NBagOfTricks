@@ -121,11 +121,7 @@ namespace NBagOfTricks.UI
         {
             pe.Graphics.Clear(BackColor);
 
-            // Draw data.
-            // TODO for each process?
-            // The Processor (% Processor Time) counter will be out of 100 and will give the total usage across all
-            // processors /cores/etc in the computer. However, the Processor (% Process Time) is scaled by the number
-            // of logical processors. To get average usage across a computer, divide the result by Environment.ProcessorCount.
+            // Draw data. FUTURE: for each process?
             if(_cpuBuff != null)
             {
                 for (int i = 0; i < _cpuBuff.Length; i++)
@@ -216,6 +212,10 @@ namespace NBagOfTricks.UI
         /// </summary>
         void InitPerf()
         {
+            // The Processor (% Processor Time) counter will be out of 100 and will give the total usage across all
+            // processors /cores/etc in the computer. However, the Processor (% Process Time) is scaled by the number
+            // of logical processors. To get average usage across a computer, divide the result by Environment.ProcessorCount.
+            
             using (var searcher = new System.Management.ManagementObjectSearcher("Select * from Win32_Processor"))
             {
                 var items = searcher.Get();

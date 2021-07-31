@@ -8,7 +8,7 @@ using NBagOfTricks;
 namespace NBagOfTricks.UI
 {
     /// <summary>Display types.</summary>
-    public enum MeterType { Linear, Log, ContinuousLine, ContinuousDots }  // TODO Add damped/vu, peak/hold
+    public enum MeterType { Linear, Log, ContinuousLine, ContinuousDots }  // FUTURE Add damped/vu, peak/hold
 
     /// <summary>
     /// Implements a rudimentary volume meter.
