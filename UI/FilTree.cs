@@ -400,6 +400,8 @@ namespace NBagOfTricks.UI
         /// <param name="paths"></param>
         void SetTaggedPaths(Dictionary<string, string> paths)
         {
+            _taggedPaths.Clear();
+
             foreach (var kv in paths)
             {
                 // Check for valid path.
