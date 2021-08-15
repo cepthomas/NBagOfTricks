@@ -54,8 +54,6 @@ namespace NBagOfTricks.UI
         /// <param name="e"></param>
         private void TextViewer_Load(object sender, EventArgs e)
         {
-            BorderStyle = BorderStyle.None;
-
             _rtb.Text = "";
             _rtb.BorderStyle = BorderStyle.None;
             _rtb.ForeColor = Color.Black;

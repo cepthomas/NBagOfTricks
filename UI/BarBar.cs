@@ -14,7 +14,7 @@ namespace NBagOfTricks.UI
     public partial class BarBar : UserControl
     {
         #region Enums
-        public enum SnapType { Tick, Beat, Bar }
+        public enum SnapType { Subdiv, Beat, Bar }
         #endregion
 
         #region Fields
@@ -51,7 +51,7 @@ namespace NBagOfTricks.UI
         public int BeatsPerBar { get { return BarSpan._beatsPerBar; } set { BarSpan._beatsPerBar = value; } }
 
         /// <summary>Our resolution.</summary>
-        public int TicksPerBeat { get { return BarSpan._ticksPerBeat; } set { BarSpan._ticksPerBeat = value; } }
+        public int SubdivsPerBeat { get { return BarSpan._subdivsPerBeat; } set { BarSpan._subdivsPerBeat = value; } }
 
         /// <summary>How to snap.</summary>
         public SnapType Snap { get { return BarSpan._snapType; } set { BarSpan._snapType = value; } }
@@ -187,13 +187,13 @@ namespace NBagOfTricks.UI
         {
             if (e.Button == MouseButtons.Left)
             {
-                _current.DoSnap(GetTickFromMouse(e.X));
+                _current.DoSnap(GetSubdivFromMouse(e.X));
                 CurrentTimeChanged?.Invoke(this, new EventArgs());
             }
             else if (e.X != _lastXPos)
             {
                 BarSpan bs = new BarSpan();
-                bs.DoSnap(GetTickFromMouse(e.X));
+                bs.DoSnap(GetSubdivFromMouse(e.X));
                 _toolTip.SetToolTip(this, bs.ToString());
                 _lastXPos = e.X;
             }
@@ -209,15 +209,15 @@ namespace NBagOfTricks.UI
         {
             if (ModifierKeys.HasFlag(Keys.Control))
             {
-                _start.DoSnap(GetTickFromMouse(e.X));
+                _start.DoSnap(GetSubdivFromMouse(e.X));
             }
             else if (ModifierKeys.HasFlag(Keys.Alt))
             {
-                _end.DoSnap(GetTickFromMouse(e.X));
+                _end.DoSnap(GetSubdivFromMouse(e.X));
             }
             else
             {
-                _current.DoSnap(GetTickFromMouse(e.X));
+                _current.DoSnap(GetSubdivFromMouse(e.X));
             }
 
             CurrentTimeChanged?.Invoke(this, new EventArgs());
@@ -242,12 +242,12 @@ namespace NBagOfTricks.UI
             }
             else if(_current >= _length)
             {
-                _current = _length - BarSpan.OneTick;
+                _current = _length - BarSpan.OneSubdiv;
                 done = true;
             }
             else if(_current >= _end)
             {
-                _current = _end - BarSpan.OneTick;
+                _current = _end - BarSpan.OneSubdiv;
                 done = true;
             }
 
@@ -259,20 +259,20 @@ namespace NBagOfTricks.UI
 
         #region Private functions
         /// <summary>
-        /// Convert x pos to tick.
+        /// Convert x pos to subdiv.
         /// </summary>
         /// <param name="x"></param>
-        int GetTickFromMouse(int x)
+        int GetSubdivFromMouse(int x)
         {
-            int tick = 0;
+            int subdiv = 0;
 
             if(_current < _length)
             {
-                tick = x * _length.TotalTicks / Width;
-                tick = MathUtils.Constrain(tick, 0, _length.TotalTicks);
+                subdiv = x * _length.TotalSubdivs / Width;
+                subdiv = MathUtils.Constrain(subdiv, 0, _length.TotalSubdivs);
             }
 
-            return tick;
+            return subdiv;
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace NBagOfTricks.UI
         /// <returns></returns>
         public int Scale(BarSpan val)
         {
-            return val.TotalTicks * Width / _length.TotalTicks;
+            return val.TotalSubdivs * Width / _length.TotalSubdivs;
         }
         #endregion
     }
@@ -295,7 +295,7 @@ namespace NBagOfTricks.UI
         public static readonly BarSpan Zero = new BarSpan();
 
         /// <summary>A useful constant.</summary>
-        public static readonly BarSpan OneTick = new BarSpan() { TotalTicks = 1 };
+        public static readonly BarSpan OneSubdiv = new BarSpan() { TotalSubdivs = 1 };
 
         /// <summary>For hashing.</summary>
         readonly int _id;
@@ -307,24 +307,24 @@ namespace NBagOfTricks.UI
         internal static int _beatsPerBar = 4;
 
         /// <summary>Global - set before using. Our resolution.</summary>
-        internal static int _ticksPerBeat = 8;
+        internal static int _subdivsPerBeat = 8;
 
         /// <summary>Global - set before using.</summary>
-        internal static BarBar.SnapType _snapType = BarBar.SnapType.Tick;
+        internal static BarBar.SnapType _snapType = BarBar.SnapType.Subdiv;
         #endregion
 
         #region Properties
         /// <summary>The core.</summary>
-        public int TotalTicks { get; private set; }
+        public int TotalSubdivs { get; private set; }
 
         /// <summary>The bar.</summary>
-        public int Bar { get { return TotalTicks / _beatsPerBar / _ticksPerBeat; } }
+        public int Bar { get { return TotalSubdivs / _beatsPerBar / _subdivsPerBeat; } }
 
         /// <summary>The beat.</summary>
-        public int Beat { get { return TotalTicks / _ticksPerBeat % _beatsPerBar; } }
+        public int Beat { get { return TotalSubdivs / _subdivsPerBeat % _beatsPerBar; } }
 
-        /// <summary>The tick.</summary>
-        public int Tick { get { return TotalTicks % _ticksPerBeat; } }
+        /// <summary>The subdiv.</summary>
+        public int Subdiv { get { return TotalSubdivs % _subdivsPerBeat; } }
         #endregion
 
         #region Lifecycle
@@ -333,20 +333,20 @@ namespace NBagOfTricks.UI
         /// </summary>
         /// <param name="bar"></param>
         /// <param name="beat"></param>
-        /// <param name="tick"></param>
-        public BarSpan(int bar, int beat, int tick)
+        /// <param name="subdiv"></param>
+        public BarSpan(int bar, int beat, int subdiv)
         {
-            TotalTicks = (bar * _beatsPerBar * _ticksPerBeat) + (beat * _ticksPerBeat) + tick;
+            TotalSubdivs = (bar * _beatsPerBar * _subdivsPerBeat) + (beat * _subdivsPerBeat) + subdiv;
             _id = _all_ids++;
         }
 
         /// <summary>
         /// Constructor from args.
         /// </summary>
-        /// <param name="ticks"></param>
-        public BarSpan(int ticks)
+        /// <param name="subdivs"></param>
+        public BarSpan(int subdivs)
         {
-            TotalTicks = ticks;
+            TotalSubdivs = subdivs;
             _id = _all_ids++;
         }
         #endregion
@@ -357,7 +357,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         public void Reset()
         {
-            TotalTicks = 0;
+            TotalSubdivs = 0;
         }
 
         /// <summary>
@@ -367,7 +367,7 @@ namespace NBagOfTricks.UI
         /// <param name="upper"></param>
         public void Constrain(BarSpan lower, BarSpan upper)
         {
-            TotalTicks = MathUtils.Constrain(TotalTicks, lower.TotalTicks, upper.TotalTicks);
+            TotalSubdivs = MathUtils.Constrain(TotalSubdivs, lower.TotalSubdivs, upper.TotalSubdivs);
         }
 
         /// <summary>
@@ -376,20 +376,20 @@ namespace NBagOfTricks.UI
         /// <param name="num"></param>
         public void Increment(int num)
         {
-            TotalTicks += num;
-            if (TotalTicks < 0)
+            TotalSubdivs += num;
+            if (TotalSubdivs < 0)
             {
-                TotalTicks = 0;
+                TotalSubdivs = 0;
             }
         }
 
         /// <summary>
         /// Snap to closest boundary.
         /// </summary>
-        /// <param name="tick"></param>
-        public void DoSnap(int tick)
+        /// <param name="subdiv"></param>
+        public void DoSnap(int subdiv)
         {
-            BarSpan bspan = new BarSpan { TotalTicks = tick };
+            BarSpan bspan = new BarSpan { TotalSubdivs = subdiv };
             int newbar = bspan.Bar;
             int newbeat = bspan.Beat;
 
@@ -402,12 +402,12 @@ namespace NBagOfTricks.UI
                             newbar++;
                         }
                     }
-                    TotalTicks = (newbar * _beatsPerBar * _ticksPerBeat);
+                    TotalSubdivs = (newbar * _beatsPerBar * _subdivsPerBeat);
                     break;
 
                 case BarBar.SnapType.Beat:
                     {
-                        if (bspan.Tick >= _ticksPerBeat / 2)
+                        if (bspan.Subdiv >= _subdivsPerBeat / 2)
                         {
                             newbeat++;
                             if (newbeat >= _beatsPerBar)
@@ -416,13 +416,13 @@ namespace NBagOfTricks.UI
                                 newbeat = 0;
                             }
                         }
-                        TotalTicks = (newbar * _beatsPerBar * _ticksPerBeat) + (newbeat * _ticksPerBeat);
+                        TotalSubdivs = (newbar * _beatsPerBar * _subdivsPerBeat) + (newbeat * _subdivsPerBeat);
                     }
                     break;
 
-                case BarBar.SnapType.Tick:
+                case BarBar.SnapType.Subdiv:
                     // Don't change it.
-                    TotalTicks = tick;
+                    TotalSubdivs = subdiv;
                     break;
             }
         }
@@ -433,14 +433,14 @@ namespace NBagOfTricks.UI
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Bar + 1}.{Beat + 1}.{Tick + 1:00}";
+            return $"{Bar + 1}.{Beat + 1}.{Subdiv + 1:00}";
         }
         #endregion
 
-        #region Standard comparable stuff
+        #region Standard IComparable stuff
         public override bool Equals(object obj)
         {
-            return obj is BarSpan span && span.TotalTicks == TotalTicks;
+            return obj is BarSpan span && span.TotalSubdivs == TotalSubdivs;
         }
 
         public override int GetHashCode()
@@ -450,7 +450,7 @@ namespace NBagOfTricks.UI
 
         public static bool operator ==(BarSpan a, BarSpan b)
         {
-            return a.TotalTicks == b.TotalTicks;
+            return a.TotalSubdivs == b.TotalSubdivs;
         }
 
         public static bool operator !=(BarSpan a, BarSpan b)
@@ -460,32 +460,32 @@ namespace NBagOfTricks.UI
 
         public static BarSpan operator +(BarSpan a, BarSpan b)
         {
-            return new BarSpan(a.TotalTicks + b.TotalTicks);
+            return new BarSpan(a.TotalSubdivs + b.TotalSubdivs);
         }
 
         public static BarSpan operator -(BarSpan a, BarSpan b)
         {
-            return new BarSpan(a.TotalTicks - b.TotalTicks);
+            return new BarSpan(a.TotalSubdivs - b.TotalSubdivs);
         }
 
         public static bool operator <(BarSpan a, BarSpan b)
         {
-            return a.TotalTicks < b.TotalTicks;
+            return a.TotalSubdivs < b.TotalSubdivs;
         }
 
         public static bool operator >(BarSpan a, BarSpan b)
         {
-            return a.TotalTicks > b.TotalTicks;
+            return a.TotalSubdivs > b.TotalSubdivs;
         }
 
         public static bool operator <=(BarSpan a, BarSpan b)
         {
-            return a.TotalTicks <= b.TotalTicks;
+            return a.TotalSubdivs <= b.TotalSubdivs;
         }
 
         public static bool operator >=(BarSpan a, BarSpan b)
         {
-            return a.TotalTicks >= b.TotalTicks;
+            return a.TotalSubdivs >= b.TotalSubdivs;
         }
         #endregion
     }

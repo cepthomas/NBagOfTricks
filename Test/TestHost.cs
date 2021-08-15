@@ -91,7 +91,7 @@ namespace NBagOfTricks.Test
 
             ///// Bar bar.
             barBar.BeatsPerBar = 4;
-            barBar.TicksPerBeat = 16;
+            barBar.SubdivsPerBeat = 16;
             barBar.Snap = BarBar.SnapType.Bar;
             barBar.Length = new BarSpan(16, 0, 0);
             barBar.Start = new BarSpan(2, 1, 11);

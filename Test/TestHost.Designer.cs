@@ -125,9 +125,9 @@
             this.barBar.Name = "barBar";
             this.barBar.ProgressColor = System.Drawing.Color.White;
             this.barBar.Size = new System.Drawing.Size(353, 51);
-            this.barBar.Snap = NBagOfTricks.UI.BarBar.SnapType.Tick;
+            this.barBar.Snap = NBagOfTricks.UI.BarBar.SnapType.Subdiv;
             this.barBar.TabIndex = 15;
-            this.barBar.TicksPerBeat = 8;
+            this.barBar.SubdivsPerBeat = 8;
             // 
             // clickGrid1
             // 
