@@ -87,9 +87,7 @@ namespace NBagOfTricks
             var htmlText = new List<string>()
             {
                 // Boilerplate
-                $"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
-                $"<style>body {{ background-color: {bgcolor}; font-family: {font}; }}",
-                $"</style></head><body>"
+                $"<style>body {{ background-color: {bgcolor}; font-family: {font}; }}</style>"
             };
 
             // Meat.
@@ -97,7 +95,6 @@ namespace NBagOfTricks
 
             // Bottom.
             htmlText.Add($"<!-- Markdeep: --><style class=\"fallback\">body{{visibility:hidden;white-space:pre;font-family:{font}}}</style><script src=\"markdeep.min.js\" charset=\"utf-8\"></script><script src=\"https://casual-effects.com/markdeep/latest/markdeep.min.js\" charset=\"utf-8\"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=\"visible\")</script>");
-            htmlText.Add($"</body></html>");
             string sret = string.Join(Environment.NewLine, htmlText);
 
             if (show)
