@@ -39,6 +39,8 @@ namespace NBagOfTricks.UI
         /// <summary>Ratio of data point to visual point.</summary>
         int _smplPerPixel;
 
+        int _marker1 = -1;
+        int _marker2 = -1;
         #endregion
 
         #region Properties
@@ -47,6 +49,12 @@ namespace NBagOfTricks.UI
 
         /// <summary>How to draw.</summary>
         public DrawMode Mode { get; set; } = DrawMode.Envelope;
+
+        /// <summary>Marker 1.</summary>
+        public int Marker1 { get { return _marker1; } set { _marker1 = value < 0 ? -1 : MathUtils.Constrain(value, 0, _rawVals.Length); } }
+
+        /// <summary>Marker 2.</summary>
+        public int Marker2 { get { return _marker2; } set { _marker2 = value < 0 ? -1 : MathUtils.Constrain(value, 0, _rawVals.Length); } }
         #endregion
 
         #region Lifecycle
