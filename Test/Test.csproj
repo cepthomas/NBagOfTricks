@@ -64,6 +64,9 @@
     <Compile Include="Test_UTILS.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Files\wav.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="App.config" />
     <Content Include="Files\nonascii.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

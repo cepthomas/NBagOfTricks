@@ -31,10 +31,10 @@
             this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.vkbd = new NBagOfTricks.UI.VirtualKeyboard();
+            this.btnMarkdown = new System.Windows.Forms.Button();
             this.chkRunBars = new System.Windows.Forms.CheckBox();
             this.barBar = new NBagOfTricks.UI.BarBar();
             this.clickGrid1 = new NBagOfTricks.UI.ClickGrid();
-            this.waveViewer = new NBagOfTricks.UI.WaveViewer();
             this.timeBar = new NBagOfTricks.UI.TimeBar();
             this.chkCpu = new System.Windows.Forms.CheckBox();
             this.ftree = new NBagOfTricks.UI.FilTree();
@@ -48,7 +48,8 @@
             this.pot1 = new NBagOfTricks.UI.Pot();
             this.slider1 = new NBagOfTricks.UI.Slider();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.btnMarkdown = new System.Windows.Forms.Button();
+            this.waveViewer1 = new NBagOfTricks.UI.WaveViewer();
+            this.waveViewer2 = new NBagOfTricks.UI.WaveViewer();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -69,11 +70,12 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.waveViewer2);
+            this.splitContainer1.Panel2.Controls.Add(this.waveViewer1);
             this.splitContainer1.Panel2.Controls.Add(this.btnMarkdown);
             this.splitContainer1.Panel2.Controls.Add(this.chkRunBars);
             this.splitContainer1.Panel2.Controls.Add(this.barBar);
             this.splitContainer1.Panel2.Controls.Add(this.clickGrid1);
-            this.splitContainer1.Panel2.Controls.Add(this.waveViewer);
             this.splitContainer1.Panel2.Controls.Add(this.timeBar);
             this.splitContainer1.Panel2.Controls.Add(this.chkCpu);
             this.splitContainer1.Panel2.Controls.Add(this.ftree);
@@ -102,6 +104,16 @@
             this.vkbd.TabIndex = 0;
             this.vkbd.KeyboardEvent += new System.EventHandler<NBagOfTricks.UI.VirtualKeyboard.KeyboardEventArgs>(this.Vkbd_KeyboardEvent);
             // 
+            // btnMarkdown
+            // 
+            this.btnMarkdown.Location = new System.Drawing.Point(546, 27);
+            this.btnMarkdown.Name = "btnMarkdown";
+            this.btnMarkdown.Size = new System.Drawing.Size(42, 36);
+            this.btnMarkdown.TabIndex = 17;
+            this.btnMarkdown.Text = "md";
+            this.btnMarkdown.UseVisualStyleBackColor = true;
+            this.btnMarkdown.Click += new System.EventHandler(this.BtnMarkdown_Click);
+            // 
             // chkRunBars
             // 
             this.chkRunBars.Appearance = System.Windows.Forms.Appearance.Button;
@@ -118,6 +130,7 @@
             // barBar
             // 
             this.barBar.BeatsPerBar = 4;
+            this.barBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.barBar.FontLarge = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.barBar.FontSmall = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.barBar.Location = new System.Drawing.Point(943, 242);
@@ -126,28 +139,20 @@
             this.barBar.ProgressColor = System.Drawing.Color.White;
             this.barBar.Size = new System.Drawing.Size(353, 51);
             this.barBar.Snap = NBagOfTricks.UI.BarBar.SnapType.Subdiv;
-            this.barBar.TabIndex = 15;
             this.barBar.SubdivsPerBeat = 8;
+            this.barBar.TabIndex = 15;
             // 
             // clickGrid1
             // 
             this.clickGrid1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.clickGrid1.Location = new System.Drawing.Point(546, 225);
+            this.clickGrid1.Location = new System.Drawing.Point(12, 436);
             this.clickGrid1.Name = "clickGrid1";
-            this.clickGrid1.Size = new System.Drawing.Size(371, 106);
+            this.clickGrid1.Size = new System.Drawing.Size(484, 125);
             this.clickGrid1.TabIndex = 1;
-            // 
-            // waveViewer
-            // 
-            this.waveViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.waveViewer.DrawColor = System.Drawing.Color.Orange;
-            this.waveViewer.Location = new System.Drawing.Point(546, 174);
-            this.waveViewer.Name = "waveViewer";
-            this.waveViewer.Size = new System.Drawing.Size(254, 45);
-            this.waveViewer.TabIndex = 14;
             // 
             // timeBar
             // 
+            this.timeBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.timeBar.FontLarge = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.timeBar.FontSmall = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.timeBar.Location = new System.Drawing.Point(943, 174);
@@ -173,9 +178,9 @@
             // ftree
             // 
             this.ftree.DoubleClickSelect = false;
-            this.ftree.Location = new System.Drawing.Point(12, 25);
+            this.ftree.Location = new System.Drawing.Point(12, 16);
             this.ftree.Name = "ftree";
-            this.ftree.Size = new System.Drawing.Size(484, 529);
+            this.ftree.Size = new System.Drawing.Size(484, 414);
             this.ftree.TabIndex = 11;
             this.ftree.FileSelectedEvent += new System.EventHandler<string>(this.FilTree_FileSelectedEvent);
             // 
@@ -250,11 +255,11 @@
             // 
             // txtInfo
             // 
-            this.txtInfo.Location = new System.Drawing.Point(546, 338);
+            this.txtInfo.Location = new System.Drawing.Point(546, 369);
             this.txtInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtInfo.MaxText = 5000;
             this.txtInfo.Name = "txtInfo";
-            this.txtInfo.Size = new System.Drawing.Size(754, 215);
+            this.txtInfo.Size = new System.Drawing.Size(754, 184);
             this.txtInfo.TabIndex = 4;
             this.txtInfo.WordWrap = true;
             // 
@@ -312,15 +317,25 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
-            // btnMarkdown
+            // waveViewer1
             // 
-            this.btnMarkdown.Location = new System.Drawing.Point(546, 27);
-            this.btnMarkdown.Name = "btnMarkdown";
-            this.btnMarkdown.Size = new System.Drawing.Size(42, 36);
-            this.btnMarkdown.TabIndex = 17;
-            this.btnMarkdown.Text = "md";
-            this.btnMarkdown.UseVisualStyleBackColor = true;
-            this.btnMarkdown.Click += new System.EventHandler(this.BtnMarkdown_Click);
+            this.waveViewer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.waveViewer1.DrawColor = System.Drawing.Color.Orange;
+            this.waveViewer1.Location = new System.Drawing.Point(546, 196);
+            this.waveViewer1.Mode = NBagOfTricks.UI.WaveViewer.DrawMode.Envelope;
+            this.waveViewer1.Name = "waveViewer1";
+            this.waveViewer1.Size = new System.Drawing.Size(254, 70);
+            this.waveViewer1.TabIndex = 18;
+            // 
+            // waveViewer2
+            // 
+            this.waveViewer2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.waveViewer2.DrawColor = System.Drawing.Color.Orange;
+            this.waveViewer2.Location = new System.Drawing.Point(546, 282);
+            this.waveViewer2.Mode = NBagOfTricks.UI.WaveViewer.DrawMode.Envelope;
+            this.waveViewer2.Name = "waveViewer2";
+            this.waveViewer2.Size = new System.Drawing.Size(254, 70);
+            this.waveViewer2.TabIndex = 19;
             // 
             // TestHost
             // 
@@ -360,10 +375,11 @@
         private System.Windows.Forms.CheckBox chkCpu;
         private UI.TimeBar timeBar;
         private System.Windows.Forms.Timer timer1;
-        private UI.WaveViewer waveViewer;
         private UI.ClickGrid clickGrid1;
         private UI.BarBar barBar;
         private System.Windows.Forms.CheckBox chkRunBars;
         private System.Windows.Forms.Button btnMarkdown;
+        private UI.WaveViewer waveViewer2;
+        private UI.WaveViewer waveViewer1;
     }
 }

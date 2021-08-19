@@ -173,6 +173,25 @@ namespace NBagOfTricks
         }
 
         /// <summary>
+        /// The root mean square value of a quantity is the square root of the mean value of the squared values of the quantity taken over an interval.
+        /// </summary>
+        /// <param name="inputArray"></param>
+        /// <returns></returns>
+        public static float RMS(float[] inputArray)
+        {
+            float[] squares = new float[inputArray.Length];
+
+            for(int i = 0; i < inputArray.Length; i++)
+            {
+                squares[i] = (float)Math.Pow(inputArray[i], 2);
+            }
+
+            float rms = (float)Math.Sqrt(squares.Average());
+
+            return rms;
+        }
+
+        /// <summary>
         /// Generates normally distributed numbers.
         /// </summary>
         /// <param name="r"></param>

@@ -15,6 +15,8 @@ namespace NBagOfTricks.UI
 {
     public partial class WaveViewer : UserControl
     {
+        public enum DrawMode { Raw, Envelope }
+
         #region Fields
         /// <summary>From client.</summary>
         float[] _rawVals = null;
@@ -29,15 +31,22 @@ namespace NBagOfTricks.UI
         readonly Pen _penDraw = new Pen(Color.Black, 1);
 
         /// <summary>For drawing text.</summary>
-        readonly Font _textFont = new Font("Cascadia", 14, FontStyle.Regular, GraphicsUnit.Point, 0);
+        readonly Font _textFont = new Font("Cascadia", 12, FontStyle.Regular, GraphicsUnit.Point, 0);
 
         /// <summary>For drawing text.</summary>
         readonly StringFormat _format = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
+
+        /// <summary>Ratio of data point to visual point.</summary>
+        int _smplPerPixel;
+
         #endregion
 
         #region Properties
         /// <summary>For styling.</summary>
         public Color DrawColor { get { return _penDraw.Color; } set { _penDraw.Color = value; } }
+
+        /// <summary>How to draw.</summary>
+        public DrawMode Mode { get; set; } = DrawMode.Envelope;
         #endregion
 
         #region Lifecycle
@@ -115,7 +124,7 @@ namespace NBagOfTricks.UI
 
             if (_buff == null)
             {
-                pe.Graphics.DrawString("No data", _textFont, Brushes.Red, ClientRectangle, _format);
+                pe.Graphics.DrawString("No data", _textFont, Brushes.Gray, ClientRectangle, _format);
             }
             else
             {
@@ -123,19 +132,21 @@ namespace NBagOfTricks.UI
                 {
                     double val = _buff[i];
 
-                    // Draw data point.
-                    // Line from val to 0
-                    double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height, 0);
-                    double y2 = Height / 2;
-                    pe.Graphics.DrawLine(_penDraw, (float)i, (float)y1, (float)i, (float)y2);
+                    switch(Mode)
+                    {
+                        case DrawMode.Envelope:
+                            float y1 = (float)MathUtils.Map(val, -_rawMax, _rawMax, Height, 0);
+                            //float y2 = Height / 2; // Line from val to 0
+                            float y2 = (float)MathUtils.Map(val, -_rawMax, _rawMax, 0, Height); // Line from +val to -val
+                            pe.Graphics.DrawLine(_penDraw, i, y1, i, y2);
+                            break;
 
-                    // Line from +val to -val
-                    //double y1 = MathUtils.Map(val, -_rawMax, _rawMax, Height - 2 * _penBorder.Width, _penBorder.Width);
-                    //double y2 = MathUtils.Map(val, -_rawMax, _rawMax, _penBorder.Width, Height - 2 * _penBorder.Width);
-                    //pe.Graphics.DrawLine(_penDraw, (float)i, (float)y1, (float)i, (float)y2);
-
-                    // Simple dot
-                    //pe.Graphics.DrawRectangle(_penDraw, (float)i, (float)y1, 1, 1);
+                        case DrawMode.Raw:
+                            // Simple dot
+                            float y = (float)MathUtils.Map(val, -_rawMax, _rawMax, Height, 0);
+                            pe.Graphics.DrawRectangle(_penDraw, i, y, 1, 1);
+                            break;
+                    }
                 }
             }
         }
@@ -154,25 +165,27 @@ namespace NBagOfTricks.UI
             else
             {
                 int fitWidth = Width;
-                _buff = new float[fitWidth];
+                _smplPerPixel = _rawVals.Length / fitWidth;
 
-                // Bin to fit UI x axis.
-                int smplPerPixel = _rawVals.Length / fitWidth;
-
-                int r = 0; // index into raw
-                for (int i = 0; i < fitWidth; i++)
+                if(_smplPerPixel > 0)
                 {
-                    // Find the largest value in the bin.
-                    double max = 0;
-                    for (int d = 0; d < smplPerPixel; d++)
+                    _buff = new float[fitWidth];
+
+                    int r = 0; // index into raw
+                    for (int i = 0; i < fitWidth; i++)
                     {
-                        if (Math.Abs(_rawVals[r]) > Math.Abs(max))
-                        {
-                            max = _rawVals[r];
-                        }
-                        r++;
+                        var rms = MathUtils.RMS(_rawVals.Subset(r, _smplPerPixel));
+                        _buff[i] = rms;
+                        r += _smplPerPixel;
                     }
-                    _buff[i] = (float)max;
+                }
+                else
+                {
+                    _buff = new float[fitWidth];
+                    for (int i = 0; i < _rawVals.Length; i++)
+                    {
+                        _buff[i] = _rawVals[i];
+                    }
                 }
             }
         }

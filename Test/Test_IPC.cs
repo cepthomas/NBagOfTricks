@@ -14,7 +14,7 @@ using NBagOfTricks.PNUT;
 
 namespace NBagOfTricks.Test
 {
-    public class IPC_BASIC : TestSuite // TODO needs tests
+    public class IPC_BASIC : TestSuite
     {
         //string TS_FORMAT = @"mm\:ss\.fff";
         readonly string PIPE_NAME = "058F684D-AF82-4FE5-BD1E-9FD031FE28CF";

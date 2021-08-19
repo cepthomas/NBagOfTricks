@@ -57,13 +57,26 @@ namespace NBagOfTricks.Test
             ftree.Init();
 
             ///// Wave viewer.
-            float[] data = new float[1000];
-            for(int i = 0; i < data.Length; i ++)
+            // Simple sin.
+            float[] data1 = new float[150];
+            for (int i = 0; i < data1.Length; i++)
             {
-                data[i] = (float)Math.Sin(MathUtils.DegreesToRadians(i));
+                data1[i] = (float)Math.Sin(MathUtils.DegreesToRadians(i));
             }
-            waveViewer.DrawColor = Color.Green;
-            waveViewer.Init(data, 1.0f);
+            waveViewer1.Mode = WaveViewer.DrawMode.Raw;
+            waveViewer1.DrawColor = Color.Green;
+            waveViewer1.Init(data1, 1.0f);
+
+            // Real data.
+            string[] sdata = File.ReadAllLines(@".\Files\wav.txt");
+            float[] data2 = new float[sdata.Length];
+            for (int i = 0; i < sdata.Length; i++)
+            {
+                data2[i] = float.Parse(sdata[i]);
+            }
+            waveViewer2.Mode = WaveViewer.DrawMode.Envelope;
+            waveViewer2.DrawColor = Color.Green;
+            waveViewer2.Init(data2, 1.0f);
 
             ///// Click grid.
             clickGrid1.AddStateType(10, Color.Blue, Color.AliceBlue);
