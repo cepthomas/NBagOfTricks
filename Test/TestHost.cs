@@ -68,7 +68,8 @@ namespace NBagOfTricks.Test
             waveViewer1.Init(data1, 1.0f);
 
             // Real data.
-            string[] sdata = File.ReadAllLines(@".\Files\wav.txt");
+            string[] sdata = File.ReadAllLines(@"C:\Dev\NBagOfTricks_5\Test\Files\wav.txt");//TODO fix
+            //string[] sdata = File.ReadAllLines(@".\Files\wav.txt");
             float[] data2 = new float[sdata.Length];
             for (int i = 0; i < sdata.Length; i++)
             {
@@ -214,7 +215,7 @@ namespace NBagOfTricks.Test
         {
             // Main help file.
             var mdText = new List<string>();
-            mdText.AddRange(File.ReadAllLines(@"..\..\..\README.md"));
+            mdText.AddRange(File.ReadAllLines(@"..\..\..\README.md"));//TODO fix
             var htmlText = Tools.MarkdownToHtml(mdText, "lightgreen", "helvetica", true); // arial, helvetica, sans-serif
         }
     }

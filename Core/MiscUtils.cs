@@ -86,7 +86,7 @@ namespace NBagOfTricks
             using (var ms = new MemoryStream())
             {
                 var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, obj);
+                formatter.Serialize(ms, obj); //TODO deprecated
                 ms.Position = 0;
                 return (T)formatter.Deserialize(ms);
             }

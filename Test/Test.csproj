@@ -1,99 +1,35 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2D9D04C2-1637-4D29-AF9D-63103912EEEB}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net5.0-windows;net472</TargetFrameworks>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Version>2.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Description>NBagOfTricks tester</Description>
+    <Copyright>MIT License</Copyright>
     <RootNamespace>NBagOfTricks.Test</RootNamespace>
     <AssemblyName>NBagOfTricks.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>false</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
+    <OutputPath>..\bin\</OutputPath>
+    <!-- <DefineConstants>DEBUG;TRACE</DefineConstants> -->
     <WarningLevel>4</WarningLevel>
     <NoWarn>CS1591</NoWarn>
-    <DocumentationFile>bin\NBagOfTricks.Test.xml</DocumentationFile>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>CS1591</NoWarn>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\PNUT\PNUT.csproj" />
+    <ProjectReference Include="..\SimpleIpc\SimpleIpc.csproj" />
+    <ProjectReference Include="..\UI\UI.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestHost.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TestHost.Designer.cs">
-      <DependentUpon>TestHost.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Test_CMD.cs" />
-    <Compile Include="Test_IPC.cs" />
-    <Compile Include="Test_MMTEX.cs" />
-    <Compile Include="Test_PNUT.cs" />
-    <Compile Include="Test_TOOLS.cs" />
-    <Compile Include="Test_UTILS.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Files\wav.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="App.config" />
-    <Content Include="Files\nonascii.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="TestHost.resx">
-      <DependentUpon>TestHost.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj">
-      <Project>{2175a09a-b2a8-4121-b68c-bf142b07e1f0}</Project>
-      <Name>Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PNUT\PNUT.csproj">
-      <Project>{874f828d-19bc-4d0c-a818-671cce5e528f}</Project>
-      <Name>PNUT</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SimpleIpc\SimpleIpc.csproj">
-      <Project>{046c923a-5198-4ab7-91ed-73db98e14b93}</Project>
-      <Name>SimpleIpc</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UI\UI.csproj">
-      <Project>{b20ea1b9-e8ec-40c1-a1b7-1f48c812b9c9}</Project>
-      <Name>UI</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
 </Project>

@@ -1,18 +1,32 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2175A09A-B2A8-4121-B68C-BF142B07E1F0}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NBagOfTricks</RootNamespace>
-    <AssemblyName>NBagOfTricks</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>false</Deterministic>
+    <TargetFrameworks>net5.0-windows;net472</TargetFrameworks>
+    <UseWindowsForms>false</UseWindowsForms>
+    <Version>2.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Description>NBagOfTricks core stuff</Description>
+    <Copyright>MIT License</Copyright>
+    <RootNamespace>NBagOfTricks.Core</RootNamespace>
+    <AssemblyName>NBagOfTricks.Core</AssemblyName>
+    <OutputPath>..\bin\</OutputPath>
+    <!-- <DefineConstants>DEBUG;TRACE</DefineConstants> -->
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>CS1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- <DocumentationFile>..\bin\NBagOfTricks.Core.xml</DocumentationFile> -->
   </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+
+  <!--
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -33,30 +47,6 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="MidiTime.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tools.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CommandProcessor.cs" />
-    <Compile Include="Dumper.cs" />
-    <Compile Include="MiscUtils.cs" />
-    <Compile Include="StringUtils.cs" />
-    <Compile Include="MathUtils.cs" />
-    <Compile Include="MmTimerEx.cs" />
-    <Compile Include="MultiFileWatcher.cs" />
-    <Compile Include="TimingAnalyzer.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  -->
+
 </Project>
