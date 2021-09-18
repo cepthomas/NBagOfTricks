@@ -30,7 +30,7 @@ namespace NBagOfTricks.UI
         /// <summary>Key is path to file or directory, value is space separated associated tags.</summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Browsable(false)]
-        public Dictionary<string, string> TaggedPaths
+        public Dictionary<string, string> TaggedPaths //TODO broken? Simplify.
         {
             get { return GetTaggedPaths(); }
             set { SetTaggedPaths(value); }
