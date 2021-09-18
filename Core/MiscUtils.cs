@@ -19,7 +19,7 @@ namespace NBagOfTricks
         /// </summary>
         public static string GetVersionString()
         {
-            Version ver = typeof(MiscUtils).Assembly.GetName().Version;
+            Version ver = Assembly.GetCallingAssembly().GetName().Version;
             return $"{ver.Major}.{ver.Minor}.{ver.Build}";
         }
 

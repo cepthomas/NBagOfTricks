@@ -180,7 +180,7 @@ namespace NBagOfTricks.UI
         {
             if(Enable)
             {
-                if (_cpuPerf == null)
+                if (_cpuPerf is null)
                 {
                     InitPerf();
                 }

@@ -61,8 +61,8 @@ namespace NBagOfTricks.SimpleIpc
         /// <param name="error">T/F</param>
         public void Write(string s, bool error = false)
         {
-            var se = error ? "ERROR!!" : "";
-            s = $"{DateTime.Now:mm\\:ss\\.fff} {_category} {se} {Process.GetCurrentProcess().Id, 5} {Thread.CurrentThread.ManagedThreadId, 2} {s}{Environment.NewLine}";
+            var se = error ? "!!! ERROR !!!" : "";
+            s = $"{DateTime.Now:mm\\:ss\\.fff} {_category} {Process.GetCurrentProcess().Id, 5} {Thread.CurrentThread.ManagedThreadId, 2} {se} {s}{Environment.NewLine}";
 
             using (var mutex = new Mutex(false, MUTEX_GUID))
             {

@@ -130,7 +130,7 @@ namespace NBagOfTricks.UI
             // Setup.
             pe.Graphics.Clear(BackColor);
 
-            if (_buff == null)
+            if (_buff is null)
             {
                 pe.Graphics.DrawString("No data", _textFont, Brushes.Gray, ClientRectangle, _format);
             }
@@ -166,7 +166,7 @@ namespace NBagOfTricks.UI
         /// </summary>
         void Rescale()
         {
-            if(_rawVals == null)
+            if(_rawVals is null)
             {
                 _buff = null;
             }
