@@ -11,7 +11,7 @@ using System.Drawing.Design;
 namespace NBagOfTricks.UI
 {
     /// <summary>Extends the PropertyGrid to add some features.</summary>
-    public class PropertyGridEx : PropertyGrid
+    public class PropertyGridEx : PropertyGrid // TODO broken in .NET5
     {
         #region Events
         /// <summary>The property grid is reporting something.</summary>
