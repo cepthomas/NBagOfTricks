@@ -16,10 +16,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
-  </ItemGroup>
-
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
     <UseWindowsForms>false</UseWindowsForms>
   </PropertyGroup>
@@ -27,5 +23,9 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <UseWindowsForms>false</UseWindowsForms>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
 
 </Project>

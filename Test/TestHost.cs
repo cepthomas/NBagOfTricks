@@ -12,6 +12,7 @@ using System.Diagnostics;
 using NBagOfTricks;
 using NBagOfTricks.UI;
 
+
 namespace NBagOfTricks.Test
 {
     public partial class TestHost : Form
@@ -68,8 +69,7 @@ namespace NBagOfTricks.Test
             waveViewer1.Init(data1, 1.0f);
 
             // Real data.
-            string[] sdata = File.ReadAllLines(@"C:\Dev\NBagOfTricks_5\Test\Files\wav.txt");//TODO fix
-            //string[] sdata = File.ReadAllLines(@".\Files\wav.txt");
+            string[] sdata = File.ReadAllLines(@"C:\Dev\repos\NBagOfTricks\Test\Files\wav.txt");
             float[] data2 = new float[sdata.Length];
             for (int i = 0; i < sdata.Length; i++)
             {
