@@ -1,9 +1,11 @@
 # NBagOfTricks
-C# things collected over the years. It's broken into two components:
-- Core non-UI things.
-- UI controls and utilities, depends on Core.
+C# things collected over the years. It's broken into several projects building separate dlls.
 
-Targets .NET Framework 4.7.2. No dependencies on third party components.
+Targets:
+- .NET Framework 4.7.2 (Core, UI, SimpleIpc, PNUT)
+- .NET5 (Core, UI, PNUT, ScriptCompiler).
+
+No dependencies on third party components.
 
 Probably I should make this into a nuget package at some point.
 
@@ -15,7 +17,7 @@ Probably I should make this into a nuget package at some point.
 - MmTimerEx: A theoretically better multimedia timer with improved accuracy for sub 10 msec period.
 - MultiFileWatcher: Multiple file change watcher.
 - TimingAnalyzer: High speed event statistics.
-- Command line arg parser.
+- CommandProcessor.cs: Command line arg parser.
 
 ## Various utilities and extensions
 - MathUtils: Numbers are good.
@@ -53,6 +55,11 @@ Probably I should make this into a nuget package at some point.
 - A simple IPC client/server mechanism is used to send a single string one-way. That's all.
 - To support development of the IPC there is a rudimentary cross-process logger.
 - Primary usage is for a single instance app (ClipPlayer) to send command args to itself.
+
+
+# Script Compiler
+Compiles C#-like scripts into in-memory assemblies. Primarily for use by [Nebulator](https://github.com/cepthomas/Nebulator)
+and [NProcessing]((https://github.com/cepthomas/NProcessing). See those repos for example on how to use this.
 
 
 # PNUT

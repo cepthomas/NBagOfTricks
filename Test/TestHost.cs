@@ -86,7 +86,7 @@ namespace NBagOfTricks.Test
 
             string[] names = { "dignissim", "cras", "tincidunt", "lobortis", "feugiat", "vivamus", "at", "augue", "eget" };
 
-            for (int i = 0; i < names.Count(); i++)
+            for (int i = 0; i < names.Length; i++)
             {
                 clickGrid1.AddIndicator(names[i], 10 + i);
             }

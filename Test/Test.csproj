@@ -24,6 +24,15 @@
     <ProjectReference Include="..\UI\UI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Files\scooter.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Files\small.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>

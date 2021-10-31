@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Globalization;
-using System.Windows.Forms;
-using NBagOfTricks;
+
 
 namespace NBagOfTricks
 {
