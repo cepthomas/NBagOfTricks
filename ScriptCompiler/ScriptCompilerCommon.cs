@@ -28,7 +28,7 @@ namespace NBagOfTricks.ScriptCompiler
         public CompileResultType ResultType { get; set; } = CompileResultType.Info;
 
         /// <summary>Original source file.</summary>
-        public string SourceFile { get; set; } = "???";
+        public string SourceFile { get; set; } = "";
 
         /// <summary>Original source line number. -1 means invalid or unknown.</summary>
         public int LineNumber { get; set; } = -1;

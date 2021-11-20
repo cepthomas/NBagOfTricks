@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 
 namespace NBagOfTricks
@@ -21,19 +22,31 @@ namespace NBagOfTricks
 
         #region Fields
         /// <summary>Detect changed files.</summary>
-        List<FileSystemWatcher> _watchers = new List<FileSystemWatcher>();
+        readonly List<FileSystemWatcher> _watchers = new List<FileSystemWatcher>();
 
         /// <summary>Used to delay reporting to client as there can be multiple events for one file change.</summary>
-        System.Timers.Timer _timer = new System.Timers.Timer();
+        readonly System.Timers.Timer _timer = new System.Timers.Timer();
 
         /// <summary>Set by subordinate watchers.</summary>
-        HashSet<string> _touchedFiles = new HashSet<string>();
+        readonly HashSet<string> _touchedFiles = new HashSet<string>();
 
         /// <summary>The delay before reporting. Seems like a reasonable number for human edit interface.</summary>
         const int DELAY = 100;
 
         /// <summary>Resource clean up.</summary>
         bool _disposed = false;
+        #endregion
+
+        #region Properties
+        public List<string> WatchedFiles
+        {
+            get
+            {
+                List<string> fns = new List<string>();
+                _watchers.ForEach(w => fns.Add(w.Path));
+                return fns;
+            }
+        }
         #endregion
 
         /// <summary>
@@ -62,7 +75,7 @@ namespace NBagOfTricks
         }
 
         /// <summary>
-        /// Add anew listener.
+        /// Add a new listener.
         /// </summary>
         /// <param name="path"></param>
         public void Add(string path)

@@ -330,11 +330,12 @@ namespace NBagOfTricks.ScriptCompiler
                     string strim = s.Trim();
 
                     // like Include("path\name.neb");
+                    //Include(path\utils.neb);
                     if (strim.StartsWith("Include"))
                     {
                         // Exclude from output file.
-                        List<string> parts = strim.SplitByTokens("\"");
-                        if (parts.Count == 3)
+                        List<string> parts = strim.SplitByTokens("()");
+                        if (parts.Count >= 2)
                         {
                             string fn = Path.Combine(WorkPath, parts[1]);
 
@@ -345,6 +346,10 @@ namespace NBagOfTricks.ScriptCompiler
                                 LineNumber = 1
                             };
                             valid = PreprocessFile(subcont);
+                        }
+                        else
+                        {
+                            valid = false;
                         }
 
                         if (!valid)
