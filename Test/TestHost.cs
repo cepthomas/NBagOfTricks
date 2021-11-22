@@ -215,7 +215,7 @@ namespace NBagOfTricks.Test
         {
             // Main help file.
             var mdText = new List<string>();
-            mdText.AddRange(File.ReadAllLines(@"..\..\..\README.md"));//TODO fix
+            mdText.AddRange(File.ReadAllLines(@"..\..\README.md"));
             var htmlText = Tools.MarkdownToHtml(mdText, "lightgreen", "helvetica", true); // arial, helvetica, sans-serif
         }
     }

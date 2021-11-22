@@ -49,8 +49,8 @@ namespace NBagOfTricks.UI
         ///// <summary>CPU info.</summary>
         //int _physicalProcessors = 0;
 
-        ///// <summary>CPU info.</summary>
-        //int _logicalProcessors = 0;
+        /// <summary>CPU info.</summary>
+        int _logicalProcessors = 0;
 
         /// <summary>The pen.</summary>
         readonly Pen _pen = new Pen(Color.Black, 1);
@@ -215,39 +215,27 @@ namespace NBagOfTricks.UI
             // The Processor (% Processor Time) counter will be out of 100 and will give the total usage across all
             // processors /cores/etc in the computer. However, the Processor (% Process Time) is scaled by the number
             // of logical processors. To get average usage across a computer, divide the result by Environment.ProcessorCount.
-            
-            //TODO broken in .NET5:
-            //using (var searcher = new System.Management.ManagementObjectSearcher("Select * from Win32_Processor"))
-            //{
-            //    var items = searcher.Get();
-            //    foreach (var item in items)
-            //    {
-            //        _cores = int.Parse(item["NumberOfCores"].ToString());
-            //    }
-            //}
 
-            //using (var searcher = new System.Management.ManagementObjectSearcher("Select * from Win32_ComputerSystem"))
-            //{
-            //    var items = searcher.Get();
-            //    foreach (var item in items)
-            //    {
-            //        _physicalProcessors = int.Parse(item["NumberOfProcessors"].ToString());
-            //        _logicalProcessors = int.Parse(item["NumberOfLogicalProcessors"].ToString());
-            //    }
-            //}
+            // There are several different pieces of information relating to processors that you could get:
+            // Number of physical processors
+            // Number of cores
+            // Number of logical processors.
+            // These can all be different; in the case of a machine with 2 dual-core hyper-threading-enabled processors,
+            //   there are 2 physical processors, 4 cores, and 8 logical processors.
 
-            //_processesPerf = new PerformanceCounter[_logicalProcessors];
-            //_processesBuffs = new double[_logicalProcessors][];
+            _logicalProcessors = Environment.ProcessorCount;
+            _processesPerf = new PerformanceCounter[_logicalProcessors];
+            _processesBuffs = new double[_logicalProcessors][];
 
-            //for (int i = 0; i < _logicalProcessors; i++)
-            //{
-            //    var pc = new PerformanceCounter("Processor", "% Processor Time", i.ToString());
-            //    _processesPerf[i] = pc;
-            //}
+            for (int i = 0; i < _logicalProcessors; i++)
+            {
+                var pc = new PerformanceCounter("Processor", "% Processor Time", i.ToString());
+                _processesPerf[i] = pc;
+            }
 
-            //_cpuPerf = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            _cpuPerf = new PerformanceCounter("Processor", "% Processor Time", "_Total");
 
-            //SetBuffs();
+            SetBuffs();
 
             _inited = true;
         }
