@@ -1,9 +1,9 @@
 # NBagOfTricks
-C# things collected over the years. It's broken into several projects building separate dlls.
+C# things collected over the years.
 
 Targets:
-- .NET Framework 4.7.2 (Core, UI, SimpleIpc, PNUT)
-- .NET5 (Core, UI, PNUT, ScriptCompiler).
+- .NET Framework 4.7.2 (Core, SimpleIpc, PNUT)
+- .NET5 (Core, PNUT, ScriptCompiler).
 
 No dependencies on third party components.
 
@@ -25,30 +25,6 @@ Probably I should make this into a nuget package at some point.
 - Tools: Things that are higher level than MiscUtils, formatters and the like.
 - StringUtils: Mostly low-level extensions.
 - Dumper: Writes object tree contents.
-
-
-# UI
-
-## Controls for audio (or other) apps
-- Meter: Linear or log.
-- Pot: Just like on your guitar.
-- Slider: Just like on your mixer.
-- VirtualKeyboard: Piano control based loosely on Leslie Sanford's [Midi Toolkit](https://github.com/tebjan/Sanford.Multimedia.Midi).
-
-## General purpose UI components
-- PropertyGridEx: Added a few features.
-- FilTree: Folder/file tree control with tags/filters and notifications.
-- OptionsEditor: User can select from a list of strings, or add/delete elements.
-- ClickGrid: Essentially a grid array of buttons.
-- TimeBar: Elapsed time control.
-- BarBar: Similar to TimeBar but shows musical bars and beats.
-- CpuMeter: Standalone display control.
-- TextViewer: With colorizing.
-- WaitCursor: Easy to use cursor.
-
-## Various utilities and extensions
-- KeyUtils: Keyboard input.
-- UiUtils: Control helpers, formatters, etc.
 
 
 # Simple IPC

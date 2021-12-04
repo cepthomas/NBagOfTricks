@@ -1,24 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  
   <PropertyGroup>
     <TargetFrameworks>net5.0-windows;net472</TargetFrameworks>
-    <UseWindowsForms>true</UseWindowsForms>
+    <UseWindowsForms>false</UseWindowsForms>
     <Version>2.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Description>NBagOfTricks UI components</Description>
+    <Description>NBagOfTricks core stuff</Description>
     <Copyright>MIT License</Copyright>
-    <RootNamespace>NBagOfTricks.UI</RootNamespace>
-    <AssemblyName>NBagOfTricks.UI</AssemblyName>
-    <OutputPath>..\bin\</OutputPath>
+    <RootNamespace>NBagOfTricks</RootNamespace>
+    <AssemblyName>NBagOfTricks</AssemblyName>
+    <OutputPath>bin\</OutputPath>
     <!-- <DefineConstants>DEBUG;TRACE</DefineConstants> -->
     <WarningLevel>4</WarningLevel>
     <NoWarn>CS1591</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
-  </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
     <UseWindowsForms>true</UseWindowsForms>
@@ -27,5 +23,15 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net5.0-windows' ">
+    <Compile Remove="Core/Converters.cs" />
+    <Compile Remove="ScriptCompiler/ScriptCompilerCore.cs" />
+    <Compile Remove="ScriptCompiler/ScriptCompilerCommon.cs" />
+  </ItemGroup>
 
 </Project>

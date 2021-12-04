@@ -18,10 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\PNUT\PNUT.csproj" />
-    <ProjectReference Include="..\SimpleIpc\SimpleIpc.csproj" />
-    <ProjectReference Include="..\UI\UI.csproj" />
+    <ProjectReference Include="..\NBagOfTricks.csproj" />
   </ItemGroup>
 
   <ItemGroup>
