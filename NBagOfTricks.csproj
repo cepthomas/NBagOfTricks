@@ -14,7 +14,6 @@
     <!-- <DefineConstants>DEBUG;TRACE</DefineConstants> -->
     <WarningLevel>4</WarningLevel>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <!-- <Nullable>enable</Nullable> -->
     <SatelliteResourceLanguages>none</SatelliteResourceLanguages> <!-- en none -->
   </PropertyGroup>
 
@@ -30,6 +29,7 @@
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
     <NoWarn>CS1591,CA1837,IDE0063,IDE0090</NoWarn>
+    <!--<Nullable>enable</Nullable>-->
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">

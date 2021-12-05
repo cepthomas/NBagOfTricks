@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 
+#nullable enable
 
 namespace NBagOfTricks.ScriptCompiler
 {
@@ -40,7 +41,7 @@ namespace NBagOfTricks.ScriptCompiler
         };
 
         /// <summary>The compiled script.</summary>
-        public object Script { get; set; } = null;
+        public object? Script { get; set; } = null;
 
         /// <summary>Accumulated errors/results.</summary>
         public List<CompileResult> Results { get; } = new List<CompileResult>();
