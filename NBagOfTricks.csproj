@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
-    <TargetFrameworks>net5.0-windows;net472</TargetFrameworks>
+    <TargetFrameworks>net5.0;net472</TargetFrameworks>
     <OutputType>WinExe</OutputType>
     <UseWindowsForms>false</UseWindowsForms>
     <Version>2.0.0</Version>
@@ -19,15 +19,15 @@
     <SatelliteResourceLanguages>none</SatelliteResourceLanguages> <!-- en none -->
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
-    <UseWindowsForms>true</UseWindowsForms>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+    <!--<UseWindowsForms>true</UseWindowsForms>-->
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <UseWindowsForms>true</UseWindowsForms>
+    <!--<UseWindowsForms>true</UseWindowsForms>-->
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
     <!--<Compile Remove="Test/*" />-->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" />
   </ItemGroup>
