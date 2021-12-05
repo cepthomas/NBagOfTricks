@@ -14,6 +14,8 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>CS1591</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- <Nullable>enable</Nullable> -->
+    <!-- <SatelliteResourceLanguages>none</SatelliteResourceLanguages> --> <!-- en none -->
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
@@ -25,10 +27,12 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
+    <Compile Remove="Test/*" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net5.0-windows' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <Compile Remove="Test/*" />
     <Compile Remove="Core/Converters.cs" />
     <Compile Remove="ScriptCompiler/ScriptCompilerCore.cs" />
     <Compile Remove="ScriptCompiler/ScriptCompilerCommon.cs" />
