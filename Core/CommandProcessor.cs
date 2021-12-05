@@ -298,6 +298,13 @@ namespace NBagOfTricks
     /// <summary>Specialized container. Has Add() to support initialization.</summary>
     public class Commands : List<Command>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="desc"></param>
+        /// <param name="args"></param>
+        /// <param name="func"></param>
         public void Add(string name, string desc, Arguments args, Func<string, bool> func = null)
         {
             var cmd = new Command()
@@ -315,6 +322,14 @@ namespace NBagOfTricks
     /// <summary>Specialized container. Has Add() to support initialization.</summary>
     public class Arguments : List<Argument>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="desc"></param>
+        /// <param name="argopt"></param>
+        /// <param name="valopt"></param>
+        /// <param name="func"></param>
         public void Add(string name, string desc, ArgOptType argopt, ArgOptType valopt, Func<string, bool> func = null)
         {
             var arg = new Argument()

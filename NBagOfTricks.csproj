@@ -13,7 +13,6 @@
     <OutputPath>bin\</OutputPath>
     <!-- <DefineConstants>DEBUG;TRACE</DefineConstants> -->
     <WarningLevel>4</WarningLevel>
-    <NoWarn>CS1591</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- <Nullable>enable</Nullable> -->
     <SatelliteResourceLanguages>none</SatelliteResourceLanguages> <!-- en none -->
@@ -28,5 +27,13 @@
     <Compile Remove="ScriptCompiler/ScriptCompilerCore.cs" />
     <Compile Remove="ScriptCompiler/ScriptCompilerCommon.cs" />
   </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
+    <NoWarn>CS1591,CA1837,IDE0063,IDE0090</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <NoWarn>CS1591</NoWarn>
+  </PropertyGroup>
 
 </Project>
