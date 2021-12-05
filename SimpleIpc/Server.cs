@@ -50,7 +50,7 @@ namespace NBagOfTricks.SimpleIpc
         public Server(string pipeName, string logfn)
         {
             _pipeName = pipeName;
-            _log = new MpLog(logfn, "SRVR");
+            _log = new MpLog(logfn, "SERVER");
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace NBagOfTricks.SimpleIpc
                 using (var stream = new NamedPipeServerStream(_pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
                 using (AutoResetEvent connectEvent = new AutoResetEvent(false))
                 {
-                    Exception et = null;
+                    Exception eserver = null;
 
                     try
                     {
@@ -173,11 +173,11 @@ namespace NBagOfTricks.SimpleIpc
                             catch (Exception er)
                             {
                                 // Pass any exceptions back to the main thread for handling.
-                                et = er;
+                                eserver = er;
                             }
 
                             // Signal completion. Blows up on shutdown - not sure why.
-                            if (!connectEvent.SafeWaitHandle.IsClosed)
+                            if (!connectEvent.SafeWaitHandle.IsInvalid && !connectEvent.SafeWaitHandle.IsClosed)
                             {
                                 connectEvent.Set();
                             }
@@ -186,21 +186,28 @@ namespace NBagOfTricks.SimpleIpc
                     }
                     catch (Exception ee)
                     {
-                        et = ee;
+                        eserver = ee;
                     }
 
                     // Wait for events of interest.
-                    int sig = WaitHandle.WaitAny(new WaitHandle[] { connectEvent, _cancelEvent });
+                    int sig = -1;
+                    if (!connectEvent.SafeWaitHandle.IsInvalid &&
+                        !connectEvent.SafeWaitHandle.IsClosed &&
+                        !_cancelEvent.SafeWaitHandle.IsInvalid &&
+                        !_cancelEvent.SafeWaitHandle.IsClosed)
+                    {
+                        sig = WaitHandle.WaitAny(new WaitHandle[] { connectEvent, _cancelEvent });
+                    }
 
                     if (sig == 1)
                     {
                         _log.Write($"shutdown sig");
                         _running = false;
                     }
-                    else if (et != null)
+                    else if (eserver != null)
                     {
-                        _log.Write($"exception:{et}", true);
-                        throw et; // rethrow
+                        _log.Write($"exception:{eserver}", true);
+                        throw eserver; // rethrow
                     }
                     // else done with this stream.
                 }

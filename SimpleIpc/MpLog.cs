@@ -36,7 +36,7 @@ namespace NBagOfTricks.SimpleIpc
         public MpLog(string filename, string category)
         {
             _filename = filename;
-            int catSize = 4;
+            int catSize = 6;
             _category = category.Length >= catSize ? category.Left(catSize) : category.PadRight(catSize);
 
             // Good time to check file size.

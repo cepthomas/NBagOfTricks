@@ -36,7 +36,7 @@ namespace NBagOfTricks.SimpleIpc
         public Client(string pipeName, string logfn)
         {
             _pipeName = pipeName;
-            _log = new MpLog(logfn, "CLNT");
+            _log = new MpLog(logfn, "CLIENT");
         }
 
         /// <summary>

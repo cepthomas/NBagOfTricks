@@ -37,19 +37,19 @@ namespace NBagOfTricks
         }
     }
 
-    /// <summary>Serialize prettier.</summary>
-    public class JsonFontConverter : JsonConverter<Font>
-    {
-        public override Font Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            var parts = StringUtils.SplitByToken(reader.GetString(), ",");
-            Font font = new(parts[0], float.Parse(parts[1]));
-            return font;
-        }
+    ///// <summary>Serialize prettier.</summary>
+    //public class JsonFontConverter : JsonConverter<Font> TODO fix this
+    //{
+    //    public override Font Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    //    {
+    //        var parts = StringUtils.SplitByToken(reader.GetString(), ",");
+    //        Font font = new(parts[0], float.Parse(parts[1]));
+    //        return font;
+    //    }
 
-        public override void Write(Utf8JsonWriter writer, Font font, JsonSerializerOptions options)
-        {
-            writer.WriteStringValue($"{font.FontFamily.Name},{font.Size}");
-        }
-    }
+    //    public override void Write(Utf8JsonWriter writer, Font font, JsonSerializerOptions options)
+    //    {
+    //        writer.WriteStringValue($"{font.FontFamily.Name},{font.Size}");
+    //    }
+    //}
 }

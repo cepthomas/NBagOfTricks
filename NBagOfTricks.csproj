@@ -19,28 +19,14 @@
     <SatelliteResourceLanguages>none</SatelliteResourceLanguages> <!-- en none -->
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
-    <!--<UseWindowsForms>true</UseWindowsForms>-->
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <!--<UseWindowsForms>true</UseWindowsForms>-->
-  </PropertyGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0-windows' ">
-    <!--<Compile Remove="Test/*" />-->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <!--<Compile Remove="Test/*" />-->
     <Compile Remove="Core/Converters.cs" />
     <Compile Remove="ScriptCompiler/ScriptCompilerCore.cs" />
     <Compile Remove="ScriptCompiler/ScriptCompilerCommon.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
   </ItemGroup>
 
 </Project>

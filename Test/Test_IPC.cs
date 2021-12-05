@@ -26,7 +26,7 @@ namespace NBagOfTricks.Test
         {
             UT_INFO("Tests simple IPC.");
 
-            _log = new MpLog(LogFileName, "^^^^^^");
+            _log = new MpLog(LogFileName, "TESTER");
 
             // Server
             using (Server server = new Server(PIPE_NAME, LogFileName))
@@ -51,7 +51,7 @@ namespace NBagOfTricks.Test
                     }
                 }
 
-                // Client - !put in separate process!
+                // Client - TODO put in separate process!
                 Client client = new Client(PIPE_NAME, LogFileName);
                 var res = client.Send("ABC123", 1000);
 
