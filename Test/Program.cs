@@ -17,7 +17,7 @@ namespace NBagOfTricks.Test
             //var cases = new[] { "UTILS" };
             var cases = new[] { "PNUT", "UTILS", "CMD", "MMTEX" };
             runner.RunSuites(cases);
-            File.WriteAllLines(@"..\..\test_out.txt", runner.Context.OutputLines);
+            File.WriteAllLines(@"test_out.txt", runner.Context.OutputLines);
 
             //     var mdText = new List<string>();
             //     mdText.AddRange(File.ReadAllLines(@"..\..\README.md"));

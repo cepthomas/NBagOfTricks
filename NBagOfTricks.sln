@@ -5,18 +5,12 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NBagOfTricks", "NBagOfTricks.csproj", "{2175A09A-B2A8-4121-B68C-BF142B07E1F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{2D9D04C2-1637-4D29-AF9D-63103912EEEB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2D9D04C2-1637-4D29-AF9D-63103912EEEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D9D04C2-1637-4D29-AF9D-63103912EEEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D9D04C2-1637-4D29-AF9D-63103912EEEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D9D04C2-1637-4D29-AF9D-63103912EEEB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2175A09A-B2A8-4121-B68C-BF142B07E1F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2175A09A-B2A8-4121-B68C-BF142B07E1F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2175A09A-B2A8-4121-B68C-BF142B07E1F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
