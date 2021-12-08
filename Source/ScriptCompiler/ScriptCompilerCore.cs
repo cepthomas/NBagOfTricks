@@ -5,7 +5,6 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Diagnostics;
-using NBagOfTricks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;

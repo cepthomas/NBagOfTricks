@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
-using NBagOfTricks;
 using NBagOfTricks.PNUT;
 
 
@@ -17,7 +16,7 @@ namespace NBagOfTricks.Test
         MmTimerEx _timer = new MmTimerEx();
 
         /// <summary>Measurer.</summary>
-        TimingAnalyzer _tan = new TimingAnalyzer();
+        readonly TimingAnalyzer _tan = new TimingAnalyzer();
 
         /// <summary>State.</summary>
         bool _running = false;

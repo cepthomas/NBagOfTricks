@@ -28,7 +28,7 @@ Probably I should make this into a nuget package at some point.
 
 
 # Simple IPC
-- A simple IPC client/server mechanism is used to send a single string one-way. That's all.
+- A simple IPC server/single-client mechanism is used to send a single string one-way. That's all.
 - To support development of the IPC there is a rudimentary cross-process logger.
 - Primary usage is for a single instance app (ClipPlayer) to send command args to itself.
 

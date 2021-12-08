@@ -7,10 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using NBagOfTricks;
 using NBagOfTricks.SimpleIpc;
 using NBagOfTricks.PNUT;
-
+using System.Diagnostics;
 
 namespace NBagOfTricks.Test
 {
@@ -25,48 +24,46 @@ namespace NBagOfTricks.Test
         public override void RunSuite()
         {
             UT_INFO("Tests simple IPC.");
+            int NumIterators = 9;
 
             _log = new MpLog(LogFileName, "TESTER");
 
             // Server
             using (Server server = new Server(PIPE_NAME, LogFileName))
             {
+                int iter = 0;
+
                 server.ServerEvent += Server_IpcEvent;
                 server.Start();
 
-                string s;
-
                 void Server_IpcEvent(object sender, ServerEventArgs e)
                 {
-                    switch (e.Status)
+                    UT_FALSE(e.Error);
+                    UT_EQUAL(e.Message, $"ABC{iter * 111}");
+                }
+
+                // Client - TODO put clients in separate process.
+                // new Process { StartInfo = new ProcessStartInfo(fn) { UseShellExecute = true } }.Start();
+                for(iter = 0; iter < NumIterators; iter++)
+                {
+                    Client client = new Client(PIPE_NAME, LogFileName);
+                    var res = client.Send($"ABC{(iter+1)*111}", 1000);
+
+                    switch (res)
                     {
-                        case ServerStatus.Message:
-                            s = e.Message;
-                            // s should be "ABC123"
+                        case ClientStatus.Ok:
+                            _log.Write($"Client ok");
                             break;
 
-                        case ServerStatus.Error:
-                            _log.Write($"Server error:{e.Message}", true);
+                        case ClientStatus.Error:
+                            _log.Write($"Client error:{client.Error}", true);
+                            break;
+
+                        case ClientStatus.Timeout:
+                            _log.Write($"Client timeout", true);
                             break;
                     }
                 }
-
-                // Client - TODO put in separate process!
-                Client client = new Client(PIPE_NAME, LogFileName);
-                var res = client.Send("ABC123", 1000);
-
-                switch (res)
-                {
-                    case ClientStatus.Error:
-                        _log.Write($"Client error:{client.Error}", true);
-                        break;
-
-                    case ClientStatus.Timeout:
-                        _log.Write($"Client timeout", true);
-                        break;
-                }
-
-                _log.Write($"sub thread exit {res}");
             }
         }
     }

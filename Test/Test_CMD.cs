@@ -2,7 +2,6 @@
 using System.Text;
 using System.Collections.Generic;
 using System.IO;
-using NBagOfTricks;
 using NBagOfTricks.PNUT;
 
 
@@ -139,19 +138,20 @@ namespace NBagOfTricks.Test
             UT_INFO("Test the failure modes of Command Processor.");
 
             // Create the specs for the command processor.
-            var cp = new Processor();
-
-            cp.Commands = new Commands
+            var cp = new Processor
             {
+                Commands = new Commands
                 {
-                    "cmderrors g",
-                    "Just a command that does amazing things with some arguments",
-                    new Arguments
                     {
-                        { "def2", "required arg missing",            ArgOptType.Req, ArgOptType.Opt,  (v) => { return true; } },
-                        { "jkl2", "arg with missing required value", ArgOptType.Req, ArgOptType.Req,  (v) => { return true; } },
-                        { "abc2", "extraneous value",                ArgOptType.Req, ArgOptType.None, (v) => { return true; } },
-                        { "ghi2", "arg with bad validate",           ArgOptType.Req, ArgOptType.Req,  (v) => { return false; } },
+                        "cmderrors g",
+                        "Just a command that does amazing things with some arguments",
+                        new Arguments
+                        {
+                            { "def2", "required arg missing",            ArgOptType.Req, ArgOptType.Opt,  (v) => { return true; } },
+                            { "jkl2", "arg with missing required value", ArgOptType.Req, ArgOptType.Req,  (v) => { return true; } },
+                            { "abc2", "extraneous value",                ArgOptType.Req, ArgOptType.None, (v) => { return true; } },
+                            { "ghi2", "arg with bad validate",           ArgOptType.Req, ArgOptType.Req,  (v) => { return false; } },
+                        }
                     }
                 }
             };
@@ -202,25 +202,27 @@ namespace NBagOfTricks.Test
             }
 
             // Create the specs for the command processor.
-            var cp = new Processor();
-            cp.Commands = new Commands
+            var cp = new Processor
             {
+                Commands = new Commands
                 {
-                    "",
-                    "No specific command, use default",
-                    new Arguments
                     {
-                        { "abc3", "optional arg with no value",  ArgOptType.Opt, ArgOptType.None, (v) => { args.Add("abc3", v); return true; } },
-                        { "def3", "required arg with no value",  ArgOptType.Req, ArgOptType.None, (v) => { args.Add("def3", v); return true; } },
-                        { "ghi3", "optional arg with value",     ArgOptType.Opt, ArgOptType.Opt,  (v) => { args.Add("ghi3", v); return true; } },
-                        { "jkl3", "required arg with value",     ArgOptType.Req, ArgOptType.Req,  (v) => { args.Add("jkl3", v); return true; } }
-                    },
-                    // Files func
-                    (v) =>
-                    {
-                        if (v.EndsWith(".txt")) { txtFiles.Add(v); return true; }
-                        else if (v.EndsWith(".doc")) { docFiles.Add(v); return true; }
-                        else { return false; }
+                        "",
+                        "No specific command, use default",
+                        new Arguments
+                        {
+                            { "abc3", "optional arg with no value",  ArgOptType.Opt, ArgOptType.None, (v) => { args.Add("abc3", v); return true; } },
+                            { "def3", "required arg with no value",  ArgOptType.Req, ArgOptType.None, (v) => { args.Add("def3", v); return true; } },
+                            { "ghi3", "optional arg with value",     ArgOptType.Opt, ArgOptType.Opt,  (v) => { args.Add("ghi3", v); return true; } },
+                            { "jkl3", "required arg with value",     ArgOptType.Req, ArgOptType.Req,  (v) => { args.Add("jkl3", v); return true; } }
+                        },
+                        // Files func
+                        (v) =>
+                        {
+                            if (v.EndsWith(".txt")) { txtFiles.Add(v); return true; }
+                            else if (v.EndsWith(".doc")) { docFiles.Add(v); return true; }
+                            else { return false; }
+                        }
                     }
                 }
             };

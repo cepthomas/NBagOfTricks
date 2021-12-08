@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using NBagOfTricks;
 using NBagOfTricks.PNUT;
 
 
@@ -39,7 +38,7 @@ namespace NBagOfTricks.Test
             // Should pass on UT_STR_EQUAL.
             UT_EQUAL(str2, "the mulberry bush");
 
-            UT_EQUAL("".Count(), 0);
+            UT_EQUAL("".Length, 0);
 
             UT_INFO("Should fail on UT_NOT_EQUAL.");
             UT_NOT_EQUAL(int1, 321);
@@ -122,13 +121,7 @@ namespace NBagOfTricks.Test
 
             // Cause an explosion.
             //UT_ASSERT(11, 22);
-            //UT_INFO(Sub(0));
-        }
-
-        string Sub(int i)
-        {
-            int v = 100 / i;
-            return v.ToString();
+            //UT_INFO($"{100/0}");
         }
     }
 }

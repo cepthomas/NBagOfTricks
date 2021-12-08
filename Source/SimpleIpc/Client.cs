@@ -8,7 +8,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NBagOfTricks;
 
 
 namespace NBagOfTricks.SimpleIpc
@@ -77,6 +76,7 @@ namespace NBagOfTricks.SimpleIpc
             }
             catch (Exception ex)
             {
+                // Other error.
                 _log.Write($"{ex}", true);
                 Error = ex.ToString();
                 res = ClientStatus.Error;

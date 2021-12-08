@@ -8,18 +8,33 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NBagOfTricks;
 
 
 namespace NBagOfTricks.SimpleIpc
 {
-    /// <summary>Possible outcomes.</summary>
-    public enum ServerStatus { Ok, Message, Error }
+    /// <summary>Possible states/outcomes.</summary>
+    enum ConnectionStatus
+    {
+        Idle,           // Not connected, waiting.
+        Receiving,      // Connected, collecting string.
+        ValidMessage,   // Good message completed.
+        Error           // Bad thing happened.
+    }
 
+    /// <summary>Per connection.</summary>
+    class ConnectionState
+    {
+        public byte[] Buffer { get; set; } = new byte[1024];
+        public int BufferIndex { get; set; } = 0;
+        public ConnectionStatus Status { get; set; } = ConnectionStatus.Idle;
+        public string Message { get; set; } = "";
+    }
+
+    /// <summary>Notify client of some connection event.</summary>
     public class ServerEventArgs : EventArgs
     {
-        public ServerStatus Status { get; set; } = ServerStatus.Ok;
         public string Message { get; set; } = "";
+        public bool Error { get; set; } = false;
     }
 
     public class Server : IDisposable
@@ -63,14 +78,14 @@ namespace NBagOfTricks.SimpleIpc
         }
 
         /// <summary>
-        /// Kill the server.
+        /// Stop the server - called from main.
         /// </summary>
         /// <returns></returns>
-        public bool Kill()
+        public bool Stop()
         {
             bool ok = true;
 
-            _log.Write($"Kill()");
+            _log.Write($"Stop()");
 
             _running = false;
             _cancelEvent.Set();
@@ -88,6 +103,11 @@ namespace NBagOfTricks.SimpleIpc
         /// </summary>
         public void Dispose()
         {
+            if(_running)
+            {
+                Stop();
+            }
+
             _cancelEvent.Dispose();
         }
 
@@ -96,124 +116,131 @@ namespace NBagOfTricks.SimpleIpc
         /// </summary>
         void ServerThread()
         {
-            var buffer = new byte[1024];
-            var index = 0;
+            _log.Write($"Main thread started");
 
-            _log.Write($"thread started");
-
-            while (_running)
+            try
             {
-                using (var stream = new NamedPipeServerStream(_pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
-                using (AutoResetEvent connectEvent = new AutoResetEvent(false))
+                while (_running)
                 {
-                    Exception eserver = null;
-
-                    try
+                    using (var stream = new NamedPipeServerStream(_pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
+                    using (var connectEvent = new AutoResetEvent(false))
                     {
-                        _log.Write($"before BeginWaitForConnection()");
-                        stream.BeginWaitForConnection(ar =>
+                        ServerEventArgs evt = new ServerEventArgs();
+
+                        _log.Write($"BeginWaitForConnection()");
+
+                        AsyncCallback callBack = new AsyncCallback(ProcessClient);
+
+                        ConnectionState cst = new ConnectionState();
+
+                        stream.BeginWaitForConnection(callBack, cst);
+
+                        // Check for events of interest.
+                        int sig = WaitHandle.WaitAny(new WaitHandle[] { connectEvent, _cancelEvent });
+                        switch (sig)
                         {
+                            case 0:
+                                // Normal, ignore.
+                                break;
+
+                            case 1:
+                                _log.Write($"Normal stop signal");
+                                _running = false;
+                                break;
+
+                            default:
+                                _log.Write($"Unknown wait result:{sig}");
+                                _running = false;
+                                break;
+                        }
+
+                        ///// The actual worker callback.
+                        void ProcessClient(IAsyncResult ar)
+                        {
+                            // This is running in a new thread. Wait for something to show up.
+                            ConnectionState state = ar.AsyncState as ConnectionState;
+
                             try
                             {
-                                // This is running in a new thread.
-                                _log.Write($"before EndWaitForConnection()");
+                                _log.Write($"EndWaitForConnection()");
                                 stream.EndWaitForConnection(ar);
-                                _log.Write($"after EndWaitForConnection() - client connected");
+                                _log.Write($"Client wants to tell us something");
 
-                                // A client wants to tell us something.
-                                bool done = false;
-                                int retries = 0;
+                                state.Status = ConnectionStatus.Receiving;
 
-                                while(!done)
+                                while (state.Status == ConnectionStatus.Receiving)
                                 {
-                                    if(retries++ < 10)
+                                    // The total number of bytes read into the buffer or 0 if the end of the stream has been reached.
+                                    var numRead = stream.Read(state.Buffer, state.BufferIndex, state.Buffer.Length - state.BufferIndex);
+                                    _log.Write($"num read:{numRead}");
+
+                                    if (numRead > 0)
                                     {
-                                        var numRead = stream.Read(buffer, index, buffer.Length - index);
-                                        _log.Write($"num read:{numRead}");
+                                        state.BufferIndex += numRead;
 
-                                        if (numRead > 0)
+                                        // Full string arrived?
+                                        int terminator = Array.IndexOf(state.Buffer, (byte)'\n');
+                                        if (terminator >= 0)
                                         {
-                                            index += numRead;
+                                            // Make buffer into a string.
+                                            string msg = new UTF8Encoding().GetString(state.Buffer, 0, terminator);
 
-                                            // Full string arrived?
-                                            int terminator = Array.IndexOf(buffer, (byte)'\n');
+                                            _log.Write($"Got message:{msg}");
 
-                                            if (terminator >= 0)
-                                            {
-                                                done = true;
+                                            // Process the line.
+                                            evt.Message = msg;
+                                            evt.Error = false;
 
-                                                // Make buffer into a string.
-                                                string msg = new UTF8Encoding().GetString(buffer, 0, terminator);
-
-                                                _log.Write($"got message:{msg}");
-
-                                                // Process the line.
-                                                ServerEvent?.Invoke(this, new ServerEventArgs() { Message = msg, Status = ServerStatus.Message });
-
-                                                // Reset buffer.
-                                                index = 0;
-                                            }
-                                        }
-
-                                        if(!done)
-                                        {
-                                            // Wait a bit.
-                                            Thread.Sleep(50);
+                                            // Reset.
+                                            state.BufferIndex = 0;
+                                            state.Status = ConnectionStatus.ValidMessage;
                                         }
                                     }
-                                    else
-                                    {
-                                        // Timed out waiting for client.
-                                        _log.Write($"Timed out waiting for client eol", true);
-                                        ServerEvent?.Invoke(this, new ServerEventArgs() { Message = $"Timed out waiting for client eol", Status = ServerStatus.Error });
-                                        done = true;
-                                    }
+
+                                    // Wait a bit.
+                                    Thread.Sleep(50);
                                 }
+                            }
+                            catch (ObjectDisposedException er)
+                            {
+                                state.Status = ConnectionStatus.Error;
+                                evt.Message = $"Client pipe is closed: {er.Message}";
+                                evt.Error = true;
+                            }
+                            catch (IOException er)
+                            {
+                                state.Status = ConnectionStatus.Error;
+                                evt.Message = $"Client pipe connection has been broken: {er.Message}";
+                                evt.Error = true;
                             }
                             catch (Exception er)
                             {
-                                // Pass any exceptions back to the main thread for handling.
-                                eserver = er;
+                                state.Status = ConnectionStatus.Error;
+                                evt.Message = $"Client pipe unknown exception: {er.Message}";
+                                evt.Error = true;
                             }
 
-                            // Signal completion. Blows up on shutdown - not sure why.
-                            if (!connectEvent.SafeWaitHandle.IsInvalid && !connectEvent.SafeWaitHandle.IsClosed)
-                            {
-                                connectEvent.Set();
-                            }
+                            // Hand back what we captured.
+                            ServerEvent?.Invoke(this, evt);
 
-                        }, null);
+                            // Signal completion.
+                            connectEvent.Set();
+                        }
+                        ///// End of ProcessClient() callback
                     }
-                    catch (Exception ee)
-                    {
-                        eserver = ee;
-                    }
-
-                    // Wait for events of interest.
-                    int sig = -1;
-                    if (!connectEvent.SafeWaitHandle.IsInvalid &&
-                        !connectEvent.SafeWaitHandle.IsClosed &&
-                        !_cancelEvent.SafeWaitHandle.IsInvalid &&
-                        !_cancelEvent.SafeWaitHandle.IsClosed)
-                    {
-                        sig = WaitHandle.WaitAny(new WaitHandle[] { connectEvent, _cancelEvent });
-                    }
-
-                    if (sig == 1)
-                    {
-                        _log.Write($"shutdown sig");
-                        _running = false;
-                    }
-                    else if (eserver != null)
-                    {
-                        _log.Write($"exception:{eserver}", true);
-                        throw eserver; // rethrow
-                    }
-                    // else done with this stream.
                 }
             }
-
-            _log.Write($"thread ended");
+            catch (Exception ee)
+            {
+                // General server error.
+                ServerEvent?.Invoke(this, new ServerEventArgs()
+                {
+                    Message = $"Unknown server exception: {ee.Message}",
+                    Error = true
+                });
+            }
+    
+            _log.Write($"Main thread ended");
         }
     }
 }

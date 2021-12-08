@@ -176,7 +176,7 @@ namespace NBagOfTricks.PNUT
                 {
                     case OutputFormat.Xml:
                         // Any properties?
-                        if (Context.PropertyLines.Count() > 0)
+                        if (Context.PropertyLines.Count > 0)
                         {
                             tc.RecordVerbatim($"        <properties>");
                             Context.PropertyLines.ForEach(l => tc.RecordVerbatim(l));
