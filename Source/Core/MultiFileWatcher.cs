@@ -91,6 +91,7 @@ namespace NBagOfTricks
                 };
 
                 watcher.Changed += Watcher_Changed;
+                _watchers.Add(watcher);
             }
         }
 
