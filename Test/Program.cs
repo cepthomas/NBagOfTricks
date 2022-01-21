@@ -13,7 +13,7 @@ namespace NBagOfTricks.Test
         {
             // Use pnut for automated lib tests.
             TestRunner runner = new TestRunner(OutputFormat.Readable);
-            var cases = new[] { "IPC" };
+            var cases = new[] { "NET5" };
             //var cases = new[] { "UTILS", "CMD", "MMTEX" };
             //var cases = new[] { "PNUT", "UTILS", "CMD", "MMTEX" };
             runner.RunSuites(cases);
