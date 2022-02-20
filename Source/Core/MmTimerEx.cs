@@ -26,7 +26,7 @@ namespace NBagOfTricks
             public int period = 10;
 
             /// <summary>User handler.</summary>
-            public TimeProc handler = null;
+            public TimeProc? handler = null;
 
             /// <summary>Actual accumulated msec since last event.</summary> 
             public double elapsed = 0.0;
@@ -35,7 +35,7 @@ namespace NBagOfTricks
 
         #region Fields
         /// <summary>All the timer instances. Key is id.</summary>
-        List<TimerInstance> _timers = new List<TimerInstance>();
+        readonly List<TimerInstance> _timers = new List<TimerInstance>();
 
         /// <summary>Used for more accurate timing.</summary>
         readonly Stopwatch _sw = new Stopwatch();
@@ -52,9 +52,6 @@ namespace NBagOfTricks
         /// <summary>Stopwatch support.</summary>
         long _lastTicks = -1;
 
-        /// <summary>Indicates whether or not the timer has been disposed.</summary>
-        bool _disposed = false;
-
         /// <summary>Msec for mm timer tick.</summary>
         const int MMTIMER_PERIOD = 1;
 
@@ -66,8 +63,6 @@ namespace NBagOfTricks
         /// <summary>Win32 Multimedia Timer Functions.</summary>
         internal class NativeMethods
         {
-            #pragma warning disable IDE1006 // Naming Styles
-
             /// <summary></summary>
             /// <param name="caps"></param>
             /// <param name="sizeOfTimerCaps"></param>
@@ -104,8 +99,6 @@ namespace NBagOfTricks
                 /// <summary>Maximum supported period in milliseconds.</summary>
                 public int periodMax;
             }
-
-            #pragma warning restore IDE1006 // Naming Styles
         }
         #endregion
 
@@ -129,31 +122,8 @@ namespace NBagOfTricks
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// Frees timer resources.
-        /// </summary>
-        private void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    Stop();
-                    GC.SuppressFinalize(this);
-                }
-                _disposed = true;
-            }
-        }
-
-        /// <summary>
-        /// Finalizer.
-        /// </summary>
-        ~MmTimerEx()
-        {
-            Dispose(false);
+            Stop();
+            GC.SuppressFinalize(this);
         }
         #endregion
 
@@ -222,7 +192,7 @@ namespace NBagOfTricks
             // Stop and destroy timer.
             if(_timerID > 0)
             {
-                int result = NativeMethods.timeKillEvent(_timerID);
+                _ = NativeMethods.timeKillEvent(_timerID);
                 // result != TIMERR_NOERROR <> 0
                 _timerID = -1;
             }
@@ -262,7 +232,7 @@ namespace NBagOfTricks
                         if ((timer.period - timer.elapsed) < allowance)
                         {
                             // Notify.
-                            timer.handler(totalMsec, timer.elapsed);
+                            timer.handler?.Invoke(totalMsec, timer.elapsed);
                             timer.elapsed = 0.0;
                         }
                     }

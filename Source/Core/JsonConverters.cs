@@ -12,7 +12,15 @@ namespace NBagOfTricks
     {
         public override Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return Color.FromName(reader.GetString());
+            string? s = reader.GetString();
+            if(s is not null)
+            {
+                return Color.FromName(s);
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid color string");
+            }
         }
 
         public override void Write(Utf8JsonWriter writer, Color color, JsonSerializerOptions options)
@@ -26,9 +34,17 @@ namespace NBagOfTricks
     {
         public override PointF Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var parts = StringUtils.SplitByToken(reader.GetString(), ",");
-            PointF pt = new(float.Parse(parts[0]), float.Parse(parts[1]));
-            return pt;
+            string? s = reader.GetString();
+            if (s is not null)
+            {
+                var parts = StringUtils.SplitByToken(s, ",");
+                PointF pt = new(float.Parse(parts[0]), float.Parse(parts[1]));
+                return pt;
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid PointF");
+            }
         }
 
         public override void Write(Utf8JsonWriter writer, PointF pt, JsonSerializerOptions options)
@@ -42,9 +58,17 @@ namespace NBagOfTricks
     {
         public override Rectangle Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var parts = StringUtils.SplitByToken(reader.GetString(), ",");
-            Rectangle rect = new Rectangle(  int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]), int.Parse(parts[3]  ) );
-            return rect;
+            string? s = reader.GetString();
+            if (s is not null)
+            {
+                var parts = StringUtils.SplitByToken(s, ",");
+                Rectangle rect = new Rectangle(int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]), int.Parse(parts[3]));
+                return rect;
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid color string");
+            }
         }
 
         public override void Write(Utf8JsonWriter writer, Rectangle rect, JsonSerializerOptions options)
@@ -58,9 +82,17 @@ namespace NBagOfTricks
     {
         public override Font Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var parts = StringUtils.SplitByToken(reader.GetString(), ",");
-            Font font = new(parts[0], float.Parse(parts[1]));
-            return font;
+            string? s = reader.GetString();
+            if (s is not null)
+            {
+                var parts = StringUtils.SplitByToken(s, ",");
+                Font font = new(parts[0], float.Parse(parts[1]));
+                return font;
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid color string");
+            }
         }
 
         public override void Write(Utf8JsonWriter writer, Font font, JsonSerializerOptions options)

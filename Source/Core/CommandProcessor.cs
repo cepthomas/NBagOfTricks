@@ -135,19 +135,19 @@ namespace NBagOfTricks
     {
         #region Properties - filled in by client
         /// <summary>
-        /// The command name(s). The first one is the main command name and aliases follow.
+        /// The command name(s) space separated. The first one is the main command name and aliases follow.
         /// If it's empty or null, there is no separate command name.
         /// </summary>
-        public string Name { get; set; } = null;
+        public string Name { get; set; } = "";
 
         /// <summary>For usage.</summary>
-        public string Description { get; set; } = null;
+        public string Description { get; set; } = "";
 
         /// <summary>Possible arguments for this command.</summary>
-        public Arguments Args { get; set; } = new Arguments();
+        public Arguments Args { get; set; } = new();
 
         /// <summary>Handler for processing stuff at the end, typically file names.</summary>
-        public Func<string, bool> FileFunc { get; set; } = null;
+        public Func<string, bool>? FileFunc { get; set; } = null;
         #endregion
 
         #region Properties - filled in by Parser
@@ -165,7 +165,7 @@ namespace NBagOfTricks
 
             for (int i = 0; i < args.Count; i++)
             {
-                Argument currentArg = null;
+                Argument? currentArg = null;
                 sarg = args[i].Trim();
 
                 if (sarg.StartsWith(Processor.ArgumentPrefix)) ///// New argument.
@@ -197,7 +197,7 @@ namespace NBagOfTricks
                             case ArgOptType.Req:
                                 if (!lookAhead.StartsWith(Processor.ArgumentPrefix))
                                 {
-                                    if (currentArg.ArgFunc.Invoke(lookAhead) == false)
+                                    if (currentArg.ArgFunc?.Invoke(lookAhead) == false)
                                     {
                                         Errors.Add($"Problem with arg:{currentArg.Name}");
                                         currentArg = null;
@@ -218,7 +218,7 @@ namespace NBagOfTricks
                                 if (!lookAhead.StartsWith(Processor.ArgumentPrefix))
                                 {
                                     // Valid (maybe) arg val. Execute any requested func.
-                                    if (currentArg.ArgFunc.Invoke(lookAhead) == false)
+                                    if (currentArg.ArgFunc?.Invoke(lookAhead) == false)
                                     {
                                         Errors.Add($"Problem with arg:{currentArg.Name}");
                                         currentArg = null;
@@ -233,7 +233,7 @@ namespace NBagOfTricks
 
                             case ArgOptType.None:
                                 // Execute any requested func with no val.
-                                if (currentArg.ArgFunc.Invoke("") == false)
+                                if (currentArg.ArgFunc?.Invoke("") == false)
                                 {
                                     Errors.Add($"Problem with arg:{currentArg.Name}");
                                     currentArg = null;
@@ -274,10 +274,10 @@ namespace NBagOfTricks
     {
         #region Properties - filled in by client
         /// <summary>The command line value.</summary>
-        public string Name { get; internal set; } = null;
+        public string Name { get; internal set; } = "";
 
         /// <summary>For usage.</summary>
-        public string Description { get; internal set; } = null;
+        public string Description { get; internal set; } = "";
 
         /// <summary>Argument options.</summary>
         public ArgOptType ArgOpt { get; internal set; } = ArgOptType.None;
@@ -286,7 +286,7 @@ namespace NBagOfTricks
         public ArgOptType ValOpt { get; internal set; } = ArgOptType.None;
 
         /// <summary>How to process the arg. Can include validation - returns true/false.</summary>
-        public Func<string, bool> ArgFunc { get; internal set; } = null;
+        public Func<string, bool>? ArgFunc { get; internal set; } = null;
         #endregion
 
         #region Properties - filled in by Parser
@@ -305,7 +305,7 @@ namespace NBagOfTricks
         /// <param name="desc"></param>
         /// <param name="args"></param>
         /// <param name="func"></param>
-        public void Add(string name, string desc, Arguments args, Func<string, bool> func = null)
+        public void Add(string name, string desc, Arguments args, Func<string, bool>? func = null)
         {
             var cmd = new Command()
             {
@@ -330,7 +330,7 @@ namespace NBagOfTricks
         /// <param name="argopt"></param>
         /// <param name="valopt"></param>
         /// <param name="func"></param>
-        public void Add(string name, string desc, ArgOptType argopt, ArgOptType valopt, Func<string, bool> func = null)
+        public void Add(string name, string desc, ArgOptType argopt, ArgOptType valopt, Func<string, bool>? func = null)
         {
             var arg = new Argument()
             {

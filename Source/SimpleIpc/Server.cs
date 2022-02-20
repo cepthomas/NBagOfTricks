@@ -43,16 +43,16 @@ namespace NBagOfTricks.SimpleIpc
         readonly string _pipeName;
 
         /// <summary>The server thread.</summary>
-        Thread _thread = null;
+        Thread? _thread = null;
 
         /// <summary>Flag to unblock the listen and end the thread.</summary>
         bool _running = true;
 
         /// <summary>Something happened. Client will have to take care of thread issues.</summary>
-        public event EventHandler<ServerEventArgs> ServerEvent = null;
+        public event EventHandler<ServerEventArgs>? ServerEvent;
 
         /// <summary>The canceller.</summary>
-        readonly ManualResetEvent _cancelEvent = new ManualResetEvent(false);
+        readonly ManualResetEvent _cancelEvent = new(false);
 
         /// <summary>My logger.</summary>
         readonly MpLog _log;
@@ -91,7 +91,7 @@ namespace NBagOfTricks.SimpleIpc
             _cancelEvent.Set();
 
             _log.Write($"Shutting down");
-            _thread.Join();
+            _thread?.Join();
             _log.Write($"Thread ended");
             _thread = null;
 
@@ -122,16 +122,16 @@ namespace NBagOfTricks.SimpleIpc
             {
                 while (_running)
                 {
-                    using (var stream = new NamedPipeServerStream(_pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
-                    using (var connectEvent = new AutoResetEvent(false))
+                    using (NamedPipeServerStream stream = new(_pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
+                    using (AutoResetEvent connectEvent = new(false))
                     {
-                        ServerEventArgs evt = new ServerEventArgs();
+                        ServerEventArgs evt = new();
 
                         _log.Write($"BeginWaitForConnection()");
 
-                        AsyncCallback callBack = new AsyncCallback(ProcessClient);
+                        AsyncCallback callBack = new(ProcessClient);
 
-                        ConnectionState cst = new ConnectionState();
+                        ConnectionState cst = new();
 
                         stream.BeginWaitForConnection(callBack, cst);
 
@@ -158,70 +158,73 @@ namespace NBagOfTricks.SimpleIpc
                         void ProcessClient(IAsyncResult ar)
                         {
                             // This is running in a new thread. Wait for something to show up.
-                            ConnectionState state = ar.AsyncState as ConnectionState;
-
-                            try
+                            if(ar is not null && ar.AsyncState is not null)
                             {
-                                _log.Write($"EndWaitForConnection()");
-                                stream.EndWaitForConnection(ar);
-                                _log.Write($"Client wants to tell us something");
+                                ConnectionState state = (ConnectionState)(ar.AsyncState);
 
-                                state.Status = ConnectionStatus.Receiving;
-
-                                while (state.Status == ConnectionStatus.Receiving)
+                                try
                                 {
-                                    // The total number of bytes read into the buffer or 0 if the end of the stream has been reached.
-                                    var numRead = stream.Read(state.Buffer, state.BufferIndex, state.Buffer.Length - state.BufferIndex);
-                                    _log.Write($"num read:{numRead}");
+                                    _log.Write($"EndWaitForConnection()");
+                                    stream.EndWaitForConnection(ar);
+                                    _log.Write($"Client wants to tell us something");
 
-                                    if (numRead > 0)
+                                    state.Status = ConnectionStatus.Receiving;
+
+                                    while (state.Status == ConnectionStatus.Receiving)
                                     {
-                                        state.BufferIndex += numRead;
+                                        // The total number of bytes read into the buffer or 0 if the end of the stream has been reached.
+                                        var numRead = stream.Read(state.Buffer, state.BufferIndex, state.Buffer.Length - state.BufferIndex);
+                                        _log.Write($"num read:{numRead}");
 
-                                        // Full string arrived?
-                                        int terminator = Array.IndexOf(state.Buffer, (byte)'\n');
-                                        if (terminator >= 0)
+                                        if (numRead > 0)
                                         {
-                                            // Make buffer into a string.
-                                            string msg = new UTF8Encoding().GetString(state.Buffer, 0, terminator);
+                                            state.BufferIndex += numRead;
 
-                                            _log.Write($"Got message:{msg}");
+                                            // Full string arrived?
+                                            int terminator = Array.IndexOf(state.Buffer, (byte)'\n');
+                                            if (terminator >= 0)
+                                            {
+                                                // Make buffer into a string.
+                                                string msg = new UTF8Encoding().GetString(state.Buffer, 0, terminator);
 
-                                            // Process the line.
-                                            evt.Message = msg;
-                                            evt.Error = false;
+                                                _log.Write($"Got message:{msg}");
 
-                                            // Reset.
-                                            state.BufferIndex = 0;
-                                            state.Status = ConnectionStatus.ValidMessage;
+                                                // Process the line.
+                                                evt.Message = msg;
+                                                evt.Error = false;
+
+                                                // Reset.
+                                                state.BufferIndex = 0;
+                                                state.Status = ConnectionStatus.ValidMessage;
+                                            }
                                         }
+
+                                        // Wait a bit.
+                                        Thread.Sleep(50);
                                     }
-
-                                    // Wait a bit.
-                                    Thread.Sleep(50);
                                 }
-                            }
-                            catch (ObjectDisposedException er)
-                            {
-                                state.Status = ConnectionStatus.Error;
-                                evt.Message = $"Client pipe is closed: {er.Message}";
-                                evt.Error = true;
-                            }
-                            catch (IOException er)
-                            {
-                                state.Status = ConnectionStatus.Error;
-                                evt.Message = $"Client pipe connection has been broken: {er.Message}";
-                                evt.Error = true;
-                            }
-                            catch (Exception er)
-                            {
-                                state.Status = ConnectionStatus.Error;
-                                evt.Message = $"Client pipe unknown exception: {er.Message}";
-                                evt.Error = true;
-                            }
+                                catch (ObjectDisposedException er)
+                                {
+                                    state.Status = ConnectionStatus.Error;
+                                    evt.Message = $"Client pipe is closed: {er.Message}";
+                                    evt.Error = true;
+                                }
+                                catch (IOException er)
+                                {
+                                    state.Status = ConnectionStatus.Error;
+                                    evt.Message = $"Client pipe connection has been broken: {er.Message}";
+                                    evt.Error = true;
+                                }
+                                catch (Exception er)
+                                {
+                                    state.Status = ConnectionStatus.Error;
+                                    evt.Message = $"Client pipe unknown exception: {er.Message}";
+                                    evt.Error = true;
+                                }
 
-                            // Hand back what we captured.
-                            ServerEvent?.Invoke(this, evt);
+                                // Hand back what we captured.
+                                ServerEvent?.Invoke(this, evt);
+                            }
 
                             // Signal completion.
                             connectEvent.Set();

@@ -79,8 +79,8 @@ namespace NBagOfTricks.PNUT
         /// <summary>Format string.</summary>
         const string TIME_FORMAT = @"hh\:mm\:ss\.fff";
 
-        /// <summary>Format string.</summary>
-        const string DATE_TIME_FORMAT = "yyyy'-'MM'-'dd HH':'mm':'ss";
+        ///// <summary>Format string.</summary>
+        //const string DATE_TIME_FORMAT = "yyyy'-'MM'-'dd HH':'mm':'ss";
 
         /// <summary>Format string.</summary>
         const string DATE_TIME_FORMAT_MSEC = "yyyy'-'MM'-'dd HH':'mm':'ss.fff";
@@ -114,7 +114,15 @@ namespace NBagOfTricks.PNUT
                     {
                         if (t.Name.StartsWith(ssuite))
                         {
-                            suites.Add(t.Name, Activator.CreateInstance(t) as TestSuite);
+                            object? o = Activator.CreateInstance(t);
+                            if(o is not null)
+                            {
+                                suites.Add(t.Name, (TestSuite)o);
+                            }
+                            else
+                            {
+                                Context.OutputLines.Add($"Couldn't create {t.BaseType.Name}");
+                            }
                         }
                     }
                 }
@@ -158,13 +166,15 @@ namespace NBagOfTricks.PNUT
                 {
                     // Out of scope exception. Top frame contains the cause.
                     StackTrace st = new StackTrace(ex, true);
-                    StackFrame frame = st.GetFrame(0);
+                    StackFrame? frame = st.GetFrame(0);
 
-                    int line = frame.GetFileLineNumber();
-                    string fn = Path.GetFileName(frame.GetFileName());
-                    string msg = $"{ex.Message} ({fn}:{line})";
-
-                    tc.RecordResult(false, msg, fn, line);
+                    if(frame is not null)
+                    {
+                        int line = frame.GetFileLineNumber();
+                        string fn = Path.GetFileName(frame!.GetFileName()!);
+                        string msg = $"{ex.Message} ({fn}:{line})";
+                        tc.RecordResult(false, msg, fn, line);
+                    }
                 }
 
                 // Completed the suite, update the counts.
@@ -244,7 +254,7 @@ namespace NBagOfTricks.PNUT
         public int CaseFailCnt { get; set; } = 0;
 
         /// <summary>Common context info.</summary>
-        public TestContext Context { get; set; } = null;
+        public TestContext Context { get; set; } = new();
         #endregion
 
         #region Definitions
@@ -349,7 +359,7 @@ namespace NBagOfTricks.PNUT
         /// <param name="value"></param>
         protected void UT_PROPERTY<T>(string name, T value)
         {
-            RecordProperty(name, value.ToString());
+            RecordProperty(name, value is null ? "null" : value.ToString()!);
         }
         #endregion
 
@@ -389,6 +399,50 @@ namespace NBagOfTricks.PNUT
             if (condition)
             {
                 RecordResult(false, $"condition should be false", file, line);
+                pass = false;
+            }
+            else
+            {
+                RecordResult(true, $"", file, line);
+            }
+            return pass;
+        }
+
+        /// <summary>
+        /// Checks whether the given object is null.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        protected bool UT_NULL(object? obj, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
+        {
+            bool pass = true;
+            if (obj is not null)
+            {
+                RecordResult(false, $"condition should be null", file, line);
+                pass = false;
+            }
+            else
+            {
+                RecordResult(true, $"", file, line);
+            }
+            return pass;
+        }
+
+        /// <summary>
+        /// Checks whether the given object is not null.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        protected bool UT_NOT_NULL(object? obj, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
+        {
+            bool pass = true;
+            if (obj is null)
+            {
+                RecordResult(false, $"condition should not be null", file, line);
                 pass = false;
             }
             else

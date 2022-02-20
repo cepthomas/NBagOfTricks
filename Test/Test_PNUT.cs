@@ -109,8 +109,8 @@ namespace NBagOfTricks.Test
             UT_INFO("Other stuff, could be in another file.");
 
             string str1 = MathUtils.RandStr(10);
-            string str2 = str1.Clone() as string;
-            UT_EQUAL(str1, str2);
+            string? str2 = str1.Clone() as string;
+            UT_EQUAL(str1, str2!);
 
             UT_EQUAL(str1, "Should fail");
             UT_INFO("Previous step should have failed.");

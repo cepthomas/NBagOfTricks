@@ -13,13 +13,13 @@ namespace NBagOfTricks
     public class Dumper
     {
         /// <summary>Output writer.</summary>
-        TextWriter _writer = null;
+        readonly TextWriter? _writer = null;
 
         /// <summary>Output indent.</summary>
         int _indent = 0;
 
         /// <summary>Output indent size.</summary>
-        int _indentSize = 4;
+        readonly int _indentSize = 4;
 
         /// <summary>
         /// Constructor
@@ -66,13 +66,13 @@ namespace NBagOfTricks
             {
                 switch (element.Value)
                 {
-                    case Dictionary<string, object> dict:
+                    case Dictionary<string, object> _:
                         string s = $"{element.Key} : ";
                         WriteIndented(s);
                         Write(element.Value);
                         break;
 
-                    case List<object> list:
+                    case List<object> _:
                         Write(element.Value);
                         break;
 
@@ -114,11 +114,11 @@ namespace NBagOfTricks
             {
                 switch (element)
                 {
-                    case Dictionary<string, object> dict:
+                    case Dictionary<string, object> _:
                         Write(element);
                         break;
 
-                    case List<object> list:
+                    case List<object> _:
                         Write(element);
                         break;
 
@@ -140,7 +140,7 @@ namespace NBagOfTricks
         void WriteIndented(string s)
         {
             string sindent = new string(' ', _indent * _indentSize);
-            _writer.WriteLine($"{sindent}{s}");
+            _writer!.WriteLine($"{sindent}{s}");
         }
     }
 }

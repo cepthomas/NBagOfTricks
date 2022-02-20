@@ -14,12 +14,10 @@ using NBagOfTricks.PNUT;
 
 namespace NBagOfTricks.Test
 {
-    public class NET5_CONVERTERS : TestSuite
+    public class JSON_CONVERTERS : TestSuite
     {
         public override void RunSuite()
         {
-            UT_INFO("Tests .NET5 util functions.");
-
             UT_INFO("Tests json converters.");
 
             ConverterTarget ct1 = new();
@@ -33,10 +31,14 @@ namespace NBagOfTricks.Test
 
             ConverterTarget? ct2 = JsonSerializer.Deserialize<ConverterTarget>(ser);
 
-            UT_EQUAL(ct2.ControlColor.ToString(), "Pink");
-            UT_EQUAL(ct2.Position.X, 45.88);
-            UT_EQUAL(ct2.SomeRect.Width, 75);
-            UT_EQUAL(ct2.PrettyFace.Size, 14);
+            UT_NULL(ct2);
+            if(ct2 is not null)
+            {
+                UT_EQUAL(ct2.ControlColor.ToString(), "Pink");
+                UT_EQUAL(ct2.Position.X, 45.88);
+                UT_EQUAL(ct2.SomeRect.Width, 75);
+                UT_EQUAL(ct2.PrettyFace.Size, 14);
+            }
         }
     }
 

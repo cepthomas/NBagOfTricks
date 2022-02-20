@@ -15,9 +15,9 @@ namespace NBagOfTricks
         /// <summary>Reporting a change to listeners.</summary>
         public class FileChangeEventArgs : EventArgs
         {
-            public HashSet<string> FileNames { get; set; } = null;
+            public HashSet<string> FileNames { get; set; } = new();
         }
-        public event EventHandler<FileChangeEventArgs> FileChangeEvent;
+        public event EventHandler<FileChangeEventArgs>? FileChangeEvent = null;
         #endregion
 
         #region Fields
@@ -78,21 +78,35 @@ namespace NBagOfTricks
         /// Add a new listener.
         /// </summary>
         /// <param name="path"></param>
-        public void Add(string path)
+        /// <return>Pass/fail</return>
+        public bool Add(string path)
         {
-            if(path != "")
-            {
-                FileSystemWatcher watcher = new FileSystemWatcher()
-                {
-                    Path = Path.GetDirectoryName(path),
-                    Filter = Path.GetFileName(path),
-                    EnableRaisingEvents = true,
-                    NotifyFilter = NotifyFilters.LastWrite
-                };
+            bool ok = false;
 
-                watcher.Changed += Watcher_Changed;
-                _watchers.Add(watcher);
+            try
+            {
+                string? npath = Path.GetDirectoryName(path);
+                if(npath is not null)
+                {
+                    FileSystemWatcher watcher = new FileSystemWatcher()
+                    {
+                        Path = npath,
+                        Filter = Path.GetFileName(path),
+                        EnableRaisingEvents = true,
+                        NotifyFilter = NotifyFilters.LastWrite
+                    };
+
+                    watcher.Changed += Watcher_Changed;
+                    _watchers.Add(watcher);
+                    ok = true;
+                }
             }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return ok;
         }
 
         /// <summary>

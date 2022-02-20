@@ -20,8 +20,8 @@ namespace NBagOfTricks
         /// </summary>
         public static string GetVersionString()
         {
-            Version ver = Assembly.GetCallingAssembly().GetName().Version;
-            return $"{ver.Major}.{ver.Minor}.{ver.Build}";
+            Version? ver = Assembly.GetCallingAssembly().GetName().Version;
+            return ver is null ? "unknown" : $"{ver.Major}.{ver.Minor}.{ver.Build}";
         }
 
         /// <summary>
@@ -55,10 +55,10 @@ namespace NBagOfTricks
         /// <returns>TimeSpan</returns>
         public static TimeSpan SecondsToTimeSpan(double sec)
         {
-            var v = MathUtils.SplitDouble(sec);
-            int isec = (int)(v.integral);
-            int imsec = (int)(v.fractional * 1000);
-            TimeSpan ts = new TimeSpan(0, 0, 0, isec, imsec);
+            var (integral, fractional) = MathUtils.SplitDouble(sec);
+            int isec = (int)integral;
+            int imsec = (int)(fractional * 1000);
+            TimeSpan ts = new(0, 0, 0, isec, imsec);
             return ts;
         }
 

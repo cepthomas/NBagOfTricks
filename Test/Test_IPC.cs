@@ -15,28 +15,25 @@ namespace NBagOfTricks.Test
 {
     public class IPC_BASIC : TestSuite
     {
-        //string TS_FORMAT = @"mm\:ss\.fff";
-        readonly string PIPE_NAME = "058F684D-AF82-4FE5-BD1E-9FD031FE28CF";
-        readonly string LogFileName = "test_ipc_log.txt";
-
-        MpLog _log;
+        //const string TS_FORMAT = @"mm\:ss\.fff";
+        const string PIPE_NAME = "058F684D-AF82-4FE5-BD1E-9FD031FE28CF";
+        const string LOGFILE_NAME = "test_ipc_log.txt";
+        readonly MpLog _log = new(LOGFILE_NAME, "TESTER");
 
         public override void RunSuite()
         {
             UT_INFO("Tests simple IPC.");
             int NumIterators = 9;
 
-            _log = new MpLog(LogFileName, "TESTER");
-
             // Server
-            using (Server server = new Server(PIPE_NAME, LogFileName))
+            using (Server server = new(PIPE_NAME, LOGFILE_NAME))
             {
                 int iter = 0;
 
                 server.ServerEvent += Server_IpcEvent;
                 server.Start();
 
-                void Server_IpcEvent(object sender, ServerEventArgs e)
+                void Server_IpcEvent(object? sender, ServerEventArgs e)
                 {
                     UT_FALSE(e.Error);
                     UT_EQUAL(e.Message, $"ABC{iter * 111}");
@@ -46,7 +43,7 @@ namespace NBagOfTricks.Test
                 // new Process { StartInfo = new ProcessStartInfo(fn) { UseShellExecute = true } }.Start();
                 for(iter = 0; iter < NumIterators; iter++)
                 {
-                    Client client = new Client(PIPE_NAME, LogFileName);
+                    Client client = new(PIPE_NAME, LOGFILE_NAME);
                     var res = client.Send($"ABC{(iter+1)*111}", 1000);
 
                     switch (res)
