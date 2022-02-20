@@ -620,7 +620,7 @@ namespace NBagOfTricks.PNUT
         /// </summary>
         /// <param name="value1"></param>
         /// <param name="value2"></param>
-        /// <param name="tolerance"></param>
+        /// <param name="tolerance">Absolute</param>
         /// <param name="file"></param>
         /// <param name="line"></param>
         /// <returns></returns>

@@ -37,7 +37,7 @@ namespace NBagOfTricks.SimpleIpc
         public bool Error { get; set; } = false;
     }
 
-    public class Server : IDisposable
+    public sealed class Server : IDisposable
     {
         /// <summary>Named pipe name.</summary>
         readonly string _pipeName;
@@ -65,7 +65,7 @@ namespace NBagOfTricks.SimpleIpc
         public Server(string pipeName, string logfn)
         {
             _pipeName = pipeName;
-            _log = new MpLog(logfn, "SERVER");
+            _log = new(logfn, "SERVER");
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace NBagOfTricks.SimpleIpc
         /// </summary>
         public void Start()
         {
-            _thread = new Thread(ServerThread);
+            _thread = new(ServerThread);
             _thread.Start();
         }
 

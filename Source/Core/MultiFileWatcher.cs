@@ -32,9 +32,6 @@ namespace NBagOfTricks
 
         /// <summary>The delay before reporting. Seems like a reasonable number for human edit interface.</summary>
         const int DELAY = 100;
-
-        /// <summary>Resource clean up.</summary>
-        bool _disposed = false;
         #endregion
 
         #region Properties
@@ -142,22 +139,8 @@ namespace NBagOfTricks
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Resource clean up.
-        /// </summary>
-        /// <param name="disposing"></param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed && disposing)
-            {
-                _watchers.ForEach(w => w.Dispose());
-                _timer.Dispose();
-                _disposed = true;
-            }
+            _watchers.ForEach(w => w.Dispose());
+            _timer.Dispose();
         }
     }
 }

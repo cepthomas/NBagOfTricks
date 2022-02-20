@@ -31,11 +31,11 @@ namespace NBagOfTricks.Test
 
             ConverterTarget? ct2 = JsonSerializer.Deserialize<ConverterTarget>(ser);
 
-            UT_NULL(ct2);
+            UT_NOT_NULL(ct2);
             if(ct2 is not null)
             {
-                UT_EQUAL(ct2.ControlColor.ToString(), "Pink");
-                UT_EQUAL(ct2.Position.X, 45.88);
+                UT_EQUAL(ct2.ControlColor.Name, "Pink");
+                UT_CLOSE(ct2.Position.X, 45.88, 0.00001);
                 UT_EQUAL(ct2.SomeRect.Width, 75);
                 UT_EQUAL(ct2.PrettyFace.Size, 14);
             }

@@ -51,10 +51,10 @@ namespace NBagOfTricks.Test
             UT_INFO("Tests misc utils.");
 
             var dir = MiscUtils.GetAppDataDir("Foo");
-            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Local\Ephemera\Foo");
+            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Local\Foo");
 
             dir = MiscUtils.GetAppDataDir("Bar", "CCCC");
-            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Local\Ephemera\CCCC\Bar");
+            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Local\CCCC\Bar");
         }
     }
 
