@@ -207,7 +207,7 @@ namespace NBagOfTricks.ScriptCompiler
 
                     foreach (Type t in types)
                     {
-                        if (t != null && t.Name == _scriptName)
+                        if (t is not null && t.Name == _scriptName)
                         {
                             // We have a good script file. Create the executable object.
                             object? o = Activator.CreateInstance(t);

@@ -108,7 +108,7 @@ namespace NBagOfTricks
                 }
 
                 // Tail info?
-                if(cmd.FileFunc != null)
+                if(cmd.FileFunc is not null)
                 {
                     sb.Append(" file(s)...");
                 }
@@ -188,7 +188,7 @@ namespace NBagOfTricks
                         currentArg = null;
                     }
 
-                    if (currentArg != null)
+                    if (currentArg is not null)
                     {
                         string lookAhead = i + 1 < args.Count ? args[i + 1] : "";
 
@@ -244,7 +244,7 @@ namespace NBagOfTricks
                 }
                 else // it's a file or extra thing
                 {
-                    if(FileFunc != null)
+                    if(FileFunc is not null)
                     {
                         if (FileFunc.Invoke(sarg) == false)
                         {

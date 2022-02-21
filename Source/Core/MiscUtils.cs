@@ -103,7 +103,7 @@ namespace NBagOfTricks
         /// <param name="action"></param>
         public static void InvokeIfRequired<T>(this T obj, InvokeIfRequiredDelegate<T> action) where T : ISynchronizeInvoke
         {
-            if (obj != null)
+            if (obj is notis not null)
             {
                 if (obj.InvokeRequired)
                 {
@@ -127,7 +127,7 @@ namespace NBagOfTricks
         /// <param name="action">The action to execute on each element</param>
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
-            if(source != null)
+            if(source is not null)
             {
                 foreach (var element in source)
                 {

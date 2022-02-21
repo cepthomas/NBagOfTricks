@@ -107,7 +107,7 @@ namespace NBagOfTricks.PNUT
 
             foreach (Type t in Assembly.GetCallingAssembly().GetTypes())
             {
-                if (t.BaseType != null && t.BaseType.Name.Contains("TestSuite"))
+                if (t.BaseType is not null && t.BaseType.Name.Contains("TestSuite"))
                 {
                     // It's a test suite. Is it requested?
                     foreach (string ssuite in which)
