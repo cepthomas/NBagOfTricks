@@ -1,9 +1,7 @@
 # NBagOfTricks
 C# things collected over the years.
 
-Targets:
-- .NET Framework 4.7.2 (Core, SimpleIpc, PNUT)
-- .NET5 (Core, PNUT, ScriptCompiler).
+Requires VS2019 and .NET5.
 
 No dependencies on third party components.
 
