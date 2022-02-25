@@ -103,7 +103,7 @@ namespace NBagOfTricks
         /// <param name="action"></param>
         public static void InvokeIfRequired<T>(this T obj, InvokeIfRequiredDelegate<T> action) where T : ISynchronizeInvoke
         {
-            if (obj is notis not null)
+            if (obj is not null)
             {
                 if (obj.InvokeRequired)
                 {

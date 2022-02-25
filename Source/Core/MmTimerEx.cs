@@ -33,6 +33,11 @@ namespace NBagOfTricks
         }
         #endregion
 
+        #region Properties
+        /// <summary>Indicates whether or not the timer is running.</summary>
+        public bool Running { get; private set; } = false;
+        #endregion
+
         #region Fields
         /// <summary>All the timer instances. Key is id.</summary>
         readonly List<TimerInstance> _timers = new List<TimerInstance>();
@@ -42,9 +47,6 @@ namespace NBagOfTricks
 
         /// <summary>Multimedia timer identifier. -1 is not inited, 0 is fail to init, other is valid id.</summary>
         int _timerID = -1;
-
-        /// <summary>Indicates whether or not the timer is running.</summary>
-        bool _running = false;
 
         /// <summary>Stopwatch support.</summary>
         long _startTicks = -1;
@@ -174,11 +176,11 @@ namespace NBagOfTricks
             if (_timerID > 0)
             {
                 _sw.Start();
-                _running = true;
+                Running = true;
             }
             else
             {
-                _running = false;
+                Running = false;
                 _timerID = -1;
                 throw new Exception("Unable to start periodic multimedia Timer.");
             }
@@ -196,7 +198,7 @@ namespace NBagOfTricks
                 // result != TIMERR_NOERROR <> 0
                 _timerID = -1;
             }
-            _running = false;
+            Running = false;
             _sw.Stop();
         }
         #endregion
@@ -212,7 +214,7 @@ namespace NBagOfTricks
         /// <param name="param2">Reserved.</param>
         void MmTimerCallback(int id, int msg, int user, int param1, int param2)
         {
-            if (_running)
+            if (Running)
             {
                 if(_lastTicks != -1)
                 {
