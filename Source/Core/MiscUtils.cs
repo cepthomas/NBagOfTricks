@@ -5,6 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 
 namespace NBagOfTricks
@@ -44,6 +45,17 @@ namespace NBagOfTricks
         {
             string sdir = Environment.CurrentDirectory;
             return sdir;
+        }
+
+        /// <summary>
+        /// Get the dir name of the caller source file.
+        /// </summary>
+        /// <param name="callerPath"></param>
+        /// <returns>Caller source dir.</returns>
+        public static string GetSourcePath([CallerFilePath] string callerPath = "")
+        {
+            var dir = Path.GetDirectoryName(callerPath)!;
+            return dir;
         }
         #endregion
 
