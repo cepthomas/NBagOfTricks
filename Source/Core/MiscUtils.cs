@@ -26,29 +26,22 @@ namespace NBagOfTricks
         }
 
         /// <summary>
-        /// Get the user app dir.
+        /// Get the user app dir. Creates it if it doesn't exist.
         /// </summary>
         /// <param name="appName"></param>
-        /// <param name="company">Optional nest under company name.</param>
+        /// <param name="company">Optionally nest under company name.</param>
         /// <returns></returns>
         public static string GetAppDataDir(string appName, string company = "")
         {
             string localdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            return Path.Combine(localdir, company, appName);
+            string path = Path.Combine(localdir, company, appName);
+            DirectoryInfo di = new(path);
+            di.Create();
+            return path;
         }
 
         /// <summary>
-        /// Get the executable dir.
-        /// </summary>
-        /// <returns></returns>
-        public static string GetExeDir()
-        {
-            string sdir = Environment.CurrentDirectory;
-            return sdir;
-        }
-
-        /// <summary>
-        /// Get the dir name of the caller source file.
+        /// Get the dir name of the caller's source file.
         /// </summary>
         /// <param name="callerPath"></param>
         /// <returns>Caller source dir.</returns>
