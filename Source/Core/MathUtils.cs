@@ -234,5 +234,45 @@ namespace NBagOfTricks
             val = Math.Min(val, max);
             return val;
         }
+
+        /// <summary>
+        /// Ensure integral multiple of resolution, GTE min, LTE max.
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <param name="resolution"></param>
+        /// <returns></returns>
+        public static double Constrain(double val, double min, double max, double resolution)
+        {
+            double rval = Constrain(val, min, max);
+            rval = (int)Math.Round(rval / resolution) * resolution;
+            return rval;
+        }
+
+        /// <summary>
+        /// Figure a reasonable number of dps to print based on value range.
+        /// </summary>
+        /// <returns></returns>
+        public static int DecPlaces(double range)
+        {
+            int dp = 0;
+
+            if (range < 0.01)
+            {
+                dp = 3;
+            }
+            else if (range < 0.1)
+            {
+                dp = 2;
+            }
+            else if (range < 1.0)
+            {
+                dp = 1;
+            }
+
+            return dp;
+        }
+
     }
 }
