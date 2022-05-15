@@ -32,9 +32,8 @@ Probably I should make this into a nuget package at some point.
 
 
 # Script Compiler
-Compiles C#-like scripts into in-memory assemblies. Primarily for use by [Nebulator](https://github.com/cepthomas/Nebulator)
-and [NProcessing]((https://github.com/cepthomas/NProcessing). See those repos for example on how to use this.
-
+Compiles C#-like scripts into in-memory assemblies. Primarily for use by [Nebulator](https://github.com/cepthomas/Nebulator/blob/main/README.md)
+and [NProcessing]((https://github.com/cepthomas/NProcessing/blob/main/README.md). See those repos for example on how to use this.
 
 # PNUT
 Practically Nonexistent Unit Tester
@@ -42,7 +41,8 @@ Practically Nonexistent Unit Tester
 A public version of a super lightweight unit test framework for C#. It has gone through many 
 useful and successful iterations and may as well bring you joy also.
 
-It is based on a [C/C++ version](https://github.com/cepthomas/c-bag-of-tricks) which was inspired by [Quicktest](http://quicktest.sourceforge.net/) from long ago.
+It is based on a [C/C++ version](https://github.com/cepthomas/c-bag-of-tricks/blob/main/README.md) which was
+inspired by [Quicktest](http://quicktest.sourceforge.net/) from long ago.
 
 ## Test Format
 See the [test suite](https://github.com/cepthomas/NBagOfTricks/blob/master/Test/Test_PNUT.cs) for how to use this.
