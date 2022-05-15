@@ -10,7 +10,7 @@
     <Copyright>MIT License</Copyright>
     <RootNamespace>NBagOfTricks</RootNamespace>
     <AssemblyName>NBagOfTricks</AssemblyName>
-    <OutputPath>..\bin\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <!-- <DefineConstants>DEBUG;TRACE</DefineConstants> -->
     <NoWarn>CS1591,CA1837,IDE0063,IDE0090,CA1822</NoWarn>
     <Nullable>enable</Nullable>
@@ -18,6 +18,12 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SatelliteResourceLanguages>none</SatelliteResourceLanguages> <!-- en none -->
   </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Remove="Test\**" />
+    <EmbeddedResource Remove="Test\**" />
+    <None Remove="Test\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" />

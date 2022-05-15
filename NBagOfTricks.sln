@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Source", "Source\Source.csproj", "{B0C0A241-69CB-42FF-8C30-637E3A070905}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NBagOfTricks", "NBagOfTricks.csproj", "{B0C0A241-69CB-42FF-8C30-637E3A070905}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{CB1B9069-E3C5-4931-90D9-8DD560E56389}"
 EndProject

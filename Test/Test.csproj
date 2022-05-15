@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Source\Source.csproj" />
+        <ProjectReference Include="..\NBagOfTricks.csproj" />
     </ItemGroup>
 
     <ItemGroup>
