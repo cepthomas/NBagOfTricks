@@ -50,6 +50,19 @@ namespace NBagOfTricks
             var dir = Path.GetDirectoryName(callerPath)!;
             return dir;
         }
+
+        /// <summary>
+        /// Display the application readme.
+        /// </summary>
+        /// <param name="appName"></param>
+        /// <returns></returns>
+        public static void ShowReadme(string appName)
+        {
+            string uri = $"https://github.com/cepthomas/{appName}/blob/main/README.md";
+            var info = new ProcessStartInfo(uri) { UseShellExecute = true };
+            var proc = new Process() { StartInfo = info };
+            proc.Start();
+        }
         #endregion
 
         #region Time
