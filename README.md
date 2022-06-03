@@ -99,6 +99,3 @@ A JUnit style intended for consumption by CI. Not tested yet but looks nice.
     </testsuite>
 </testsuites>
 ```
-
-# License
-https://github.com/cepthomas/NBagOfTricks/blob/master/LICENSE
