@@ -17,6 +17,7 @@ namespace NBagOfTricks.Slog
         public string Name { get; init; } = "";
         #endregion
 
+        #region Lifecycle
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -25,7 +26,9 @@ namespace NBagOfTricks.Slog
         {
             Name = name;
         }
+        #endregion
 
+        #region Public functions
         /// <summary>
         /// Basic log function.
         /// </summary>
@@ -121,7 +124,9 @@ namespace NBagOfTricks.Slog
 
             FormatEntry(Level.Error, sb.ToString(), file, line);
         }
+        #endregion
 
+        #region Private functions
         /// <summary>
         /// Private common formatter.
         /// </summary>
@@ -145,5 +150,6 @@ namespace NBagOfTricks.Slog
             // Manager expedites.
             LogManager.LogThis(le);
         }
+        #endregion
     }
 }

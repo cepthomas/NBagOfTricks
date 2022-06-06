@@ -12,30 +12,8 @@ using NBagOfTricks;
 
 namespace NBagOfTricks.Slog
 {
-    #region Types
-    /// <summary>Log level options.</summary>
-    public enum Level { Trace = 0, Debug = 1, Info = 2, Warn = 3, Error = 4, Fatal = 5 }
-
-    /// <summary>Log entry data container.</summary>
-    internal struct LogEntry
-    {
-        public DateTime timestamp;
-        public Level level;
-        public string name; // logger name
-        public string file; // source file
-        public int line; // source line
-        public string message;
-    }
-
-    public class LogEventArgs : EventArgs
-    {
-        public Level Level { get; set; } = Level.Info;
-        public string Message { get; set; } = "";
-    }
-    #endregion
-
     /// <summary>Global server.</summary>
-    public sealed class LogManager //TODOX un-static?
+    public sealed class LogManager
     {
         #region Fields
         /// <summary>Lazy singleton. https://csharpindepth.com/Articles/Singleton.</summary>
@@ -63,7 +41,7 @@ namespace NBagOfTricks.Slog
         };
 
         /// <summary>Queue management.</summary>
-        static readonly CancellationTokenSource _tokenSource = new();
+        static CancellationTokenSource _tokenSource = new();
         #endregion
 
         #region Properties
@@ -74,7 +52,7 @@ namespace NBagOfTricks.Slog
         public static Level MinLevelNotif { get; set; } = Level.Info;
 
         /// <summary>Format for file records.</summary>
-        public static string TimeFormat { get; set; } = "yyyy'-'MM'-'dd HH':'mm':'ss.fff";
+        public static string TimeFormat { get; set; } = Definitions.TIME_FORMAT;
 
         /// <summary>For diagnostics.</summary>
         public static int QueueSize { get { return _queue.Count; } }
@@ -125,6 +103,7 @@ namespace NBagOfTricks.Slog
                 }
             }
 
+            _tokenSource = new(); // reset
             var token = _tokenSource.Token;
 
             Task task = Task.Run(async () =>
@@ -194,6 +173,7 @@ namespace NBagOfTricks.Slog
         }
         #endregion
 
+        #region Private functions
         /// <summary>
         /// Client logger wants to log something.
         /// </summary>
@@ -202,5 +182,6 @@ namespace NBagOfTricks.Slog
         {
             _queue.Enqueue(le);
         }
+        #endregion
     }
 }

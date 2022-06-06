@@ -32,8 +32,6 @@ namespace NBagOfTricks.Test
             LogManager.Log += LogManager_Log;
             LogManager.Run(SLOG_FILE, 1000);
 
-            // TLOG_CONTEXT_S(CMN_CStateMachine::ProcessEvent);
-
             _logger1.LogInfo("11111 file:Y cb:Y");
             _logger2.LogDebug("22222 file:Y cb:N");
             DrainQueue();
@@ -50,16 +48,16 @@ namespace NBagOfTricks.Test
                 _logger2.Log(ex, "44444 file:Y cb:Y");
             }
 
-            //
+            //////////
             DrainQueue();
             LogManager.MinLevelNotif = Level.Trace;
             _logger1.LogTrace("55555 file:N cb:Y");
 
-            //
+            //////////
             DrainQueue();
             LogManager.Stop();
 
-            // Look at what we have.
+            ////////// Look at what we have.
             UT_EQUAL(_cbText.Count, 3);
             UT_TRUE(_cbText[0].Contains("11111"));
             UT_TRUE(_cbText[1].Contains("44444"));
@@ -83,6 +81,40 @@ namespace NBagOfTricks.Test
         void LogManager_Log(object? sender, LogEventArgs e)
         {
             _cbText.Add(e.Message);
+        }
+    }
+
+    public class SLOG_SCOPER : TestSuite
+    {
+        readonly Logger _loggerS = LogManager.CreateLogger("TestLoggerS");
+        const string SLOG_FILE = @"..\..\out\slog.log.txt";
+
+        public override void RunSuite()
+        {
+            File.Delete(SLOG_FILE);
+            LogManager.MinLevelFile = Level.Trace;
+            LogManager.MinLevelNotif = Level.Trace;
+            LogManager.Run(SLOG_FILE, 1000);
+
+            int i = 0;
+            using Scoper s1 = new(_loggerS, "111");
+            if (i++ < 100)
+            {
+                using Scoper s2 = new(_loggerS, "222");
+                if (i++ < 100)
+                {
+                    using Scoper s3 = new(_loggerS, "333");
+                }
+            }
+            if (i++ < 100)
+            {
+                using Scoper s4 = new(_loggerS, "444");
+            }
+            using Scoper s5 = new(_loggerS, "555");
+            if (i++ < 100)
+            {
+                using Scoper s6 = new(_loggerS, "666");
+            }
         }
     }
 }
