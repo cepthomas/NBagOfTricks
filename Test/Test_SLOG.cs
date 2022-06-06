@@ -8,63 +8,38 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
 using NBagOfTricks;
+using NBagOfTricks.Slog;
+using NBagOfTricks.PNUT;
 
 
-namespace Slog.Test
+namespace NBagOfTricks.Test
 {
-    public partial class TestHost : Form
+    public class SLOG_BASIC : TestSuite
     {
         readonly Logger _logger1 = LogManager.CreateLogger("TestLogger1");
         readonly Logger _logger2 = LogManager.CreateLogger("TestLogger2");
+        readonly List<string> _cbText = new();
+        const string SLOG_FILE = @"..\..\out\slog.log.txt";
 
-        /// <summary>Init slog.</summary>
-        public TestHost()
+        public override void RunSuite()
         {
-            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor, true);
-            InitializeComponent();
+            UT_INFO("Tests slog.");
 
-            Location = new(20, 20);
-
-            rtbLog.Font = new Font("Consolas", 10);
-
-            LogManager.MinLevelFile = Level.Trace;
+            _cbText.Clear();
+            File.Delete(SLOG_FILE);
+            LogManager.MinLevelFile = Level.Debug;
             LogManager.MinLevelNotif = Level.Info;
             LogManager.Log += LogManager_Log;
-            LogManager.Run(@"C:\Dev\repos\Slog\Test\slog.log.txt", 1000);
-        }
+            LogManager.Run(SLOG_FILE, 1000);
 
-        /// <summary>Clean up.</summary>
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            LogManager.Stop();
-
-            base.OnFormClosing(e);
-        }
-
-        /// <summary>Something to show.</summary>
-        void LogManager_Log(object? sender, LogEventArgs e)
-        {
-            // May come from a different thread.
-            this.InvokeIfRequired(_ =>
-            {
-                string s = $"> {e.Message}";
-                rtbLog.AppendText(s);
-                rtbLog.AppendText(Environment.NewLine);
-                rtbLog.ScrollToCaret();
-            });
-        }
-
-        /// <summary>Debug</summary>
-        void Doit_Click(object sender, EventArgs e)
-        {
             // TLOG_CONTEXT_S(CMN_CStateMachine::ProcessEvent);
 
-            _logger1.LogInfo("11111");
+            _logger1.LogInfo("11111 file:Y cb:Y");
+            _logger2.LogDebug("22222 file:Y cb:N");
+            DrainQueue();
+            _logger1.LogTrace("33333 file:N cb:N");
 
-            _logger2.LogDebug("22222");
-
-            _logger1.Log(Level.Trace, "33333 - should not appear in ui!!");
-
+            // Force exception.
             try
             {
                 int x = 0;
@@ -72,17 +47,42 @@ namespace Slog.Test
             }
             catch (Exception ex)
             {
-                _logger2.Log(ex);
+                _logger2.Log(ex, "44444 file:Y cb:Y");
+            }
+
+            //
+            DrainQueue();
+            LogManager.MinLevelNotif = Level.Trace;
+            _logger1.LogTrace("55555 file:N cb:Y");
+
+            //
+            DrainQueue();
+            LogManager.Stop();
+
+            // Look at what we have.
+            UT_EQUAL(_cbText.Count, 3);
+            UT_TRUE(_cbText[0].Contains("11111"));
+            UT_TRUE(_cbText[1].Contains("44444"));
+            UT_TRUE(_cbText[2].Contains("55555"));
+
+            var ftext = File.ReadAllLines(SLOG_FILE);
+            UT_EQUAL(ftext.Length, 4);
+            UT_TRUE(ftext[0].Contains("11111"));
+            UT_TRUE(ftext[1].Contains("22222"));
+            UT_TRUE(ftext[2].Contains("44444"));
+        }
+
+        void DrainQueue()
+        {
+            while (LogManager.QueueSize > 0)
+            {
+                Thread.Sleep(50);
             }
         }
 
-        /// <summary>Debug</summary>
-        void Again_Click(object sender, EventArgs e)
+        void LogManager_Log(object? sender, LogEventArgs e)
         {
-            LogManager.MinLevelNotif = Level.Trace;
-
-            _logger1.Log(Level.Trace, "44444 - should appear in ui!!");
-
+            _cbText.Add(e.Message);
         }
     }
 }

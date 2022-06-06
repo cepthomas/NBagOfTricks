@@ -7,7 +7,6 @@ using NBagOfTricks.PNUT;
 
 namespace NBagOfTricks.Test
 {
-    ////////////////////////////////////////////////////////////////////////
     public class CMD_HAPPY : TestSuite
     {
         public override void RunSuite()
@@ -130,7 +129,7 @@ namespace NBagOfTricks.Test
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////
+
     public class CMD_SAD : TestSuite
     {
         public override void RunSuite()
@@ -183,7 +182,7 @@ namespace NBagOfTricks.Test
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////
+
     public class CMD_NONE : TestSuite
     {
         public override void RunSuite()

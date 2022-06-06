@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 
-namespace Slog
+namespace NBagOfTricks.Slog
 {
     /// <summary>Client creates as many of these as needed.</summary>
     public class Logger  
@@ -36,6 +36,17 @@ namespace Slog
         public void Log(Level level, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             FormatEntry(level, msg, file, line);
+        }
+
+        /// <summary>
+        /// Convenience function.
+        /// </summary>
+        /// <param name="msg">Content.</param>
+        /// <param name="file">Ignore - compiler use.</param>
+        /// <param name="line">Ignore - compiler use.</param>
+        public void LogTrace(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        {
+            FormatEntry(Level.Trace, msg, file, line);
         }
 
         /// <summary>
@@ -86,11 +97,13 @@ namespace Slog
         /// Log an exception.
         /// </summary>
         /// <param name="ex">The exception.</param>
+        /// <param name="msg">Extra info.</param>
         /// <param name="file">Ignore - compiler use.</param>
         /// <param name="line">Ignore - compiler use.</param>
-        public void Log(Exception ex, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public void Log(Exception ex, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            StringBuilder sb = new(ex.Message);
+            StringBuilder sb = new($"{ex.Message} {msg}");
+            sb.Append(msg);
             string? trace = ex.StackTrace;
 
             while (ex.InnerException != null)

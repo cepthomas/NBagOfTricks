@@ -12,6 +12,7 @@ using System.Text.Json;
 using NBagOfTricks;
 using NBagOfTricks.PNUT;
 
+
 namespace NBagOfTricks.Test
 {
     public class JSON_CONVERTERS : TestSuite
@@ -41,6 +42,7 @@ namespace NBagOfTricks.Test
             }
         }
     }
+
 
     public class ConverterTarget
     {

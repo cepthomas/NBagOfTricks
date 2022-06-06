@@ -44,6 +44,7 @@ namespace NBagOfTricks.Test
         }
     }
 
+
     public class UTILS_MISC : TestSuite
     {
         public override void RunSuite()

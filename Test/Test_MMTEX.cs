@@ -54,7 +54,7 @@ namespace NBagOfTricks.Test
 
             // Time ordered.
             _tan.Times.ForEach(t => ls.Add($"{t}"));
-            File.WriteAllLines(@"intervals_ordered.csv", ls);
+            File.WriteAllLines(@"..\..\out\intervals_ordered.csv", ls);
 
             // Sorted by (rounded) times.
             Dictionary<double, int> _bins = new Dictionary<double, int>();
@@ -68,7 +68,7 @@ namespace NBagOfTricks.Test
             var vv = _bins.Keys.ToList();
             vv.Sort();
             vv.ForEach(v => ls.Add($"{v},{_bins[v]}"));
-            File.WriteAllLines(@"intervals_sorted.csv", ls);
+            File.WriteAllLines(@"..\..\out\intervals_sorted.csv", ls);
 
             //Debug.WriteLine(_tan);
             //Count:1000 Mean:9.982 Max:10.977 Min:9.040 SD:0.096

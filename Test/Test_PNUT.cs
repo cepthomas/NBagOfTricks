@@ -78,6 +78,7 @@ namespace NBagOfTricks.Test
         }
     }
 
+
     public class PNUT_TWO : TestSuite
     {
         public override void RunSuite()
@@ -101,6 +102,7 @@ namespace NBagOfTricks.Test
             UT_GREATER(val2, val1);
         }
     }
+
 
     public class ETC_NOT_PNUT : TestSuite
     {

@@ -11,11 +11,6 @@ using NBagOfTricks;
 using NBagOfTricks.PNUT;
 
 
-//     var mdText = new List<string>();
-//     mdText.AddRange(File.ReadAllLines(@"..\..\README.md"));
-//     var htmlText = Tools.MarkdownToHtml(mdText, "lightgreen", "helvetica", true); // arial, helvetica, sans-serif
-
-
 namespace NBagOfTricks.Test
 {
     public class TOOLS_BIN_SNIFF : TestSuite
@@ -24,7 +19,7 @@ namespace NBagOfTricks.Test
         {
             UT_INFO("Tests file sniffer.");
 
-            string fn = @".\Files\nonascii.txt";
+            string fn = @"..\..\Files\nonascii.txt";
 
             var res = Tools.SniffBin(fn);
 

@@ -24,12 +24,15 @@ Probably I should make this into a nuget package at some point.
 - StringUtils: Mostly low-level extensions.
 - Dumper: Writes object tree contents.
 
+# Simple Logger
+- Singleton manager.
+- Client creates multiple named loggers.
+- Log records go to log file (verbose) and/or event hook (for UI, simpler).
 
 # Simple IPC
 - A simple IPC server/single-client mechanism is used to send a single string one-way. That's all.
 - To support development of the IPC there is a rudimentary cross-process logger.
 - Primary usage is for a single instance app (ClipPlayer) to send command args to itself.
-
 
 # Script Compiler
 Compiles C#-like scripts into in-memory assemblies. Primarily for use by [Nebulator](https://github.com/cepthomas/Nebulator/blob/main/README.md)

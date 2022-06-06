@@ -17,7 +17,7 @@ namespace NBagOfTricks.Test
     {
         //const string TS_FORMAT = @"mm\:ss\.fff";
         const string PIPE_NAME = "058F684D-AF82-4FE5-BD1E-9FD031FE28CF";
-        const string LOGFILE_NAME = "test_ipc_log.txt";
+        const string LOGFILE_NAME = @"..\..\out\test_ipc_log.txt";
         readonly MpLog _log = new(LOGFILE_NAME, "TESTER");
 
         public override void RunSuite()

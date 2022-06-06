@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using NBagOfTricks;
 
 
-namespace Slog
+namespace NBagOfTricks.Slog
 {
     #region Types
     /// <summary>Log level options.</summary>
@@ -34,7 +34,7 @@ namespace Slog
     }
     #endregion
 
-    /// <summary>Global singleton manager.</summary>
+    /// <summary>Global server.</summary>
     public sealed class LogManager //TODOX un-static?
     {
         #region Fields
@@ -44,13 +44,14 @@ namespace Slog
 
         /// <summary>All loggers. Key is client supplied name.</summary>
         static readonly Dictionary<string, Logger> _loggers = new();
-        #endregion
 
-        #region Fields
+        /// <summary>Log record queue.</summary>
         static readonly ConcurrentQueue<LogEntry> _queue = new();
 
+        /// <summary>For checking file rollover.</summary>
         static DateTime _housekeepTime = DateTime.Now;
 
+        /// <summary>Constant width strings for visual aid.</summary>
         static readonly Dictionary<Level, string> _levelNames = new()
         {
             { Level.Trace, "TRC" },
@@ -61,21 +62,26 @@ namespace Slog
             { Level.Fatal, "!!!" }
         };
 
+        /// <summary>Queue management.</summary>
         static readonly CancellationTokenSource _tokenSource = new();
         #endregion
 
-        #region Properties - config
-        /// <summary>Event filter.</summary>
+        #region Properties
+        /// <summary>Event filter for file.</summary>
         public static Level MinLevelFile { get; set; } = Level.Debug;
 
-        /// <summary>Event filter.</summary>
+        /// <summary>Event filter for callback event.</summary>
         public static Level MinLevelNotif { get; set; } = Level.Info;
 
         /// <summary>Format for file records.</summary>
         public static string TimeFormat { get; set; } = "yyyy'-'MM'-'dd HH':'mm':'ss.fff";
+
+        /// <summary>For diagnostics.</summary>
+        public static int QueueSize { get { return _queue.Count; } }
         #endregion
 
         #region Events
+        /// <summary>Callback event.</summary>
         public static event EventHandler<LogEventArgs>? Log;
         #endregion
 
