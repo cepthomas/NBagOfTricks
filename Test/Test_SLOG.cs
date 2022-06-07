@@ -29,7 +29,7 @@ namespace NBagOfTricks.Test
             File.Delete(SLOG_FILE);
             LogManager.MinLevelFile = Level.Debug;
             LogManager.MinLevelNotif = Level.Info;
-            LogManager.Log += LogManager_Log;
+            LogManager.LogEvent += LogManager_LogEvent;
             LogManager.Run(SLOG_FILE, 1000);
 
             _logger1.LogInfo("11111 file:Y cb:Y");
@@ -78,7 +78,7 @@ namespace NBagOfTricks.Test
             }
         }
 
-        void LogManager_Log(object? sender, LogEventArgs e)
+        void LogManager_LogEvent(object? sender, LogEventArgs e)
         {
             _cbText.Add(e.Message);
         }

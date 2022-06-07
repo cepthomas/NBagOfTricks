@@ -38,7 +38,7 @@ namespace NBagOfTricks.Slog
         /// <param name="line">Ignore - compiler use.</param>
         public void Log(Level level, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            FormatEntry(level, msg, file, line);
+            AddEntry(level, msg, file, line);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace NBagOfTricks.Slog
         /// <param name="line">Ignore - compiler use.</param>
         public void LogTrace(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            FormatEntry(Level.Trace, msg, file, line);
+            AddEntry(Level.Trace, msg, file, line);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace NBagOfTricks.Slog
         /// <param name="line">Ignore - compiler use.</param>
         public void LogDebug(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            FormatEntry(Level.Debug, msg, file, line);
+            AddEntry(Level.Debug, msg, file, line);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace NBagOfTricks.Slog
         /// <param name="line">Ignore - compiler use.</param>
         public void LogInfo(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            FormatEntry(Level.Info, msg, file, line);
+            AddEntry(Level.Info, msg, file, line);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace NBagOfTricks.Slog
         /// <param name="line">Ignore - compiler use.</param>
         public void LogWarn(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            FormatEntry(Level.Warn, msg, file, line);
+            AddEntry(Level.Warn, msg, file, line);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace NBagOfTricks.Slog
         /// <param name="line">Ignore - compiler use.</param>
         public void LogError(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            FormatEntry(Level.Error, msg, file, line);
+            AddEntry(Level.Error, msg, file, line);
         }
 
         /// <summary>
@@ -107,34 +107,34 @@ namespace NBagOfTricks.Slog
         {
             StringBuilder sb = new($"{ex.Message} {msg}");
             sb.Append(msg);
-            string? trace = ex.StackTrace;
+            sb.Append(Environment.NewLine);
+
+            if(ex.StackTrace is not null)
+            {
+                sb.Append(ex.StackTrace);
+                sb.Append(Environment.NewLine);
+            }
 
             while (ex.InnerException != null)
             {
                 ex = ex.InnerException;
-                sb.Append(Environment.NewLine);
                 sb.Append(ex.Message);
-            }
-
-            if(trace is not null)
-            {
                 sb.Append(Environment.NewLine);
-                sb.Append(trace);
             }
 
-            FormatEntry(Level.Error, sb.ToString(), file, line);
+            AddEntry(Level.Error, sb.ToString(), file, line);
         }
         #endregion
 
         #region Private functions
         /// <summary>
-        /// Private common formatter.
+        /// Private common function.
         /// </summary>
         /// <param name="level"></param>
         /// <param name="msg"></param>
         /// <param name="file"></param>
         /// <param name="line"></param>
-        void FormatEntry(Level level, string msg, string file, int line)
+        void AddEntry(Level level, string msg, string file, int line)
         {
             file = Path.GetFileName(file);
 

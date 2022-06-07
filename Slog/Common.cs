@@ -16,7 +16,7 @@ namespace NBagOfTricks.Slog
     /// <summary>Log level options.</summary>
     public enum Level { Trace = 0, Debug = 1, Info = 2, Warn = 3, Error = 4, Fatal = 5 }
 
-    /// <summary>Log entry data container.</summary>
+    /// <summary>Internal log entry data container.</summary>
     internal struct LogEntry
     {
         public DateTime timestamp;
@@ -27,6 +27,7 @@ namespace NBagOfTricks.Slog
         public string message;
     }
 
+    /// <summary>Log event for  log entry data container.</summary>
     public class LogEventArgs : EventArgs
     {
         public Level Level { get; set; } = Level.Info;
@@ -35,12 +36,12 @@ namespace NBagOfTricks.Slog
 
     public class Definitions
     {
+        /// <summary>Verbose timestamp.</summary>
         public const string TIME_FORMAT = "yyyy'-'MM'-'dd HH':'mm':'ss.fff";
-
     }
     #endregion
 
-    /// <summary>A class to log enter/exit scope. Use "using new Scoper(...);"</summary>
+    /// <summary>Experimental class to log enter/exit scope. Use syntax "using new Scoper(...);"</summary>
     public class Scoper : IDisposable
     {
         Logger _logger;
@@ -50,12 +51,12 @@ namespace NBagOfTricks.Slog
         {
             _logger = logger;
             _id = id;
-            _logger.LogTrace($"Enter scope {_id}");
+            _logger.LogTrace($"{_id}: Enter scope");
         }
 
         public void Dispose()
         {
-            _logger.LogTrace($"Leave scope {_id}");
+            _logger.LogTrace($"{_id}: Leave scope");
         }
     }
 }

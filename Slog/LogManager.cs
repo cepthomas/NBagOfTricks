@@ -18,6 +18,8 @@ namespace NBagOfTricks.Slog
         #region Fields
         /// <summary>Lazy singleton. https://csharpindepth.com/Articles/Singleton.</summary>
         private static readonly Lazy<LogManager> _instance = new(() => new LogManager());
+
+        /// <summary>Singleton accessor.</summary>
         public static LogManager Instance { get { return _instance.Value; } }
 
         /// <summary>All loggers. Key is client supplied name.</summary>
@@ -60,7 +62,7 @@ namespace NBagOfTricks.Slog
 
         #region Events
         /// <summary>Callback event.</summary>
-        public static event EventHandler<LogEventArgs>? Log;
+        public static event EventHandler<LogEventArgs>? LogEvent;
         #endregion
 
         #region Public functions
@@ -87,8 +89,8 @@ namespace NBagOfTricks.Slog
         /// Inititialize builtin file logger.
         /// </summary>
         /// <param name="logFilePath">Builtin logger file path.</param>
-        /// <param name="logSize">Builtin logger max size.</param>
-        public static void Run(string logFilePath, int logSize)
+        /// <param name="logSize">Builtin logger max size. 0 means no file logger, just notifications.</param>
+        public static void Run(string logFilePath = "", int logSize = 0)
         {
             if (logSize > 0)
             {
@@ -99,7 +101,7 @@ namespace NBagOfTricks.Slog
                 }
                 catch (IOException)
                 {
-                    throw new ArgumentException("Invalid file name", nameof(logFilePath));
+                    throw new ArgumentException("Invalid log file name", nameof(logFilePath));
                 }
             }
 
@@ -122,7 +124,6 @@ namespace NBagOfTricks.Slog
 
                         while (_queue.TryDequeue(out LogEntry le))
                         {
-                            //cat = cat.Length >= CAT_SIZE ? cat.Left(CAT_SIZE) : cat.PadRight(CAT_SIZE);
                             var fn = Path.GetFileName(le.file);
                             var slevel = _levelNames[le.level];
 
@@ -133,10 +134,10 @@ namespace NBagOfTricks.Slog
                                 writer.Flush();
                             }
 
-                            if (Log is not null && le.level >= MinLevelNotif)
+                            if (LogEvent is not null && le.level >= MinLevelNotif)
                             {
                                 string s = $"{slevel} {le.name} {fn}({le.line}) {le.message}";
-                                Log.Invoke(null, new LogEventArgs() { Level = le.level, Message = s });
+                                LogEvent.Invoke(null, new LogEventArgs() { Level = le.level, Message = s });
                             }
                         }
                     }
