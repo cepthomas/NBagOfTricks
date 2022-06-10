@@ -14,7 +14,7 @@ namespace NBagOfTricks.Slog
 {
     #region Types
     /// <summary>Log level options.</summary>
-    public enum Level { Trace = 0, Debug = 1, Info = 2, Warn = 3, Error = 4, Fatal = 5 }
+    public enum Level { Trace = 0, Debug = 1, Info = 2, Warn = 3, Error = 4 }
 
     /// <summary>Internal log entry data container.</summary>
     internal struct LogEntry
@@ -27,7 +27,7 @@ namespace NBagOfTricks.Slog
         public string message;
     }
 
-    /// <summary>Log event for  log entry data container.</summary>
+    /// <summary>Log event for notification.</summary>
     public class LogEventArgs : EventArgs
     {
         public Level Level { get; set; } = Level.Info;
@@ -44,8 +44,8 @@ namespace NBagOfTricks.Slog
     /// <summary>Experimental class to log enter/exit scope. Use syntax "using new Scoper(...);"</summary>
     public class Scoper : IDisposable
     {
-        Logger _logger;
-        string _id;
+        readonly Logger _logger;
+        readonly string _id;
 
         public Scoper(Logger logger, string id)
         {

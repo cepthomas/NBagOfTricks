@@ -45,7 +45,7 @@ namespace NBagOfTricks.Test
             }
             catch (Exception ex)
             {
-                _logger2.Log(ex, "44444 file:Y cb:Y");
+                _logger2.LogException(ex, "44444 file:Y cb:Y");
             }
 
             //////////

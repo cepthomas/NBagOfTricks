@@ -79,9 +79,6 @@ namespace NBagOfTricks.PNUT
         /// <summary>Format string.</summary>
         const string TIME_FORMAT = @"hh\:mm\:ss\.fff";
 
-        ///// <summary>Format string.</summary>
-        //const string DATE_TIME_FORMAT = "yyyy'-'MM'-'dd HH':'mm':'ss";
-
         /// <summary>Format string.</summary>
         const string DATE_TIME_FORMAT_MSEC = "yyyy'-'MM'-'dd HH':'mm':'ss.fff";
 

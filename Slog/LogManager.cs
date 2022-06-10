@@ -19,9 +19,6 @@ namespace NBagOfTricks.Slog
         /// <summary>Lazy singleton. https://csharpindepth.com/Articles/Singleton.</summary>
         private static readonly Lazy<LogManager> _instance = new(() => new LogManager());
 
-        /// <summary>Singleton accessor.</summary>
-        public static LogManager Instance { get { return _instance.Value; } }
-
         /// <summary>All loggers. Key is client supplied name.</summary>
         static readonly Dictionary<string, Logger> _loggers = new();
 
@@ -38,15 +35,20 @@ namespace NBagOfTricks.Slog
             { Level.Debug, "DBG" },
             { Level.Info,  "INF" },
             { Level.Warn,  "WRN" },
-            { Level.Error, "ERR" },
-            { Level.Fatal, "!!!" }
+            { Level.Error, "ERR" }
         };
+
+        /// <summary>Queue management.</summary>
+        static bool _running = false;
 
         /// <summary>Queue management.</summary>
         static CancellationTokenSource _tokenSource = new();
         #endregion
 
         #region Properties
+        /// <summary>Singleton accessor.</summary>
+        public static LogManager Instance { get { return _instance.Value; } }
+
         /// <summary>Event filter for file.</summary>
         public static Level MinLevelFile { get; set; } = Level.Debug;
 
@@ -92,7 +94,7 @@ namespace NBagOfTricks.Slog
         /// <param name="logSize">Builtin logger max size. 0 means no file logger, just notifications.</param>
         public static void Run(string logFilePath = "", int logSize = 0)
         {
-            if (logSize > 0)
+            if (logFilePath != "" && logSize > 0)
             {
                 // Check for validity by trying to open it.
                 try
@@ -110,17 +112,21 @@ namespace NBagOfTricks.Slog
 
             Task task = Task.Run(async () =>
             {
-                bool run = true;
-                while (run)
+                _running = true;
+                while (_running)
                 {
                     if (token.IsCancellationRequested)
                     {
-                        run = false;
+                        _running = false;
                     }
 
                     if (!_queue.IsEmpty)
                     {
-                        using var writer = new StreamWriter(logFilePath, true);
+                        StreamWriter? writer = null;
+                        if (logFilePath != "" && logSize > 0)
+                        {
+                            writer = new StreamWriter(logFilePath, true);
+                        }
 
                         while (_queue.TryDequeue(out LogEntry le))
                         {
@@ -181,7 +187,10 @@ namespace NBagOfTricks.Slog
         /// <param name="le"></param>
         internal static void LogThis(LogEntry le)
         {
-            _queue.Enqueue(le);
+            if(_running) // don't fill a dead queue.
+            {
+                _queue.Enqueue(le);
+            }
         }
         #endregion
     }

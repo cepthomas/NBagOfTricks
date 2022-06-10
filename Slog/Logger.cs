@@ -15,6 +15,9 @@ namespace NBagOfTricks.Slog
         #region Properties
         /// <summary>ID for this logger.</summary>
         public string Name { get; init; } = "";
+
+        /// <summary>Turn logger on or off.</summary>
+        public bool Enable { get; set; } = true;
         #endregion
 
         #region Lifecycle
@@ -30,18 +33,6 @@ namespace NBagOfTricks.Slog
 
         #region Public functions
         /// <summary>
-        /// Basic log function.
-        /// </summary>
-        /// <param name="level">Specific level.</param>
-        /// <param name="msg">Content.</param>
-        /// <param name="file">Ignore - compiler use.</param>
-        /// <param name="line">Ignore - compiler use.</param>
-        public void Log(Level level, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            AddEntry(level, msg, file, line);
-        }
-
-        /// <summary>
         /// Convenience function.
         /// </summary>
         /// <param name="msg">Content.</param>
@@ -49,7 +40,10 @@ namespace NBagOfTricks.Slog
         /// <param name="line">Ignore - compiler use.</param>
         public void LogTrace(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            AddEntry(Level.Trace, msg, file, line);
+            if (Enable)
+            {
+                AddEntry(Level.Trace, msg, file, line);
+            }
         }
 
         /// <summary>
@@ -60,7 +54,10 @@ namespace NBagOfTricks.Slog
         /// <param name="line">Ignore - compiler use.</param>
         public void LogDebug(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            AddEntry(Level.Debug, msg, file, line);
+            if (Enable)
+            {
+                AddEntry(Level.Debug, msg, file, line);
+            }
         }
 
         /// <summary>
@@ -71,7 +68,10 @@ namespace NBagOfTricks.Slog
         /// <param name="line">Ignore - compiler use.</param>
         public void LogInfo(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            AddEntry(Level.Info, msg, file, line);
+            if (Enable)
+            {
+                AddEntry(Level.Info, msg, file, line);
+            }
         }
 
         /// <summary>
@@ -82,7 +82,10 @@ namespace NBagOfTricks.Slog
         /// <param name="line">Ignore - compiler use.</param>
         public void LogWarn(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            AddEntry(Level.Warn, msg, file, line);
+            if (Enable)
+            {
+                AddEntry(Level.Warn, msg, file, line);
+            }
         }
 
         /// <summary>
@@ -93,6 +96,7 @@ namespace NBagOfTricks.Slog
         /// <param name="line">Ignore - compiler use.</param>
         public void LogError(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
+            // Always log errors.
             AddEntry(Level.Error, msg, file, line);
         }
 
@@ -103,8 +107,9 @@ namespace NBagOfTricks.Slog
         /// <param name="msg">Extra info.</param>
         /// <param name="file">Ignore - compiler use.</param>
         /// <param name="line">Ignore - compiler use.</param>
-        public void Log(Exception ex, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public void LogException(Exception ex, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
+            // Always log exceptions.
             StringBuilder sb = new($"{ex.Message} {msg}");
             sb.Append(msg);
             sb.Append(Environment.NewLine);

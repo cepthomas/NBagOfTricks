@@ -27,7 +27,9 @@ Probably I should make this into a nuget package at some point.
 # Simple Logger
 - Singleton manager.
 - Client creates multiple named loggers.
-- Log records go to log file (verbose) and/or event hook (for UI, simpler).
+- Log records go to log file (verbose) and/or notification event hook (for UI, simpler).
+- Note: Be careful with handling notifications - don't call Logger functions in UI constructors as the handle is not assigned
+   and Invoke() will fail.
 
 # Simple IPC
 - A simple IPC server/single-client mechanism is used to send a single string one-way. That's all.
@@ -96,7 +98,7 @@ A JUnit style intended for consumption by CI. Not tested yet but looks nice.
     <testsuite name = ETC_33>
         <testcase name="ETC_33.1" classname="ETC_33" />
         <testcase name="ETC_33.2 " classname="ETC_33">
-            <failure message="C:\Dev\pnut\cs\test.cs:113 [lwil/4xG|] != [Should fail]"></failure>
+            <failure message="C:\foo\test.cs:113 [lwil/4xG|] != [Should fail]"></failure>
         </testcase>
         <testcase name="ETC_33.3" classname="ETC_33" />
     </testsuite>
