@@ -34,7 +34,7 @@ namespace NBagOfTricks.Test
 
             _logger1.LogInfo("11111 file:Y cb:Y");
             _logger2.LogDebug("22222 file:Y cb:N");
-            DrainQueue();
+            WaitForEmptyQueue();
             _logger1.LogTrace("33333 file:N cb:N");
 
             // Force exception.
@@ -49,12 +49,12 @@ namespace NBagOfTricks.Test
             }
 
             //////////
-            DrainQueue();
+            WaitForEmptyQueue();
             LogManager.MinLevelNotif = Level.Trace;
             _logger1.LogTrace("55555 file:N cb:Y");
 
             //////////
-            DrainQueue();
+            WaitForEmptyQueue();
             LogManager.Stop();
 
             ////////// Look at what we have.
@@ -70,7 +70,7 @@ namespace NBagOfTricks.Test
             UT_TRUE(ftext[2].Contains("44444"));
         }
 
-        void DrainQueue()
+        void WaitForEmptyQueue()
         {
             while (LogManager.QueueSize > 0)
             {

@@ -112,19 +112,18 @@ namespace NBagOfTricks.Slog
             // Always log exceptions.
             StringBuilder sb = new($"{ex.Message} {msg}");
             sb.Append(msg);
-            sb.Append(Environment.NewLine);
 
             if(ex.StackTrace is not null)
             {
-                sb.Append(ex.StackTrace);
                 sb.Append(Environment.NewLine);
+                sb.Append(ex.StackTrace);
             }
 
             while (ex.InnerException != null)
             {
+                sb.Append(Environment.NewLine);
                 ex = ex.InnerException;
                 sb.Append(ex.Message);
-                sb.Append(Environment.NewLine);
             }
 
             AddEntry(Level.Error, sb.ToString(), file, line);

@@ -107,12 +107,13 @@ namespace NBagOfTricks.Slog
                 }
             }
 
+            _running = true;
+
             _tokenSource = new(); // reset
             var token = _tokenSource.Token;
 
             Task task = Task.Run(async () =>
             {
-                _running = true;
                 while (_running)
                 {
                     if (token.IsCancellationRequested)
@@ -120,53 +121,64 @@ namespace NBagOfTricks.Slog
                         _running = false;
                     }
 
-                    if (!_queue.IsEmpty)
+                    try
                     {
-                        StreamWriter? writer = null;
-                        if (logFilePath != "" && logSize > 0)
+                        if (!_queue.IsEmpty)
                         {
-                            writer = new StreamWriter(logFilePath, true);
-                        }
+                            StreamWriter? writer = null;
 
-                        while (_queue.TryDequeue(out LogEntry le))
-                        {
-                            var fn = Path.GetFileName(le.file);
-                            var slevel = _levelNames[le.level];
-
-                            if (writer is not null && le.level >= MinLevelFile)
+                            if (logFilePath != "" && logSize > 0)
                             {
-                                string s = $"{DateTime.Now.ToString(TimeFormat)} {slevel} {le.name} {fn}({le.line}) {le.message}";
-                                writer.WriteLine(s);
-                                writer.Flush();
+                                writer = new StreamWriter(logFilePath, true);
                             }
 
-                            if (LogEvent is not null && le.level >= MinLevelNotif)
+                            while (_queue.TryDequeue(out LogEntry le))
                             {
-                                string s = $"{slevel} {le.name} {fn}({le.line}) {le.message}";
-                                LogEvent.Invoke(null, new LogEventArgs() { Level = le.level, Message = s });
+                                var fn = Path.GetFileName(le.file);
+                                var slevel = _levelNames[le.level];
+
+                                if (writer is not null && le.level >= MinLevelFile)
+                                {
+                                    string s = $"{DateTime.Now.ToString(TimeFormat)} {slevel} {le.name} {fn}({le.line}) {le.message}";
+                                    writer.WriteLine(s);
+                                    writer.Flush();
+                                }
+
+                                if (LogEvent is not null && le.level >= MinLevelNotif)
+                                {
+                                    string s = $"{slevel} {le.name} {fn}({le.line}) {le.message}";
+                                    LogEvent.Invoke(null, new LogEventArgs() { Level = le.level, Message = s });
+                                }
+                            }
+
+                            writer?.Close();
+                            writer?.Dispose();
+                        }
+
+                        // Check file size every minute or so.
+                        if ((DateTime.Now - _housekeepTime).TotalSeconds > 70)
+                        {
+                            _housekeepTime = DateTime.Now;
+                            FileInfo fi = new(logFilePath);
+                            if (fi.Exists && fi.Length > logSize)
+                            {
+                                // Assemble the backup file name.
+                                var sext = Path.GetExtension(fi.FullName);
+                                var snow = DateTime.Now.ToString("yyyy_MM_dd_HH_mm");
+                                var newfn = fi.FullName.Replace(sext, $"_{snow}{sext}");
+                                File.Copy(fi.FullName, newfn);
+                                // Delete the original as it will be created fresh in the next iteration.
+                                File.Delete(fi.FullName);
                             }
                         }
                     }
-
-                    // Check file size every minute or so.
-                    if ((DateTime.Now - _housekeepTime).TotalSeconds > 70)
+                    catch (Exception ex)
                     {
-                        _housekeepTime = DateTime.Now;
-                        FileInfo fi = new(logFilePath);
-                        if (fi.Exists && fi.Length > logSize)
-                        {
-                            // Assemble the backup file name.
-                            var sext = Path.GetExtension(fi.FullName);
-                            var snow = DateTime.Now.ToString("yyyy_MM_dd_HH_mm");
-                            var newfn = fi.FullName.Replace(sext, $"_{snow}{sext}");
-                            File.Copy(fi.FullName, newfn);
-                            // Delete the original as it will be created fresh in the next iteration.
-                            File.Delete(fi.FullName);
-                        }
-
-                        // Rest a bit.
-                        await Task.Delay(50);
+                        // TODO something or just leave it alone?
                     }
+
+                    // Rest a bit.
+                    await Task.Delay(50);
                 }
             }, token);
         }
