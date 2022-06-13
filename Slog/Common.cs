@@ -33,12 +33,6 @@ namespace NBagOfTricks.Slog
         public LogLevel Level { get; set; } = LogLevel.Info;
         public string Message { get; set; } = "";
     }
-
-    public class Definitions
-    {
-        /// <summary>Verbose timestamp.</summary>
-        public const string TIME_FORMAT = "yyyy'-'MM'-'dd HH':'mm':'ss.fff";
-    }
     #endregion
 
     /// <summary>Experimental class to log enter/exit scope. Use syntax "using new Scoper(...);"</summary>

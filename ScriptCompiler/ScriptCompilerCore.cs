@@ -18,9 +18,6 @@ namespace NBagOfTricks.ScriptCompiler
     {
         #region Properties
         /// <summary>Client needs to tell us this.</summary>
-        public string WorkPath { get; set; } = "";
-
-        /// <summary>Client needs to tell us this.</summary>
         public bool IgnoreWarnings { get; set; } = true;
 
         /// <summary>Default system dlls. Client can add or subtract.</summary>
@@ -330,7 +327,7 @@ namespace NBagOfTricks.ScriptCompiler
                         List<string> parts = strim.SplitByTokens("()");
                         if (parts.Count >= 2)
                         {
-                            string fn = Path.Combine(WorkPath, parts[1]);
+                            string fn = parts[1];
 
                             // Recursive call to parse this file
                             FileContext subcont = new()

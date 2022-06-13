@@ -56,7 +56,7 @@ namespace NBagOfTricks.Slog
         public static LogLevel MinLevelNotif { get; set; } = LogLevel.Info;
 
         /// <summary>Format for file records.</summary>
-        public static string TimeFormat { get; set; } = Definitions.TIME_FORMAT;
+        public static string TimeFormat { get; set; } = "yyyy'-'MM'-'dd HH':'mm':'ss.fff";
 
         /// <summary>For diagnostics.</summary>
         public static int QueueSize { get { return _queue.Count; } }
