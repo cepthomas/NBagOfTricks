@@ -24,20 +24,13 @@ namespace NBagOfTricks.ScriptCompiler
         public bool IgnoreWarnings { get; set; } = true;
 
         /// <summary>Default system dlls. Client can add or subtract.</summary>
-        public List<string> SystemDlls { get; } = new()
-        {
-            "System", "System.Private.CoreLib", "System.Runtime",
-            "System.Collections", "System.Linq"
-        };
+        public List<string> SystemDlls { get; } = new() { "System", "System.Private.CoreLib", "System.Runtime", "System.Collections", "System.Linq" };
 
         /// <summary>App dlls.</summary>
         public List<string> LocalDlls { get; set; } = new();
 
         /// <summary>Additional using statements not supplied by dlls.</summary>
-        public List<string> Usings { get; set; } = new()
-        {
-            "System.Collections.Generic", "System.Text"
-        };
+        public List<string> Usings { get; set; } = new() { "System.Collections.Generic", "System.Text" };
 
         /// <summary>The compiled script.</summary>
         public object? Script { get; set; } = null;

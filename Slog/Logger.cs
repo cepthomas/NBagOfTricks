@@ -38,11 +38,11 @@ namespace NBagOfTricks.Slog
         /// <param name="msg">Content.</param>
         /// <param name="file">Ignore - compiler use.</param>
         /// <param name="line">Ignore - compiler use.</param>
-        public void LogTrace(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public void Trace(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             if (Enable)
             {
-                AddEntry(Level.Trace, msg, file, line);
+                AddEntry(LogLevel.Trace, msg, file, line);
             }
         }
 
@@ -52,11 +52,11 @@ namespace NBagOfTricks.Slog
         /// <param name="msg">Content.</param>
         /// <param name="file">Ignore - compiler use.</param>
         /// <param name="line">Ignore - compiler use.</param>
-        public void LogDebug(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public void Debug(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             if (Enable)
             {
-                AddEntry(Level.Debug, msg, file, line);
+                AddEntry(LogLevel.Debug, msg, file, line);
             }
         }
 
@@ -66,11 +66,11 @@ namespace NBagOfTricks.Slog
         /// <param name="msg">Content.</param>
         /// <param name="file">Ignore - compiler use.</param>
         /// <param name="line">Ignore - compiler use.</param>
-        public void LogInfo(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public void Info(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             if (Enable)
             {
-                AddEntry(Level.Info, msg, file, line);
+                AddEntry(LogLevel.Info, msg, file, line);
             }
         }
 
@@ -80,11 +80,11 @@ namespace NBagOfTricks.Slog
         /// <param name="msg">Content.</param>
         /// <param name="file">Ignore - compiler use.</param>
         /// <param name="line">Ignore - compiler use.</param>
-        public void LogWarn(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public void Warn(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             if (Enable)
             {
-                AddEntry(Level.Warn, msg, file, line);
+                AddEntry(LogLevel.Warn, msg, file, line);
             }
         }
 
@@ -94,10 +94,10 @@ namespace NBagOfTricks.Slog
         /// <param name="msg">Content.</param>
         /// <param name="file">Ignore - compiler use.</param>
         /// <param name="line">Ignore - compiler use.</param>
-        public void LogError(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public void Error(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             // Always log errors.
-            AddEntry(Level.Error, msg, file, line);
+            AddEntry(LogLevel.Error, msg, file, line);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace NBagOfTricks.Slog
         /// <param name="msg">Extra info.</param>
         /// <param name="file">Ignore - compiler use.</param>
         /// <param name="line">Ignore - compiler use.</param>
-        public void LogException(Exception ex, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public void Exception(Exception ex, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             // Always log exceptions.
             StringBuilder sb = new($"{ex.Message} {msg}");
@@ -126,7 +126,7 @@ namespace NBagOfTricks.Slog
                 sb.Append(ex.Message);
             }
 
-            AddEntry(Level.Error, sb.ToString(), file, line);
+            AddEntry(LogLevel.Error, sb.ToString(), file, line);
         }
         #endregion
 
@@ -138,7 +138,7 @@ namespace NBagOfTricks.Slog
         /// <param name="msg"></param>
         /// <param name="file"></param>
         /// <param name="line"></param>
-        void AddEntry(Level level, string msg, string file, int line)
+        void AddEntry(LogLevel level, string msg, string file, int line)
         {
             file = Path.GetFileName(file);
 

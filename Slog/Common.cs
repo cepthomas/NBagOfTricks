@@ -14,13 +14,13 @@ namespace NBagOfTricks.Slog
 {
     #region Types
     /// <summary>Log level options.</summary>
-    public enum Level { Trace = 0, Debug = 1, Info = 2, Warn = 3, Error = 4 }
+    public enum LogLevel { Trace = 0, Debug = 1, Info = 2, Warn = 3, Error = 4 }
 
     /// <summary>Internal log entry data container.</summary>
     internal struct LogEntry
     {
         public DateTime timestamp;
-        public Level level;
+        public LogLevel level;
         public string name; // logger name
         public string file; // source file
         public int line; // source line
@@ -30,7 +30,7 @@ namespace NBagOfTricks.Slog
     /// <summary>Log event for notification.</summary>
     public class LogEventArgs : EventArgs
     {
-        public Level Level { get; set; } = Level.Info;
+        public LogLevel Level { get; set; } = LogLevel.Info;
         public string Message { get; set; } = "";
     }
 
@@ -51,12 +51,12 @@ namespace NBagOfTricks.Slog
         {
             _logger = logger;
             _id = id;
-            _logger.LogTrace($"{_id}: Enter scope");
+            _logger.Trace($"{_id}: Enter scope");
         }
 
         public void Dispose()
         {
-            _logger.LogTrace($"{_id}: Leave scope");
+            _logger.Trace($"{_id}: Leave scope");
         }
     }
 }

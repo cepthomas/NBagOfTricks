@@ -27,15 +27,15 @@ namespace NBagOfTricks.Test
 
             _cbText.Clear();
             File.Delete(SLOG_FILE);
-            LogManager.MinLevelFile = Level.Debug;
-            LogManager.MinLevelNotif = Level.Info;
+            LogManager.MinLevelFile = LogLevel.Debug;
+            LogManager.MinLevelNotif = LogLevel.Info;
             LogManager.LogEvent += LogManager_LogEvent;
             LogManager.Run(SLOG_FILE, 1000);
 
-            _logger1.LogInfo("11111 file:Y cb:Y");
-            _logger2.LogDebug("22222 file:Y cb:N");
+            _logger1.Info("11111 file:Y cb:Y");
+            _logger2.Debug("22222 file:Y cb:N");
             WaitForEmptyQueue();
-            _logger1.LogTrace("33333 file:N cb:N");
+            _logger1.Trace("33333 file:N cb:N");
 
             // Force exception.
             try
@@ -45,13 +45,13 @@ namespace NBagOfTricks.Test
             }
             catch (Exception ex)
             {
-                _logger2.LogException(ex, "44444 file:Y cb:Y");
+                _logger2.Exception(ex, "44444 file:Y cb:Y");
             }
 
             //////////
             WaitForEmptyQueue();
-            LogManager.MinLevelNotif = Level.Trace;
-            _logger1.LogTrace("55555 file:N cb:Y");
+            LogManager.MinLevelNotif = LogLevel.Trace;
+            _logger1.Trace("55555 file:N cb:Y");
 
             //////////
             WaitForEmptyQueue();
@@ -92,8 +92,8 @@ namespace NBagOfTricks.Test
         public override void RunSuite()
         {
             File.Delete(SLOG_FILE);
-            LogManager.MinLevelFile = Level.Trace;
-            LogManager.MinLevelNotif = Level.Trace;
+            LogManager.MinLevelFile = LogLevel.Trace;
+            LogManager.MinLevelNotif = LogLevel.Trace;
             LogManager.Run(SLOG_FILE, 1000);
 
             int i = 0;

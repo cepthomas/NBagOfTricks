@@ -29,13 +29,13 @@ namespace NBagOfTricks.Slog
         static DateTime _housekeepTime = DateTime.Now;
 
         /// <summary>Constant width strings for visual aid.</summary>
-        static readonly Dictionary<Level, string> _levelNames = new()
+        static readonly Dictionary<LogLevel, string> _levelNames = new()
         {
-            { Level.Trace, "TRC" },
-            { Level.Debug, "DBG" },
-            { Level.Info,  "INF" },
-            { Level.Warn,  "WRN" },
-            { Level.Error, "ERR" }
+            { LogLevel.Trace, "TRC" },
+            { LogLevel.Debug, "DBG" },
+            { LogLevel.Info,  "INF" },
+            { LogLevel.Warn,  "WRN" },
+            { LogLevel.Error, "ERR" }
         };
 
         /// <summary>Queue management.</summary>
@@ -50,10 +50,10 @@ namespace NBagOfTricks.Slog
         public static LogManager Instance { get { return _instance.Value; } }
 
         /// <summary>Event filter for file.</summary>
-        public static Level MinLevelFile { get; set; } = Level.Debug;
+        public static LogLevel MinLevelFile { get; set; } = LogLevel.Debug;
 
         /// <summary>Event filter for callback event.</summary>
-        public static Level MinLevelNotif { get; set; } = Level.Info;
+        public static LogLevel MinLevelNotif { get; set; } = LogLevel.Info;
 
         /// <summary>Format for file records.</summary>
         public static string TimeFormat { get; set; } = Definitions.TIME_FORMAT;
@@ -71,22 +71,18 @@ namespace NBagOfTricks.Slog
         /// <summary>
         /// Create a new client side logger.
         /// </summary>
-        /// <param name="name">Unique ID.</param>
+        /// <param name="name">Logger ID. Can be shared.</param>
         /// <returns>Minty fresh logger.</returns>
         public static Logger CreateLogger(string name)
         {
-            if (_loggers.ContainsKey(name))
-            {
-                throw new ArgumentException("Invalid logger name", nameof(name));
-            }
-            else
+            if (!_loggers.ContainsKey(name))
             {
                 Logger logger = new(name);
                 _loggers[name] = logger;
-                return logger;
             }
+            return _loggers[name];
         }
-        
+
         /// <summary>
         /// Inititialize builtin file logger.
         /// </summary>
