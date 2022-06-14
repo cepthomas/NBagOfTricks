@@ -50,23 +50,21 @@ namespace NBagOfTricks.SimpleIpc
 
             try
             {
-                using (var pipeClient = new NamedPipeClientStream(".", _pipeName, PipeDirection.Out))
-                {
-                    _log.Write($"1 s:{s}");
-                    pipeClient.Connect(timeout);
+                using var pipeClient = new NamedPipeClientStream(".", _pipeName, PipeDirection.Out);
+                _log.Write($"1 s:{s}");
+                pipeClient.Connect(timeout);
 
-                    _log.Write($"2");
-                    byte[] outBuffer = new UTF8Encoding().GetBytes(s + "\n");
+                _log.Write($"2");
+                byte[] outBuffer = new UTF8Encoding().GetBytes(s + "\n");
 
-                    _log.Write($"3");
-                    pipeClient.Write(outBuffer, 0, outBuffer.Length);
+                _log.Write($"3");
+                pipeClient.Write(outBuffer, 0, outBuffer.Length);
 
-                    _log.Write($"4");
-                    pipeClient.WaitForPipeDrain();
+                _log.Write($"4");
+                pipeClient.WaitForPipeDrain();
 
-                    _log.Write($"5");
-                    // Now exit.
-                }
+                _log.Write($"5");
+                // Now exit.
             }
             catch (TimeoutException)
             {

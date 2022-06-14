@@ -139,7 +139,7 @@ namespace NBagOfTricks
         /// <param name="s"></param>
         void WriteIndented(string s)
         {
-            string sindent = new string(' ', _indent * _indentSize);
+            string sindent = new(' ', _indent * _indentSize);
             _writer!.WriteLine($"{sindent}{s}");
         }
     }

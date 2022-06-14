@@ -26,40 +26,39 @@ namespace NBagOfTricks.Test
             int NumIterators = 9;
 
             // Server
-            using (Server server = new(PIPE_NAME, LOGFILE_NAME))
+            using Server server = new(PIPE_NAME, LOGFILE_NAME);
+
+            int iter = 0;
+
+            server.ServerEvent += Server_IpcEvent;
+            server.Start();
+
+            void Server_IpcEvent(object? sender, ServerEventArgs e)
             {
-                int iter = 0;
+                UT_FALSE(e.Error);
+                UT_EQUAL(e.Message, $"ABC{iter * 111}");
+            }
 
-                server.ServerEvent += Server_IpcEvent;
-                server.Start();
+            // Client - TODO put clients in separate process.
+            // new Process { StartInfo = new ProcessStartInfo(fn) { UseShellExecute = true } }.Start();
+            for (iter = 0; iter < NumIterators; iter++)
+            {
+                Client client = new(PIPE_NAME, LOGFILE_NAME);
+                var res = client.Send($"ABC{(iter + 1) * 111}", 1000);
 
-                void Server_IpcEvent(object? sender, ServerEventArgs e)
+                switch (res)
                 {
-                    UT_FALSE(e.Error);
-                    UT_EQUAL(e.Message, $"ABC{iter * 111}");
-                }
+                    case ClientStatus.Ok:
+                        _log.Write($"Client ok");
+                        break;
 
-                // Client - TODO put clients in separate process.
-                // new Process { StartInfo = new ProcessStartInfo(fn) { UseShellExecute = true } }.Start();
-                for(iter = 0; iter < NumIterators; iter++)
-                {
-                    Client client = new(PIPE_NAME, LOGFILE_NAME);
-                    var res = client.Send($"ABC{(iter+1)*111}", 1000);
+                    case ClientStatus.Error:
+                        _log.Write($"Client error:{client.Error}", true);
+                        break;
 
-                    switch (res)
-                    {
-                        case ClientStatus.Ok:
-                            _log.Write($"Client ok");
-                            break;
-
-                        case ClientStatus.Error:
-                            _log.Write($"Client error:{client.Error}", true);
-                            break;
-
-                        case ClientStatus.Timeout:
-                            _log.Write($"Client timeout", true);
-                            break;
-                    }
+                    case ClientStatus.Timeout:
+                        _log.Write($"Client timeout", true);
+                        break;
                 }
             }
         }

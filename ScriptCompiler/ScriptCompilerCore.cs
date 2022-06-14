@@ -319,8 +319,7 @@ namespace NBagOfTricks.ScriptCompiler
                     // Test for preprocessor directives.
                     string strim = s.Trim();
 
-                    // like Include("path\name.neb");
-                    //Include(path\utils.neb);
+                    // like Include(path\utils.neb);
                     if (strim.StartsWith("Include"))
                     {
                         // Exclude from output file.

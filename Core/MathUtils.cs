@@ -10,7 +10,7 @@ namespace NBagOfTricks
     /// </summary>
     public static class MathUtils
     {
-        static Random _rand = new Random();
+        static Random _rand = new();
 
         /// <summary>
         /// Seed the randomizer.

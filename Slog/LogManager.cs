@@ -168,7 +168,7 @@ namespace NBagOfTricks.Slog
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         // TODO something or just leave it alone?
                     }

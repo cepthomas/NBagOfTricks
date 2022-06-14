@@ -119,7 +119,7 @@ namespace NBagOfTricks
         public static List<string> SplitKeepDelims(this string s, string delims)
         {
             var parts = new List<string>();
-            StringBuilder acc = new StringBuilder();
+            StringBuilder acc = new();
 
             for (int i = 0; i < s.Length; i++)
             {

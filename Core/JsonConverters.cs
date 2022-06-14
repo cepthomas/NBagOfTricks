@@ -62,7 +62,7 @@ namespace NBagOfTricks
             if (s is not null)
             {
                 var parts = StringUtils.SplitByToken(s, ",");
-                Rectangle rect = new Rectangle(int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]), int.Parse(parts[3]));
+                Rectangle rect = new(int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]), int.Parse(parts[3]));
                 return rect;
             }
             else

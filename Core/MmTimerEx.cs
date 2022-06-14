@@ -13,7 +13,7 @@ namespace NBagOfTricks
     /// This is accomplished by using a Stopwatch to actually measure the elapsed time rather than trust the mm timer period.
     /// It seems to be an improvement.
     /// </summary>
-    public class MmTimerEx : IDisposable
+    public sealed class MmTimerEx : IDisposable
     {
         #region Types
         /// <summary>Client callback occurs when the time period has elapsed.</summary>
@@ -40,10 +40,10 @@ namespace NBagOfTricks
 
         #region Fields
         /// <summary>All the timer instances. Key is id.</summary>
-        readonly List<TimerInstance> _timers = new List<TimerInstance>();
+        readonly List<TimerInstance> _timers = new();
 
         /// <summary>Used for more accurate timing.</summary>
-        readonly Stopwatch _sw = new Stopwatch();
+        readonly Stopwatch _sw = new();
 
         /// <summary>Multimedia timer identifier. -1 is not inited, 0 is fail to init, other is valid id.</summary>
         int _timerID = -1;
@@ -125,7 +125,6 @@ namespace NBagOfTricks
         public void Dispose()
         {
             Stop();
-            GC.SuppressFinalize(this);
         }
         #endregion
 

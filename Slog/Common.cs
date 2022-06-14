@@ -36,7 +36,7 @@ namespace NBagOfTricks.Slog
     #endregion
 
     /// <summary>Experimental class to log enter/exit scope. Use syntax "using new Scoper(...);"</summary>
-    public class Scoper : IDisposable
+    public sealed class Scoper : IDisposable
     {
         readonly Logger _logger;
         readonly string _id;

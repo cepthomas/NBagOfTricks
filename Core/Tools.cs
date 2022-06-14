@@ -19,7 +19,7 @@ namespace NBagOfTricks
         /// <returns></returns>
         public static List<string> SniffBin(string fn, int limit = 100)
         {
-            List<string> res = new List<string>();
+            List<string> res = new();
 
             using (var fo = File.OpenRead(fn))
             {

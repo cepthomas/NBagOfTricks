@@ -13,7 +13,7 @@ namespace NBagOfTricks
     {
         #region Fields
         /// <summary>The internal timer.</summary>
-        Stopwatch _watch = new Stopwatch();
+        readonly Stopwatch _watch = new();
 
         /// <summary>Last grab time for calculating diff.</summary>
         long _lastTicks = -1;

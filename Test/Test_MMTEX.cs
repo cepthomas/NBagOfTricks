@@ -13,10 +13,10 @@ namespace NBagOfTricks.Test
     public class MMTEX : TestSuite
     {
         /// <summary>Fast timer.</summary>
-        MmTimerEx _timer = new MmTimerEx();
+        MmTimerEx _timer = new();
 
         /// <summary>Measurer.</summary>
-        readonly TimingAnalyzer _tan = new TimingAnalyzer();
+        readonly TimingAnalyzer _tan = new();
 
         /// <summary>State.</summary>
         bool _running = false;
@@ -50,14 +50,14 @@ namespace NBagOfTricks.Test
             while (_running) ;
 
             // Done - dump what we found.
-            List<string> ls = new List<string> { $"Msec" };
+            List<string> ls = new() { $"Msec" };
 
             // Time ordered.
             _tan.Times.ForEach(t => ls.Add($"{t}"));
             File.WriteAllLines(@"..\..\out\intervals_ordered.csv", ls);
 
             // Sorted by (rounded) times.
-            Dictionary<double, int> _bins = new Dictionary<double, int>();
+            Dictionary<double, int> _bins = new();
             for (int i = 0; i < _tan.Times.Count; i++)
             {
                 var t = Math.Round(_tan.Times[i], 2);

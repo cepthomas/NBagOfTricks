@@ -84,7 +84,7 @@ namespace NBagOfTricks
         /// <returns></returns>
         public string GetUsage(string scmd = "")
         {
-            List<string> lines = new List<string>();
+            List<string> lines = new();
 
             // Find the cmd in our list.
             var vcmd = from c in Commands
@@ -94,7 +94,7 @@ namespace NBagOfTricks
             if (vcmd.Any())
             {
                 Command cmd = vcmd.First();
-                StringBuilder sb = new StringBuilder($"Usage: {string.Join("|", cmd.NameParts)}");
+                StringBuilder sb = new($"Usage: {string.Join("|", cmd.NameParts)}");
 
                 foreach (var a in cmd.Args)
                 {

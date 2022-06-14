@@ -14,9 +14,10 @@ namespace NBagOfTricks.Test
             UT_INFO("Test the happy path for the Command Processor.");
 
             // Captured values.
-            List<string> txtFiles = new List<string>();
-            List<string> docFiles = new List<string>();
-            Dictionary<string, string> args = new Dictionary<string, string>();
+            List<string> txtFiles = new();
+            List<string> docFiles = new();
+            Dictionary<string, string> args = new();
+
             void ClearCapture()
             {
                 txtFiles.Clear();
@@ -190,9 +191,10 @@ namespace NBagOfTricks.Test
             UT_INFO("Test the no-specific-command.");
 
             // Captured values
-            List<string> txtFiles = new List<string>();
-            List<string> docFiles = new List<string>();
-            Dictionary<string, string> args = new Dictionary<string, string>();
+            List<string> txtFiles = new();
+            List<string> docFiles = new();
+            Dictionary<string, string> args = new();
+
             void ClearCapture()
             {
                 txtFiles.Clear();

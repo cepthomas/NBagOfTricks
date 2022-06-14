@@ -9,7 +9,7 @@ namespace NBagOfTricks
     /// <summary>
     /// A watcher for multiple file changes. The underlying FileSystemWatcher is a bit sensitive to OS file system ops.
     /// </summary>
-    public class MultiFileWatcher : IDisposable
+    public sealed class MultiFileWatcher : IDisposable
     {
         #region Events
         /// <summary>Reporting a change to listeners.</summary>
@@ -22,13 +22,13 @@ namespace NBagOfTricks
 
         #region Fields
         /// <summary>Detect changed files.</summary>
-        readonly List<FileSystemWatcher> _watchers = new List<FileSystemWatcher>();
+        readonly List<FileSystemWatcher> _watchers = new();
 
         /// <summary>Used to delay reporting to client as there can be multiple events for one file change.</summary>
-        readonly System.Timers.Timer _timer = new System.Timers.Timer();
+        readonly System.Timers.Timer _timer = new();
 
         /// <summary>Set by subordinate watchers.</summary>
-        readonly HashSet<string> _touchedFiles = new HashSet<string>();
+        readonly HashSet<string> _touchedFiles = new();
 
         /// <summary>The delay before reporting. Seems like a reasonable number for human edit interface.</summary>
         const int DELAY = 100;
@@ -39,7 +39,7 @@ namespace NBagOfTricks
         {
             get
             {
-                List<string> fns = new List<string>();
+                List<string> fns = new();
                 _watchers.ForEach(w => fns.Add(w.Path));
                 return fns;
             }
@@ -85,7 +85,7 @@ namespace NBagOfTricks
                 string? npath = Path.GetDirectoryName(path);
                 if(npath is not null)
                 {
-                    FileSystemWatcher watcher = new FileSystemWatcher()
+                    FileSystemWatcher watcher = new()
                     {
                         Path = npath,
                         Filter = Path.GetFileName(path),

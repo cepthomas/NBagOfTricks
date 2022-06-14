@@ -39,18 +39,17 @@ namespace NBagOfTricks.SimpleIpc
             _category = category.Length >= catSize ? category.Left(catSize) : category.PadRight(catSize);
 
             // Good time to check file size.
-            using (var mutex = new Mutex(false, MUTEX_GUID))
+            using var mutex = new Mutex(false, MUTEX_GUID);
+
+            mutex.WaitOne();
+            FileInfo fi = new(_filename);
+            if (fi.Exists && fi.Length > _maxSize)
             {
-                mutex.WaitOne();
-                FileInfo fi = new FileInfo(_filename);
-                if(fi.Exists && fi.Length > _maxSize)
-                {
-                    string ext = fi.Extension;
-                    File.Copy(fi.FullName, fi.FullName.Replace(ext, "_old" + ext), true);
-                    Clear();
-                }
-                mutex.ReleaseMutex();
+                string ext = fi.Extension;
+                File.Copy(fi.FullName, fi.FullName.Replace(ext, "_old" + ext), true);
+                Clear();
             }
+            mutex.ReleaseMutex();
         }
 
         /// <summary>
@@ -61,14 +60,13 @@ namespace NBagOfTricks.SimpleIpc
         public void Write(string s, bool error = false)
         {
             var se = error ? "!!! ERROR !!!" : "";
-            s = $"{DateTime.Now:mm\\:ss\\.fff} {_category} {Process.GetCurrentProcess().Id, 5} {Thread.CurrentThread.ManagedThreadId, 2} {se} {s}{Environment.NewLine}";
+            s = $"{DateTime.Now:mm\\:ss\\.fff} {_category} {Environment.ProcessId, 5} {Thread.CurrentThread.ManagedThreadId, 2} {se} {s}{Environment.NewLine}";
 
-            using (var mutex = new Mutex(false, MUTEX_GUID))
-            {
-                mutex.WaitOne();
-                File.AppendAllText(_filename, s);
-                mutex.ReleaseMutex();
-            }
+            using var mutex = new Mutex(false, MUTEX_GUID);
+
+            mutex.WaitOne();
+            File.AppendAllText(_filename, s);
+            mutex.ReleaseMutex();
         }
 
         /// <summary>

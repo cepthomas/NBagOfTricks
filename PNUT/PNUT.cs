@@ -100,7 +100,7 @@ namespace NBagOfTricks.PNUT
         public void RunSuites(string[] which)
         {
             // Locate the test cases.
-            Dictionary<string, TestSuite> suites = new Dictionary<string, TestSuite>();
+            Dictionary<string, TestSuite> suites = new();
 
             foreach (Type t in Assembly.GetCallingAssembly().GetTypes())
             {
@@ -162,7 +162,7 @@ namespace NBagOfTricks.PNUT
                 catch (Exception ex)
                 {
                     // Out of scope exception. Top frame contains the cause.
-                    StackTrace st = new StackTrace(ex, true);
+                    StackTrace st = new(ex, true);
                     StackFrame? frame = st.GetFrame(0);
 
                     if(frame is not null)
@@ -203,7 +203,7 @@ namespace NBagOfTricks.PNUT
             DateTime endTime = DateTime.Now;
             TimeSpan dur = endTime - startTime;
             string sdur = dur.ToString(TIME_FORMAT);
-            List<string> preamble = new List<string>();
+            List<string> preamble = new();
 
             switch (Context.Format)
             {
