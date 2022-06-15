@@ -69,6 +69,8 @@ namespace NBagOfTricks.Test
         {
             UT_INFO("Tests MultiFileWatcher.");
 
+            int iters = 3;
+
             // The watcher is slow so we have to wait a bit.
             int delay = 200;
 
@@ -78,7 +80,7 @@ namespace NBagOfTricks.Test
 
             // Create fake files.
             List<string> testFilesToWatch = new();
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < iters; i++)
             {
                 string fn = $@"..\..\out\test_{i + 1}.txt";
                 testFilesToWatch.Add(fn);
@@ -87,20 +89,30 @@ namespace NBagOfTricks.Test
 
             System.Threading.Thread.Sleep(delay);
 
-            UT_EQUAL(_watcher.WatchedFiles.Count, 3);
+            UT_EQUAL(_watcher.WatchedFiles.Count, iters);
             UT_EQUAL(filesTouched.Count, 0);
 
             // Touch the files.
             testFilesToWatch.ForEach(fn => File.WriteAllText(fn, "AAAAAA"));
             System.Threading.Thread.Sleep(delay);
 
-            UT_EQUAL(_watcher.WatchedFiles.Count, 3);
-            UT_EQUAL(filesTouched.Count, 3);
+            UT_EQUAL(_watcher.WatchedFiles.Count, iters);
+            UT_EQUAL(filesTouched.Count, iters);
 
             _watcher.Clear();
             System.Threading.Thread.Sleep(delay);
 
             UT_EQUAL(_watcher.WatchedFiles.Count, 0);
+
+            // Post clear should still work.
+            filesTouched.Clear();
+            testFilesToWatch.ForEach(fn => { _watcher.Add(fn); File.WriteAllText(fn, "BBBBBB"); });
+            System.Threading.Thread.Sleep(delay);
+
+            UT_EQUAL(_watcher.WatchedFiles.Count, iters);
+            UT_EQUAL(filesTouched.Count, iters);
+
+
         }
     }
 }

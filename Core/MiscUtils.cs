@@ -108,13 +108,7 @@ namespace NBagOfTricks
         }
 
         /// <summary>
-        /// Invoke helper. See http://stackoverflow.com/a/29497681
-        /// Usage:
-        /// progressBar1.InvokeIfRequired(o => 
-        /// {
-        ///     o.Style = ProgressBarStyle.Marquee;
-        ///     o.MarqueeAnimationSpeed = 40;
-        /// });
+        /// Invoke helper, maybe.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>

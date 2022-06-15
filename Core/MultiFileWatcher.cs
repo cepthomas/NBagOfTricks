@@ -100,7 +100,6 @@ namespace NBagOfTricks
             }
             catch (Exception)
             {
-
                 throw;
             }
             return ok;

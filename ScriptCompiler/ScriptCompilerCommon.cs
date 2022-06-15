@@ -31,6 +31,12 @@ namespace NBagOfTricks.ScriptCompiler
 
         /// <summary>Content.</summary>
         public string Message { get; set; } = "???";
+
+        /// <summary>For humans.</summary>
+        public override string ToString()
+        {
+            return $"{ResultType}:{Message}";
+        }
     }
 
     /// <summary>Parser helper class.</summary>

@@ -59,6 +59,9 @@ namespace NBagOfTricks
 
         /// <summary>Called by Windows when a mm timer event occurs.</summary>
         readonly NativeMethods.TimeProc _timeProc;
+
+        /// <summary>Resource management.</summary>
+        bool _disposed = false;
         #endregion
 
         #region Native Methods
@@ -120,11 +123,47 @@ namespace NBagOfTricks
         }
 
         /// <summary>
-        /// Frees timer resources.
+        /// Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources.
+        /// </summary>
+        ~MmTimerEx()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        /// Boilerplate.
         /// </summary>
         public void Dispose()
         {
-            Stop();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Boilerplate.
+        /// </summary>
+        void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    // called via myClass.Dispose(). 
+                    // OK to use any private object references
+                    // Dispose managed state (managed objects).
+                }
+
+                // Release unmanaged resources.
+                // Set large fields to null.
+                if (_timerID > 0)
+                {
+                    _ = NativeMethods.timeKillEvent(_timerID);
+                    // result != TIMERR_NOERROR <> 0
+                    _timerID = -1;
+                }
+
+                _disposed = true;
+            }
         }
         #endregion
 
