@@ -40,7 +40,7 @@ namespace NBagOfTricks
             get
             {
                 List<string> fns = new();
-                _watchers.ForEach(w => fns.Add(w.Path));
+                _watchers.ForEach(w => fns.Add(Path.Join(w.Path, w.Filter)));
                 return fns;
             }
         }

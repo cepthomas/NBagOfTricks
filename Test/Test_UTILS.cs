@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Windows.Forms;
 using NBagOfTricks;
 using NBagOfTricks.PNUT;
 
@@ -58,6 +59,48 @@ namespace NBagOfTricks.Test
             UT_EQUAL(dir, @"C:\Users\cepth\AppData\Local\CCCC\Bar");
 
             MiscUtils.ShowReadme("NBagOfTricks");
+        }
+    }
+
+
+    public class UTILS_WATCHER : TestSuite
+    {
+        public override void RunSuite()
+        {
+            UT_INFO("Tests MultiFileWatcher.");
+
+            // The watcher is slow so we have to wait a bit.
+            int delay = 200;
+
+            List<string> filesTouched = new(); // capture
+            MultiFileWatcher _watcher = new();
+            _watcher.FileChangeEvent += (object? sender, MultiFileWatcher.FileChangeEventArgs e) => { filesTouched.AddRange(e.FileNames); };
+
+            // Create fake files.
+            List<string> testFilesToWatch = new();
+            for (int i = 0; i < 3; i++)
+            {
+                string fn = $@"..\..\out\test_{i + 1}.txt";
+                testFilesToWatch.Add(fn);
+                _watcher.Add(fn);
+            }
+
+            System.Threading.Thread.Sleep(delay);
+
+            UT_EQUAL(_watcher.WatchedFiles.Count, 3);
+            UT_EQUAL(filesTouched.Count, 0);
+
+            // Touch the files.
+            testFilesToWatch.ForEach(fn => File.WriteAllText(fn, "AAAAAA"));
+            System.Threading.Thread.Sleep(delay);
+
+            UT_EQUAL(_watcher.WatchedFiles.Count, 3);
+            UT_EQUAL(filesTouched.Count, 3);
+
+            _watcher.Clear();
+            System.Threading.Thread.Sleep(delay);
+
+            UT_EQUAL(_watcher.WatchedFiles.Count, 0);
         }
     }
 }
