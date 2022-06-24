@@ -63,6 +63,30 @@ namespace NBagOfTricks
             var proc = new Process() { StartInfo = info };
             proc.Start();
         }
+
+        /// <summary>
+        /// Endian support.
+        /// </summary>
+        /// <param name="i">Number to fix.</param>
+        /// <returns>Fixed number.</returns>
+        public static UInt32 FixEndian(UInt32 i)
+        {
+            return BitConverter.IsLittleEndian ?
+                ((i & 0xFF000000) >> 24) | ((i & 0x00FF0000) >> 8) | ((i & 0x0000FF00) << 8) | ((i & 0x000000FF) << 24) :
+                i;
+        }
+
+        /// <summary>
+        /// Endian support.
+        /// </summary>
+        /// <param name="i">Number to fix.</param>
+        /// <returns>Fixed number.</returns>
+        public static UInt16 FixEndian(UInt16 i)
+        {
+            return BitConverter.IsLittleEndian ?
+                (UInt16)(((i & 0xFF00) >> 8) | ((i & 0x00FF) << 8)) :
+                i;
+        }
         #endregion
 
         #region Time

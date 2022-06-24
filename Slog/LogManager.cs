@@ -99,7 +99,7 @@ namespace NBagOfTricks.Slog
                 }
                 catch (IOException)
                 {
-                    throw new ArgumentException("Invalid log file name", nameof(logFilePath));
+                    throw new ArgumentException($"Invalid log file name: {logFilePath}");
                 }
             }
 
