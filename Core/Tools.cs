@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
-
+using System.Drawing;
 
 namespace NBagOfTricks
 {
@@ -79,13 +79,13 @@ namespace NBagOfTricks
         /// <param name="font">Main font-family.</param>
         /// <param name="show">If true open in browser.</param>
         /// <returns></returns>
-        public static string MarkdownToHtml(List<string> body, string bgcolor, string font, bool show)
+        public static string MarkdownToHtml(List<string> body, Color bgcolor, Font font, bool show)
         {
             // Put it together.
             var htmlText = new List<string>()
             {
                 // Boilerplate
-                $"<style>body {{ background-color: {bgcolor}; font-family: {font}; }}</style>"
+                $"<style>body {{ background-color: {bgcolor.Name}; font-family: {font.Name}; font-size: {font.Size}; }}</style>"
             };
 
             // Meat.

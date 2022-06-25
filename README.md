@@ -23,6 +23,7 @@ Probably I should make this into a nuget package at some point.
 - Tools: Things that are higher level than MiscUtils, formatters and the like.
 - StringUtils: Mostly low-level extensions.
 - Dumper: Writes object tree contents.
+- MusicDefinitions: Some higher (than midi) level functions.
 
 # Simple Logger
 - Singleton manager.

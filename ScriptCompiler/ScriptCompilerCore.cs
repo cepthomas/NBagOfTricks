@@ -54,13 +54,13 @@ namespace NBagOfTricks.ScriptCompiler
         #endregion
 
         #region Overrides for derived classes to hook
-        /// <summary>Hook to override.</summary>
+        /// <summary>Called before compiler starts.</summary>
         public virtual void PreExecute() { }
 
-        /// <summary>Hook to override.</summary>
+        /// <summary>Called after compiler finished.</summary>
         public virtual void PostExecute() { }
 
-        /// <summary>Hook to override.</summary>
+        /// <summary>Called for each line in the source file.</summary>
         /// <param name="sline">Trimmed line</param>
         /// <param name="pcont">File context</param>
         /// <returns>True if handled</returns>
