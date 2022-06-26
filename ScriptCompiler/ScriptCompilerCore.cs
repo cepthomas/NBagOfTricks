@@ -326,7 +326,7 @@ namespace NBagOfTricks.ScriptCompiler
                         List<string> parts = strim.SplitByTokens("()");
                         if (parts.Count >= 2)
                         {
-                            string fn = parts[1];
+                            string fn = parts[1].Replace("\"", "");
 
                             // Recursive call to parse this file
                             FileContext subcont = new()
