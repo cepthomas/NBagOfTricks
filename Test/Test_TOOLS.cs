@@ -27,4 +27,16 @@ namespace NBagOfTricks.Test
             UT_EQUAL(res[0], "row:3 col:8 val:11(B) b:0");
         }
     }
+
+    public class TOOLS_MD_TO_HTML : TestSuite
+    {
+        public override void RunSuite()
+        {
+            UT_INFO("Tests markdown to html.");
+
+            var docs = MusicDefinitions.FormatDoc();
+
+            Tools.MarkdownToHtml(docs, Color.LightYellow, new Font("arial", 16), true);
+        }
+    }
 }

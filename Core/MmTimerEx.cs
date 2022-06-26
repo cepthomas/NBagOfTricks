@@ -115,7 +115,7 @@ namespace NBagOfTricks
         {
             if (!Stopwatch.IsHighResolution)
             {
-                throw new InvalidOperationException("High res performance counter is not available.");
+                throw new InvalidOperationException("High res performance counter is not available");
             }
 
             // Initialize timer with default values.
@@ -220,7 +220,7 @@ namespace NBagOfTricks
             {
                 Running = false;
                 _timerID = -1;
-                throw new InvalidOperationException("Unable to start periodic multimedia Timer.");
+                throw new InvalidOperationException("Unable to start periodic multimedia timer");
             }
         }
 

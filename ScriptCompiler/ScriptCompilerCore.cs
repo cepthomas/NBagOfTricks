@@ -55,16 +55,16 @@ namespace NBagOfTricks.ScriptCompiler
 
         #region Overrides for derived classes to hook
         /// <summary>Called before compiler starts.</summary>
-        public virtual void PreExecute() { }
+        public virtual void PreCompile() { }
 
         /// <summary>Called after compiler finished.</summary>
-        public virtual void PostExecute() { }
+        public virtual void PostCompile() { }
 
-        /// <summary>Called for each line in the source file.</summary>
+        /// <summary>Called for each line in the source file before compiling.</summary>
         /// <param name="sline">Trimmed line</param>
         /// <param name="pcont">File context</param>
         /// <returns>True if handled</returns>
-        public virtual bool PreprocessFile(string sline, FileContext pcont) { return false; }
+        public virtual bool PreprocessLine(string sline, FileContext pcont) { return false; }
         #endregion
 
         #region Public functions
@@ -82,7 +82,7 @@ namespace NBagOfTricks.ScriptCompiler
 
             if (File.Exists(scriptfn))
             {
-                PreExecute();
+                PreCompile();
 
                 Results.Add(new CompileResult()
                 {
@@ -117,7 +117,7 @@ namespace NBagOfTricks.ScriptCompiler
                     Message = $"Compile took {(DateTime.Now - startTime).Milliseconds} msec."
                 });
 
-                PostExecute();
+                PostCompile();
             }
             else
             {
@@ -352,7 +352,7 @@ namespace NBagOfTricks.ScriptCompiler
                             });
                         }
                     }
-                    else if (PreprocessFile(strim, pcont))
+                    else if (PreprocessLine(strim, pcont))
                     {
                        // NOP
                     }

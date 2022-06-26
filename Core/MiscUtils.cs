@@ -89,31 +89,31 @@ namespace NBagOfTricks
         }
         #endregion
 
-        #region Time
-        /// <summary>
-        /// Convert time to TimeSpan.
-        /// </summary>
-        /// <param name="sec">Time in seconds.</param>
-        /// <returns>TimeSpan</returns>
-        public static TimeSpan SecondsToTimeSpan(double sec)
-        {
-            var (integral, fractional) = MathUtils.SplitDouble(sec);
-            int isec = (int)integral;
-            int imsec = (int)(fractional * 1000);
-            TimeSpan ts = new(0, 0, 0, isec, imsec);
-            return ts;
-        }
+        // #region Time
+        // /// <summary>
+        // /// Convert time to TimeSpan.
+        // /// </summary>
+        // /// <param name="sec">Time in seconds.</param>
+        // /// <returns>TimeSpan</returns>
+        // public static TimeSpan SecondsToTimeSpan(double sec)
+        // {
+        //     var (integral, fractional) = MathUtils.SplitDouble(sec);
+        //     int isec = (int)integral;
+        //     int imsec = (int)(fractional * 1000);
+        //     TimeSpan ts = new(0, 0, 0, isec, imsec);
+        //     return ts;
+        // }
 
-        /// <summary>
-        /// Convert TimeSpan to time.
-        /// </summary>
-        /// <param name="ts"></param>
-        /// <returns>Time in seconds.</returns>
-        public static double TimeSpanToSeconds(TimeSpan ts)
-        {
-            return ts.TotalSeconds;
-        }
-        #endregion
+        // /// <summary>
+        // /// Convert TimeSpan to time.
+        // /// </summary>
+        // /// <param name="ts"></param>
+        // /// <returns>Time in seconds.</returns>
+        // public static double TimeSpanToSeconds(TimeSpan ts)
+        // {
+        //     return ts.TotalSeconds;
+        // }
+        // #endregion
 
         #region Misc extensions
         /// <summary>
@@ -183,10 +183,13 @@ namespace NBagOfTricks
 
         public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
         {
-            var index = 0;
-            foreach (var element in source)
+            if(source is not null)
             {
-                action(element, index++);
+                var index = 0;
+                foreach (var element in source)
+                {
+                    action(element, index++);
+                }
             }
         }
         #endregion

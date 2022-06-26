@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using NBagOfTricks;
 using System.Diagnostics;
+using NBagOfTricks;
 
 namespace NBagOfTricks
 {
@@ -168,7 +168,7 @@ namespace NBagOfTricks
         };
         #endregion
 
-        #region Note manipulation functions
+        #region Public note manipulation functions
         /// <summary>
         /// Convert note number into name.
         /// </summary>
@@ -185,11 +185,11 @@ namespace NBagOfTricks
         /// Convert note name into number.
         /// </summary>
         /// <param name="snote">The root of the note without octave.</param>
-        /// <returns>The number or null if invalid.</returns>
-        public static int? NoteNameToNumber(string snote)
+        /// <returns>The number or -1 if invalid.</returns>
+        public static int NoteNameToNumber(string snote)
         {
             int inote = _noteNames.IndexOf(snote) % NOTES_PER_OCTAVE;
-            return inote == -1 ? null : inote;
+            return inote;
         }
 
         /// <summary>
@@ -231,47 +231,47 @@ namespace NBagOfTricks
                 {
                     // Transpose octave.
                     noteNum += (octave + 1) * NOTES_PER_OCTAVE;
-                }
-                else
-                {
-                    throw new InvalidOperationException($"Invalid note: {parts[0]}");
-                }
 
-                if (parts.Count > 1)
-                {
-                    // It's a chord. M, M7, m, m7, etc. Determine the constituents.
-                    var chordNotes = _chordsScales[parts[1]];
-                    //var chordNotes = chordParts[0].SplitByToken(" ");
-
-                    for (int p = 0; p < chordNotes.Count; p++)
+                    if (parts.Count > 1)
                     {
-                        string interval = chordNotes[p];
-                        bool down = false;
+                        // It's a chord. M, M7, m, m7, etc. Determine the constituents.
+                        var chordNotes = _chordsScales[parts[1]];
+                        //var chordNotes = chordParts[0].SplitByToken(" ");
 
-                        if (interval.StartsWith("-"))
+                        for (int p = 0; p < chordNotes.Count; p++)
                         {
-                            down = true;
-                            interval = interval.Replace("-", "");
-                        }
+                            string interval = chordNotes[p];
+                            bool down = false;
 
-                        int? iint = GetInterval(interval);
-                        if (iint is not null)
-                        {
-                            iint = down ? iint - NOTES_PER_OCTAVE : iint;
-                            notes.Add(noteNum.Value + iint.Value);
+                            if (interval.StartsWith("-"))
+                            {
+                                down = true;
+                                interval = interval.Replace("-", "");
+                            }
+
+                            int? iint = GetInterval(interval);
+                            if (iint is not null)
+                            {
+                                iint = down ? iint - NOTES_PER_OCTAVE : iint;
+                                notes.Add(noteNum.Value + iint.Value);
+                            }
                         }
+                    }
+                    else
+                    {
+                        // Just the root.
+                        notes.Add(noteNum.Value);
                     }
                 }
                 else
                 {
-                    // Just the root.
-                    notes.Add(noteNum.Value);
+                    notes.Clear();
                 }
             }
             catch (Exception)
             {
                 notes.Clear();
-                throw new InvalidOperationException("Invalid note or chord: " + noteString);
+                //throw new InvalidOperationException("Invalid note or chord: " + noteString);
             }
 
             return notes;
@@ -303,15 +303,15 @@ namespace NBagOfTricks
         /// Get interval offset from name.
         /// </summary>
         /// <param name="sinterval"></param>
-        /// <returns>Offset or null if invalid.</returns>
-        public static int? GetInterval(string sinterval)
+        /// <returns>Offset or -1 if invalid.</returns>
+        public static int GetInterval(string sinterval)
         {
             int flats = sinterval.Count(c => c == 'b');
             int sharps = sinterval.Count(c => c == '#');
             sinterval = sinterval.Replace(" ", "").Replace("b", "").Replace("#", "");
 
             int iinterval = _intervals.IndexOf(sinterval);
-            return iinterval == -1 ? null : iinterval + sharps - flats;
+            return iinterval == -1 ? -1 : iinterval + sharps - flats;
         }
 
         /// <summary>
@@ -319,9 +319,9 @@ namespace NBagOfTricks
         /// </summary>
         /// <param name="iint">The name or empty if invalid.</param>
         /// <returns></returns>
-        public static string? GetInterval(int iint)
+        public static string GetInterval(int iint)
         {
-            return iint >= _intervals.Count ? null : _intervals[iint % _intervals.Count];
+            return iint >= _intervals.Count ? "" : _intervals[iint % _intervals.Count];
         }
 
         /// <summary>
@@ -358,14 +358,16 @@ namespace NBagOfTricks
         /// Get a defined chord or scale definition.
         /// </summary>
         /// <param name="name">which</param>
-        /// <returns>The notes.</returns>
+        /// <returns>The list of notes or empty if invalid.</returns>
         public static List<string> GetChordScale(string name)
         {
+            List<string> ret = new();
             if(_chordsScales.ContainsKey(name))
             {
-                return _chordsScales[name];
+                ret = _chordsScales[name];
             }
-            throw new ArgumentException($"Invalid chord or scale {name}");
+            //throw new ArgumentException($"Invalid chord or scale: {name}");
+            return ret;
         }
         #endregion
     }
