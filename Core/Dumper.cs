@@ -81,20 +81,6 @@ namespace NBagOfTricks
                         WriteIndented(ss);
                         break;
                 }
-
-
-
-                //if (element.Value is Dictionary<string, object> || element.Value is List<object>)
-                //{
-                //    string s = $"{element.Key} : ";
-                //    WriteIndented(s);
-                //    Write(element.Value);
-                //}
-                //else // simple
-                //{
-                //    string s = $"{element.Key} : {element.Value}";
-                //    WriteIndented(s);
-                //}
             }
 
             _indent--;

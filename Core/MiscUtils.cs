@@ -89,32 +89,6 @@ namespace NBagOfTricks
         }
         #endregion
 
-        // #region Time
-        // /// <summary>
-        // /// Convert time to TimeSpan.
-        // /// </summary>
-        // /// <param name="sec">Time in seconds.</param>
-        // /// <returns>TimeSpan</returns>
-        // public static TimeSpan SecondsToTimeSpan(double sec)
-        // {
-        //     var (integral, fractional) = MathUtils.SplitDouble(sec);
-        //     int isec = (int)integral;
-        //     int imsec = (int)(fractional * 1000);
-        //     TimeSpan ts = new(0, 0, 0, isec, imsec);
-        //     return ts;
-        // }
-
-        // /// <summary>
-        // /// Convert TimeSpan to time.
-        // /// </summary>
-        // /// <param name="ts"></param>
-        // /// <returns>Time in seconds.</returns>
-        // public static double TimeSpanToSeconds(TimeSpan ts)
-        // {
-        //     return ts.TotalSeconds;
-        // }
-        // #endregion
-
         #region Misc extensions
         /// <summary>
         /// Get a subset of an array.
