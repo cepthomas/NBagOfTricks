@@ -1,7 +1,7 @@
 # NBagOfTricks
 C# things collected over the years.
 
-Requires VS2019 and .NET5.
+Requires VS2019 and .NET6.
 
 No dependencies on third party components.
 
