@@ -51,6 +51,9 @@ namespace NBagOfTricks.ScriptCompiler
 
         /// <summary>Products of file preprocess. Key is generated file name.</summary>
         readonly Dictionary<string, FileContext> _filesToCompile = new();
+
+        /// <summary>Add the class wrapper if not in script.</summary>
+        bool _addWrapper = false;
         #endregion
 
         #region Overrides for derived classes to hook
@@ -361,7 +364,7 @@ namespace NBagOfTricks.ScriptCompiler
                         if (cline.Trim() != "")
                         {
                             // Store the whole line with line number tacked on and some indentation.
-                            pcont.CodeLines.Add($"        {cline} //{pcont.LineNumber}");
+                            pcont.CodeLines.Add(_addWrapper ? $"        {cline} //{pcont.LineNumber}" : $"    {cline} //{pcont.LineNumber}");
                         }
                     }
                 }
@@ -397,9 +400,16 @@ namespace NBagOfTricks.ScriptCompiler
                 "",
                 "namespace Nebulator.UserScript",
                 "{",
-               $"    public partial class {_scriptName} : ScriptBase",
-                "    {"
             });
+
+            if(_addWrapper)
+            {
+                codeLines.AddRange(new List<string>()
+                {
+                   $"    public partial class {_scriptName} : ScriptBase",
+                    "    {"
+                });
+            }
 
             return codeLines;
         }
@@ -411,11 +421,7 @@ namespace NBagOfTricks.ScriptCompiler
         List<string> GenBottomOfFile()
         {
             // Create the common contents.
-            List<string> codeLines = new()
-            {
-                "    }",
-                "}"
-            };
+            List<string> codeLines = _addWrapper ? new() { "    }", "}" } : new() { "}" };
 
             return codeLines;
         }
