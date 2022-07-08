@@ -210,6 +210,15 @@ namespace NBagOfTricks.ScriptCompiler
                             }
                         }
                     }
+
+                    if(script is null)
+                    {
+                        Results.Add(new CompileResult()
+                        {
+                            ResultType = CompileResultType.Error,
+                            Message = $"Couldn't locate a class named {_scriptName}."
+                        });
+                    }
                 }
 
                 ///// Compile results.

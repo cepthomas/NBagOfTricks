@@ -154,7 +154,6 @@ namespace NBagOfTricks
         /// <param name="source">The sequence of elements</param>
         /// <param name="action">The action to execute on each element; the second parameter
         /// of the action represents the index of the source element.</param>
-
         public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
         {
             if(source is not null)
