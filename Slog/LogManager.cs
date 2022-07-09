@@ -171,6 +171,7 @@ namespace NBagOfTricks.Slog
                     catch (Exception)
                     {
                         // TODOX something or just leave it alone?
+                        throw;
                     }
 
                     // Rest a bit.
