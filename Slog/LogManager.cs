@@ -170,7 +170,7 @@ namespace NBagOfTricks.Slog
                     }
                     catch (Exception)
                     {
-                        // TODOX2 something or just leave it alone?
+                        // TODOX something or just leave it alone?
                     }
 
                     // Rest a bit.
