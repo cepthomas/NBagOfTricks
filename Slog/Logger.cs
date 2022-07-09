@@ -141,16 +141,7 @@ namespace NBagOfTricks.Slog
         void AddEntry(LogLevel level, string msg, string file, int line)
         {
             file = Path.GetFileName(file);
-
-            LogEntry le = new();
-
-            le.timestamp = DateTime.Now;
-            le.level = level;
-            le.name = Name; // logger name
-            le.file = file; // source file
-            le.line = line; // source line
-            le.message = msg;
-
+            LogEntry le = new(DateTime.Now, level, Name, file, line, msg);
             // Manager expedites.
             LogManager.LogThis(le);
         }

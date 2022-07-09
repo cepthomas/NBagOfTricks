@@ -130,20 +130,20 @@ namespace NBagOfTricks.Slog
 
                             while (_queue.TryDequeue(out LogEntry le))
                             {
-                                var fn = Path.GetFileName(le.file);
-                                var slevel = _levelNames[le.level];
+                                var fn = Path.GetFileName(le.SourceFile);
+                                var slevel = _levelNames[le.Level];
 
-                                if (writer is not null && le.level >= MinLevelFile)
+                                if (writer is not null && le.Level >= MinLevelFile)
                                 {
-                                    string s = $"{DateTime.Now.ToString(TimeFormat)} {slevel} {le.name} {fn}({le.line}) {le.message}";
+                                    string s = $"{DateTime.Now.ToString(TimeFormat)} {slevel} {le.LoggerName} {fn}({le.SourceLine}) {le.Message}";
                                     writer.WriteLine(s);
                                     writer.Flush();
                                 }
 
-                                if (LogEvent is not null && le.level >= MinLevelNotif)
+                                if (LogEvent is not null && le.Level >= MinLevelNotif)
                                 {
-                                    string s = $"{slevel} {le.name} {fn}({le.line}) {le.message}";
-                                    LogEvent.Invoke(null, new LogEventArgs() { Level = le.level, Message = s });
+                                    string s = $"{slevel} {le.LoggerName} {fn}({le.SourceLine}) {le.Message}";
+                                    LogEvent.Invoke(null, new LogEventArgs() { Level = le.Level, Message = s });
                                 }
                             }
 

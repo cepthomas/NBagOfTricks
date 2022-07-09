@@ -17,15 +17,7 @@ namespace NBagOfTricks.Slog
     public enum LogLevel { Trace = 0, Debug = 1, Info = 2, Warn = 3, Error = 4 }
 
     /// <summary>Internal log entry data container.</summary>
-    internal struct LogEntry //TODOX use record?
-    {
-        public DateTime timestamp;
-        public LogLevel level;
-        public string name; // logger name
-        public string file; // source file
-        public int line; // source line
-        public string message;
-    }
+    internal record LogEntry(DateTime Timestamp, LogLevel Level, string LoggerName, string SourceFile, int SourceLine, string Message);
 
     /// <summary>Log event for notification.</summary>
     public class LogEventArgs : EventArgs
