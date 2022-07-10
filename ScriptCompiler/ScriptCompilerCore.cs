@@ -11,6 +11,8 @@ using Microsoft.CodeAnalysis.Emit;
 
 #nullable enable
 
+ //TODO roslyn 5+ https://stackoverflow.com/a/69318635
+
 namespace NBagOfTricks.ScriptCompiler
 {
     /// <summary>Parses/compiles script file(s).</summary>

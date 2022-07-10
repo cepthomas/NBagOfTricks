@@ -128,7 +128,7 @@ namespace NBagOfTricks.Slog
                                 writer = new StreamWriter(logFilePath, true);
                             }
 
-                            while (_queue.TryDequeue(out LogEntry le))
+                            while (_queue.TryDequeue(out LogEntry? le))
                             {
                                 var fn = Path.GetFileName(le.SourceFile);
                                 var slevel = _levelNames[le.Level];
@@ -170,7 +170,7 @@ namespace NBagOfTricks.Slog
                     }
                     catch (Exception)
                     {
-                        // TODOX something or just leave it alone?
+                        // TODO something or just leave it alone?
                         throw;
                     }
 
