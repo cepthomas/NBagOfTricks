@@ -28,7 +28,7 @@ Probably I should make this into a nuget package at some point.
 # Simple Logger
 - Singleton manager.
 - Client creates multiple named loggers.
-- Log records go to log file (verbose) and/or notification event hook (for UI, simpler).
+- Log records go to log file and/or notification event hook for UI.
 - Note: Be careful with handling notifications - don't call Logger functions in UI constructors as the handle is not assigned
    and Invoke() will fail.
 
