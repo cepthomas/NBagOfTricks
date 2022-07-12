@@ -21,6 +21,9 @@ namespace NBagOfTricks.ScriptCompiler
         /// <summary>Client needs to tell us this.</summary>
         public bool IgnoreWarnings { get; set; } = true;
 
+        /// <summary>Client needs to tell us this for Include path - optional.</summary>
+        public string ScriptPath { get; set; } = "";
+
         /// <summary>Default system dlls. Client can add or subtract.</summary>
         public List<string> SystemDlls { get; } = new() { "System", "System.Private.CoreLib", "System.Runtime", "System.Collections", "System.Linq" };
 
@@ -401,6 +404,15 @@ namespace NBagOfTricks.ScriptCompiler
                         if (parts.Count >= 2)
                         {
                             string fn = parts[1].Replace("\"", "");
+                            
+                            // Check for default path.
+                            if(!File.Exists(fn))
+                            {
+                                if (ScriptPath != "")
+                                {
+                                    fn = Path.Combine(ScriptPath, fn);
+                                }
+                            }
 
                             // Recursive call to parse this file
                             FileContext subcont = new()
