@@ -182,9 +182,11 @@ namespace NBagOfTricks
             else
             {
                 // Doesn't exist, create a new one.
-                bag = new();
-                bag.FileName = fn;
-                bag.Valid = true;
+                bag = new()
+                {
+                    FileName = fn,
+                    Valid = true
+                };
             }
 
             return bag;

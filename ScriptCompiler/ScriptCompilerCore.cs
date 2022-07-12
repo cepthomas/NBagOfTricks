@@ -9,7 +9,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 
-#nullable enable
 
  //TODO roslyn 5+ https://stackoverflow.com/a/69318635
 
@@ -55,7 +54,7 @@ namespace NBagOfTricks.ScriptCompiler
         readonly Dictionary<string, FileContext> _filesToCompile = new();
 
         /// <summary>Add the class wrapper if not in script.</summary>
-        bool _addWrapper = false;
+        readonly bool _addWrapper = false;
         #endregion
 
         #region Overrides for derived classes to hook
@@ -74,10 +73,10 @@ namespace NBagOfTricks.ScriptCompiler
 
         #region Public functions
         /// <summary>
-        /// Run the Compiler.
+        /// Run the compiler on a sript file.
         /// </summary>
         /// <param name="scriptfn">Fully qualified path to main file.</param>
-        public void Execute(string scriptfn)
+        public void CompileScript(string scriptfn)
         {
             // Reset everything.
             Script = null;
@@ -133,12 +132,77 @@ namespace NBagOfTricks.ScriptCompiler
                 });
             }
         }
+
+        /// <summary>
+        /// Run the compiler on a text block.
+        /// </summary>
+        /// <param name="text">Text to compile.</param>
+        public void CompileText(string text)
+        {
+            DateTime startTime = DateTime.Now; // for metrics
+
+            List<SyntaxTree> trees = new();
+
+            // Build a syntax tree.
+            CSharpParseOptions popts = new();
+            SyntaxTree tree = CSharpSyntaxTree.ParseText(text, popts);
+            trees.Add(tree);
+
+            // We now build up a list of references needed to compile the code.
+            var references = new List<MetadataReference>();
+            // System stuff location.
+            var dotnetStore = Path.GetDirectoryName(typeof(object).Assembly.Location);
+            // Project refs like nuget.
+            var localStore = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            // System dlls. { "System", "System.Private.CoreLib", "System.Runtime", "System.Collections", "System.Linq" };
+            SystemDlls.ForEach(dll => references.Add(MetadataReference.CreateFromFile(Path.Combine(dotnetStore!, dll + ".dll"))));
+
+            // Local dlls. none default.
+            LocalDlls.ForEach(dll => references.Add(MetadataReference.CreateFromFile(Path.Combine(localStore!, dll + ".dll"))));
+
+            // Emit to stream.
+            var copts = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+            var compilation = CSharpCompilation.Create($"{_scriptName}.dll", trees, references, copts);
+            var ms = new MemoryStream();
+            EmitResult result = compilation.Emit(ms);
+
+            Results.Add(new()
+            {
+                Message = $"Compile took {(DateTime.Now - startTime).Milliseconds} msec. {compilation.LanguageVersion}",
+                ResultType = CompileResultType.Info
+            });
+
+            if (result.Success)
+            {
+                // Load into currently running assembly.
+                var assy = Assembly.Load(ms.ToArray());
+                var types = assy.GetTypes();
+                //>>> foreach (Type t in types)
+            }
+
+            // Collect results.
+            foreach (var diag in result.Diagnostics)
+            {
+                CompileResult se = new() { Message = diag.ToString() };
+
+                switch (diag.Severity)
+                {
+                    case DiagnosticSeverity.Error:      se.ResultType = CompileResultType.Error;    break;
+                    case DiagnosticSeverity.Warning:    se.ResultType = CompileResultType.Warning;  break;
+                    case DiagnosticSeverity.Info:       se.ResultType = CompileResultType.Info;     break;
+                    case DiagnosticSeverity.Hidden:     se.ResultType = CompileResultType.Other;    break;
+                }
+                Results.Add(se);
+            }
+        }
         #endregion
 
         #region Private functions
         /// <summary>
         /// The actual compiler driver.
         /// </summary>
+        /// <param name="baseDir">Fully qualified path to main file.</param>
         /// <returns>Compiled script</returns>
         object? CompileNative(string baseDir)
         {
@@ -177,16 +241,10 @@ namespace NBagOfTricks.ScriptCompiler
                 var localStore = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
                 // System dlls.
-                foreach (var dll in SystemDlls)
-                {
-                    references.Add(MetadataReference.CreateFromFile(Path.Combine(dotnetStore!, dll + ".dll")));
-                }
+                SystemDlls.ForEach(dll => references.Add(MetadataReference.CreateFromFile(Path.Combine(dotnetStore!, dll + ".dll"))));
 
                 // Local dlls.
-                foreach (var dll in LocalDlls)
-                {
-                    references.Add(MetadataReference.CreateFromFile(Path.Combine(localStore!, dll + ".dll")));
-                }
+                LocalDlls.ForEach(dll => references.Add(MetadataReference.CreateFromFile(Path.Combine(localStore!, dll + ".dll"))));
 
                 ///// Emit to stream.
                 var copts = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
@@ -223,11 +281,13 @@ namespace NBagOfTricks.ScriptCompiler
                     }
                 }
 
-                ///// Compile results.
+                ///// Collect results.
                 foreach (var diag in result.Diagnostics)
                 {
-                    CompileResult se = new();
-                    se.Message = diag.GetMessage();
+                    CompileResult se = new()
+                    {
+                        Message = diag.GetMessage()
+                    };
                     bool keep = true;
 
                     switch (diag.Severity)

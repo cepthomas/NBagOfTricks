@@ -14,7 +14,8 @@ namespace NBagOfTricks.ScriptCompiler
     {
         Info,       // Not an error.
         Warning,    // Compiler warning.
-        Error       // Compiler error.
+        Error,      // Compiler error.
+        Other       // Custom use.
     }
 
     /// <summary>General script result container.</summary>
@@ -24,7 +25,7 @@ namespace NBagOfTricks.ScriptCompiler
         public CompileResultType ResultType { get; set; } = CompileResultType.Info;
 
         /// <summary>Original source file.</summary>
-        public string SourceFile { get; set; } = "";
+        public string SourceFile { get; set; } = "NA";
 
         /// <summary>Original source line number. -1 means invalid or unknown.</summary>
         public int LineNumber { get; set; } = -1;
