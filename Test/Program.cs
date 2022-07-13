@@ -17,18 +17,18 @@ namespace NBagOfTricks.Test
         [STAThread]
         static void Main(string[] _)
         {
-            //// Run pnut tests from cmd line.
-            //TestRunner runner = new(OutputFormat.Readable);
-            //var cases = new[] { "SLOG_BASIC" };
-            ////var cases = new[] { "PNUT", "UTILS", "CMD", "MMTEX", "IPC", "TOOLS", "JSON", "SLOG" };
-            //runner.RunSuites(cases);
-            //File.WriteAllLines(@"..\..\out\test_out.txt", runner.Context.OutputLines);
+            // Run pnut tests from cmd line.
+            TestRunner runner = new(OutputFormat.Readable);
+            var cases = new[] { "TOOLS_MD_TO_HTML" };
+            //var cases = new[] { "PNUT", "UTILS", "CMD", "MMTEX", "IPC", "TOOLS", "JSON", "SLOG" };
+            runner.RunSuites(cases);
+            File.WriteAllLines(@"..\..\out\test_out.txt", runner.Context.OutputLines);
 
-            // Run pnut tests from ui host.
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TestHost());
+            //// Run pnut tests from ui host.
+            //Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new TestHost());
         }
     }
 }

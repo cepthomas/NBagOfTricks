@@ -78,31 +78,39 @@ namespace NBagOfTricks
         /// <param name="bgcolor">Background color for page.</param>
         /// <param name="font">Main font-family.</param>
         /// <param name="show">If true open in browser.</param>
-        /// <returns></returns>
+        /// <returns>Valid html.</returns>
         public static string MarkdownToHtml(List<string> body, Color bgcolor, Font font, bool show)
         {
             // Put it together.
-            var htmlText = new List<string>()
+            var mdText = new List<string>()
             {
-                // Boilerplate
                 $"<style>body {{ background-color: {bgcolor.Name}; font-family: {font.Name}; font-size: {font.Size}; }}</style>"
             };
 
             // Meat.
-            htmlText.AddRange(body);
+            mdText.AddRange(body);
 
-            // Bottom.
-            htmlText.Add($"<!-- Markdeep: --><style class=\"fallback\">body{{visibility:hidden;white-space:pre;font-family:{font}}}</style><script src=\"markdeep.min.js\" charset=\"utf-8\"></script><script src=\"https://casual-effects.com/markdeep/latest/markdeep.min.js\" charset=\"utf-8\"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=\"visible\")</script>");
-            string sret = string.Join(Environment.NewLine, htmlText);
+            //mdText.Add(@"
+            //<style class=""fallback"">body{{visibility:hidden;white-space:pre;font-family:{font}}}</style>
+            //<script>markdeepOptions={tocStyle:'long'};</script>
+            //<script src =""https://casual-effects.com/markdeep/latest/markdeep.min.js"" charset=""utf-8""></script>
+            //<script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=""visible"")</script>;");
+
+            mdText.Add(@"
+            <style class=""fallback"">body{{visibility:hidden}}</style>
+            <script src =""https://casual-effects.com/markdeep/latest/markdeep.min.js"" charset=""utf-8""></script>
+            <script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=""visible"")</script>;");
+            
+            string htmlText = string.Join(Environment.NewLine, mdText);
 
             if (show)
             {
                 string fn = Path.GetTempFileName() + ".html";
-                File.WriteAllText(fn, string.Join(Environment.NewLine, htmlText));
+                File.WriteAllText(fn, string.Join(Environment.NewLine, mdText));
                 new Process { StartInfo = new ProcessStartInfo(fn) { UseShellExecute = true } }.Start();
             }
 
-            return sret;
+            return htmlText;
         }
     }
 }

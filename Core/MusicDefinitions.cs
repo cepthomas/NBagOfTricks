@@ -44,14 +44,14 @@ namespace NBagOfTricks
             List<string> docs = new();
 
             docs.Add("# Chords");
-            docs.Add("These are the built-in chords. You can add your own from the API.");
+            docs.Add("These are the built-in chords.");
             docs.Add("");
             docs.Add("Chord   | Notes             | Description");
             docs.Add("------- | ----------------- | -----------");
             docs.AddRange(_chordDefs);
             docs.Add("");
             docs.Add("# Scales");
-            docs.Add("These are the built-in scales. You can add your own from the API.");
+            docs.Add("These are the built-in scales.");
             docs.Add("");
             docs.Add("Scale   | Notes             | Description       | Lower tetrachord  | Upper tetrachord");
             docs.Add("------- | ----------------- | ----------------- | ----------------  | ----------------");
@@ -123,7 +123,7 @@ namespace NBagOfTricks
             "NaturalMinor                  | 1 2 b3 4 5 b6 b7             | Aeolian mode or natural minor scale      | minor             | Phrygian",
             "Algerian                      | 1 2 b3 #4 5 b6 7             | Algerian scale                           |                   |",
             "Altered                       | 1 b2 b3 b4 b5 b6 b7          | Altered scale                            | diminished        | whole tone",
-            "Augmented                     | 1 b3 3 5 #5 7                | Augmented scale                          |",
+            "Augmented                     | 1 b3 3 5 #5 7                | Augmented scale                          |                   |",
             "Bebop                         | 1 2 3 4 5 6 b7 7             | Bebop dominant scale                     |                   |",
             "Blues                         | 1 b3 4 b5 5 b7               | Blues scale                              |                   |",
             "Chromatic                     | 1 #1 2 #2 3 4 #4 5 #5 6 #6 7 | Chromatic scale                          |                   |",
@@ -135,7 +135,7 @@ namespace NBagOfTricks
             "HalfDiminished                | 1 2 b3 4 b5 b6 b7            | Half diminished scale                    | minor             | whole tone",
             "HarmonicMajor                 | 1 2 3 4 5 b6 7               | Harmonic major scale                     | major             | harmonic",
             "HarmonicMinor                 | 1 2 b3 4 5 b6 7              | Harmonic minor scale                     | minor             | harmonic",
-            "Hirajoshi                     | 1 3 #4 5 7                   | Hirajoshi scale                          |",
+            "Hirajoshi                     | 1 3 #4 5 7                   | Hirajoshi scale                          |                   |",
             "HungarianGypsy                | 1 2 b3 #4 5 b6 7             | Hungarian Gypsy scale                    | Gypsy             | harmonic",
             "HungarianMinor                | 1 2 b3 #4 5 b6 7             | Hungarian minor scale                    | Gypsy             | harmonic",
             "In                            | 1 b2 4 5 b6                  | In scale                                 |                   |",

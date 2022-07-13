@@ -67,47 +67,4 @@ namespace NBagOfTricks.Test
             public record Person(string FirstName, string LastName);
         }";
     }
-
-    //public class TestCompiler : ScriptCompilerCore
-    //{
-    //    ///// <summary>Channel info collected from the script.</summary>
-    //    //public List<ChannelSpec> ChannelSpecs { get; init; } = new();
-    //    /// <summary>Called before compiler starts.</summary>
-    //    public override void PreCompile()
-    //    {
-    //        LocalDlls = new() { "NAudio", "NBagOfTricks", "NebOsc", "MidiLib", "Nebulator.Script" };
-    //        Usings.Add("static NBagOfTricks.MusicDefinitions");
-    //    }
-    //    /// <summary>Called after compiler finished.</summary>
-    //    public override void PostCompile()
-    //    {
-    //    }
-    //    /// <summary>Called for each line in the source file before compiling.</summary>
-    //    public override bool PreprocessLine(string sline, FileContext pcont)
-    //    {
-    //        bool handled = false;
-    //        // Channel spec - grab it.
-    //        if (sline.StartsWith("Channel"))
-    //        {
-    //            try
-    //            {
-    //                var parts = sline.Replace("\"", "").SplitByTokens("(),;");
-    //            }
-    //            catch (Exception)
-    //            {
-    //                Results.Add(new()
-    //                {
-    //                    ResultType = CompileResultType.Error,
-    //                    Message = $"Bad statement:{sline}",
-    //                    SourceFile = pcont.SourceFile,
-    //                    LineNumber = pcont.LineNumber
-    //                });
-    //            }
-    //            // Exclude from output file.
-    //            handled = true;
-    //        }
-    //        return handled;
-    //    }
-    //}
-
 }

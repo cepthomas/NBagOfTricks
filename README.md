@@ -23,7 +23,7 @@ Probably I should make this into a nuget package at some point.
 - Tools: Things that are higher level than MiscUtils, formatters and the like.
 - StringUtils: Mostly low-level extensions.
 - Dumper: Writes object tree contents.
-- MusicDefinitions: Some higher (than midi) level functions.
+- MusicDefinitions: Scales and chords.
 
 # Simple Logger
 - Singleton manager.
@@ -47,7 +47,7 @@ Practically Nonexistent Unit Tester
 A public version of a super lightweight unit test framework for C#. It has gone through many 
 useful and successful iterations and may as well bring you joy also.
 
-It is based on a [C/C++ version](https://github.com/cepthomas/c-bag-of-tricks/blob/main/README.md) which was
+Based on a [C/C++ version](https://github.com/cepthomas/c-bag-of-tricks/blob/main/README.md) which was
 inspired by [Quicktest](http://quicktest.sourceforge.net/) from long ago.
 
 ## Test Format
