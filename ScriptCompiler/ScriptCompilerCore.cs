@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 
 
- //TODO roslyn 5+ https://stackoverflow.com/a/69318635
 
 namespace NBagOfTricks.ScriptCompiler
 {
