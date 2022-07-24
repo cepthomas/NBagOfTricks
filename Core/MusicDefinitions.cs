@@ -45,14 +45,11 @@ namespace NBagOfTricks
 
             docs.Add("# Chords");
             docs.Add("These are the built-in chords.");
-            docs.Add("");
             docs.Add("Chord   | Notes             | Description");
             docs.Add("------- | ----------------- | -----------");
             docs.AddRange(_chordDefs);
-            docs.Add("");
             docs.Add("# Scales");
             docs.Add("These are the built-in scales.");
-            docs.Add("");
             docs.Add("Scale   | Notes             | Description       | Lower tetrachord  | Upper tetrachord");
             docs.Add("------- | ----------------- | ----------------- | ----------------  | ----------------");
             docs.AddRange(_scaleDefs);
