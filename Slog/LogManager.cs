@@ -155,16 +155,19 @@ namespace NBagOfTricks.Slog
                         if ((DateTime.Now - _housekeepTime).TotalSeconds > 70)
                         {
                             _housekeepTime = DateTime.Now;
-                            FileInfo fi = new(logFilePath);
-                            if (fi.Exists && fi.Length > logSize)
+                            if(logFilePath != "")
                             {
-                                // Assemble the backup file name.
-                                var sext = Path.GetExtension(fi.FullName);
-                                var snow = DateTime.Now.ToString("yyyy_MM_dd_HH_mm");
-                                var newfn = fi.FullName.Replace(sext, $"_{snow}{sext}");
-                                File.Copy(fi.FullName, newfn);
-                                // Delete the original as it will be created fresh in the next iteration.
-                                File.Delete(fi.FullName);
+                                FileInfo fi = new(logFilePath);
+                                if (fi.Exists && fi.Length > logSize)
+                                {
+                                    // Assemble the backup file name.
+                                    var sext = Path.GetExtension(fi.FullName);
+                                    var snow = DateTime.Now.ToString("yyyy_MM_dd_HH_mm");
+                                    var newfn = fi.FullName.Replace(sext, $"_{snow}{sext}");
+                                    File.Copy(fi.FullName, newfn);
+                                    // Delete the original as it will be created fresh in the next iteration.
+                                    File.Delete(fi.FullName);
+                                }
                             }
                         }
                     }

@@ -3,7 +3,7 @@ C# things collected over the years.
 
 Requires VS2022 and .NET6.
 
-No dependencies on third party components.
+No dependencies on external components.
 
 Probably I should make this into a nuget package at some point.
 
