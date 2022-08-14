@@ -106,6 +106,20 @@ namespace NBagOfTricks
         /// <param name="start2"></param>
         /// <param name="stop2"></param>
         /// <returns></returns>
+        public static float Map(float val, float start1, float stop1, float start2, float stop2)
+        {
+            return start2 + (stop2 - start2) * (val - start1) / (stop1 - start1);
+        }
+
+        /// <summary>
+        /// Remap a value to new coordinates.
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="start1"></param>
+        /// <param name="stop1"></param>
+        /// <param name="start2"></param>
+        /// <param name="stop2"></param>
+        /// <returns></returns>
         public static double Map(double val, double start1, double stop1, double start2, double stop2)
         {
             return start2 + (stop2 - start2) * (val - start1) / (stop1 - start1);

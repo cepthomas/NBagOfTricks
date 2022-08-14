@@ -173,7 +173,7 @@ namespace NBagOfTricks.Slog
                     }
                     catch (Exception)
                     {
-                        // TODO something or just leave it alone?
+                        // Do something or just leave it alone?
                         throw;
                     }
 
