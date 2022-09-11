@@ -288,5 +288,19 @@ namespace NBagOfTricks
             return dp;
         }
 
+        /// <summary>
+        /// Number of digits in an int ignoring sign.
+        /// </summary>
+        /// <returns></returns>
+        public static int NumDigits(int number)
+        {
+            number = Math.Abs(number);
+            int count = 0;
+            do
+            {
+                count++;
+            } while ((number /= 10) >= 1);
+            return count;
+        }
     }
 }
