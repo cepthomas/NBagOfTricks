@@ -302,5 +302,23 @@ namespace NBagOfTricks
             } while ((number /= 10) >= 1);
             return count;
         }
+
+        /// <summary>
+        /// Snap to closest neighbor.
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="granularity">The neighbors property line.</param>
+        /// <param name="round">Round or truncate.</param>
+        /// <returns></returns>
+        public static int Clamp(int val, int granularity, bool round)
+        {
+            int res = (val / granularity) * granularity;
+            if (round && val % granularity > granularity / 2)
+            {
+                res += granularity;
+            }
+            return res;
+        }
+
     }
 }
