@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.Emit;
 
 
 
-namespace NBagOfTricks.ScriptCompiler
+namespace Ephemera.NBagOfTricks.ScriptCompiler
 {
     /// <summary>Parses/compiles script file(s).</summary>
     public class ScriptCompilerCore
@@ -480,7 +480,7 @@ namespace NBagOfTricks.ScriptCompiler
             codeLines.AddRange(new List<string>()
             {
                 "",
-                "namespace Nebulator.UserScript",
+                $"namespace {_scriptName}.UserScript",
                 "{",
             });
 

@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NBagOfTricks;
+using Ephemera.NBagOfTricks;
 
 
-namespace NBagOfTricks.Slog
+namespace Ephemera.NBagOfTricks.Slog
 {
     /// <summary>Global server.</summary>
     public sealed class LogManager

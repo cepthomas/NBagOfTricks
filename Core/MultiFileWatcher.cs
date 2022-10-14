@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 
 
-namespace NBagOfTricks
+namespace Ephemera.NBagOfTricks
 {
     /// <summary>
     /// A watcher for multiple file changes. The underlying FileSystemWatcher is a bit sensitive to OS file system ops.

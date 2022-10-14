@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json.Serialization;
 using System.Text.Json;
-using NBagOfTricks;
-using NBagOfTricks.PNUT;
+using Ephemera.NBagOfTricks;
+using Ephemera.NBagOfTricks.PNUT;
 
 
-namespace NBagOfTricks.Test
+namespace Ephemera.NBagOfTricks.Test
 {
     public class JSON_CONVERTERS : TestSuite
     {

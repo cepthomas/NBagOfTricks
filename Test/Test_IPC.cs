@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using NBagOfTricks.SimpleIpc;
-using NBagOfTricks.PNUT;
+using Ephemera.NBagOfTricks.SimpleIpc;
+using Ephemera.NBagOfTricks.PNUT;
 
 
-namespace NBagOfTricks.Test
+namespace Ephemera.NBagOfTricks.Test
 {
     public class IPC_BASIC : TestSuite
     {

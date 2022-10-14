@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 
 
-namespace NBagOfTricks
+namespace Ephemera.NBagOfTricks
 {
     /// <summary>
     /// Dumps: objects, dictionaries of objects, or lists of objects.

@@ -5,9 +5,9 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
-using NBagOfTricks;
-using NBagOfTricks.Slog;
-using NBagOfTricks.PNUT;
+using Ephemera.NBagOfTricks;
+using Ephemera.NBagOfTricks.Slog;
+using Ephemera.NBagOfTricks.PNUT;
 
 
 namespace NBagOfTricks.Test

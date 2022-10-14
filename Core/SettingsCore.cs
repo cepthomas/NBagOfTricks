@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 
-namespace NBagOfTricks
+namespace Ephemera.NBagOfTricks
 {
     public class SettingsCore
     {

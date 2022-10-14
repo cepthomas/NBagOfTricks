@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 
-namespace NBagOfTricks
+namespace Ephemera.NBagOfTricks
 {
     /// <summary>
     /// Static general utility functions.

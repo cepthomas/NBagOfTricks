@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using NBagOfTricks;
-using NBagOfTricks.PNUT;
-using NBagOfTricks.ScriptCompiler;
+using Ephemera.NBagOfTricks;
+using Ephemera.NBagOfTricks.PNUT;
+using Ephemera.NBagOfTricks.ScriptCompiler;
 
 
 
-namespace NBagOfTricks.Test
+namespace Ephemera.NBagOfTricks.Test
 {
     public class COMP_SIMPLE : TestSuite
     {
@@ -35,7 +35,7 @@ namespace NBagOfTricks.Test
         using System.Collections.Generic;
         using System.IO;
 //5
-        namespace NbotTest
+        namespace Ephemera.NbotTest
         {
             public class Bag
             {

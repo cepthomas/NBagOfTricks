@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Threading;
 
 
-namespace NBagOfTricks.SimpleIpc
+namespace Ephemera.NBagOfTricks.SimpleIpc
 {
     /// <summary>
     /// A simple logger which handles client calls from multiple processes/threads.

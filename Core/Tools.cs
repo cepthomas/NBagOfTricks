@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 
 
-namespace NBagOfTricks
+namespace Ephemera.NBagOfTricks
 {
     /// <summary>
     /// Higher level than Utils.

@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using NBagOfTricks.PNUT;
+using Ephemera.NBagOfTricks.PNUT;
 
 
 // Tests for pnut itself.
 
-namespace NBagOfTricks.Test
+namespace Ephemera.NBagOfTricks.Test
 {
     public class PNUT_ONE : TestSuite
     {

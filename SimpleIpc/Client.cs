@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 
-namespace NBagOfTricks.SimpleIpc
+namespace Ephemera.NBagOfTricks.SimpleIpc
 {
     /// <summary>Possible outcomes.</summary>
     public enum ClientStatus { Ok, Timeout, Error }

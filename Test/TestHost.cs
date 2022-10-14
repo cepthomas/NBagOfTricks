@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using NBagOfTricks.PNUT;
+using Ephemera.NBagOfTricks.PNUT;
 
 
-namespace NBagOfTricks.Test
+namespace Ephemera.NBagOfTricks.Test
 {
     public partial class TestHost : Form
     {

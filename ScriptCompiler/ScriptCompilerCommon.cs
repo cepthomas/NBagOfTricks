@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Diagnostics;
 
 
-namespace NBagOfTricks.ScriptCompiler
+namespace Ephemera.NBagOfTricks.ScriptCompiler
 {
     /// <summary>General script result - error/warn etc.</summary>
     public enum CompileResultType

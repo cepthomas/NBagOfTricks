@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 
-namespace NBagOfTricks
+namespace Ephemera.NBagOfTricks
 {
     /// <summary>
     /// General purpose storage for things using a two part key.

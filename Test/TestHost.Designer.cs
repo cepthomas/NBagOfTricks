@@ -1,5 +1,5 @@
 ﻿
-namespace NBagOfTricks.Test
+namespace Ephemera.NBagOfTricks.Test
 {
     partial class TestHost
     {

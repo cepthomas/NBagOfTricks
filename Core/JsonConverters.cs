@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 
-namespace NBagOfTricks
+namespace Ephemera.NBagOfTricks
 {
     /// <summary>Serialize prettier.</summary>
     public class JsonColorConverter : JsonConverter<Color>

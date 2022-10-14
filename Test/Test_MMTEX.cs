@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
-using NBagOfTricks.PNUT;
+using Ephemera.NBagOfTricks.PNUT;
 
 
-namespace NBagOfTricks.Test
+namespace Ephemera.NBagOfTricks.Test
 {
     public class MMTEX : TestSuite
     {

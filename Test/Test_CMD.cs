@@ -2,10 +2,10 @@
 using System.Text;
 using System.Collections.Generic;
 using System.IO;
-using NBagOfTricks.PNUT;
+using Ephemera.NBagOfTricks.PNUT;
 
 
-namespace NBagOfTricks.Test
+namespace Ephemera.NBagOfTricks.Test
 {
     public class CMD_HAPPY : TestSuite
     {

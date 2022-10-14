@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 
-namespace NBagOfTricks.Slog
+namespace Ephemera.NBagOfTricks.Slog
 {
     /// <summary>Client creates as many of these as needed.</summary>
     public class Logger  

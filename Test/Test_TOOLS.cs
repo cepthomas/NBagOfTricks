@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using NBagOfTricks;
-using NBagOfTricks.PNUT;
+using Ephemera.NBagOfTricks;
+using Ephemera.NBagOfTricks.PNUT;
 
 
-namespace NBagOfTricks.Test
+namespace Ephemera.NBagOfTricks.Test
 {
     public class TOOLS_BIN_SNIFF : TestSuite
     {

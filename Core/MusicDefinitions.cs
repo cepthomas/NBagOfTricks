@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
-using NBagOfTricks;
 
-namespace NBagOfTricks
+
+namespace Ephemera.NBagOfTricks
 {
     /// <summary>Definitions for use inside scripts. For doc see MusicDefinitions.md.</summary>
     public static class MusicDefinitions
