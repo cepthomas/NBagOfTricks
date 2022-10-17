@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Text.Json.Serialization;
+using System.Drawing;
+using System.Diagnostics;
 using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfTricks.PNUT;
 
@@ -43,6 +46,51 @@ namespace Ephemera.NBagOfTricks.Test
         }
     }
 
+    public class UTILS_SETTINGS : TestSuite
+    {
+        public class TestSettings : SettingsCore
+        {
+            public List<string> TestList { get; set; } = new();
+
+            [JsonConverter(typeof(JsonColorConverter))]
+            public Color? TestColor { get; set; } = Color.Salmon;
+
+            public string TestString { get; set; } = "Just a test";
+        }
+
+        public override void RunSuite()
+        {
+            UT_INFO("Tests SettingsCore.");
+
+            const string TEST_FN = "set-test.json";
+
+            File.Delete(TEST_FN);
+
+            TestSettings set = (TestSettings)TestSettings.Load(".", typeof(TestSettings), TEST_FN);
+
+            UT_TRUE(!File.Exists(TEST_FN));
+
+            UT_TRUE(set.TestColor.ToString()!.Contains("Salmon"));
+
+            set.FormGeometry = new Rectangle(20, 50, 100, 200);
+            set.TestString = "hoohaa";
+            set.TestList.Add("item1");
+            set.TestList.Add("item2");
+            set.TestList.Add("item3");
+
+            set.UpdateMru(Path.GetFullPath("Ephemera.NBagOfTricks.dll"));
+            set.UpdateMru(Path.GetFullPath("Ephemera.NBagOfTricks.xml"));
+            set.UpdateMru(@"C:\bad\path\file.xyz");
+
+            UT_EQUAL(set.RecentFiles.Count, 2);
+
+            set.Save();
+            UT_TRUE(File.Exists(TEST_FN));
+
+            // Check recent file list.
+            File.ReadAllLines(TEST_FN).ForEach(l => Debug.WriteLine(l));
+        }
+    }
 
     public class UTILS_MISC : TestSuite
     {
@@ -59,7 +107,6 @@ namespace Ephemera.NBagOfTricks.Test
             MiscUtils.ShowReadme("NBagOfTricks");
         }
     }
-
 
     public class UTILS_WATCHER : TestSuite
     {
@@ -109,8 +156,6 @@ namespace Ephemera.NBagOfTricks.Test
 
             UT_EQUAL(_watcher.WatchedFiles.Count, iters);
             UT_EQUAL(filesTouched.Count, iters);
-
-
         }
     }
 }

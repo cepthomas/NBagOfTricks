@@ -207,32 +207,6 @@ namespace Ephemera.NBagOfTricks
         }
 
         /// <summary>
-        /// Update the MRU.
-        /// </summary>
-        /// <param name="mruList">The MRU.</param>
-        /// <param name="newVal">New value(s) to perhaps insert.</param>
-        /// <param name="mruSize">Optional max size.</param>
-        public static void UpdateMru(this List<string> mruList, string newVal, int mruSize = 20)
-        {
-            // First check if it's already in there.
-            for (int i = 0; i < mruList.Count; i++)
-            {
-                if (newVal == mruList[i])
-                {
-                    // Remove from current location so we can stuff it back in later.
-                    mruList.Remove(mruList[i]);
-                }
-            }
-
-            // Insert at the front and trim the tail.
-            mruList.Insert(0, newVal);
-            while (mruList.Count > mruSize)
-            {
-                mruList.RemoveAt(mruList.Count - 1);
-            }
-        }
-
-        /// <summary>
         /// Gets the format specifier based upon the range of data.
         /// </summary>
         /// <param name="range">Data range</param>

@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
+using System.Runtime.Intrinsics.X86;
 
 
 namespace Ephemera.NBagOfTricks
@@ -20,7 +22,13 @@ namespace Ephemera.NBagOfTricks
         public Rectangle FormGeometry { get; set; } = new(50, 50, 800, 800);
 
         [Browsable(false)]
-        public List<string> RecentFiles { get; set; } = new();
+        public List<string> RecentFiles { get; private set; } = new();
+        #endregion
+
+        #region Other Properties
+        [Browsable(false)]
+        [JsonIgnore]
+        public int MruSize { get; set; } = 20;
         #endregion
 
         #region Fields
@@ -54,9 +62,10 @@ namespace Ephemera.NBagOfTricks
                 set = Activator.CreateInstance(t);
             }
 
-            SettingsCore sb = (SettingsCore)set!;
-            sb._fp = fp;
-            sb.Cleanup();
+            // Init some internals.
+            SettingsCore sc = (SettingsCore)set!;
+            sc._fp = fp;
+            sc.CleanMru();
 
             return set!;
         }
@@ -66,7 +75,7 @@ namespace Ephemera.NBagOfTricks
         /// </summary>
         public void Save()
         {
-            Cleanup();
+            CleanMru();
 
             Type t = GetType();
             JsonSerializerOptions opts = new() { WriteIndented = true };
@@ -76,13 +85,24 @@ namespace Ephemera.NBagOfTricks
         }
 
         /// <summary>
+        /// Update the RecentFiles.
+        /// </summary>
+        /// <param name="newVal">New value to insert.</param>
+        public void UpdateMru(string newVal)
+        {
+            RecentFiles.Insert(0, newVal);
+            CleanMru();
+        }
+
+        /// <summary>
         /// Remove duplicate and invalid file names.
         /// </summary>
-        void Cleanup()
+        void CleanMru()
         {
-            // Clean up any bad file names.
-            RecentFiles.RemoveAll(f => !File.Exists(f));
-            RecentFiles = RecentFiles.Distinct().ToList();
+            // Clean up mru. This is a bit klunky looking but safest way to maintain order.
+            var newlist = new List<string>();
+            RecentFiles.ForEach(f => { if (File.Exists(f) && !newlist.Contains(f) && newlist.Count <= MruSize) newlist.Add(f); });
+            RecentFiles = newlist;
         }
         #endregion
     }
