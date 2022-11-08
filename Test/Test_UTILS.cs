@@ -121,7 +121,7 @@ namespace Ephemera.NBagOfTricks.Test
 
             List<string> filesTouched = new(); // capture
             MultiFileWatcher _watcher = new();
-            _watcher.FileChangeEvent += (object? sender, MultiFileWatcher.FileChangeEventArgs e) => { filesTouched.AddRange(e.FileNames); };
+            _watcher.FileChange += (object? sender, MultiFileWatcher.FileChangeEventArgs e) => { filesTouched.AddRange(e.FileNames); };
 
             // Create fake files.
             List<string> testFilesToWatch = new();

@@ -30,7 +30,7 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
     }
 
     /// <summary>Notify client of some connection event.</summary>
-    public class ServerEventArgs : EventArgs
+    public class IpcReceiveEventArgs : EventArgs
     {
         public string Message { get; set; } = "";
         public bool Error { get; set; } = false;
@@ -48,7 +48,7 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
         bool _running = true;
 
         /// <summary>Something happened. Client will have to take care of thread issues.</summary>
-        public event EventHandler<ServerEventArgs>? ServerEvent;
+        public event EventHandler<IpcReceiveEventArgs>? IpcReceive;
 
         /// <summary>The canceller.</summary>
         readonly ManualResetEvent _cancelEvent = new(false);
@@ -124,7 +124,7 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
                     using NamedPipeServerStream stream = new(_pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
                     using AutoResetEvent connectEvent = new(false);
 
-                    ServerEventArgs evt = new();
+                    IpcReceiveEventArgs evt = new();
 
                     _log.Write($"BeginWaitForConnection()");
 
@@ -222,7 +222,7 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
                             }
 
                             // Hand back what we captured.
-                            ServerEvent?.Invoke(this, evt);
+                            IpcReceive?.Invoke(this, evt);
                         }
 
                         // Signal completion.
@@ -234,7 +234,7 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
             catch (Exception ee)
             {
                 // General server error.
-                ServerEvent?.Invoke(this, new ServerEventArgs()
+                IpcReceive?.Invoke(this, new IpcReceiveEventArgs()
                 {
                     Message = $"Unknown server exception: {ee.Message}",
                     Error = true

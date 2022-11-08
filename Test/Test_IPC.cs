@@ -29,10 +29,10 @@ namespace Ephemera.NBagOfTricks.Test
 
             int iter = 0;
 
-            server.ServerEvent += Server_IpcEvent;
+            server.IpcReceive += Server_IpcReceive;
             server.Start();
 
-            void Server_IpcEvent(object? sender, ServerEventArgs e)
+            void Server_IpcReceive(object? sender, IpcReceiveEventArgs e)
             {
                 UT_FALSE(e.Error);
                 UT_EQUAL(e.Message, $"ABC{iter * 111}");

@@ -17,7 +17,7 @@ namespace Ephemera.NBagOfTricks
         {
             public HashSet<string> FileNames { get; set; } = new();
         }
-        public event EventHandler<FileChangeEventArgs>? FileChangeEvent = null;
+        public event EventHandler<FileChangeEventArgs>? FileChange = null;
         #endregion
 
         #region Fields
@@ -66,7 +66,7 @@ namespace Ephemera.NBagOfTricks
         {
             if(_touchedFiles.Count > 0)
             {
-                FileChangeEvent?.Invoke(this, new FileChangeEventArgs() { FileNames = _touchedFiles });
+                FileChange?.Invoke(this, new FileChangeEventArgs() { FileNames = _touchedFiles });
                 _touchedFiles.Clear();
             }
         }

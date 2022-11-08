@@ -64,7 +64,7 @@ namespace Ephemera.NBagOfTricks.Slog
 
         #region Events
         /// <summary>Callback event.</summary>
-        public static event EventHandler<LogEventArgs>? LogEvent;
+        public static event EventHandler<LogMessageEventArgs>? LogMessage;
         #endregion
 
         #region Public functions
@@ -140,10 +140,10 @@ namespace Ephemera.NBagOfTricks.Slog
                                     writer.Flush();
                                 }
 
-                                if (LogEvent is not null && le.Level >= MinLevelNotif)
+                                if (LogMessage is not null && le.Level >= MinLevelNotif)
                                 {
                                     string s = $"{slevel} {le.LoggerName} {fn}({le.SourceLine}) {le.Message}";
-                                    LogEvent.Invoke(null, new LogEventArgs() { Level = le.Level, Message = s });
+                                    LogMessage.Invoke(null, new LogMessageEventArgs() { Level = le.Level, Message = s });
                                 }
                             }
 
