@@ -22,7 +22,7 @@ namespace Ephemera.NBagOfTricks
         public Rectangle FormGeometry { get; set; } = new(50, 50, 800, 800);
 
         [Browsable(false)]
-        public List<string> RecentFiles { get; private set; } = new();
+        public List<string> RecentFiles { get; set; } = new();
         #endregion
 
         #region Other Properties
