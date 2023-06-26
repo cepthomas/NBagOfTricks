@@ -39,7 +39,7 @@ Probably I should make this into a nuget package at some point.
 
 # Script Compiler
 Compiles C#-like scripts into in-memory assemblies. Primarily for use by [Nebulator](https://github.com/cepthomas/Nebulator/blob/main/README.md)
-and [NProcessing]((https://github.com/cepthomas/NProcessing/blob/main/README.md). See those repos for example on how to use this.
+and [NProcessing](https://github.com/cepthomas/NProcessing/blob/main/README.md). See those repos for example on how to use this.
 
 # PNUT
 Practically Nonexistent Unit Tester
