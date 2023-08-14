@@ -33,6 +33,21 @@ namespace Ephemera.NBagOfTricks.Slog
 
         #region Public functions
         /// <summary>
+        /// General function.
+        /// </summary>
+        /// <param name="level">Log level.</param>
+        /// <param name="msg">Content.</param>
+        /// <param name="file">Ignore - compiler use.</param>
+        /// <param name="line">Ignore - compiler use.</param>
+        public void Log(LogLevel level, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        {
+            if (Enable)
+            {
+                AddEntry(level, msg, file, line);
+            }
+        }
+
+        /// <summary>
         /// Convenience function.
         /// </summary>
         /// <param name="msg">Content.</param>
