@@ -29,6 +29,9 @@ namespace Ephemera.NBagOfTricks.PNUT
         public OutputFormat Format { get; set; } = OutputFormat.Readable;
 
         /// <summary></summary>
+        public bool StopOnFail { get; set; } = false;
+
+        /// <summary></summary>
         public string CurrentSuiteId { get; set; } = "???";
 
         /// <summary></summary>
@@ -65,6 +68,21 @@ namespace Ephemera.NBagOfTricks.PNUT
         public int Line { get; }
 
         public AssertException(string msg, string file, int line) : base(msg)
+        {
+            File = file;
+            Line = line;
+        }
+    }
+
+    /// <summary>
+    /// Specific exception type.
+    /// </summary>
+    class TestFailException : Exception
+    {
+        public string File { get; }
+        public int Line { get; }
+
+        public TestFailException(string file, int line) : base("!!!")
         {
             File = file;
             Line = line;
@@ -159,19 +177,27 @@ namespace Ephemera.NBagOfTricks.PNUT
                     // Deliberate exception.
                     tc.RecordResult(false, ex.Message, ex.File, ex.Line);
                 }
+                catch (TestFailException ex)
+                {
+                    // Stop on fail set.
+                    tc.RecordVerbatim($"^^^^^^^^^^^^^^^^ Stop on fail");
+                }
                 catch (Exception ex)
                 {
-                    // Out of scope exception. Top frame contains the cause.
-                    StackTrace st = new(ex, true);
-                    StackFrame? frame = st.GetFrame(0);
+                    tc.RecordVerbatim($"^^^^^^^^^^^^^^^^ Unexpected exception: {ex.Message}");
+                    tc.RecordVerbatim($"{ ex.StackTrace}");
 
-                    if(frame is not null)
-                    {
-                        int line = frame.GetFileLineNumber();
-                        string fn = Path.GetFileName(frame!.GetFileName()!);
-                        string msg = $"{ex.Message} ({fn}:{line})";
-                        tc.RecordResult(false, msg, fn, line);
-                    }
+                    //// Out of scope exception. Top frame contains the cause.
+                    //StackTrace st = new(ex, true);
+                    //StackFrame? frame = st.GetFrame(0);
+
+                    //if(frame is not null)
+                    //{
+                    //    int line = frame.GetFileLineNumber();
+                    //    string fn = Path.GetFileName(frame!.GetFileName()!);
+                    //    string msg = $"{ex.Message} ({fn}:{line})";
+                    //    tc.RecordResult(false, msg, fn, line);
+                    //}
                 }
 
                 // Completed the suite, update the counts.
@@ -303,6 +329,11 @@ namespace Ephemera.NBagOfTricks.PNUT
                         Context.OutputLines.Add($"! ({file}:{line}) {Context.CurrentSuiteId}.{CaseCnt} {message}");
                         break;
                 }
+
+                if (Context.StopOnFail)
+                {
+                    throw new TestFailException(file, line);
+                }
             }
         }
 
@@ -332,6 +363,15 @@ namespace Ephemera.NBagOfTricks.PNUT
         public void RecordVerbatim(string message)
         {
             Context.OutputLines.Add(message);
+        }
+
+        /// <summary>
+        /// Toggle the fatal bail out mechanism.
+        /// </summary>
+        /// <param name="value">True/false</param>
+        public void UT_STOP_ON_FAIL(bool value)
+        {
+            Context.StopOnFail = value;
         }
 
         #region Test functions - Boilerplate
@@ -599,7 +639,7 @@ namespace Ephemera.NBagOfTricks.PNUT
         protected bool UT_GREATER_OR_EQUAL<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             bool pass = true;
-            if (value1.CompareTo(value2) == -1)
+            if (value1.CompareTo(value2) != 0)
             {
                 RecordResult(false, $"[{value1}] should be greater than or equal to [{value2}]", file, line);
                 pass = false;

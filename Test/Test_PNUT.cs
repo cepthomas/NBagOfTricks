@@ -25,6 +25,8 @@ namespace Ephemera.NBagOfTricks.Test
             double dbl2 = 1.600;
             double dblTol = 0.001;
 
+            UT_STOP_ON_FAIL(false);
+
             UT_INFO("Suite tests core functions.");
 
             UT_INFO("Test UT_INFO. Visually inspect that this appears in the output.");
@@ -78,12 +80,50 @@ namespace Ephemera.NBagOfTricks.Test
     }
 
 
+    public class PNUT_FATAL1 : TestSuite
+    {
+        public override void RunSuite()
+        {
+            int val1 = 1;
+
+            UT_STOP_ON_FAIL(true);
+
+            UT_INFO("Visually inspect that this appears in the output");
+
+            UT_EQUAL(val1, 3);
+
+            UT_INFO("Visually inspect that this does not appear in the output");
+        }
+    }
+
+
+    public class PNUT_FATAL2 : TestSuite
+    {
+        public override void RunSuite()
+        {
+            int val1 = 1;
+
+            UT_STOP_ON_FAIL(true);
+
+            UT_INFO("Visually inspect that this appears in the output");
+
+            throw new Exception("Random error");
+
+            UT_EQUAL(val1, 3);
+
+            UT_INFO("Visually inspect that this does not appear in the output");
+        }
+    }
+
+
     public class PNUT_TWO : TestSuite
     {
         public override void RunSuite()
         {
             int seed = 999;
             MathUtils.InitRand(seed);
+
+            UT_STOP_ON_FAIL(false);
 
             UT_PROPERTY("version", "xyz123");
 
