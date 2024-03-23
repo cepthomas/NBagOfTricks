@@ -144,6 +144,35 @@ namespace Ephemera.NBagOfTricks
             return stats;
         }
 
+
+        /// <summary>
+        /// Detail of captured values.
+        /// </summary>
+        /// <returns>String csv.</returns>
+        public string Dump()
+        {
+            List<string> ls = new();
+
+            // Time ordered.
+            ls.Add("Ordered");
+            Times.ForEach(t => ls.Add($"{t}"));
+
+            // Sorted by (rounded) times.
+            Dictionary<double, int> _bins = new();
+            for (int i = 0; i < Times.Count; i++)
+            {
+                var t = Math.Round(Times[i], 2);
+                _bins[t] = _bins.TryGetValue(t, out int value) ? value + 1 : 1;
+            }
+            ls.Add($"Msec,Count");
+            var vv = _bins.Keys.ToList();
+            vv.Sort();
+            vv.ForEach(v => ls.Add($"{v},{_bins[v]}"));
+
+            return string.Join(Environment.NewLine, ls);
+        }
+
+
         /// <summary>
         /// Conversion for stopwatch values.
         /// </summary>

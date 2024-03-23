@@ -38,40 +38,10 @@ namespace Ephemera.NBagOfTricks.Test
             _tan.Grab(); // this starts the tan.
             _timer.Start();
 
-            // Do some background work.
-            //for(int i = 0; _running; i++)
-            //{
-            //    for(int j = 0; j < 100; j++)
-            //    {
-            //        string s = $"abcdef {i} {j}";
-            //        //Console.WriteLine(s);
-            //    }
-            //}
-            while (_running) ;
+            while (_running);
 
             // Done - dump what we found.
-            List<string> ls = new() { $"Msec" };
-
-            // Time ordered.
-            _tan.Times.ForEach(t => ls.Add($"{t}"));
-            File.WriteAllLines(@"..\..\out\intervals_ordered.csv", ls);
-
-            // Sorted by (rounded) times.
-            Dictionary<double, int> _bins = new();
-            for (int i = 0; i < _tan.Times.Count; i++)
-            {
-                var t = Math.Round(_tan.Times[i], 2);
-                _bins[t] = _bins.ContainsKey(t) ? _bins[t] + 1 : 1;
-            }
-            ls.Clear();
-            ls.Add($"Msec,Count");
-            var vv = _bins.Keys.ToList();
-            vv.Sort();
-            vv.ForEach(v => ls.Add($"{v},{_bins[v]}"));
-            File.WriteAllLines(@"..\..\out\intervals_sorted.csv", ls);
-
-            //Debug.WriteLine(_tan);
-            //Count:1000 Mean:9.982 Max:10.977 Min:9.040 SD:0.096
+            File.WriteAllText(@"..\..\out\an.csv", _tan.Dump());
 
             // Resource clean up.
             _timer.Stop();

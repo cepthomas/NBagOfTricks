@@ -177,7 +177,7 @@ namespace Ephemera.NBagOfTricks.PNUT
                     // Deliberate exception.
                     tc.RecordResult(false, ex.Message, ex.File, ex.Line);
                 }
-                catch (TestFailException ex)
+                catch (TestFailException)
                 {
                     // Stop on fail set.
                     tc.RecordVerbatim($"^^^^^^^^^^^^^^^^ Stop on fail");
@@ -186,18 +186,6 @@ namespace Ephemera.NBagOfTricks.PNUT
                 {
                     tc.RecordVerbatim($"^^^^^^^^^^^^^^^^ Unexpected exception: {ex.Message}");
                     tc.RecordVerbatim($"{ ex.StackTrace}");
-
-                    //// Out of scope exception. Top frame contains the cause.
-                    //StackTrace st = new(ex, true);
-                    //StackFrame? frame = st.GetFrame(0);
-
-                    //if(frame is not null)
-                    //{
-                    //    int line = frame.GetFileLineNumber();
-                    //    string fn = Path.GetFileName(frame!.GetFileName()!);
-                    //    string msg = $"{ex.Message} ({fn}:{line})";
-                    //    tc.RecordResult(false, msg, fn, line);
-                    //}
                 }
 
                 // Completed the suite, update the counts.
