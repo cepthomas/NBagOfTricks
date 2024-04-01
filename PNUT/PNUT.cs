@@ -663,6 +663,22 @@ namespace Ephemera.NBagOfTricks.PNUT
             }
             return pass;
         }
+
+        protected bool UT_STRING_CONTAINS(string value1, string value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
+        {
+            bool pass = true;
+            if (value1.Contains(value2))
+            {
+                RecordResult(true, $"", file, line);
+            }
+            else
+            {
+                RecordResult(false, $"[{value1}] does not contain [{value2}]", file, line);
+                pass = false;
+            }
+            return pass;
+        }
+
         #endregion
     }
 }
