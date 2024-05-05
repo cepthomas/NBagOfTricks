@@ -109,7 +109,7 @@ namespace Ephemera.NBagOfTricks
 
         #region Lifecycle
         /// <summary>
-        /// Initializes a new instance of the Timer class.
+        /// Initializes a new instance of the Timer class. OK to throw in here.
         /// </summary>
         public MmTimerEx()
         {
@@ -195,7 +195,7 @@ namespace Ephemera.NBagOfTricks
         }
 
         /// <summary>
-        /// Starts the periodic timer.
+        /// Starts the periodic timer. OK to throw in here.
         /// </summary>
         public void Start()
         {
@@ -271,7 +271,7 @@ namespace Ephemera.NBagOfTricks
                         timer.elapsed += periodMsec;
                         if ((timer.period - timer.elapsed) < allowance)
                         {
-                            // Notify.
+                            // Notify. Invoke() takes care of cross-thread issues.
                             timer.handler?.Invoke(totalMsec, timer.elapsed);
                             timer.elapsed = 0.0;
                         }
