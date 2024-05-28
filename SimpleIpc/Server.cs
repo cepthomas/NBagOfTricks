@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+// TODO Use anon pipes? https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-use-anonymous-pipes-for-local-interprocess-communication
 
 namespace Ephemera.NBagOfTricks.SimpleIpc
 {
@@ -54,17 +55,20 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
         readonly ManualResetEvent _cancelEvent = new(false);
 
         /// <summary>My logger.</summary>
-        readonly MpLog _log;
+        readonly MpLog? _log = null;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="pipeName"></param>
-        /// <param name="logfn"></param>
-        public Server(string pipeName, string logfn)
+        /// <param name="pipeName">Identifier.</param>
+        /// <param name="logfn">Optional.</param>
+        public Server(string pipeName, string? logfn)
         {
             _pipeName = pipeName;
-            _log = new(logfn, "SERVER");
+            if (logfn is not null)
+            {
+                _log = new(logfn, "SERVER");
+            }
         }
 
         /// <summary>
@@ -84,14 +88,14 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
         {
             bool ok = true;
 
-            _log.Write($"Stop()");
+            _log?.Write($"Stop()");
 
             _running = false;
             _cancelEvent.Set();
 
-            _log.Write($"Shutting down");
+            _log?.Write($"Shutting down");
             _thread?.Join();
-            _log.Write($"Thread ended");
+            _log?.Write($"Thread ended");
             _thread = null;
 
             return ok;
@@ -115,7 +119,7 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
         /// </summary>
         void ServerThread()
         {
-            _log.Write($"Main thread started");
+            _log?.Write($"Main thread started");
 
             try
             {
@@ -126,7 +130,7 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
 
                     IpcReceiveEventArgs evt = new();
 
-                    _log.Write($"BeginWaitForConnection()");
+                    _log?.Write($"BeginWaitForConnection()");
 
                     AsyncCallback callBack = new(ProcessClient);
 
@@ -143,12 +147,12 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
                             break;
 
                         case 1:
-                            _log.Write($"Normal stop signal");
+                            _log?.Write($"Normal stop signal");
                             _running = false;
                             break;
 
                         default:
-                            _log.Write($"Unknown wait result:{sig}");
+                            _log?.Write($"Unknown wait result:{sig}");
                             _running = false;
                             break;
                     }
@@ -163,9 +167,9 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
 
                             try
                             {
-                                _log.Write($"EndWaitForConnection()");
+                                _log?.Write($"EndWaitForConnection()");
                                 stream.EndWaitForConnection(ar);
-                                _log.Write($"Client wants to tell us something");
+                                _log?.Write($"Client wants to tell us something");
 
                                 state.Status = ConnectionStatus.Receiving;
 
@@ -173,7 +177,7 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
                                 {
                                     // The total number of bytes read into the buffer or 0 if the end of the stream has been reached.
                                     var numRead = stream.Read(state.Buffer, state.BufferIndex, state.Buffer.Length - state.BufferIndex);
-                                    _log.Write($"num read:{numRead}");
+                                    _log?.Write($"num read:{numRead}");
 
                                     if (numRead > 0)
                                     {
@@ -186,7 +190,7 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
                                             // Make buffer into a string.
                                             string msg = new UTF8Encoding().GetString(state.Buffer, 0, terminator);
 
-                                            _log.Write($"Got message:{msg}");
+                                            _log?.Write($"Got message:{msg}");
 
                                             // Process the line.
                                             evt.Message = msg;
@@ -241,7 +245,7 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
                 });
             }
     
-            _log.Write($"Main thread ended");
+            _log?.Write($"Main thread ended");
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
         readonly string _pipeName;
 
         /// <summary>My logger.</summary>
-        readonly MpLog _log;
+        readonly MpLog? _log = null;
 
         /// <summary>Caller may be able to use this.</summary>
         public string Error { get; set; } = "";
@@ -30,11 +30,14 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
         /// Constructor.
         /// </summary>
         /// <param name="pipeName">Pipe name to use.</param>
-        /// <param name="logfn"></param>
-        public Client(string pipeName, string logfn)
+        /// <param name="logfn">Optional log.</param>
+        public Client(string pipeName, string? logfn = null)
         {
             _pipeName = pipeName;
-            _log = new MpLog(logfn, "CLIENT");
+            if (logfn is not null)
+            {
+                _log = new(logfn, "CLIENT");
+            }
         }
 
         /// <summary>
@@ -50,31 +53,23 @@ namespace Ephemera.NBagOfTricks.SimpleIpc
             try
             {
                 using var pipeClient = new NamedPipeClientStream(".", _pipeName, PipeDirection.Out);
-                _log.Write($"1 s:{s}");
+                _log?.Write($"rcv:{s}");
                 pipeClient.Connect(timeout);
-
-                _log.Write($"2");
                 byte[] outBuffer = new UTF8Encoding().GetBytes(s + "\n");
-
-                _log.Write($"3");
                 pipeClient.Write(outBuffer, 0, outBuffer.Length);
-
-                _log.Write($"4");
                 pipeClient.WaitForPipeDrain();
-
-                _log.Write($"5");
                 // Now exit.
             }
             catch (TimeoutException)
             {
                 // Client can deal with this.
-                _log.Write($"timed out", true);
+                _log?.Write($"timed out", true);
                 res = ClientStatus.Timeout;
             }
             catch (Exception ex)
             {
                 // Other error.
-                _log.Write($"{ex}", true);
+                _log?.Write($"{ex}", true);
                 Error = ex.ToString();
                 res = ClientStatus.Error;
             }
