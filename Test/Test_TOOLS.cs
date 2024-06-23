@@ -36,7 +36,9 @@ namespace Ephemera.NBagOfTricks.Test
 
             var docs = MusicDefinitions.FormatDoc();
 
-            Tools.MarkdownToHtml(docs, Color.LightYellow, new Font("arial", 16), true);
+            //Tools.MarkdownToHtml(docs, Tools.MarkdownMode.Simple, true);
+            //Tools.MarkdownToHtml(docs, Tools.MarkdownMode.DarkApi, true);
+            Tools.MarkdownToHtml(docs, Tools.MarkdownMode.LightApi, true);
         }
     }
 }

@@ -72,36 +72,56 @@ namespace Ephemera.NBagOfTricks
             return res;
         }
 
+        /// <summary>How to render</summary>
+        public enum MarkdownMode
+        {
+            Simple,     // Plain page with TOC at the top.
+            DarkApi,    // Dark page with TOC on the left.
+            LightApi    // Light page with TOC on the right.
+        }
+
         /// <summary>
         /// Convert list of markdown lines to html.
         /// </summary>
         /// <param name="body">The md text.</param>
-        /// <param name="bgcolor">Background color for page.</param>
-        /// <param name="font">Main font-family.</param>
+        /// <param name="mode">What flavor.</param>
         /// <param name="show">If true open in browser.</param>
         /// <returns>Valid html.</returns>
-        public static string MarkdownToHtml(List<string> body, Color bgcolor, Font font, bool show)
+        public static string MarkdownToHtml(List<string> body, MarkdownMode mode, bool show)
         {
             // Put it together.
-            var mdText = new List<string>()
+            var mdText = new List<string>();
+
+            switch (mode)
             {
-                $"<style>body {{ background-color: {bgcolor.Name}; font-family: {font.Name}; font-size: {font.Size}; }}</style>"
-            };
+                case MarkdownMode.Simple:
+                    mdText.Add($"<style>body {{ background-color: LightYellow; font-family: arial; font-size: 16; }}</style>");
+                    mdText.AddRange(body);
+                    mdText.Add(@"<style class=""fallback"">body{{visibility:hidden}}</style>");
+                    mdText.Add(@"<script src =""https://casual-effects.com/markdeep/latest/markdeep.min.js"" charset=""utf-8""></script>");
+                    mdText.Add(@"<script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=""visible"")</script>");
+                    break;
 
-            // Meat.
-            mdText.AddRange(body);
+                case MarkdownMode.DarkApi:
+                    mdText.Add(@"<meta charset=""utf-8"">");
+                    mdText.Add(@"<link rel=""stylesheet"" href=""https://casual-effects.com/markdeep/latest/slate.css?"">");
+                    mdText.AddRange(body);
+                    mdText.Add(@"<style class=""fallback"">body{{visibility:hidden}}</style>");
+                    mdText.Add(@"<script>markdeepOptions={tocStyle:'long'};</script>");
+                    mdText.Add(@"<script src =""https://casual-effects.com/markdeep/latest/markdeep.min.js"" charset=""utf-8""></script>");
+                    mdText.Add(@"<script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=""visible"")</script>");
+                    break;
 
-            //mdText.Add(@"
-            //<style class=""fallback"">body{{visibility:hidden;white-space:pre;font-family:{font}}}</style>
-            //<script>markdeepOptions={tocStyle:'long'};</script>
-            //<script src =""https://casual-effects.com/markdeep/latest/markdeep.min.js"" charset=""utf-8""></script>
-            //<script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=""visible"")</script>;");
+                case MarkdownMode.LightApi:
+                    mdText.Add(@"<meta charset=""utf-8"">");
+                    mdText.Add(@"<link rel=""stylesheet"" href=""https://casual-effects.com/markdeep/latest/apidoc.css?"">");
+                    mdText.AddRange(body);
+                    mdText.Add(@"<style class=""fallback"">body{visibility:hidden}</style><script>markdeepOptions={tocStyle:'medium'};</script>");
+                    mdText.Add(@"<script src=""https://casual-effects.com/markdeep/latest/markdeep.min.js?"" charset=""utf-8""></script>");
+                    mdText.Add(@"<script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=""visible"")</script>");
+                    break;
+            }
 
-            mdText.Add(@"
-            <style class=""fallback"">body{{visibility:hidden}}</style>
-            <script src =""https://casual-effects.com/markdeep/latest/markdeep.min.js"" charset=""utf-8""></script>
-            <script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=""visible"")</script>;");
-            
             string htmlText = string.Join(Environment.NewLine, mdText);
 
             if (show)
