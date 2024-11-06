@@ -24,6 +24,7 @@ namespace Ephemera.NBagOfTricks.Slog
     {
         public LogLevel Level { get; set; } = LogLevel.Info;
         public string Message { get; set; } = "";
+        public string ShortMessage { get; set; } = "";
     }
     #endregion
 
