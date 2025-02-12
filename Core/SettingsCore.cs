@@ -7,9 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-using System.Runtime.Intrinsics.X86;
 
 
 namespace Ephemera.NBagOfTricks
