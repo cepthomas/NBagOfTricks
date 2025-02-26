@@ -116,32 +116,44 @@ namespace Ephemera.NBagOfTricks.Slog
         }
 
         /// <summary>
-        /// Log an exception.
+        /// Log a caught exception. Adds info about who raised it
         /// </summary>
         /// <param name="ex">The exception.</param>
         /// <param name="msg">Extra info.</param>
-        /// <param name="file">Ignore - compiler use.</param>
-        /// <param name="line">Ignore - compiler use.</param>
-        public void Exception(Exception ex, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public void Exception(Exception ex, string msg) //, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            // Always log exceptions.
-            StringBuilder sb = new($"{ex.Message} {msg}");
-            sb.Append(msg);
+            // Find out who threw it.
+            string stfn = "???";
+            int stline = -1;
 
-            if(ex.StackTrace is not null)
+            StackTrace st = new(ex, true);
+            if (st.FrameCount > 0)
             {
-                sb.Append(Environment.NewLine);
-                sb.Append(ex.StackTrace);
+                StackFrame? stf = st.GetFrame(0);
+                stfn = stf == null ? "???" : stf.GetFileName();
+                stline = stf == null ? -1 : stf.GetFileLineNumber();
             }
+            AddEntry(LogLevel.Error, $"{ex.Message} {msg}", stfn, stline);
 
-            while (ex.InnerException != null)
-            {
-                sb.Append(Environment.NewLine);
-                ex = ex.InnerException;
-                sb.Append(ex.Message);
-            }
 
-            AddEntry(LogLevel.Error, sb.ToString(), file, line);
+            // // Version that logs caller file/line. Usually not useful.
+            // // Always log exceptions.
+            // StringBuilder sb = new($"{ex.Message} {msg}");
+            // sb.Append(msg);
+            // if(ex.StackTrace is not null)
+            // {
+            //     sb.Append(Environment.NewLine);
+            //     sb.Append(ex.StackTrace);
+            // }
+
+            // while (ex.InnerException != null)
+            // {
+            //     sb.Append(Environment.NewLine);
+            //     ex = ex.InnerException;
+            //     sb.Append(ex.Message);
+            // }
+
+            // AddEntry(LogLevel.Error, sb.ToString(), file, line);
         }
         #endregion
 

@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ephemera.NBagOfTricks;
 
-// TODO1 slog probably needs a flush mechanism.
 
 namespace Ephemera.NBagOfTricks.Slog
 {
@@ -183,6 +182,17 @@ namespace Ephemera.NBagOfTricks.Slog
                     await Task.Delay(50);
                 }
             }, token);
+        }
+
+        /// <summary>
+        /// Flush queue.
+        /// </summary>
+        public static void Flush()
+        {
+            while (!_queue.IsEmpty)
+            {
+                Thread.Sleep(10);
+            }
         }
 
         /// <summary>

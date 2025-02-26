@@ -12,27 +12,31 @@ using Ephemera.NBagOfTricks.PNUT;
 
 namespace NBagOfTricks.Test
 {
+    class Defs
+    {
+        public const string SLOG_FILE = @"..\..\out\slog.log.txt";
+    }
+
     public class SLOG_BASIC : TestSuite
     {
         readonly Logger _logger1 = LogManager.CreateLogger("TestLogger1");
         readonly Logger _logger2 = LogManager.CreateLogger("TestLogger2");
         readonly List<string> _cbText = new();
-        const string SLOG_FILE = @"..\..\out\slog.log.txt";
 
         public override void RunSuite()
         {
             UT_INFO("Tests slog.");
 
             _cbText.Clear();
-            File.Delete(SLOG_FILE);
+            File.Delete(Defs.SLOG_FILE);
             LogManager.MinLevelFile = LogLevel.Debug;
             LogManager.MinLevelNotif = LogLevel.Info;
             LogManager.LogMessage += LogManager_LogMessage;
-            LogManager.Run(SLOG_FILE, 1000);
+            LogManager.Run(Defs.SLOG_FILE, 1000);
 
             _logger1.Info("11111 file:Y cb:Y");
             _logger2.Debug("22222 file:Y cb:N");
-            WaitForEmptyQueue();
+            LogManager.Flush();
             _logger1.Trace("33333 file:N cb:N");
 
             // Force exception.
@@ -47,12 +51,12 @@ namespace NBagOfTricks.Test
             }
 
             //////////
-            WaitForEmptyQueue();
+            LogManager.Flush();
             LogManager.MinLevelNotif = LogLevel.Trace;
             _logger1.Trace("55555 file:N cb:Y");
 
             //////////
-            WaitForEmptyQueue();
+            LogManager.Flush();
             LogManager.Stop();
 
             ////////// Look at what we have.
@@ -61,19 +65,11 @@ namespace NBagOfTricks.Test
             UT_TRUE(_cbText[1].Contains("44444"));
             UT_TRUE(_cbText[2].Contains("55555"));
 
-            var ftext = File.ReadAllLines(SLOG_FILE);
-            UT_EQUAL(ftext.Length, 4);
+            var ftext = File.ReadAllLines(Defs.SLOG_FILE);
+            UT_EQUAL(ftext.Length, 3);
             UT_TRUE(ftext[0].Contains("11111"));
             UT_TRUE(ftext[1].Contains("22222"));
             UT_TRUE(ftext[2].Contains("44444"));
-        }
-
-        void WaitForEmptyQueue()
-        {
-            while (LogManager.QueueSize > 0)
-            {
-                Thread.Sleep(50);
-            }
         }
 
         void LogManager_LogMessage(object? sender, LogMessageEventArgs e)
@@ -82,17 +78,69 @@ namespace NBagOfTricks.Test
         }
     }
 
-    public class SLOG_SCOPER : TestSuite
+    public class SLOG_EXC : TestSuite
     {
-        readonly Logger _loggerS = LogManager.CreateLogger("TestLoggerS");
-        const string SLOG_FILE = @"..\..\out\slog.log.txt";
+        readonly Logger _logger8 = LogManager.CreateLogger("TestLogger8");
 
         public override void RunSuite()
         {
-            File.Delete(SLOG_FILE);
+            UT_INFO("Tests exception.");
+
+            LogManager.MinLevelFile = LogLevel.Debug;
+            LogManager.MinLevelNotif = LogLevel.Debug;
+            LogManager.Run(Defs.SLOG_FILE, 1000);
+
+            try
+            {
+                throw new Exception("");
+            }
+            catch (Exception ex)
+            {
+                _logger8.Exception(ex, "ABC");
+            }
+        }
+    }
+
+    public class SLOG_FLUSH : TestSuite
+    {
+        readonly Logger _logger9 = LogManager.CreateLogger("TestLogger9");
+
+        public override void RunSuite()
+        {
+            UT_INFO("Tests flush.");
+
+            LogManager.MinLevelFile = LogLevel.Debug;
+            LogManager.MinLevelNotif = LogLevel.Debug;
+            LogManager.Run(Defs.SLOG_FILE, 1000);
+
+            for (int i = 0; i < 50; i++)
+            {
+                _logger9.Info($"Entry{i}");
+                if (i == 25)
+                {
+                    Debug.WriteLine($"1  {LogManager.QueueSize}");
+                    LogManager.Flush();
+                    Debug.WriteLine($"2  {LogManager.QueueSize}");
+                }
+            }
+            Debug.WriteLine($"3  {LogManager.QueueSize}");
+            LogManager.Flush();
+            Debug.WriteLine($"4  {LogManager.QueueSize}");
+        }
+    }
+
+    public class SLOG_SCOPER : TestSuite
+    {
+        readonly Logger _loggerS = LogManager.CreateLogger("TestLoggerS");
+
+        public override void RunSuite()
+        {
+            UT_INFO("Tests scoper.");
+
+            //File.Delete(SLOG_FILE);
             LogManager.MinLevelFile = LogLevel.Trace;
             LogManager.MinLevelNotif = LogLevel.Trace;
-            LogManager.Run(SLOG_FILE, 1000);
+            LogManager.Run(Defs.SLOG_FILE, 1000);
 
             int i = 0;
             using Scoper s1 = new(_loggerS, "111");
