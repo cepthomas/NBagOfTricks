@@ -200,6 +200,7 @@ namespace Ephemera.NBagOfTricks.Slog
         /// </summary>
         public static void Stop()
         {
+            Flush();
             _tokenSource.Cancel();
         }
         #endregion

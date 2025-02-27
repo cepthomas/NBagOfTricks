@@ -120,40 +120,22 @@ namespace Ephemera.NBagOfTricks.Slog
         /// </summary>
         /// <param name="ex">The exception.</param>
         /// <param name="msg">Extra info.</param>
-        public void Exception(Exception ex, string msg) //, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public void Exception(Exception ex, string msg = "")
         {
+            msg = msg.Length == 0 ? "" : " " + msg;
             // Find out who threw it.
-            string stfn = "???";
-            int stline = -1;
-
             StackTrace st = new(ex, true);
             if (st.FrameCount > 0)
             {
                 StackFrame? stf = st.GetFrame(0);
-                stfn = stf == null ? "???" : stf.GetFileName();
-                stline = stf == null ? -1 : stf.GetFileLineNumber();
+                string stfn = (stf != null && stf.GetFileName() != null) ? stf.GetFileName()! : "???";
+                int stline = stf == null ? -1 : stf.GetFileLineNumber();
+                AddEntry(LogLevel.Error, $"{ex.Message}{msg}", stfn, stline);
             }
-            AddEntry(LogLevel.Error, $"{ex.Message} {msg}", stfn, stline);
-
-
-            // // Version that logs caller file/line. Usually not useful.
-            // // Always log exceptions.
-            // StringBuilder sb = new($"{ex.Message} {msg}");
-            // sb.Append(msg);
-            // if(ex.StackTrace is not null)
-            // {
-            //     sb.Append(Environment.NewLine);
-            //     sb.Append(ex.StackTrace);
-            // }
-
-            // while (ex.InnerException != null)
-            // {
-            //     sb.Append(Environment.NewLine);
-            //     ex = ex.InnerException;
-            //     sb.Append(ex.Message);
-            // }
-
-            // AddEntry(LogLevel.Error, sb.ToString(), file, line);
+            else
+            {
+                AddEntry(LogLevel.Error, $"{ex.Message}{msg}", "???", -1);
+            }
         }
         #endregion
 
