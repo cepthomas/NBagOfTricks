@@ -4,7 +4,7 @@
         <TargetFrameworks>net8.0-windows</TargetFrameworks>
         <OutputType>WinExe</OutputType>
         <UseWindowsForms>true</UseWindowsForms>
-        <Version>1.1.0</Version>
+        <Version>1.2.0</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Description>NBagOfTricks tester</Description>
         <Copyright>MIT License</Copyright>
