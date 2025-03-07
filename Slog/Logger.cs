@@ -149,6 +149,9 @@ namespace Ephemera.NBagOfTricks.Slog
         /// <param name="line"></param>
         void AddEntry(LogLevel level, string msg, string file, int line)
         {
+            // Sanity check for script clients.
+            level = (LogLevel)MathUtils.Constrain((int)level, (int)LogLevel.Trace, (int)LogLevel.Error);
+
             file = Path.GetFileName(file);
             LogEntry le = new(DateTime.Now, level, Name, file, line, msg);
             // Manager expedites.
