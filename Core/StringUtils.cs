@@ -51,7 +51,7 @@ namespace Ephemera.NBagOfTricks
         /// </summary>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static bool IsReadable(byte b)
+        public static bool IsReadable(this byte b)
         {
             return b >= 32 && b <= 126;
         }

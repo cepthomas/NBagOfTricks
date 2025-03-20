@@ -11,7 +11,7 @@ namespace Ephemera.NBagOfTricks
     /// <summary>
     /// Do things with ansi codes. FUTURE AnsiFromColor()
     /// </summary>
-    public static class Ansi
+    public static class Ansi // TODO1 delete or integrate with NTerm.
     {
         /// <summary>
         /// Convert ansi specs like: ESC[IDm  ESC[38;5;IDm ESC[38;2;R;G;Bm to Color.
