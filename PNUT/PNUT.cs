@@ -390,6 +390,19 @@ namespace Ephemera.NBagOfTricks.PNUT
 
         #region Test functions - Basic
         /// <summary>
+        /// Always fail.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        protected bool UT_FAIL(string message, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
+        {
+            RecordResult(false, message, file, line);
+            return false;
+        }
+
+        /// <summary>
         /// Checks whether the given condition is true.
         /// </summary>
         /// <param name="condition"></param>
@@ -664,6 +677,14 @@ namespace Ephemera.NBagOfTricks.PNUT
             return pass;
         }
 
+        /// <summary>
+        /// Check for part of a string.
+        /// </summary>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         protected bool UT_STRING_CONTAINS(string value1, string value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
         {
             bool pass = true;
