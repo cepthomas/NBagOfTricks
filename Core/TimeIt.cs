@@ -14,6 +14,12 @@ namespace Ephemera.NBagOfTricks
 
         public List<string> Captures { get; set; } = [];
 
+        public TimeIt()
+        {
+            _startTick = Stopwatch.GetTimestamp();
+            _lastTick = _startTick;
+        }
+
         /// <summary>
         /// Measure one time.
         /// </summary>
@@ -21,12 +27,6 @@ namespace Ephemera.NBagOfTricks
         public void Snap(string msg)
         {
             long tick = Stopwatch.GetTimestamp();
-
-            if (_startTick == 0)
-            {
-                _startTick = tick;
-                _lastTick = tick;
-            }
 
             var durMsec = FormatTicks(tick - _lastTick);
             var totMsec = FormatTicks(tick - _startTick);
