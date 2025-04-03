@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace Ephemera.NBagOfTricks
 {
     /// <summary>
-    /// Diagnostics for timing measurement.
+    /// Diagnostics for timing measurement and analysis.
     /// </summary>
     public class TimingAnalyzer
     {
@@ -144,7 +144,6 @@ namespace Ephemera.NBagOfTricks
             return stats;
         }
 
-
         /// <summary>
         /// Detail of captured values.
         /// </summary>
@@ -171,7 +170,6 @@ namespace Ephemera.NBagOfTricks
 
             return string.Join(Environment.NewLine, ls);
         }
-
 
         /// <summary>
         /// Conversion for stopwatch values.

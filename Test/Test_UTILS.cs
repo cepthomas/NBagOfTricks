@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Diagnostics;
 using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfTricks.PNUT;
+using System.Threading;
 
 
 namespace Ephemera.NBagOfTricks.Test
@@ -156,6 +157,32 @@ namespace Ephemera.NBagOfTricks.Test
 
             UT_EQUAL(_watcher.WatchedFiles.Count, iters);
             UT_EQUAL(filesTouched.Count, iters);
+        }
+    }
+
+    public class UTILS_TIMEIT : TestSuite
+    {
+        public override void RunSuite()
+        {
+            UT_INFO("Tests timeit. Not the best home but ok for now.");
+
+            TimeIt tt = new TimeIt();
+
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 10000; j++)
+                {
+                    int x = i + j;
+                }
+
+                tt.Snap($"iter {i}");
+            }
+
+            UT_EQUAL(tt.Captures.Count, 50);
+            for (int i = 0;i < tt.Captures.Count; i++)
+            {
+                UT_INFO(tt.Captures[i]);
+            }
         }
     }
 }
