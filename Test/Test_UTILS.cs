@@ -166,9 +166,11 @@ namespace Ephemera.NBagOfTricks.Test
         {
             UT_INFO("Tests timeit. Not the best home but ok for now.");
 
-            TimeIt tt = new TimeIt();
+            TimeIt tt = new();
 
-            for (int i = 0; i < 20; i++)
+            int num = 20;
+
+            for (int i = 0; i < num; i++)
             {
                 for (int j = 0; j < 10000; j++)
                 {
@@ -178,7 +180,7 @@ namespace Ephemera.NBagOfTricks.Test
                 tt.Snap($"iter {i}");
             }
 
-            UT_EQUAL(tt.Captures.Count, 50);
+            UT_EQUAL(tt.Captures.Count, num);
             for (int i = 0;i < tt.Captures.Count; i++)
             {
                 UT_INFO(tt.Captures[i]);

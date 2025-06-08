@@ -19,10 +19,11 @@ namespace Ephemera.NBagOfTricks.Test
         {
             //// Run pnut tests from cmd line.
             //TestRunner runner = new(OutputFormat.Readable);
-            //var cases = new[] { "MMTEX", "SLOG" };
-            ////var cases = new[] { "PNUT", "UTILS", "CMD", "MMTEX", "IPC", "TOOLS", "JSON", "SLOG", "COMP" };
+            ////var cases = new[] { "MMTEX", "SLOG" };
+            //var cases = new[] { "PNUT", "UTILS", "CMD", "MMTEX", "IPC", "TOOLS", "JSON", "SLOG", "COMP" };
             //runner.RunSuites(cases);
-            //File.WriteAllLines(@"..\..\out\test_out.txt", runner.Context.OutputLines);
+            ////File.WriteAllLines(@"..\..\out\test_out.txt", runner.Context.OutputLines);
+            //runner.Context.OutputLines.ForEach(l => Console.WriteLine(l));
 
             // Run pnut tests from ui host.
             Application.SetHighDpiMode(HighDpiMode.SystemAware);

@@ -4,6 +4,22 @@ using System.Collections.Generic;
 using System.Text;
 
 
+// Uses https://pubs.opengroup.org/onlinepubs/9799919799/
+//
+// utility_name [-a] [-b] [-c option_argument] [-d|-e] [-f[option_argument]] [operand...]
+//
+// The utility in the example is named utility_name. It is followed by options, option-arguments, and operands.
+// The arguments that consist of <hyphen-minus> characters and single letters or digits, such as 'a', are known
+// as "options" (or, historically, "flags"). Certain options are followed by an "option-argument", as shown
+// with [-c option_argument]. The arguments following the last options and option-arguments are named "operands".
+//
+// Option-arguments are shown separated from their options by <blank> characters, except when the option-argument is
+// enclosed in the '[' and ']' notation to indicate that it is optional. This reflects the situation in which an
+// optional option-argument (if present) is included within the same argument string as the option; for a mandatory
+// option-argument, it is the next argument.
+
+
+
 namespace Ephemera.NBagOfTricks
 {
     /// <summary>Argument and value options: None, required, optional.</summary>
