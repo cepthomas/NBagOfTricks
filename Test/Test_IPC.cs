@@ -16,13 +16,13 @@ namespace Ephemera.NBagOfTricks.Test
     {
         //const string TS_FORMAT = @"mm\:ss\.fff";
         const string PIPE_NAME = "058F684D-AF82-4FE5-BD1E-9FD031FE28CF";
-        const string LOGFILE_NAME = @"..\..\out\test_ipc_log.txt";
-        readonly MpLog _log = new(LOGFILE_NAME, "TESTER");
+        readonly string LOGFILE_NAME = Path.Combine(MiscUtils.GetSourcePath(), "out", "test_ipc_log.txt");
 
         public override void RunSuite()
         {
             UT_INFO("Tests simple IPC.");
             int NumIterators = 9;
+            MpLog log = new(LOGFILE_NAME, "TESTER");
 
             // Server
             using Server server = new(PIPE_NAME, LOGFILE_NAME);
@@ -48,15 +48,15 @@ namespace Ephemera.NBagOfTricks.Test
                 switch (res)
                 {
                     case ClientStatus.Ok:
-                        _log.Write($"Client ok");
+                        log.Write($"Client ok");
                         break;
 
                     case ClientStatus.Error:
-                        _log.Write($"Client error:{client.Error}", true);
+                        log.Write($"Client error:{client.Error}", true);
                         break;
 
                     case ClientStatus.Timeout:
-                        _log.Write($"Client timeout", true);
+                        log.Write($"Client timeout", true);
                         break;
                 }
             }

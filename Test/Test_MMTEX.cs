@@ -41,7 +41,8 @@ namespace Ephemera.NBagOfTricks.Test
             while (_running);
 
             // Done - dump what we found.
-            File.WriteAllText(@"..\..\out\an.csv", _tan.Dump());
+            var fn = Path.Combine(MiscUtils.GetSourcePath(), "out", "tan_dump.csv");
+            File.WriteAllText(fn, _tan.Dump());
 
             // Resource clean up.
             _timer.Stop();

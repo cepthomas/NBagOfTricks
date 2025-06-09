@@ -8,7 +8,8 @@ using System.Linq;
 
 namespace Ephemera.NBagOfTricks
 {
-    /// <summary>ConsoleColor variation with None - can be sited in UI controls.</summary>
+    #region Types
+    /// <summary>ConsoleColor variation with None added.</summary>
     public enum ConsoleColorEx
     {
         None = -1,
@@ -29,30 +30,7 @@ namespace Ephemera.NBagOfTricks
         Yellow = ConsoleColor.Yellow,
         White = ConsoleColor.White
     }
-
-
-        #region Types
-        //https://stackoverflow.com/questions/1988833/converting-color-to-consolecolor
-        readonly record struct ConsoleColorInfo
-        (
-            /// <summary>In ConsoleColor enum</summary>
-            int Index,
-            /// <summary>From ConsoleColor enum</summary>
-            string Name,
-            /// <summary>See ref</summary>
-            uint EgaBRGB,
-            /// <summary>From code maybe</summary>
-            uint ActualRGB,
-            /// <summary>From ??</summary>
-            uint Actual2RGB,
-            /// <summary>Color.Name vaue</summary>
-            uint SysColorOfName,
-            /// <summary>Screen sample</summary>
-            uint ScreenShotSample,
-            /// <summary></summary>
-            uint MySet
-        );
-        #endregion
+    #endregion
 
 
 
@@ -158,127 +136,98 @@ namespace Ephemera.NBagOfTricks
             return (fg, bg);
         }
 
-        // TODO clean up
-        // Use Actual2RGB except DarkYellow which is closer to ScreenShotSample
-        // For that, use #BA8E23. Often described as similar to mustard or ochre.
-        // Other shades of dark yellow can be represented by hex codes like:
-        // #9B870C  #8B8000  #FFA600  #D7C32A  0XFFD700-gold
-        readonly static ConsoleColorInfo[] _consColorsAll =
-        [
-            //                          EGA      Actual    Actual2   SysColor  ScrShot   MySet
-            new(    0, "Black",         0x0000,  0x000000, 0x000000, 0x000000, 0x000000, 0x000000),
-            new(    1, "DarkBlue",      0x0001,  0x000080, 0x000080, 0x00008B, 0x3465A4, 0x000080),
-            new(    2, "DarkGreen",     0x0010,  0x008000, 0x008000, 0x006400, 0x4E9A06, 0x008000),
-            new(    3, "DarkCyan",      0x0011,  0x008080, 0x008080, 0x008B8B, 0x06989A, 0x008080),
-            new(    4, "DarkRed",       0x0100,  0x800000, 0x800000, 0x8B0000, 0xCC0000, 0x800000),
-            new(    5, "DarkMagenta",   0x0101,  0x012456, 0x800080, 0x8B008B, 0x75507B, 0x800080),
-            new(    6, "DarkYellow",    0x0110,  0xEEEDF0, 0x808000, 0x000000, 0xC4A000, 0xBA8E23),
-            new(    7, "Gray",          0x0111,  0xC0C0C0, 0xC0C0C0, 0x808080, 0xD3D7CF, 0xC0C0C0),
-            new(    8, "DarkGray",      0x1000,  0x808080, 0x808080, 0xA9A9A9, 0x555753, 0x808080),
-            new(    9, "Blue",          0x1001,  0x0000FF, 0x0000FF, 0x0000FF, 0x729FCF, 0x0000FF),
-            new(   10, "Green",         0x1010,  0x00FF00, 0x00FF00, 0x008000, 0x8AE234, 0x00FF00),
-            new(   11, "Cyan",          0x1011,  0x00FFFF, 0x00FFFF, 0x00FFFF, 0x34E2E2, 0x00FFFF),
-            new(   12, "Red",           0x1100,  0xFF0000, 0xFF0000, 0xFF0000, 0xEF2929, 0xFF0000),
-            new(   13, "Magenta",       0x1101,  0xFF00FF, 0xFF00FF, 0xFF00FF, 0xAD7FA8, 0xFF00FF),
-            new(   14, "Yellow",        0x1110,  0xFFFF00, 0xFFFF00, 0xFFFF00, 0xFCE94F, 0xFFFF00),
-            new(   15, "White",         0x1111,  0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xEEEEEC, 0xFFFFFF),
-        ];
-        //var cc = _consColors[i];
-        //html.Add($"<span style=\"font-size: 20pt; background-color: #ffffff; color: #000000;\">{cc.Name} |");
-        //html.Add($"<span style=\"background-color: #{cc.ActualRGB:x6}; color: #ffffff;\">ActualRGB |");
-        //html.Add($"<span style=\"background-color: #{cc.Actual2RGB:x6}; color: #ffffff;\">Actual2RGB |");
-        //html.Add($"<span style=\"background-color: #{cc.ScreenShotSample:x6}; color: #ffffff;\">ScreenShotSample |");
-        //html.Add($"<span style=\"background-color: #{cc.MySet:x6}; color: #ffffff;\">MySet |");
-
-
-        readonly static List<int> _consColors =
-        [
-            0x000000, 0x000080, 0x008000, 0x008080, 0x800000, 0x800080, 0xBA8E23, 0xC0C0C0,
-            0x808080, 0x0000FF, 0x00FF00, 0x00FFFF, 0xFF0000, 0xFF00FF, 0xFFFF00, 0xFFFFFF
-        ];
-
-        public static Color ConvertToSystemColor(ConsoleColor conclr) // TODO broken.
+        /// <summary>Lookup table.</summary>
+        readonly static Dictionary<ConsoleColor, Color> _conColors = new()
         {
-            return Color.FromArgb(_consColors[(int)conclr]);
+            [ConsoleColor.Black]       = Color.FromArgb(000, 000, 000), // 0000
+            [ConsoleColor.White]       = Color.FromArgb(255, 255, 255), // 1111
+            [ConsoleColor.Gray]        = Color.FromArgb(192, 192, 192), // 0111  aka DarkWhite
+            [ConsoleColor.DarkGray]    = Color.FromArgb(128, 128, 128), // 1000
+            [ConsoleColor.Red]         = Color.FromArgb(255, 000, 000), // 1100
+            [ConsoleColor.DarkRed]     = Color.FromArgb(128, 000, 000), // 0100
+            [ConsoleColor.Green]       = Color.FromArgb(000, 255, 000), // 1010
+            [ConsoleColor.DarkGreen]   = Color.FromArgb(000, 128, 000), // 0010
+            [ConsoleColor.Blue]        = Color.FromArgb(000, 000, 255), // 1001
+            [ConsoleColor.DarkBlue]    = Color.FromArgb(000, 000, 128), // 0001
+            [ConsoleColor.Cyan]        = Color.FromArgb(000, 255, 255), // 1011
+            [ConsoleColor.DarkCyan]    = Color.FromArgb(000, 128, 128), // 0011
+            [ConsoleColor.Magenta]     = Color.FromArgb(255, 000, 255), // 1101
+            [ConsoleColor.DarkMagenta] = Color.FromArgb(128, 000, 128), // 0101
+            [ConsoleColor.Yellow]      = Color.FromArgb(255, 255, 000), // 1110
+            [ConsoleColor.DarkYellow]  = Color.FromArgb(128, 128, 000), // 0110
+        };
+
+        /// <summary>Convert ConsoleColor to System Color.</summary>
+        /// <param name="conclr">The color</param>
+        /// <returns></returns>
+        public static Color ToSystemColor(this ConsoleColor conclr)
+        {
+            return _conColors[conclr];
         }
 
-
-        public static ConsoleColor ConvertToConsoleColor(Color clr)
+        /// <summary>Convert System Color to ConsoleColor.</summary>
+        /// <param name="sysclr">The color</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static ConsoleColor ToConsoleColor(this Color sysclr)
         {
-            return GetConsoleColor1(clr);
+            ConsoleColor conclr;
+            var sat = sysclr.GetSaturation();
+            var brt = sysclr.GetBrightness();
+            var hue = (int)Math.Round(sysclr.GetHue() / 60, MidpointRounding.AwayFromZero);
 
-
-         //   return GetConsoleColor2(clr);
-
-        }
-
-        ////////////////////////// stolen ///////////////////////////////////////
-        static ConsoleColor GetConsoleColor1(Color color)
-        {
-            if (color.GetSaturation() < 0.5)
+            if (sat < 0.5) // grayish
             {
-                // we have a grayish color
-                switch ((int)(color.GetBrightness() * 3.5))
+                switch ((int)(brt * 3.5))
                 {
-                    case 0: return ConsoleColor.Black;
-                    case 1: return ConsoleColor.DarkGray;
-                    case 2: return ConsoleColor.Gray;
-                    default: return ConsoleColor.White;
+                    case 0:  conclr = ConsoleColor.Black; break;
+                    case 1:  conclr = ConsoleColor.DarkGray; break;
+                    case 2:  conclr = ConsoleColor.Gray; break;
+                    default: conclr = ConsoleColor.White; break;
                 }
             }
-
-            int hue = (int)Math.Round(color.GetHue() / 60, MidpointRounding.AwayFromZero);
-            if (color.GetBrightness() < 0.4)
+            else if (brt < 0.4) // dark
             {
-                // dark color
                 switch (hue)
                 {
-                    case 1: return ConsoleColor.DarkYellow;
-                    case 2: return ConsoleColor.DarkGreen;
-                    case 3: return ConsoleColor.DarkCyan;
-                    case 4: return ConsoleColor.DarkBlue;
-                    case 5: return ConsoleColor.DarkMagenta;
-                    default: return ConsoleColor.DarkRed;
+                    case 1:  conclr = ConsoleColor.DarkYellow; break;
+                    case 2:  conclr = ConsoleColor.DarkGreen; break;
+                    case 3:  conclr = ConsoleColor.DarkCyan; break;
+                    case 4:  conclr = ConsoleColor.DarkBlue; break;
+                    case 5:  conclr = ConsoleColor.DarkMagenta; break;
+                    default: conclr = ConsoleColor.DarkRed; break;
                 }
             }
 
-            // bright color
-            switch (hue)
+            else // normal
             {
-                case 1: return ConsoleColor.Yellow;
-                case 2: return ConsoleColor.Green;
-                case 3: return ConsoleColor.Cyan;
-                case 4: return ConsoleColor.Blue;
-                case 5: return ConsoleColor.Magenta;
-                default: return ConsoleColor.Red;
+                switch (hue)
+                {
+                    case 1:  conclr = ConsoleColor.Yellow; break;
+                    case 2:  conclr = ConsoleColor.Green; break;
+                    case 3:  conclr = ConsoleColor.Cyan; break;
+                    case 4:  conclr = ConsoleColor.Blue; break;
+                    case 5:  conclr = ConsoleColor.Magenta; break;
+                    default: conclr = ConsoleColor.Red; break;
+                }
             }
+
+            //Console.WriteLine($"{sysclr.Name} => {sysclr.R} {sysclr.G} {sysclr.B} => {conclr}");
+
+            return conclr;
         }
 
-
-        ////////////////////////// stolen ///////////////////////////////////////
-        static ConsoleColor GetConsoleColor2(Color c)
-        //public ConsoleColor FromColor(Color c)
+        /// <summary>Simple binning approach.</summary>
+        /// <param name="sysclr"></param>
+        /// <returns></returns>
+        public static ConsoleColor ToConsoleColor_simple(this Color sysclr)
         {
-            int index = (c.R > 128 | c.G > 128 | c.B > 128) ? 8 : 0; // Bright bit
-            index |= (c.R > 64) ? 4 : 0; // Red bit
-            index |= (c.G > 64) ? 2 : 0; // Green bit
-            index |= (c.B > 64) ? 1 : 0; // Blue bit
-            return (ConsoleColor)index;
+            int val = (sysclr.R > 0x80 || sysclr.G > 0x80 || sysclr.B > 0x80) ? 8 : 0;
+            int lim = 0x40;
+            val |= sysclr.R > lim ? 4 : 0;
+            val |= sysclr.G > lim ? 2 : 0;
+            val |= sysclr.B > lim ? 1 : 0;
+            return (ConsoleColor)val;
         }
-
-        ////////////////////////// stolen ///////////////////////////////////////
-        // Public Shared Function ColorToConsoleColor(cColor As Color) As ConsoleColor
-        //         Dim cc As ConsoleColor
-        //         If Not System.Enum.TryParse(Of ConsoleColor)(cColor.Name, cc) Then
-        //             Dim intensity = If(Color.Gray.GetBrightness() < cColor.GetBrightness(), 8, 0)
-        //             Dim r = If(cColor.R >= &H80, 4, 0)
-        //             Dim g = If(cColor.G >= &H80, 2, 0)
-        //             Dim b = If(cColor.B >= &H80, 1, 0)
-
-        //             cc = CType(intensity + r + g + b, ConsoleColor)
-        //         End If
-        //         Return cc
-        //     End Function
-
     }
 }

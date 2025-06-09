@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>net8.0-windows</TargetFrameworks>
-        <OutputType>WinExe</OutputType>
+        <OutputType>Exe</OutputType>
         <UseWindowsForms>true</UseWindowsForms>
         <Version>1.2.0</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

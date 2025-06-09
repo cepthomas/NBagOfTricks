@@ -14,7 +14,7 @@ namespace NBagOfTricks.Test
 {
     class Defs
     {
-        public const string SLOG_FILE = @"..\..\out\slog.log.txt";
+        public static string SLOG_FILE = Path.Combine(MiscUtils.GetSourcePath(), "out", "slog_log.txt");
     }
 
     public class SLOG_BASIC : TestSuite

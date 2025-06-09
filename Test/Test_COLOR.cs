@@ -14,6 +14,146 @@ using Ephemera.NBagOfTricks.PNUT;
 
 namespace Ephemera.NBagOfTricks.Test
 {
+    public class COLOR_STUFF : TestSuite
+    {
+        public override void RunSuite()
+        {
+            //ColorDialog d = new();
+            //d.ShowDialog();
+            //return;
+
+            UT_INFO("Tests color translation functions.");
+
+            ConsoleColorToSystem();
+
+            SystemColorToConsoleColor();
+        }
+
+        readonly List<string> _ross =
+        [
+            "You have freedom here.",
+            "The only guide is your heart.",
+            "We can always carry this a step further.",
+            "There's really no end to this.",
+            "Let's give him a friend too.",
+            "Everybody needs a friend.",
+            "Follow the lay of the land.",
+            "It's most important.",
+            "Only eight colors that you need.",
+            "Now we can begin working on lots of happy little things.",
+            "Even the worst thing we can do here is good.",
+            "Let's do it again then, what the heck.",
+            "Everything's not great in life, but we can still find beauty in it.",
+            "Use what happens naturally, don't fight it.",
+            "How do you make a round circle with a square knife?",
+            "That's your challenge for the day."
+        ];
+
+        string FormatForHtml(Color clr)
+        {
+            return $"#{clr.R:x2}{clr.G:x2}{clr.B:x2}";
+        }
+
+
+        //================================================================================================
+        public void ConsoleColorToSystem()
+        {
+            Console.WriteLine("");
+            Console.WriteLine($"----- Convert ConsoleColor to System Color -----");
+            //Console.WriteLine($"----- Dump to Console and ConsoleColorToSystem.html -----");
+
+            List<string> html = [];
+            html.Add("<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>");
+            html.Add($"<span style=\"font-size: 24pt; color: black; background-color: white;\">Convert ConsoleColor to System Color<br>");
+
+            var cvals = Enum.GetValues(typeof(ConsoleColor));
+
+            for (int i = 0; i < cvals.Length; i++)
+            {
+                var conclr = (ConsoleColor)i;
+
+                // --- Console ---
+                //Console.ForegroundColor = conclr;
+                //Console.BackgroundColor = (ConsoleColor)(cvals.Count - i - 1);
+                Console.BackgroundColor = conclr;
+                Console.WriteLine($"FG:{Console.ForegroundColor} BG:{Console.BackgroundColor} {_ross[i]}");
+                Console.ResetColor();
+
+                // --- html ---
+                var sysclr = conclr.ToSystemColor();
+                var name = Enum.GetName(typeof(ConsoleColor), conclr);
+                html.Add($"<span style=\"font-size: 20pt; color: black; background-color: white;\">{name}");
+                html.Add($"<span style=\"color: black; background-color: {FormatForHtml(sysclr)};\">|  {_ross[i]} |");
+                html.Add($"<br>");
+            }
+
+            html.Add("</body></html>");
+            var fn = Path.Combine(MiscUtils.GetSourcePath(), "out", "ConsoleColorToSystem.html");
+            File.WriteAllLines(fn, html);
+        }
+
+
+        //================================================================================================
+        public void SystemColorToConsoleColor()
+        {
+            Console.WriteLine("");
+            Console.WriteLine($"----- Convert System Color To ConsoleColor -----");
+            //Console.WriteLine($"----- Dump to SystemColorToConsoleColor.html -----");
+
+            // Colors that should roughly match ConsoleColors. Some(*) don't align.
+            List<Color> colors =
+            [
+                Color.Black,
+                Color.White,
+                Color.LightGray, // Gray*
+                Color.DimGray, // DarkGray*
+                Color.Red,
+                Color.DarkRed,
+                Color.Lime, // Green* is very dark
+                Color.DarkGreen,
+                Color.Blue,
+                Color.DarkBlue,
+                Color.Cyan,
+                Color.DarkCyan,
+                Color.Magenta,
+                Color.DarkMagenta,
+                Color.Yellow,
+                Color.Olive, // aka DarkYellow
+            ];
+
+            List<string> html = [];
+            html.Add("<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>");
+            html.Add($"<span style=\"font-size: 24pt; color: black; background-color: white;\">Convert System Color To ConsoleColor<br>");
+            //html.Add($"<span style=\"font-size: 16pt; color: black; background-color: white;\">TODO need to reconvert and compare<br>");
+
+            foreach (var clr in colors)
+            {
+                var conclr = clr.ToConsoleColor();
+                var conclr_name = Enum.GetName(typeof(ConsoleColor), conclr);
+
+                // --- Console ---
+                Console.Write($"System Color:{clr.Name} ");
+                Console.BackgroundColor = conclr;
+                Console.Write($"ConsoleColor:{conclr_name} ");
+                Console.WriteLine("");
+                Console.ResetColor();
+                //Console.WriteLine($"{sysclr.Name} => {sysclr.R} {sysclr.G} {sysclr.B} => {conclr}");
+
+                // --- html ---
+                html.Add($"<span style=\"font-size: 16pt; color: black; background-color: white;\">{clr.Name}");
+                html.Add($"<span style=\"color: black; background-color: {clr.Name};\">|  {_ross[0]}  |");
+                html.Add($"<span style=\"color: white; background-color: {clr.Name};\">|  {_ross[1]}  |");
+                html.Add($"<span style=\"color: {clr.Name}; background-color: black;\">|  {_ross[2]}  |");
+                html.Add($"<span style=\"color: {clr.Name}; background-color: white;\">|  {_ross[3]}  |");
+                html.Add($"<br>");
+            }
+            html.Add("</body></html>");
+
+            var fn = Path.Combine(MiscUtils.GetSourcePath(), "out", "SystemColorToConsoleColor.html");
+            File.WriteAllLines(fn, html);
+        }
+    }
+
     public class COLOR_ANSI : TestSuite
     {
         public override void RunSuite()
@@ -65,120 +205,6 @@ namespace Ephemera.NBagOfTricks.Test
             (fg, bg) = ColorUtils.ColorFromAnsi("\u001b[48;2;19;0;222m");
             UT_EQUAL(fg.Name, "0");
             UT_EQUAL(bg.Name, "ff1300de");
-        }
-    }
-
-    public class COLOR_STUFF : TestSuite
-    {
-        public override void RunSuite()
-        {
-            UT_INFO("Tests color translation functions.");
-
-            //================================================================================================
-            {
-                Console.WriteLine("");
-                Console.WriteLine($"===== DumpConsoleColors ======");
-
-                List<string> ross =
-                [
-                    "You have freedom here.",
-                "The only guide is your heart.",
-                "We can always carry this a step further.",
-                "There's really no end to this.",
-                "Let's give him a friend too.",
-                "Everybody needs a friend.",
-                "Follow the lay of the land.",
-                "It's most important.",
-                "Only eight colors that you need.",
-                "Now we can begin working on lots of happy little things.",
-                "Even the worst thing we can do here is good.",
-                "Let's do it again then, what the heck.",
-                "Everything's not great in life, but we can still find beauty in it.",
-                "Use what happens naturally, don't fight it.",
-                "How do you make a round circle with a square knife? ",
-                "That's your challenge for the day."
-                ];
-
-                var cvals = Enum.GetValues(typeof(ConsoleColor));
-
-
-                //var cvals = Enum.GetValues(typeof(ConsoleColor)).Cast<ConsoleColor>().ToList();
-
-                for (int i = 0; i < cvals.Length; i++)
-                {
-                    //Console.ForegroundColor = (ConsoleColor)i;
-                    Console.BackgroundColor = (ConsoleColor)i;
-                    //Console.BackgroundColor = (ConsoleColor)(cvals.Count - i - 1);
-                    Console.WriteLine($"FG:{Console.ForegroundColor} BG:{Console.BackgroundColor} {ross[i]}");
-                    Console.ResetColor();
-                }
-            }
-
-
-            //================================================================================================
-            {
-                Console.WriteLine("");
-                Console.WriteLine($"===== ConvertToConsoleColor ======");
-
-                List<Color> colors =
-                [
-                    Color.Black,
-                    Color.DarkBlue,
-                    Color.DarkGreen,
-                    Color.DarkCyan,
-                    Color.DarkRed,
-                    Color.DarkMagenta,
-                    Color.Gold, // was DarkYellow, TODO not right
-                    Color.Gray,
-                    Color.DarkGray,
-                    Color.Blue,
-                    Color.Green,
-                    Color.Cyan,
-                    Color.Red,
-                    Color.Magenta,
-                    Color.Yellow,
-                    Color.White
-                ];
-
-                List<string> html = [];
-                html.Add("<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>");
-                foreach (var clr in colors)
-                {
-                    var conclr1 = ColorUtils.ConvertToConsoleColor(clr);
-                    var conclr2 = ColorUtils.ConvertToConsoleColor(clr);
-                    //html.Add($"<span style=\"font-size: 2.0em; background-color: #{clr.ToArgb()}; color: #ffffff; \">System:{clr.Name}</span><span style=\"font-size: 2.0em; background-color: #{conclr.}; color: #ffffff; \">Console:{conclr}</span><br>");
-                    html.Add($"<span style=\"font-size: 2.0em; background-color: {clr.Name}; color: #ffffff; \">System:{clr.Name}   Console1:{conclr1}   Console2:{conclr2}</span><br>");
-                }
-                html.Add("</body></html>");
-
-                File.WriteAllLines(@"C:\Dev\Treex\ConvertToConsoleColor.html", html);
-            }
-
-
-            //================================================================================================
-            {
-                Console.WriteLine("");
-                Console.WriteLine($"===== DumpConsoleColorsToHtml ======");
-
-                List<string> html = [];
-                html.Add("<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>");
-                var cvals = Enum.GetValues(typeof(ConsoleColor));
-                for (int i = 0; i < cvals.Length; i++)
-                {
-
-                    var cc = ColorUtils.ConvertToSystemColor((ConsoleColor)i);
-                    var name = Enum.GetName(typeof(ConsoleColor), i);
-                    html.Add($"<span style=\"font-size: 20pt; background-color: #ffffff; color: #000000;\">{cc.Name} |");
-                    html.Add($"<span style=\"background-color: #{cc.ToArgb():x6}; color: #ffffff;\">{name} |");
-
-                    html.Add($"<br>");
-
-
-                    //html.Add($"<span style=\"font-size: 2.0em; background-color: #{cc.ActualRGB:0x}; color: #ffffff; >ActualRGB:{cc.Name}  background-color: #{cc.Actual2RGB:0x}; color: #ffffff; >Actual2RGB:{cc.Name}   background-color: #{cc.ScreenShotSample:0x}; color: #ffffff; \">ScreenShotSample:{cc.Name}   </span><br>");
-                }
-                html.Add("</body></html>");
-                File.WriteAllLines(@"C:\Dev\Treex\DumpConsoleColorsToHtml.html", html);
-            }
         }
     }
 }

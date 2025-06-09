@@ -128,7 +128,7 @@ namespace Ephemera.NBagOfTricks.Test
             List<string> testFilesToWatch = new();
             for (int i = 0; i < iters; i++)
             {
-                string fn = $@"..\..\out\test_{i + 1}.txt";
+                var fn = Path.Combine(MiscUtils.GetSourcePath(), "out", $"test_{i + 1}.txt");
                 testFilesToWatch.Add(fn);
                 _watcher.Add(fn);
             }
