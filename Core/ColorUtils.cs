@@ -32,12 +32,12 @@ namespace Ephemera.NBagOfTricks
     }
     #endregion
 
-
-
     public static class ColorUtils
     {
+        static Dictionary<(int, int, int), KnownColor>? _colorLUT = null;
+
         /// <summary>
-        /// Decode ansi escape sequence arguments. TODOF AnsiFromColor()
+        /// Decode ansi escape sequence arguments. TODO AnsiFromColor()
         /// </summary>
         /// <param name="ansi">Ansi args string</param>
         /// <returns>Foreground and background colors. Color is Empty if invalid ansi string.</returns>
@@ -136,83 +136,109 @@ namespace Ephemera.NBagOfTricks
             return (fg, bg);
         }
 
-        /// <summary>Lookup table.</summary>
-        readonly static Dictionary<ConsoleColor, Color> _conColors = new()
-        {
-            [ConsoleColor.Black]       = Color.FromArgb(000, 000, 000), // 0000
-            [ConsoleColor.White]       = Color.FromArgb(255, 255, 255), // 1111
-            [ConsoleColor.Gray]        = Color.FromArgb(192, 192, 192), // 0111  aka DarkWhite
-            [ConsoleColor.DarkGray]    = Color.FromArgb(128, 128, 128), // 1000
-            [ConsoleColor.Red]         = Color.FromArgb(255, 000, 000), // 1100
-            [ConsoleColor.DarkRed]     = Color.FromArgb(128, 000, 000), // 0100
-            [ConsoleColor.Green]       = Color.FromArgb(000, 255, 000), // 1010
-            [ConsoleColor.DarkGreen]   = Color.FromArgb(000, 128, 000), // 0010
-            [ConsoleColor.Blue]        = Color.FromArgb(000, 000, 255), // 1001
-            [ConsoleColor.DarkBlue]    = Color.FromArgb(000, 000, 128), // 0001
-            [ConsoleColor.Cyan]        = Color.FromArgb(000, 255, 255), // 1011
-            [ConsoleColor.DarkCyan]    = Color.FromArgb(000, 128, 128), // 0011
-            [ConsoleColor.Magenta]     = Color.FromArgb(255, 000, 255), // 1101
-            [ConsoleColor.DarkMagenta] = Color.FromArgb(128, 000, 128), // 0101
-            [ConsoleColor.Yellow]      = Color.FromArgb(255, 255, 000), // 1110
-            [ConsoleColor.DarkYellow]  = Color.FromArgb(128, 128, 000), // 0110
-        };
-
-        /// <summary>Convert ConsoleColor to System Color.</summary>
-        /// <param name="conclr">The color</param>
+        /// <summary>
+        /// Creates a Color object from rgb. If it is in the named collection, the name is applied.
+        /// </summary>
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
         /// <returns></returns>
-        public static Color ToSystemColor(this ConsoleColor conclr)
+        public static Color MakeColor(int red, int green, int blue)
         {
-            return _conColors[conclr];
+            Color res;
+
+            if (_colorLUT == null)
+            {
+                _colorLUT = new();
+
+                // Init the cache.
+                for (KnownColor iterclr = KnownColor.AliceBlue; iterclr <= KnownColor.YellowGreen; iterclr++)
+                {
+                    Color clr = Color.FromKnownColor(iterclr);
+                    // Note that there are a couple of rgb values that have more than one name: Aqua-Cyan  Fuchsia-Magenta
+                    _colorLUT[(clr.R, clr.G, clr.B)] = iterclr;
+                }
+            }
+
+            // Do the real work.
+            if (_colorLUT.TryGetValue((red, green, blue), out KnownColor knclr))
+            {
+                res = Color.FromKnownColor(knclr);
+            }
+            else
+            {
+                res = Color.FromArgb(red, green, blue);
+            }
+
+            return res;
         }
 
-        /// <summary>Convert System Color to ConsoleColor.</summary>
+        /// <summary>Convert ConsoleColor to System.Color.</summary>
+        /// <param name="conclr">In color</param>
+        /// <returns>Out color</returns>
+        public static Color ToSystemColor(this ConsoleColor conclr)
+        {
+            // System.Color names don't match ConsoleColor very well. Let's just bin them arbitrarily.
+
+            var ret = conclr switch
+            {
+                // ConsoleColor.Name        System.Color                         ConsoleColor val  System.Color.Name
+                ConsoleColor.Black       => MakeColor(0x00, 0x00, 0x00), // 0000              Black
+                ConsoleColor.DarkBlue    => MakeColor(0x00, 0x00, 0x80), // 0001              Navy
+                ConsoleColor.DarkGreen   => MakeColor(0x00, 0x80, 0x00), // 0010              Green
+                ConsoleColor.DarkCyan    => MakeColor(0x00, 0x80, 0x80), // 0011              Teal
+                ConsoleColor.DarkRed     => MakeColor(0x80, 0x00, 0x00), // 0100              Maroon
+                ConsoleColor.DarkMagenta => MakeColor(0x80, 0x00, 0x80), // 0101              Purple
+                ConsoleColor.DarkYellow  => MakeColor(0x80, 0x80, 0x00), // 0110              Olive
+                ConsoleColor.Gray        => MakeColor(0xC0, 0xC0, 0xC0), // 0111              Silver 
+                ConsoleColor.DarkGray    => MakeColor(0x80, 0x80, 0x80), // 1000              Gray
+                ConsoleColor.Blue        => MakeColor(0x00, 0x00, 0xFF), // 1001              Blue
+                ConsoleColor.Green       => MakeColor(0x00, 0xFF, 0x00), // 1010              Lime
+                ConsoleColor.Cyan        => MakeColor(0x00, 0xFF, 0xFF), // 1011              Aqua
+                ConsoleColor.Red         => MakeColor(0xFF, 0x00, 0x00), // 1100              Red
+                ConsoleColor.Magenta     => MakeColor(0xFF, 0x00, 0xFF), // 1101              Fuchsia
+                ConsoleColor.Yellow      => MakeColor(0xFF, 0xFF, 0x00), // 1110              Yellow
+                ConsoleColor.White       => MakeColor(0xFF, 0xFF, 0xFF), // 1111              White
+                _ => throw new ArgumentOutOfRangeException(nameof(conclr)),
+            };
+            return ret;
+        }
+
+        /// <summary>Convert System.Color to ConsoleColor.</summary>
         /// <param name="sysclr">The color</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         public static ConsoleColor ToConsoleColor(this Color sysclr)
         {
             ConsoleColor conclr;
-            var sat = sysclr.GetSaturation();
-            var brt = sysclr.GetBrightness();
-            var hue = (int)Math.Round(sysclr.GetHue() / 60, MidpointRounding.AwayFromZero);
+            var sat = sysclr.GetSaturation(); // 0.0 => 1.0
+            var brt = sysclr.GetBrightness(); // 0.0 => 1.0
+            var hue = (int)Math.Round(sysclr.GetHue() / 60, MidpointRounding.AwayFromZero); // 0 => 5
+            var grayish = sat < 0.5;
+            var darkish = brt < 0.5;
 
-            if (sat < 0.5) // grayish
+            if (grayish)
             {
-                switch ((int)(brt * 3.5))
+                conclr = (int)(brt * 3.5) switch
                 {
-                    case 0:  conclr = ConsoleColor.Black; break;
-                    case 1:  conclr = ConsoleColor.DarkGray; break;
-                    case 2:  conclr = ConsoleColor.Gray; break;
-                    default: conclr = ConsoleColor.White; break;
-                }
+                    0 => ConsoleColor.Black,
+                    1 => ConsoleColor.DarkGray,
+                    2 => ConsoleColor.Gray,
+                    _ => ConsoleColor.White,
+                };
             }
-            else if (brt < 0.4) // dark
+            else // color
             {
-                switch (hue)
+                conclr = hue switch
                 {
-                    case 1:  conclr = ConsoleColor.DarkYellow; break;
-                    case 2:  conclr = ConsoleColor.DarkGreen; break;
-                    case 3:  conclr = ConsoleColor.DarkCyan; break;
-                    case 4:  conclr = ConsoleColor.DarkBlue; break;
-                    case 5:  conclr = ConsoleColor.DarkMagenta; break;
-                    default: conclr = ConsoleColor.DarkRed; break;
-                }
+                    1 => darkish ? ConsoleColor.DarkYellow : ConsoleColor.Yellow,
+                    2 => darkish ? ConsoleColor.DarkGreen : ConsoleColor.Green,
+                    3 => darkish ? ConsoleColor.DarkCyan : ConsoleColor.Cyan,
+                    4 => darkish ? ConsoleColor.DarkBlue : ConsoleColor.Blue,
+                    5 => darkish ? ConsoleColor.DarkMagenta : ConsoleColor.Magenta,
+                    _ => darkish ? ConsoleColor.DarkRed : ConsoleColor.Red
+                };
             }
-
-            else // normal
-            {
-                switch (hue)
-                {
-                    case 1:  conclr = ConsoleColor.Yellow; break;
-                    case 2:  conclr = ConsoleColor.Green; break;
-                    case 3:  conclr = ConsoleColor.Cyan; break;
-                    case 4:  conclr = ConsoleColor.Blue; break;
-                    case 5:  conclr = ConsoleColor.Magenta; break;
-                    default: conclr = ConsoleColor.Red; break;
-                }
-            }
-
-            //Console.WriteLine($"{sysclr.Name} => {sysclr.R} {sysclr.G} {sysclr.B} => {conclr}");
 
             return conclr;
         }

@@ -19,8 +19,7 @@ namespace Ephemera.NBagOfTricks.Test
         {
             UT_INFO("Tests file sniffer.");
 
-            string fn = @"..\..\Files\nonascii.txt";
-
+            var fn = Path.Combine(MiscUtils.GetSourcePath(), "Files", "nonascii.txt");
             var res = Tools.SniffBin(fn);
 
             UT_EQUAL(res.Count, 1);

@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Net.Sockets;
-using System.Numerics;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfTricks.PNUT;
@@ -14,15 +10,15 @@ using Ephemera.NBagOfTricks.PNUT;
 
 namespace Ephemera.NBagOfTricks.Test
 {
-    public class COLOR_STUFF : TestSuite
+    public class COLOR_CONV : TestSuite
     {
         public override void RunSuite()
         {
+            UT_INFO("Tests color conversion functions.");
+
             //ColorDialog d = new();
             //d.ShowDialog();
             //return;
-
-            UT_INFO("Tests color translation functions.");
 
             ConsoleColorToSystem();
 
@@ -40,12 +36,12 @@ namespace Ephemera.NBagOfTricks.Test
             "Follow the lay of the land.",
             "It's most important.",
             "Only eight colors that you need.",
-            "Now we can begin working on lots of happy little things.",
+            "Now we can begin working on lots.",
             "Even the worst thing we can do here is good.",
             "Let's do it again then, what the heck.",
-            "Everything's not great in life, but we can still find beauty in it.",
+            "Everything's not great in life.",
             "Use what happens naturally, don't fight it.",
-            "How do you make a round circle with a square knife?",
+            "How do you make a round circle?",
             "That's your challenge for the day."
         ];
 
@@ -71,18 +67,16 @@ namespace Ephemera.NBagOfTricks.Test
             for (int i = 0; i < cvals.Length; i++)
             {
                 var conclr = (ConsoleColor)i;
+                var sysclr = conclr.ToSystemColor();
+                var conclr_name = Enum.GetName(typeof(ConsoleColor), conclr);
 
                 // --- Console ---
-                //Console.ForegroundColor = conclr;
-                //Console.BackgroundColor = (ConsoleColor)(cvals.Count - i - 1);
                 Console.BackgroundColor = conclr;
-                Console.WriteLine($"FG:{Console.ForegroundColor} BG:{Console.BackgroundColor} {_ross[i]}");
+                Console.WriteLine($"ConsoleColor:{conclr} System.Color:{sysclr.Name} Words:{_ross[i]}");
                 Console.ResetColor();
 
                 // --- html ---
-                var sysclr = conclr.ToSystemColor();
-                var name = Enum.GetName(typeof(ConsoleColor), conclr);
-                html.Add($"<span style=\"font-size: 20pt; color: black; background-color: white;\">{name}");
+                html.Add($"<span style=\"font-size: 20pt; color: black; background-color: white;\">ConsoleColor:{conclr} System.Color:{sysclr.Name}");
                 html.Add($"<span style=\"color: black; background-color: {FormatForHtml(sysclr)};\">|  {_ross[i]} |");
                 html.Add($"<br>");
             }
@@ -100,26 +94,50 @@ namespace Ephemera.NBagOfTricks.Test
             Console.WriteLine($"----- Convert System Color To ConsoleColor -----");
             //Console.WriteLine($"----- Dump to SystemColorToConsoleColor.html -----");
 
-            // Colors that should roughly match ConsoleColors. Some(*) don't align.
-            List<Color> colors =
+            // Colors that should roughly match ConsoleColors. Some(*) don't align well by name.
+            List<Color> colorsMatch =
             [
                 Color.Black,
-                Color.White,
+                Color.DarkBlue,
+                Color.DarkGreen,
+                Color.DarkCyan,
+                Color.DarkRed,
+                Color.DarkMagenta,
+                Color.Olive, // aka DarkYellow
                 Color.LightGray, // Gray*
                 Color.DimGray, // DarkGray*
-                Color.Red,
-                Color.DarkRed,
-                Color.Lime, // Green* is very dark
-                Color.DarkGreen,
                 Color.Blue,
-                Color.DarkBlue,
+                Color.Lime, // Green* is very dark
                 Color.Cyan,
-                Color.DarkCyan,
+                Color.Red,
                 Color.Magenta,
-                Color.DarkMagenta,
                 Color.Yellow,
-                Color.Olive, // aka DarkYellow
+                Color.White,
             ];
+
+
+            // Explicit. Seems to work better.
+            List<Color> colors =
+            [
+                // System.Color                      ConsoleColor  System.Color.Name
+                ColorUtils.MakeColor(0x00, 0x00, 0x00), // 0000          Black
+                ColorUtils.MakeColor(0x00, 0x00, 0x80), // 0001          Navy
+                ColorUtils.MakeColor(0x00, 0x80, 0x00), // 0010          Green
+                ColorUtils.MakeColor(0x00, 0x80, 0x80), // 0011          Teal
+                ColorUtils.MakeColor(0x80, 0x00, 0x00), // 0100          Maroon
+                ColorUtils.MakeColor(0x80, 0x00, 0x80), // 0101          Purple
+                ColorUtils.MakeColor(0x80, 0x80, 0x00), // 0110          Olive
+                ColorUtils.MakeColor(0xC0, 0xC0, 0xC0), // 0111          Silver
+                ColorUtils.MakeColor(0x80, 0x80, 0x80), // 1000          Gray
+                ColorUtils.MakeColor(0x00, 0x00, 0xFF), // 1001          Blue
+                ColorUtils.MakeColor(0x00, 0xFF, 0x00), // 1010          Lime
+                ColorUtils.MakeColor(0x00, 0xFF, 0xFF), // 1011          Aqua
+                ColorUtils.MakeColor(0xFF, 0x00, 0x00), // 1100          Red
+                ColorUtils.MakeColor(0xFF, 0x00, 0xFF), // 1101          Fuchsia
+                ColorUtils.MakeColor(0xFF, 0xFF, 0x00), // 1110          Yellow
+                ColorUtils.MakeColor(0xFF, 0xFF, 0xFF)  // 1111          White
+            ];
+
 
             List<string> html = [];
             html.Add("<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>");
@@ -128,6 +146,7 @@ namespace Ephemera.NBagOfTricks.Test
 
             foreach (var clr in colors)
             {
+                // var sysclr_name = clr.Name;
                 var conclr = clr.ToConsoleColor();
                 var conclr_name = Enum.GetName(typeof(ConsoleColor), conclr);
 

@@ -33,6 +33,8 @@ namespace Ephemera.NBagOfTricks.Test
             // Application.EnableVisualStyles();
             // Application.SetCompatibleTextRenderingDefault(false);
             // Application.Run(new TestHost());
+
+            Environment.Exit(0);
         }
     }
 }

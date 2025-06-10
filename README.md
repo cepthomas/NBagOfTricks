@@ -24,6 +24,7 @@ Probably I should make this into a nuget package at some point.
 - StringUtils: Mostly low-level extensions.
 - Dumper: Writes object tree contents.
 - MusicDefinitions: Scales and chords.
+- ColorUtils: Conversion between `System.Color`, `ConsoleColor` and ANSI format.
 
 # Simple Logger
 - Singleton manager.
