@@ -4,7 +4,6 @@
         <TargetFrameworks>net8.0-windows</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <UseWindowsForms>true</UseWindowsForms>
-        <Version>1.2.0</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Description>NBagOfTricks tester</Description>
         <Copyright>MIT License</Copyright>
@@ -13,7 +12,7 @@
         <OutputPath>bin\</OutputPath>
         <!-- <DefineConstants>DEBUG;TRACE</DefineConstants> -->
         <WarningLevel>4</WarningLevel>
-        <NoWarn>CS1591;CA1822</NoWarn>
+        <NoWarn>CS1591</NoWarn> 
         <GenerateDocumentationFile>false</GenerateDocumentationFile>
         <Nullable>enable</Nullable>
         <SatelliteResourceLanguages>none</SatelliteResourceLanguages> <!-- en none -->

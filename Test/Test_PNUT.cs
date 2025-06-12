@@ -109,7 +109,9 @@ namespace Ephemera.NBagOfTricks.Test
 
             throw new Exception("Random error");
 
+#pragma warning disable CS0162 // Unreachable code detected
             UT_EQUAL(val1, 3);
+#pragma warning restore CS0162 // Unreachable code detected
 
             UT_INFO("Visually inspect that this does not appear in the output");
         }

@@ -6,7 +6,6 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading;
 using Ephemera.NBagOfTricks;
-using Ephemera.NBagOfTricks.Slog;
 using Ephemera.NBagOfTricks.PNUT;
 
 

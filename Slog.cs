@@ -4,14 +4,51 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Ephemera.NBagOfTricks;
 
 
-namespace Ephemera.NBagOfTricks.Slog
+namespace Ephemera.NBagOfTricks // TODO clean up all
 {
+
+    #region Types
+    /// <summary>Log level options.</summary>
+    public enum LogLevel { Trace = 0, Debug = 1, Info = 2, Warn = 3, Error = 4 }
+
+    /// <summary>Internal log entry data container.</summary>
+    internal record LogEntry(DateTime Timestamp, LogLevel Level, string LoggerName, string SourceFile, int SourceLine, string Message);
+
+    /// <summary>Log event for notification.</summary>
+    public class LogMessageEventArgs : EventArgs
+    {
+        public LogLevel Level { get; set; } = LogLevel.Info;
+        public string Message { get; set; } = "";
+        public string ShortMessage { get; set; } = "";
+    }
+    #endregion
+
+    /// <summary>Experimental class to log enter/exit scope. Use syntax "using new Scoper(...);"</summary>
+    public sealed class Scoper : IDisposable
+    {
+        readonly Logger _logger;
+        readonly string _id;
+
+        public Scoper(Logger logger, string id)
+        {
+            _logger = logger;
+            _id = id;
+            _logger.Trace($"{_id}: Enter scope");
+        }
+
+        public void Dispose()
+        {
+            _logger.Trace($"{_id}: Leave scope");
+        }
+    }
+
     /// <summary>Global server.</summary>
     public sealed class LogManager
     {
@@ -219,4 +256,158 @@ namespace Ephemera.NBagOfTricks.Slog
         }
         #endregion
     }
+
+
+    /// <summary>Client creates as many of these as needed.</summary>
+    public class Logger  
+    {
+        #region Properties
+        /// <summary>ID for this logger.</summary>
+        public string Name { get; init; } = "";
+
+        /// <summary>Turn logger on or off.</summary>
+        public bool Enable { get; set; } = true;
+        #endregion
+
+        #region Lifecycle
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="name">Client assigned name.</param>
+        public Logger(string name)
+        {
+            Name = name;
+        }
+        #endregion
+
+        #region Public functions
+        /// <summary>
+        /// General function.
+        /// </summary>
+        /// <param name="level">Log level.</param>
+        /// <param name="msg">Content.</param>
+        /// <param name="file">Ignore - compiler use.</param>
+        /// <param name="line">Ignore - compiler use.</param>
+        public void Log(LogLevel level, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        {
+            if (Enable)
+            {
+                AddEntry(level, msg, file, line);
+            }
+        }
+
+        /// <summary>
+        /// Convenience function.
+        /// </summary>
+        /// <param name="msg">Content.</param>
+        /// <param name="file">Ignore - compiler use.</param>
+        /// <param name="line">Ignore - compiler use.</param>
+        public void Trace(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        {
+            if (Enable)
+            {
+                AddEntry(LogLevel.Trace, msg, file, line);
+            }
+        }
+
+        /// <summary>
+        /// Convenience function.
+        /// </summary>
+        /// <param name="msg">Content.</param>
+        /// <param name="file">Ignore - compiler use.</param>
+        /// <param name="line">Ignore - compiler use.</param>
+        public void Debug(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        {
+            if (Enable)
+            {
+                AddEntry(LogLevel.Debug, msg, file, line);
+            }
+        }
+
+        /// <summary>
+        /// Convenience function.
+        /// </summary>
+        /// <param name="msg">Content.</param>
+        /// <param name="file">Ignore - compiler use.</param>
+        /// <param name="line">Ignore - compiler use.</param>
+        public void Info(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        {
+            if (Enable)
+            {
+                AddEntry(LogLevel.Info, msg, file, line);
+            }
+        }
+
+        /// <summary>
+        /// Convenience function.
+        /// </summary>
+        /// <param name="msg">Content.</param>
+        /// <param name="file">Ignore - compiler use.</param>
+        /// <param name="line">Ignore - compiler use.</param>
+        public void Warn(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        {
+            if (Enable)
+            {
+                AddEntry(LogLevel.Warn, msg, file, line);
+            }
+        }
+
+        /// <summary>
+        /// Convenience function.
+        /// </summary>
+        /// <param name="msg">Content.</param>
+        /// <param name="file">Ignore - compiler use.</param>
+        /// <param name="line">Ignore - compiler use.</param>
+        public void Error(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        {
+            // Always log errors.
+            AddEntry(LogLevel.Error, msg, file, line);
+        }
+
+        /// <summary>
+        /// Log a caught exception. Adds info about who raised it
+        /// </summary>
+        /// <param name="ex">The exception.</param>
+        /// <param name="msg">Extra info.</param>
+        public void Exception(Exception ex, string msg = "")
+        {
+            msg = msg.Length == 0 ? "" : " " + msg;
+            // Find out who threw it.
+            StackTrace st = new(ex, true);
+            if (st.FrameCount > 0)
+            {
+                StackFrame? stf = st.GetFrame(0);
+                string stfn = (stf != null && stf.GetFileName() != null) ? stf.GetFileName()! : "???";
+                int stline = stf == null ? -1 : stf.GetFileLineNumber();
+                AddEntry(LogLevel.Error, $"{ex.Message}{msg}", stfn, stline);
+            }
+            else
+            {
+                AddEntry(LogLevel.Error, $"{ex.Message}{msg}", "???", -1);
+            }
+        }
+        #endregion
+
+        #region Private functions
+        /// <summary>
+        /// Private common function.
+        /// </summary>
+        /// <param name="level"></param>
+        /// <param name="msg"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        void AddEntry(LogLevel level, string msg, string file, int line)
+        {
+            // Sanity check for script clients.
+            level = (LogLevel)MathUtils.Constrain((int)level, (int)LogLevel.Trace, (int)LogLevel.Error);
+
+            file = Path.GetFileName(file);
+            LogEntry le = new(DateTime.Now, level, Name, file, line, msg);
+            // Manager expedites.
+            LogManager.LogThis(le);
+        }
+        #endregion
+    }
+
+
 }

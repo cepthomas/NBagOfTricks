@@ -187,4 +187,18 @@ namespace Ephemera.NBagOfTricks.Test
             }
         }
     }
+
+    public class UTILS_MD_TO_HTML : TestSuite
+    {
+        public override void RunSuite()
+        {
+            UT_INFO("Tests markdown to html.");
+
+            var docs = MusicDefinitions.FormatDoc();
+
+            //Tools.MarkdownToHtml(docs, Tools.MarkdownMode.Simple, true);
+            //Tools.MarkdownToHtml(docs, Tools.MarkdownMode.DarkApi, true);
+            MiscUtils.MarkdownToHtml(docs, MiscUtils.MarkdownMode.LightApi, true);
+        }
+    }
 }
