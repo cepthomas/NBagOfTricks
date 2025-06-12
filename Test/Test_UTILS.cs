@@ -9,9 +9,9 @@ using System.IO;
 using System.Text.Json.Serialization;
 using System.Drawing;
 using System.Diagnostics;
+using System.Threading;
 using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfTricks.PNUT;
-using System.Threading;
 
 
 namespace Ephemera.NBagOfTricks.Test

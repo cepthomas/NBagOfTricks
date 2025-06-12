@@ -23,7 +23,7 @@ Probably I should make this into a nuget package at some point.
 - MusicDefinitions: Scales and chords.
 - ColorUtils: Conversion between `System.Color`, `ConsoleColor` and ANSI format.
 - KeyUtils: Keyboard input.
-- PixelBitmap: Make it easy to manipulate bitmaps.
+- BitmapUtils: Make it easy to manipulate bitmaps.
 
 # Simple Logger
 - Singleton manager.
