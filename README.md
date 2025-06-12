@@ -14,17 +14,16 @@ Probably I should make this into a nuget package at some point.
 ## Components
 - MmTimerEx: A theoretically better multimedia timer with improved accuracy for sub 10 msec period.
 - MultiFileWatcher: Multiple file change watcher.
-- TimingAnalyzer: High speed event statistics.
-- CommandProcessor.cs: Command line arg parser.
+- TimeIt: High speed event statistics.
 
 ## Various utilities and extensions
 - MathUtils: Numbers are good.
 - MiscUtils: Things that don't fit anywhere else.
-- Tools: Things that are higher level than MiscUtils, formatters and the like.
 - StringUtils: Mostly low-level extensions.
-- Dumper: Writes object tree contents.
 - MusicDefinitions: Scales and chords.
 - ColorUtils: Conversion between `System.Color`, `ConsoleColor` and ANSI format.
+- KeyUtils: Keyboard input.
+- PixelBitmap: Make it easy to manipulate bitmaps.
 
 # Simple Logger
 - Singleton manager.
@@ -32,15 +31,6 @@ Probably I should make this into a nuget package at some point.
 - Log records go to log file and/or notification event hook for UI.
 - Note: Be careful with handling notifications - don't call Logger functions in UI constructors as the handle is not assigned
    and Invoke() will fail.
-
-# Simple IPC
-- A simple IPC server/single-client mechanism is used to send a single string one-way. That's all.
-- To support development of the IPC there is a rudimentary cross-process logger.
-- Primary usage is for a single instance app (ClipPlayer) to send command args to itself.
-
-# Script Compiler
-Compiles C#-like scripts into in-memory assemblies. Primarily for use by [Nebulator](https://github.com/cepthomas/Nebulator/blob/main/README.md)
-and [NProcessing](https://github.com/cepthomas/NProcessing/blob/main/README.md). See those repos for example on how to use this.
 
 # PNUT
 Practically Nonexistent Unit Tester
