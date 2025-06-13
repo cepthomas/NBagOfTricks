@@ -8,7 +8,7 @@ using System.Linq;
 namespace Ephemera.NBagOfTricks
 {
     /// <summary>Simple/cheap profiling.</summary>
-    public class TimeIt // TODO combine these two.
+    public class TimeIt // TODO combine these two?
     {
         long _startTick = 0;
         long _lastTick = 0;

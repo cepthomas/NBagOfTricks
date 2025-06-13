@@ -32,7 +32,7 @@ namespace Ephemera.NBagOfTricks
         /// <returns></returns>
         public static string GetAppDataDir(string appName, string company = "")
         {
-            string localdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string localdir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string path = Path.Combine(localdir, company, appName);
             DirectoryInfo di = new(path);
             di.Create();
