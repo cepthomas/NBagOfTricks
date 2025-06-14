@@ -45,7 +45,7 @@ namespace Ephemera.NBagOfTricks.Test
             "That's your challenge for the day."
         ];
 
-        string FormatForHtml(Color clr)
+        static string FormatForHtml(Color clr)
         {
             return $"#{clr.R:x2}{clr.G:x2}{clr.B:x2}";
         }
@@ -87,7 +87,6 @@ namespace Ephemera.NBagOfTricks.Test
             File.WriteAllLines(fn, html);
         }
 
-
         /// <summary>
         /// A dumper - not a unit test.
         /// </summary>
@@ -118,7 +117,6 @@ namespace Ephemera.NBagOfTricks.Test
                 Color.White,
             ];
 
-
             // Explicit. Seems to work better.
             List<Color> colors =
             [
@@ -140,7 +138,6 @@ namespace Ephemera.NBagOfTricks.Test
                 ColorUtils.MakeColor(0xFF, 0xFF, 0x00), // 1110          Yellow
                 ColorUtils.MakeColor(0xFF, 0xFF, 0xFF)  // 1111          White
             ];
-
 
             List<string> html = [];
             html.Add("<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>");
