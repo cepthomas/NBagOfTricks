@@ -568,7 +568,7 @@ namespace Ephemera.NBagOfTricks.PNUT
         protected bool UT_LESS<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             bool pass = true;
-            if (value1.CompareTo(value2) != -1)
+            if (value1.CompareTo(value2) >= 0)
             {
                 RecordResult(false, $"[{value1}] should be less than [{value2}]", file, line);
                 pass = false;
@@ -592,7 +592,7 @@ namespace Ephemera.NBagOfTricks.PNUT
         protected bool UT_LESS_OR_EQUAL<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             bool pass = true;
-            if (value1.CompareTo(value2) == 1)
+            if (value1.CompareTo(value2) > 0)
             {
                 RecordResult(false, $"[{value1}] should be less than or equal to [{value2}]", file, line);
                 pass = false;
@@ -616,7 +616,7 @@ namespace Ephemera.NBagOfTricks.PNUT
         protected bool UT_GREATER<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             bool pass = true;
-            if (value1.CompareTo(value2) != 1)
+            if (value1.CompareTo(value2) <= 0)
             {
                 RecordResult(false, $"[{value1}] should be greater than [{value2}]", file, line);
                 pass = false;
@@ -640,7 +640,7 @@ namespace Ephemera.NBagOfTricks.PNUT
         protected bool UT_GREATER_OR_EQUAL<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
         {
             bool pass = true;
-            if (value1.CompareTo(value2) != 0)
+            if (value1.CompareTo(value2) < 0)
             {
                 RecordResult(false, $"[{value1}] should be greater than or equal to [{value2}]", file, line);
                 pass = false;

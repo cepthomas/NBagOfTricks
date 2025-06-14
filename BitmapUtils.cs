@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,14 +14,13 @@ using System.Windows.Forms;
 
 namespace Ephemera.NBagOfTricks
 {
+    #region Extension methods for manipulating bmps - not for realtime
     public static class BitmapUtils
     {
-        /// <summary>
-        /// De-colorize.
-        /// </summary>
+        /// <summary>De-colorize.</summary>
         /// <param name="bmp"></param>
         /// <returns></returns>
-        public static Bitmap ConvertToGrayscale(Bitmap bmp)
+        public static Bitmap ConvertToGrayscale(this Bitmap bmp)
         {
             Bitmap result = new(bmp.Width, bmp.Height);
 
@@ -30,24 +30,24 @@ namespace Ephemera.NBagOfTricks
             //   Y = R * 0.2126 + G * 0.7152 + B * 0.0722; // 0.0 to 255.0
             // - gamma-compression-corrected approximation:
             //   Y = 0.299 R + 0.587 G + 0.114 B
-            ColorMatrix mat = new(new float[][]
-            {
-                new float[] {.30f, .30f, .30f,  0,  0},
-                new float[] {.59f, .59f, .59f,  0,  0},
-                new float[] {.11f, .11f, .11f,  0,  0},
-                new float[] {  0,    0,    0,   1,  0},
-                new float[] {  0,    0,    0,   0,  1}
-            });
+            ColorMatrix mat = new(
+            [
+                [.30f, .30f, .30f,  0,  0],
+                [.59f, .59f, .59f,  0,  0],
+                [.11f, .11f, .11f,  0,  0],
+                [   0,    0,    0,  1,  0],
+                [   0,    0,    0,  0,  1]
+            ]);
 
             // Identity matrix for dev.
-            //ColorMatrix mat = new(new float[][]
-            //{
-            //    new float[] {  1,  0,  0,  0,  0},
-            //    new float[] {  0,  1,  0,  0,  0},
-            //    new float[] {  0,  0,  1,  0,  0},
-            //    new float[] {  0,  0,  0,  1,  0},
-            //    new float[] {  0,  0,  0,  0,  1}
-            //});
+            //ColorMatrix mat = new(
+            //[
+            //    [  1,  0,  0,  0,  0],
+            //    [  0,  1,  0,  0,  0],
+            //    [  0,  0,  1,  0,  0],
+            //    [  0,  0,  0,  1,  0],
+            //    [  0,  0,  0,  0,  1]
+            //]);
 
             using (Graphics g = Graphics.FromImage(result))
             {
@@ -59,24 +59,25 @@ namespace Ephemera.NBagOfTricks
             return result;
         }
 
-        /// <summary>
-        /// Resize the image to the specified width and height.
-        /// </summary>
+        /// <summary>Resize the image to the specified width and height.</summary>
         /// <param name="bmp">The image to resize.</param>
         /// <param name="width">The width to resize to.</param>
         /// <param name="height">The height to resize to.</param>
         /// <returns>The resized image.</returns>
-        public static Bitmap ResizeBitmap(Bitmap bmp, int width, int height)
+        public static Bitmap ResizeBitmap(this Bitmap bmp, int width, int height)
         {
             Bitmap result = new(width, height);
             result.SetResolution(bmp.HorizontalResolution, bmp.VerticalResolution);
 
             using (Graphics graphics = Graphics.FromImage(result))
             {
-                // Set high quality. TODO useful? would need using System.Drawing.Drawing2D;
-                //graphics.CompositingQuality = CompositingQuality.HighQuality;
-                //graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                //graphics.SmoothingMode = SmoothingMode.HighQuality;
+                // Set high quality.
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
 
                 // Draw the image.
                 graphics.DrawImage(bmp, 0, 0, result.Width, result.Height);
@@ -85,14 +86,12 @@ namespace Ephemera.NBagOfTricks
             return result;
         }
 
-        /// <summary>
-        /// Colorize a bitmap. Mainly for beautifying glyphicons.
-        /// </summary>
+        /// <summary>Colorize a bitmap. Mainly for beautifying glyphicons.</summary>
         /// <param name="original"></param>
         /// <param name="newcol"></param>
         /// <param name="replace">Optional source color to replace. Defaults to black.</param>
         /// <returns></returns>
-        public static Bitmap ColorizeBitmap(Bitmap original, Color newcol, Color replace = default)
+        public static Bitmap ColorizeBitmap(this Bitmap original, Color newcol, Color replace = default)
         {
             Bitmap newbmp = new(original.Width, original.Height);
 
@@ -115,8 +114,10 @@ namespace Ephemera.NBagOfTricks
             return newbmp;
         }
     }
+    #endregion
 
-    /// <summary>Fast pixel read/write. Borrowed from https://stackoverflow.com/a/34801225. TODO useful? Simplify?/// </summary>
+    #region Performant bitmap replacement
+    /// <summary>Fast pixel read/write. Borrowed from https://stackoverflow.com/a/34801225.</summary>
     public sealed class PixelBitmap : IDisposable
     {
         #region Fields
@@ -132,52 +133,42 @@ namespace Ephemera.NBagOfTricks
 
         #region Properties
         /// <summary>Managed image for client consumption.</summary>
-        public Bitmap Bitmap { get; init; }
+        public Bitmap ClientBitmap { get; init; }
         #endregion
 
         #region Lifecycle
-        /// <summary>
-        /// Normal constructor.
-        /// </summary>
+        /// <summary>Normal constructor.</summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
         public PixelBitmap(int width, int height)
         {
             _buff = new int[width * height];
             _hBuff = GCHandle.Alloc(_buff, GCHandleType.Pinned);
-            Bitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppPArgb, _hBuff.AddrOfPinnedObject());
+            ClientBitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppPArgb, _hBuff.AddrOfPinnedObject());
         }
 
-        /// <summary>
-        /// Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources.
-        /// </summary>
+        /// <summary>Override finalizer only if Dispose(bool disposing) has code to free unmanaged resources.</summary>
         ~PixelBitmap()
         {
             Dispose(false);
         }
 
-        /// <summary>
-        /// Boilerplate.
-        /// </summary>
+        /// <summary>Boilerplate.</summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Boilerplate.
-        /// </summary>
+        /// <summary>Boilerplate.</summary>
         public void Dispose(bool disposing)
         {
             if (!_disposed)
             {
                 if (disposing)
                 {
-                    // called via myClass.Dispose(). 
-                    // OK to use any private object references
-                    // Dispose managed state (managed objects).
-                    Bitmap.Dispose();
+                    // Dispose managed state/objects).
+                    ClientBitmap.Dispose();
                 }
 
                 // Release unmanaged resources.
@@ -188,36 +179,15 @@ namespace Ephemera.NBagOfTricks
         }
         #endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>Set one pixel.</summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        /// <param name="colour"></param>
-        public void SetPixel(int x, int y, Color colour)
+        /// <param name="clr"></param>
+        public void SetPixel(int x, int y, Color clr)
         {
-            int index = x + (y * Bitmap.Width);
-            int col = colour.ToArgb();
-
+            int index = x + (y * ClientBitmap.Width);
+            int col = clr.ToArgb();
             _buff[index] = col;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="a"></param>
-        /// <param name="r"></param>
-        /// <param name="g"></param>
-        /// <param name="b"></param>
-        public void SetPixel(int x, int y, int a, int r, int g, int b)
-        {
-            // Check args!
-            // The byte-ordering of the 32-bit ARGB value is AARRGGBB. The most significant byte (MSB), represented by AA, is the alpha component value.
-            int index = x + (y * Bitmap.Width);
-            int hcol = (byte)a << 24 | (byte)r << 16 | (byte)g << 8 | (byte)b;
-            _buff[index] = hcol;
         }
 
         /// <summary>
@@ -228,11 +198,11 @@ namespace Ephemera.NBagOfTricks
         /// <returns></returns>
         public Color GetPixel(int x, int y)
         {
-            int index = x + (y * Bitmap.Width);
+            int index = x + (y * ClientBitmap.Width);
             int col = _buff[index];
             Color result = Color.FromArgb(col);
-
             return result;
         }
+        #endregion
     }
 }

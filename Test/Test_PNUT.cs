@@ -29,56 +29,55 @@ namespace Ephemera.NBagOfTricks.Test
 
             UT_INFO("Suite tests core functions.");
 
-            UT_INFO("Test UT_INFO. Visually inspect that this appears in the output.");
+            UT_INFO("Visually inspect that there are 6 failures in the output.");
 
             UT_INFO("Test UT_INFO with args", int1, dbl2);
 
-            UT_INFO("Should fail on UT_STR_EQUAL.");
+            UT_INFO("Next test should fail on UT_STR_EQUAL.");
             UT_EQUAL(str1, str2);
 
-            // Should pass on UT_STR_EQUAL.
+            // Next test should pass on UT_STR_EQUAL.
             UT_EQUAL(str2, "the mulberry bush");
 
             UT_EQUAL("".Length, 0);
 
-            UT_INFO("Should fail on UT_NOT_EQUAL.");
+            UT_INFO("Next test should fail on UT_NOT_EQUAL.");
             UT_NOT_EQUAL(int1, 321);
 
-            // Should pass on UT_NOT_EQUAL.
+            // Next test should pass on UT_NOT_EQUAL.
             UT_NOT_EQUAL(int2, int1);
 
-            UT_INFO("Should fail on UT_LESS_OR_EQUAL.");
+            UT_INFO("Next test should fail on UT_LESS_OR_EQUAL.");
             UT_LESS_OR_EQUAL(int2, int1);
 
-            // Should pass on UT_LESS_OR_EQUAL.
-            UT_LESS_OR_EQUAL(int1, 321);
+            // Next test should pass on UT_LESS_OR_EQUAL.
+            UT_LESS_OR_EQUAL(int1, int1);
 
-            // Should pass on UT_LESS_OR_EQUAL.
+            // Next test should pass on UT_LESS_OR_EQUAL.
             UT_LESS_OR_EQUAL(int1, int2);
 
-            UT_INFO("Should fail on UT_GREATER.");
+            UT_INFO("Next test should fail on UT_GREATER.");
             UT_GREATER(int1, int2);
 
-            // Should pass on UT_GREATER.
+            // Next test should pass on UT_GREATER.
             UT_GREATER(int2, int1);
 
-            UT_INFO("Should fail on UT_GREATER_OR_EQUAL.");
+            UT_INFO("Next test should fail on UT_GREATER_OR_EQUAL.");
             UT_GREATER_OR_EQUAL(int1, int2);
 
-            // Should pass on UT_GREATER_OR_EQUAL.
-            UT_GREATER_OR_EQUAL(int2, 987);
+            // Next test should pass on UT_GREATER_OR_EQUAL.
+            UT_GREATER_OR_EQUAL(int2, int2);
 
-            // Should pass on UT_GREATER_OR_EQUAL.
+            // Next test should pass on UT_GREATER_OR_EQUAL.
             UT_GREATER_OR_EQUAL(int2, int1);
 
-            // Should pass on UT_CLOSE.
+            // Next test should pass on UT_CLOSE.
             UT_CLOSE(dbl1, dbl2, dbl2 - dbl1 + dblTol);
 
-            UT_INFO("Should fail on UT_CLOSE.");
+            UT_INFO("Next test should fail on UT_CLOSE.");
             UT_CLOSE(dbl1, dbl1 - 2 * dblTol, dblTol);
         }
     }
-
 
     public class PNUT_FATAL1 : TestSuite
     {
@@ -95,7 +94,6 @@ namespace Ephemera.NBagOfTricks.Test
             UT_INFO("Visually inspect that this does not appear in the output");
         }
     }
-
 
     public class PNUT_FATAL2 : TestSuite
     {
@@ -116,7 +114,6 @@ namespace Ephemera.NBagOfTricks.Test
             UT_INFO("Visually inspect that this does not appear in the output");
         }
     }
-
 
     public class PNUT_TWO : TestSuite
     {
@@ -144,7 +141,6 @@ namespace Ephemera.NBagOfTricks.Test
         }
     }
 
-
     public class ETC_NOT_PNUT : TestSuite
     {
         public override void RunSuite()
@@ -160,7 +156,7 @@ namespace Ephemera.NBagOfTricks.Test
 
             UT_NOT_EQUAL(str1, "Should pass");
 
-            UT_INFO("Tests various ...... functions.");
+            UT_INFO("Test various ...... functions.");
 
             // Cause an explosion.
             //UT_ASSERT(11, 22);

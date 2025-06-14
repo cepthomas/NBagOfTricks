@@ -7,54 +7,36 @@ using System.Linq;
 
 namespace Ephemera.NBagOfTricks
 {
-    /// <summary>Simple/cheap profiling.</summary>
-    public class TimeIt // TODO combine these two?
-    {
-        long _startTick = 0;
-        long _lastTick = 0;
-
-        public List<string> Captures { get; set; } = [];
-
-        public TimeIt()
-        {
-            _startTick = Stopwatch.GetTimestamp();
-            _lastTick = _startTick;
-        }
-
-        /// <summary>
-        /// Measure one time.
-        /// </summary>
-        /// <param name="msg"></param>
-        public void Snap(string msg)
-        {
-            long tick = Stopwatch.GetTimestamp();
-
-            var durMsec = FormatTicks(tick - _lastTick);
-            var totMsec = FormatTicks(tick - _startTick);
-            var s = $"dur:{durMsec} tot:{totMsec} {msg}";
-            Captures.Add(s);
-
-            _lastTick = tick;
-        }
-
-        /// <summary>
-        /// Conversion for stopwatch values.
-        /// </summary>
-        /// <param name="ticks"></param>
-        /// <returns></returns>
-        string FormatTicks(long ticks)
-        {
-            double dur = 1000.0 * ticks / Stopwatch.Frequency;
-            return dur.ToString("000.000");
-        }
-    }
-
-
     /// <summary>
     /// Diagnostics for timing measurement and analysis.
     /// </summary>
-    public class TimingAnalyzer
+    public class TimeIt
     {
+        // old TimeIt
+        //long _startTick = 0;
+        //long _lastTick = 0;
+        //public List<string> Captures { get; set; } = [];
+        //public TimeIt()
+        //{
+        //    _startTick = Stopwatch.GetTimestamp();
+        //    _lastTick = _startTick;
+        //}
+        //public void Snap(string msg)
+        //{
+        //    long tick = Stopwatch.GetTimestamp();
+        //    var durMsec = FormatTicks(tick - _lastTick);
+        //    var totMsec = FormatTicks(tick - _startTick);
+        //    var s = $"dur:{durMsec} tot:{totMsec} {msg}";
+        //    Captures.Add(s);
+
+        //    _lastTick = tick;
+        //}
+        //string FormatTicks(long ticks)
+        //{
+        //    double dur = 1000.0 * ticks / Stopwatch.Frequency;
+        //    return dur.ToString("000.000");
+        //}
+
         #region Fields
         /// <summary>The internal timer.</summary>
         readonly Stopwatch _watch = new();
@@ -74,7 +56,7 @@ namespace Ephemera.NBagOfTricks
         public int Skip { get; set; } = 0;
 
         /// <summary>Accumulated data points.</summary>
-        public List<double> Times { get; set; } = new List<double>();
+        public List<double> Times { get; set; } = [];
 
         /// <summary>Mean in msec.</summary>
         public double Mean { get; set; } = 0;
@@ -194,14 +176,11 @@ namespace Ephemera.NBagOfTricks
         /// <returns>String csv.</returns>
         public string Dump()
         {
-            List<string> ls = new();
-
-            // Time ordered.
-            ls.Add("Ordered");
+            List<string> ls = [ "Ordered" ];
             Times.ForEach(t => ls.Add($"{t}"));
 
             // Sorted by (rounded) times.
-            Dictionary<double, int> _bins = new();
+            Dictionary<double, int> _bins = [];
             for (int i = 0; i < Times.Count; i++)
             {
                 var t = Math.Round(Times[i], 2);
@@ -225,5 +204,4 @@ namespace Ephemera.NBagOfTricks
             return 1000.0 * ticks / Stopwatch.Frequency;
         }
     }
-
 }

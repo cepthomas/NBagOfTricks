@@ -20,7 +20,7 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Tests various util functions.");
+            UT_INFO("Test various util functions.");
 
             string input = "12345 \"I HAVE SPACES\" aaa bbb  \"me too\" ccc ddd \"  and the last  \"";
             // Output: 12345,I HAVE SPACES,aaa,bbb,me too,ccc,ddd,and the last
@@ -61,7 +61,7 @@ namespace Ephemera.NBagOfTricks.Test
 
         public override void RunSuite()
         {
-            UT_INFO("Tests SettingsCore.");
+            UT_INFO("Test SettingsCore.");
 
             const string TEST_FN = "set-test.json";
 
@@ -93,27 +93,11 @@ namespace Ephemera.NBagOfTricks.Test
         }
     }
 
-    public class UTILS_MISC : TestSuite
-    {
-        public override void RunSuite()
-        {
-            UT_INFO("Tests misc utils.");
-
-            var dir = MiscUtils.GetAppDataDir("Foo");
-            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Local\Foo");
-
-            dir = MiscUtils.GetAppDataDir("Bar", "CCCC");
-            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Local\CCCC\Bar");
-
-            MiscUtils.ShowReadme("NBagOfTricks");
-        }
-    }
-
     public class UTILS_WATCHER : TestSuite
     {
         public override void RunSuite()
         {
-            UT_INFO("Tests MultiFileWatcher.");
+            UT_INFO("Test MultiFileWatcher.");
 
             int iters = 3;
 
@@ -157,48 +141,6 @@ namespace Ephemera.NBagOfTricks.Test
 
             UT_EQUAL(_watcher.WatchedFiles.Count, iters);
             UT_EQUAL(filesTouched.Count, iters);
-        }
-    }
-
-    public class UTILS_TIMEIT : TestSuite
-    {
-        public override void RunSuite()
-        {
-            UT_INFO("Tests timeit. Not the best home but ok for now.");
-
-            TimeIt tt = new();
-
-            int num = 20;
-
-            for (int i = 0; i < num; i++)
-            {
-                for (int j = 0; j < 10000; j++)
-                {
-                    int x = i + j;
-                }
-
-                tt.Snap($"iter {i}");
-            }
-
-            UT_EQUAL(tt.Captures.Count, num);
-            for (int i = 0;i < tt.Captures.Count; i++)
-            {
-                UT_INFO(tt.Captures[i]);
-            }
-        }
-    }
-
-    public class UTILS_MD_TO_HTML : TestSuite
-    {
-        public override void RunSuite()
-        {
-            UT_INFO("Tests markdown to html.");
-
-            var docs = MusicDefinitions.FormatDoc();
-
-            //Tools.MarkdownToHtml(docs, Tools.MarkdownMode.Simple, true);
-            //Tools.MarkdownToHtml(docs, Tools.MarkdownMode.DarkApi, true);
-            MiscUtils.MarkdownToHtml(docs, MiscUtils.MarkdownMode.LightApi, true);
         }
     }
 }

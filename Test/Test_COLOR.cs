@@ -14,7 +14,7 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Tests color conversion functions.");
+            UT_INFO("Test color conversion functions.");
 
             //ColorDialog d = new();
             //d.ShowDialog();
@@ -50,8 +50,9 @@ namespace Ephemera.NBagOfTricks.Test
             return $"#{clr.R:x2}{clr.G:x2}{clr.B:x2}";
         }
 
-
-        //================================================================================================
+        /// <summary>
+        /// A dumper - not a unit test.
+        /// </summary>
         public void ConsoleColorToSystem()
         {
             Console.WriteLine("");
@@ -87,7 +88,9 @@ namespace Ephemera.NBagOfTricks.Test
         }
 
 
-        //================================================================================================
+        /// <summary>
+        /// A dumper - not a unit test.
+        /// </summary>
         public void SystemColorToConsoleColor()
         {
             Console.WriteLine("");
@@ -142,7 +145,6 @@ namespace Ephemera.NBagOfTricks.Test
             List<string> html = [];
             html.Add("<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>");
             html.Add($"<span style=\"font-size: 24pt; color: black; background-color: white;\">Convert System Color To ConsoleColor<br>");
-            //html.Add($"<span style=\"font-size: 16pt; color: black; background-color: white;\">TODO need to reconvert and compare<br>");
 
             foreach (var clr in colors)
             {
@@ -177,7 +179,7 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Tests ANSI color functions.");
+            UT_INFO("Test ANSI color functions.");
 
             //char ESC = 27;
             // One of: ESC[IDm  ESC[38;5;IDm  ESC[48;5;IDm  ESC[38;2;R;G;Bm  ESC[48;2;R;G;Bm

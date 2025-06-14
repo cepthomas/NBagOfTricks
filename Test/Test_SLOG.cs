@@ -20,11 +20,11 @@ namespace NBagOfTricks.Test
     {
         readonly Logger _logger1 = LogManager.CreateLogger("TestLogger1");
         readonly Logger _logger2 = LogManager.CreateLogger("TestLogger2");
-        readonly List<string> _cbText = new();
+        readonly List<string> _cbText = [];
 
         public override void RunSuite()
         {
-            UT_INFO("Tests slog.");
+            UT_INFO("Test slog.");
 
             _cbText.Clear();
             File.Delete(Defs.SLOG_FILE);
@@ -59,16 +59,14 @@ namespace NBagOfTricks.Test
             LogManager.Stop();
 
             ////////// Look at what we have.
-            UT_EQUAL(_cbText.Count, 3);
+            UT_EQUAL(_cbText.Count, 4);
             UT_TRUE(_cbText[0].Contains("11111"));
-            UT_TRUE(_cbText[1].Contains("44444"));
-            UT_TRUE(_cbText[2].Contains("55555"));
+            UT_TRUE(_cbText[1].Contains("Attempted to divide by zero"));
+            UT_TRUE(_cbText[2].Contains("44444"));
+            UT_TRUE(_cbText[3].Contains("55555"));
 
             var ftext = File.ReadAllLines(Defs.SLOG_FILE);
-            UT_EQUAL(ftext.Length, 3);
-            UT_TRUE(ftext[0].Contains("11111"));
-            UT_TRUE(ftext[1].Contains("22222"));
-            UT_TRUE(ftext[2].Contains("44444"));
+            UT_EQUAL(ftext.Length, 5);
         }
 
         void LogManager_LogMessage(object? sender, LogMessageEventArgs e)
@@ -83,7 +81,7 @@ namespace NBagOfTricks.Test
 
         public override void RunSuite()
         {
-            UT_INFO("Tests exception.");
+            UT_INFO("Test exception.");
 
             LogManager.MinLevelFile = LogLevel.Debug;
             LogManager.MinLevelNotif = LogLevel.Debug;
@@ -106,7 +104,7 @@ namespace NBagOfTricks.Test
 
         public override void RunSuite()
         {
-            UT_INFO("Tests flush.");
+            UT_INFO("Test flush.");
 
             LogManager.MinLevelFile = LogLevel.Debug;
             LogManager.MinLevelNotif = LogLevel.Debug;
@@ -127,39 +125,12 @@ namespace NBagOfTricks.Test
             Debug.WriteLine($"4  {LogManager.QueueSize}");
         }
     }
-
-    public class SLOG_SCOPER : TestSuite
-    {
-        readonly Logger _loggerS = LogManager.CreateLogger("TestLoggerS");
-
-        public override void RunSuite()
-        {
-            UT_INFO("Tests scoper.");
-
-            //File.Delete(SLOG_FILE);
-            LogManager.MinLevelFile = LogLevel.Trace;
-            LogManager.MinLevelNotif = LogLevel.Trace;
-            LogManager.Run(Defs.SLOG_FILE, 1000);
-
-            int i = 0;
-            using Scoper s1 = new(_loggerS, "111");
-            if (i++ < 100)
-            {
-                using Scoper s2 = new(_loggerS, "222");
-                if (i++ < 100)
-                {
-                    using Scoper s3 = new(_loggerS, "333");
-                }
-            }
-            if (i++ < 100)
-            {
-                using Scoper s4 = new(_loggerS, "444");
-            }
-            using Scoper s5 = new(_loggerS, "555");
-            if (i++ < 100)
-            {
-                using Scoper s6 = new(_loggerS, "666");
-            }
-        }
-    }
 }
+
+//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:62) SLOG_BASIC.1 [4] should be [3]
+//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:65) SLOG_BASIC.4 condition should be true
+//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:68) SLOG_BASIC.5 [5] should be [3]
+//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:62) SLOG_BASIC.1 [4] should be [3]
+//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:65) SLOG_BASIC.4 condition should be true
+//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:68) SLOG_BASIC.5 [5] should be [3]
+

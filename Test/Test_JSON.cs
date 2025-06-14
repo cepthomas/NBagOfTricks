@@ -19,7 +19,7 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Tests json converters.");
+            UT_INFO("Test json converters.");
 
             ConverterTarget ct1 = new();
 

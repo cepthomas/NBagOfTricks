@@ -17,15 +17,14 @@ using Ephemera.NBagOfTricks.PNUT;
 
 namespace Ephemera.NBagOfTricks.Test
 {
-    public class BMP_MAIN : TestSuite
+    public class BMP_EDIT : TestSuite
     {
         public override void RunSuite()
         {
-            UT_INFO("Tests bitmap manipulation functions.");
+            UT_INFO("Test system Bitmap manipulation functions.");
 
-            var dir = MiscUtils.GetSourcePath();
-            var inputDir = Path.Join(dir, "Files");
-            var outputDir = Path.Join(dir, "out");
+            var inputDir = Path.Join(MiscUtils.GetSourcePath(), "Files");
+            var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
 
             var bmpIn = (Bitmap)Image.FromFile(Path.Join(inputDir, "color-wheel.png")); // 500 x 500
 
@@ -40,6 +39,28 @@ namespace Ephemera.NBagOfTricks.Test
             // Colorize.
             var bmpColorize = BitmapUtils.ColorizeBitmap(bmpIn, Color.Yellow, Color.FromArgb(0x00, 0x80, 0x00));
             bmpColorize.Save(Path.Join(outputDir, "colorize.png"), ImageFormat.Png);
+        }
+    }
+
+    public class BMP_PIXEL : TestSuite
+    {
+        public override void RunSuite()
+        {
+            UT_INFO("Test PixelBitmap functions.");
+
+            var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
+
+            // Pixel bitmap.
+            int size = 128;
+            using PixelBitmap pbmp = new(size, size);
+            foreach (var y in Enumerable.Range(0, size))
+            {
+                foreach (var x in Enumerable.Range(0, size))
+                {
+                    pbmp.SetPixel(x, y, Color.FromArgb(255, x * 2, y * 2, 150));
+                }
+            }
+            pbmp.ClientBitmap.Save(Path.Join(outputDir, "pixels.png"), ImageFormat.Png);
         }
     }
 }

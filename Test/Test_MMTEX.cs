@@ -16,7 +16,7 @@ namespace Ephemera.NBagOfTricks.Test
         MmTimerEx _timer = new();
 
         /// <summary>Measurer.</summary>
-        readonly TimingAnalyzer _tan = new();
+        readonly TimeIt _tmit = new();
 
         /// <summary>State.</summary>
         bool _running = false;
@@ -26,7 +26,7 @@ namespace Ephemera.NBagOfTricks.Test
 
         public override void RunSuite()
         {
-            UT_INFO("Tests MmTimerEx functions.");
+            UT_INFO("Test MmTimerEx functions.");
 
             // Fast mm timer under test.
             _timer = new MmTimerEx();
@@ -34,15 +34,15 @@ namespace Ephemera.NBagOfTricks.Test
             _timer.SetTimer(10, TimerElapsedEvent);
 
             _running = true;
-            _tan.SampleSize = NUM_SAMPLES;
-            _tan.Grab(); // this starts the tan.
+            _tmit.SampleSize = NUM_SAMPLES;
+            _tmit.Grab(); // this starts the tan.
             _timer.Start();
 
             while (_running);
 
             // Done - dump what we found.
             var fn = Path.Combine(MiscUtils.GetSourcePath(), "out", "tan_dump.csv");
-            File.WriteAllText(fn, _tan.Dump());
+            File.WriteAllText(fn, _tmit.Dump());
 
             // Resource clean up.
             _timer.Stop();
@@ -54,7 +54,7 @@ namespace Ephemera.NBagOfTricks.Test
         /// </summary>
         void TimerElapsedEvent(double totalElapsed, double periodElapsed)
         {
-            if (_tan.Grab())
+            if (_tmit.Grab())
             {
                 // All done.
                 _running = false;

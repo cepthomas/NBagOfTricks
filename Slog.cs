@@ -8,12 +8,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Ephemera.NBagOfTricks;
 
 
-namespace Ephemera.NBagOfTricks // TODO clean up all
+namespace Ephemera.NBagOfTricks
 {
-
     #region Types
     /// <summary>Log level options.</summary>
     public enum LogLevel { Trace = 0, Debug = 1, Info = 2, Warn = 3, Error = 4 }
@@ -30,25 +28,6 @@ namespace Ephemera.NBagOfTricks // TODO clean up all
     }
     #endregion
 
-    /// <summary>Experimental class to log enter/exit scope. Use syntax "using new Scoper(...);"</summary>
-    public sealed class Scoper : IDisposable
-    {
-        readonly Logger _logger;
-        readonly string _id;
-
-        public Scoper(Logger logger, string id)
-        {
-            _logger = logger;
-            _id = id;
-            _logger.Trace($"{_id}: Enter scope");
-        }
-
-        public void Dispose()
-        {
-            _logger.Trace($"{_id}: Leave scope");
-        }
-    }
-
     /// <summary>Global server.</summary>
     public sealed class LogManager
     {
@@ -57,7 +36,7 @@ namespace Ephemera.NBagOfTricks // TODO clean up all
         private static readonly Lazy<LogManager> _instance = new(() => new LogManager());
 
         /// <summary>All loggers. Key is client supplied name.</summary>
-        static readonly Dictionary<string, Logger> _loggers = new();
+        static readonly Dictionary<string, Logger> _loggers = [];
 
         /// <summary>Log record queue.</summary>
         static readonly ConcurrentQueue<LogEntry> _queue = new();
@@ -112,12 +91,13 @@ namespace Ephemera.NBagOfTricks // TODO clean up all
         /// <returns>Minty fresh logger.</returns>
         public static Logger CreateLogger(string name)
         {
-            if (!_loggers.ContainsKey(name))
+            if (!_loggers.TryGetValue(name, out Logger? value))
             {
                 Logger logger = new(name);
-                _loggers[name] = logger;
+                value = logger;
+                _loggers[name] = value;
             }
-            return _loggers[name];
+            return value;
         }
 
         /// <summary>
@@ -259,132 +239,54 @@ namespace Ephemera.NBagOfTricks // TODO clean up all
 
 
     /// <summary>Client creates as many of these as needed.</summary>
-    public class Logger  
+    /// <remarks>
+    /// Constructor.
+    /// </remarks>
+    /// <param name="name">Client assigned name.</param>
+    public class Logger(string name)
     {
         #region Properties
         /// <summary>ID for this logger.</summary>
-        public string Name { get; init; } = "";
+        public string Name { get; init; } = name;
 
         /// <summary>Turn logger on or off.</summary>
         public bool Enable { get; set; } = true;
-        #endregion
 
-        #region Lifecycle
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="name">Client assigned name.</param>
-        public Logger(string name)
-        {
-            Name = name;
-        }
         #endregion
 
         #region Public functions
-        /// <summary>
-        /// General function.
-        /// </summary>
-        /// <param name="level">Log level.</param>
-        /// <param name="msg">Content.</param>
-        /// <param name="file">Ignore - compiler use.</param>
-        /// <param name="line">Ignore - compiler use.</param>
-        public void Log(LogLevel level, string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            if (Enable)
-            {
-                AddEntry(level, msg, file, line);
-            }
-        }
+        #endregion
 
-        /// <summary>
-        /// Convenience function.
-        /// </summary>
-        /// <param name="msg">Content.</param>
-        /// <param name="file">Ignore - compiler use.</param>
-        /// <param name="line">Ignore - compiler use.</param>
+        #region Convenience functions
         public void Trace(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            if (Enable)
-            {
-                AddEntry(LogLevel.Trace, msg, file, line);
-            }
+            AddEntry(LogLevel.Trace, msg, file, line);
         }
 
-        /// <summary>
-        /// Convenience function.
-        /// </summary>
-        /// <param name="msg">Content.</param>
-        /// <param name="file">Ignore - compiler use.</param>
-        /// <param name="line">Ignore - compiler use.</param>
         public void Debug(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            if (Enable)
-            {
-                AddEntry(LogLevel.Debug, msg, file, line);
-            }
+            AddEntry(LogLevel.Debug, msg, file, line);
         }
 
-        /// <summary>
-        /// Convenience function.
-        /// </summary>
-        /// <param name="msg">Content.</param>
-        /// <param name="file">Ignore - compiler use.</param>
-        /// <param name="line">Ignore - compiler use.</param>
         public void Info(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            if (Enable)
-            {
-                AddEntry(LogLevel.Info, msg, file, line);
-            }
+            AddEntry(LogLevel.Info, msg, file, line);
         }
 
-        /// <summary>
-        /// Convenience function.
-        /// </summary>
-        /// <param name="msg">Content.</param>
-        /// <param name="file">Ignore - compiler use.</param>
-        /// <param name="line">Ignore - compiler use.</param>
         public void Warn(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            if (Enable)
-            {
-                AddEntry(LogLevel.Warn, msg, file, line);
-            }
+            AddEntry(LogLevel.Warn, msg, file, line);
         }
 
-        /// <summary>
-        /// Convenience function.
-        /// </summary>
-        /// <param name="msg">Content.</param>
-        /// <param name="file">Ignore - compiler use.</param>
-        /// <param name="line">Ignore - compiler use.</param>
         public void Error(string msg, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            // Always log errors.
             AddEntry(LogLevel.Error, msg, file, line);
         }
 
-        /// <summary>
-        /// Log a caught exception. Adds info about who raised it
-        /// </summary>
-        /// <param name="ex">The exception.</param>
-        /// <param name="msg">Extra info.</param>
-        public void Exception(Exception ex, string msg = "")
+        public void Exception(Exception ex, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
-            msg = msg.Length == 0 ? "" : " " + msg;
-            // Find out who threw it.
-            StackTrace st = new(ex, true);
-            if (st.FrameCount > 0)
-            {
-                StackFrame? stf = st.GetFrame(0);
-                string stfn = (stf != null && stf.GetFileName() != null) ? stf.GetFileName()! : "???";
-                int stline = stf == null ? -1 : stf.GetFileLineNumber();
-                AddEntry(LogLevel.Error, $"{ex.Message}{msg}", stfn, stline);
-            }
-            else
-            {
-                AddEntry(LogLevel.Error, $"{ex.Message}{msg}", "???", -1);
-            }
+            AddEntry(LogLevel.Error, $"{ex.Message}", file, line);
+            AddEntry(LogLevel.Error, $"{new StackTrace(ex, true)}", file, line);
         }
         #endregion
 
@@ -398,16 +300,17 @@ namespace Ephemera.NBagOfTricks // TODO clean up all
         /// <param name="line"></param>
         void AddEntry(LogLevel level, string msg, string file, int line)
         {
-            // Sanity check for script clients.
-            level = (LogLevel)MathUtils.Constrain((int)level, (int)LogLevel.Trace, (int)LogLevel.Error);
+            if (Enable || level == LogLevel.Error)
+            {
+                // Sanity check for script clients.
+                level = (LogLevel)MathUtils.Constrain((int)level, (int)LogLevel.Trace, (int)LogLevel.Error);
 
-            file = Path.GetFileName(file);
-            LogEntry le = new(DateTime.Now, level, Name, file, line, msg);
-            // Manager expedites.
-            LogManager.LogThis(le);
+                file = Path.GetFileName(file);
+                LogEntry le = new(DateTime.Now, level, Name, file, line, msg);
+                // Manager expedites.
+                LogManager.LogThis(le);
+            }
         }
         #endregion
     }
-
-
 }

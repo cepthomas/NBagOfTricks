@@ -51,24 +51,11 @@ namespace Ephemera.NBagOfTricks
         }
 
         /// <summary>
-        /// Display the application readme.
-        /// </summary>
-        /// <param name="appName"></param>
-        /// <returns></returns>
-        public static void ShowReadme(string appName)
-        {
-            string uri = $"https://github.com/cepthomas/{appName}/blob/main/README.md";
-            var info = new ProcessStartInfo(uri) { UseShellExecute = true };
-            var proc = new Process() { StartInfo = info };
-            proc.Start();
-        }
-
-        /// <summary>
         /// Endian support.
         /// </summary>
         /// <param name="i">Number to fix.</param>
         /// <returns>Fixed number.</returns>
-        public static UInt32 FixEndian(UInt32 i)
+        public static uint FixEndian(uint i)
         {
             return BitConverter.IsLittleEndian ?
                 ((i & 0xFF000000) >> 24) | ((i & 0x00FF0000) >> 8) | ((i & 0x0000FF00) << 8) | ((i & 0x000000FF) << 24) :
@@ -80,30 +67,11 @@ namespace Ephemera.NBagOfTricks
         /// </summary>
         /// <param name="i">Number to fix.</param>
         /// <returns>Fixed number.</returns>
-        public static UInt16 FixEndian(UInt16 i)
+        public static ushort FixEndian(ushort i)
         {
             return BitConverter.IsLittleEndian ?
-                (UInt16)(((i & 0xFF00) >> 8) | ((i & 0x00FF) << 8)) :
+                (ushort)(((i & 0xFF00) >> 8) | ((i & 0x00FF) << 8)) :
                 i;
-        }
-
-        /// <summary>
-        /// Create a new clean filename for export. Creates path if it doesn't exist.
-        /// </summary>
-        /// <param name="path">Export path</param>
-        /// <param name="baseFn">Root of the new file name</param>
-        /// <param name="mod">Modifier</param>
-        /// <param name="ext">File extension</param>
-        /// <returns></returns>
-        public static string MakeExportFileName(string path, string baseFn, string mod, string ext)
-        {
-            string name = Path.GetFileNameWithoutExtension(baseFn);
-
-            // Clean the file name.
-            name = name.Replace('.', '-').Replace(' ', '_');
-            mod = mod == "" ? "default" : mod.Replace(' ', '_');
-            var newfn = Path.Join(path, $"{name}_{mod}.{ext}");
-            return newfn;
         }
         #endregion
 
@@ -184,70 +152,5 @@ namespace Ephemera.NBagOfTricks
             }
         }
         #endregion
-
-
-        /// <summary>How to render</summary>
-        public enum MarkdownMode
-        {
-            Simple,     // Plain page with TOC at the top.
-            DarkApi,    // Dark page with TOC on the left.
-            LightApi    // Light page with TOC on the right.
-        }
-
-        /// <summary>
-        /// Convert list of markdown lines to html.
-        /// </summary>
-        /// <param name="body">The md text.</param>
-        /// <param name="mode">What flavor.</param>
-        /// <param name="show">If true open in browser.</param>
-        /// <returns>Valid html.</returns>
-        public static string MarkdownToHtml(List<string> body, MarkdownMode mode, bool show) // TODO find a better home
-        {
-            // Put it together.
-            var mdText = new List<string>();
-
-            switch (mode)
-            {
-                case MarkdownMode.Simple:
-                    mdText.Add($"<style>body {{ background-color: LightYellow; font-family: arial; font-size: 16; }}</style>");
-                    mdText.AddRange(body);
-                    mdText.Add(@"<style class=""fallback"">body{{visibility:hidden}}</style>");
-                    mdText.Add(@"<script src =""https://casual-effects.com/markdeep/latest/markdeep.min.js"" charset=""utf-8""></script>");
-                    mdText.Add(@"<script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=""visible"")</script>");
-                    break;
-
-                case MarkdownMode.DarkApi:
-                    mdText.Add(@"<meta charset=""utf-8"">");
-                    mdText.Add(@"<link rel=""stylesheet"" href=""https://casual-effects.com/markdeep/latest/slate.css?"">");
-                    mdText.AddRange(body);
-                    mdText.Add(@"<style class=""fallback"">body{{visibility:hidden}}</style>");
-                    mdText.Add(@"<script>markdeepOptions={tocStyle:'long'};</script>");
-                    mdText.Add(@"<script src =""https://casual-effects.com/markdeep/latest/markdeep.min.js"" charset=""utf-8""></script>");
-                    mdText.Add(@"<script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=""visible"")</script>");
-                    break;
-
-                case MarkdownMode.LightApi:
-                    mdText.Add(@"<meta charset=""utf-8"">");
-                    mdText.Add(@"<link rel=""stylesheet"" href=""https://casual-effects.com/markdeep/latest/apidoc.css?"">");
-                    mdText.AddRange(body);
-                    mdText.Add(@"<style class=""fallback"">body{visibility:hidden}</style><script>markdeepOptions={tocStyle:'medium'};</script>");
-                    mdText.Add(@"<script src=""https://casual-effects.com/markdeep/latest/markdeep.min.js?"" charset=""utf-8""></script>");
-                    mdText.Add(@"<script>window.alreadyProcessedMarkdeep||(document.body.style.visibility=""visible"")</script>");
-                    break;
-            }
-
-            string htmlText = string.Join(Environment.NewLine, mdText);
-
-            if (show)
-            {
-                string fn = Path.GetTempFileName() + ".html";
-                File.WriteAllText(fn, string.Join(Environment.NewLine, mdText));
-                new Process { StartInfo = new ProcessStartInfo(fn) { UseShellExecute = true } }.Start();
-            }
-
-            return htmlText;
-        }
-
-
     }
 }

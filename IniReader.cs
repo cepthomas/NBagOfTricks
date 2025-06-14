@@ -11,21 +11,26 @@ namespace Ephemera.NBagOfTricks
         public int LineNum { get; init; } = lineNum;
     }
 
-    public class IniReader // TODO clean up + test below
+    public class Section
     {
-        public Dictionary<string, Dictionary<string, string>> Contents { get; } = [];
+        public string Name { get; set; } = "???";
+        public Dictionary<string, string> Values { get; set; } = [];
+    }
+
+    public class IniReader
+    {
+        public Dictionary<string, Section> Contents { get; } = [];
 
         public IniReader(string fn)
         {
-            string currentSection = "";
-            Dictionary<string, string> currentValues = [];
+            Section? currentSection = null;
             int lineNum = 0;
 
             foreach (var inline in File.ReadAllLines(fn))
             {
                 lineNum++;
 
-                // Strip comments.
+                ///// Clean up line, strip comments.
                 var cmt = inline.IndexOf(';');
                 var line = cmt >= 0 ? inline[0..cmt] : inline;
 
@@ -37,23 +42,23 @@ namespace Ephemera.NBagOfTricks
                     continue;
                 }
 
-                // Section?
+                ///// New section?
                 if (line[0] == '[')
                 {
                     if (line[^1 ] == ']')
                     {
-                        // New section. Is it the first?
-                        if (currentSection != "")
+                        // New section.
+                        if (currentSection is not null) // the first
                         {
-                            if (currentValues.Count > 0)
+                            if (currentSection.Values.Count > 0)
                             {
                                 // Save last.
-                                Contents[currentSection] = currentValues;
-                                currentValues = new();
+                                Contents[currentSection.Name] = currentSection;
+                                //currentValues = new();
                             }
                             else
                             {
-                                throw new IniSyntaxException($"Section {currentSection} has no elements", lineNum);
+                                throw new IniSyntaxException($"Section {currentSection.Name} has no elements", lineNum);
                             }
                         }
 
@@ -63,8 +68,7 @@ namespace Ephemera.NBagOfTricks
                             throw new IniSyntaxException($"Duplicate section: {inline}", lineNum);
                         }
 
-                        currentSection = sectionName;
-                        currentValues.Clear();
+                        currentSection = new() { Name = sectionName };
                     }
                     else
                     {
@@ -73,13 +77,13 @@ namespace Ephemera.NBagOfTricks
                     continue;
                 }
 
-                // Just a value.
-                if (currentSection == "")
+                ///// Just a value.
+                if (currentSection is null)
                 {
                     throw new IniSyntaxException($"Global values not supported: {inline}", lineNum);
                 }
 
-                var parts = line.SplitByToken("=");
+                var parts = line.SplitByToken("="); // TODO support escaped '='
                 if (parts.Count !=2)
                 {
                     throw new IniSyntaxException($"Invalid value: {inline}", lineNum);
@@ -89,53 +93,19 @@ namespace Ephemera.NBagOfTricks
                 var lhs = parts[0].Replace("\"", "");
                 var rhs = parts[1].Replace("\"", "");
 
-                if (currentValues.ContainsKey(lhs))
+                if (currentSection.Values.ContainsKey(lhs))
                 {
                     throw new IniSyntaxException($"Duplicate key: {inline}", lineNum);
                 }
 
-                currentValues.Add(lhs, rhs); // TODO duplicate keys?
+                currentSection.Values.Add(lhs, rhs);
             }
 
             // Anything left?
-            if (currentValues.Count > 0)
+            if (currentSection is not null)
             {
-                // Save last.
-                Contents[currentSection] = currentValues;
-                currentValues = new();
+                Contents[currentSection.Name] = currentSection;
             }
-        }
-
-
-
-        public void Test()
-        {
-            try
-            {
-                var irdr = new IniReader("C:\\Dev\\Apps\\Treex\\treex.ini");
-
-                foreach (var section in irdr.Contents.Keys)
-                {
-                    Console.WriteLine($"Section: {section}");
-                    foreach (var item in irdr.Contents[section])
-                    {
-                        Console.WriteLine($"    {item.Key}={item.Value}");
-                    }
-                }
-            }
-            catch (IniSyntaxException ex)
-            {
-                Console.WriteLine($"Syntax error({ex.LineNum}): {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"!!! {ex.Message}");
-            }
-
-            //var ini = new IniFile("C:\\Dev\\Apps\\Treex\\treex.ini");
-
-            //IniStreamConfigurationProvider pp = new();
-            //var ini2 = pp.Read("C:\\Dev\\Apps\\Treex\\treex.ini");
         }
     }
 }
