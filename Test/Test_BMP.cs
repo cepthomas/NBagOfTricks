@@ -29,15 +29,15 @@ namespace Ephemera.NBagOfTricks.Test
             var bmpIn = (Bitmap)Image.FromFile(Path.Join(inputDir, "color-wheel.png")); // 500 x 500
 
             // Resize bitmap.
-            var bmpResize = BitmapUtils.ResizeBitmap(bmpIn, 300, 200);
+            var bmpResize = bmpIn.ResizeBitmap(300, 200);
             bmpResize.Save(Path.Join(outputDir, "resize.png"), ImageFormat.Png);
 
             // Convert grayscale.
-            var bmpGray = BitmapUtils.ConvertToGrayscale(bmpIn);
+            var bmpGray = bmpIn.ConvertToGrayscale();
             bmpGray.Save(Path.Join(outputDir, "grayscale.png"), ImageFormat.Png);
 
             // Colorize.
-            var bmpColorize = BitmapUtils.ColorizeBitmap(bmpIn, Color.Yellow, Color.FromArgb(0x00, 0x80, 0x00));
+            var bmpColorize = bmpIn.ColorizeBitmap(Color.Yellow, Color.FromArgb(0x00, 0x80, 0x00));
             bmpColorize.Save(Path.Join(outputDir, "colorize.png"), ImageFormat.Png);
         }
     }

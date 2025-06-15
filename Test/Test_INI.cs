@@ -32,27 +32,6 @@ namespace Ephemera.NBagOfTricks.Test
             UT_EQUAL(irdr.Contents["Some lists"].Values.Count, 2);
 
             // TODO more tests.
-
-
-            //try
-            //{
-            //    foreach (var section in irdr.Contents.Keys)
-            //    {
-            //        Console.WriteLine($"Section: {section}");
-            //        foreach (var item in irdr.Contents[section])
-            //        {
-            //            Console.WriteLine($"    {item.Key}={item.Value}");
-            //        }
-            //    }
-            //}
-            //catch (IniSyntaxException ex)
-            //{
-            //    Console.WriteLine($"Syntax error({ex.LineNum}): {ex.Message}");
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine($"!!! {ex.Message}");
-            //}
         }
     }
 }

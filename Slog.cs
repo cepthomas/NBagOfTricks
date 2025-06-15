@@ -237,7 +237,6 @@ namespace Ephemera.NBagOfTricks
         #endregion
     }
 
-
     /// <summary>Client creates as many of these as needed.</summary>
     /// <remarks>
     /// Constructor.

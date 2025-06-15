@@ -126,11 +126,3 @@ namespace NBagOfTricks.Test
         }
     }
 }
-
-//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:62) SLOG_BASIC.1 [4] should be [3]
-//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:65) SLOG_BASIC.4 condition should be true
-//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:68) SLOG_BASIC.5 [5] should be [3]
-//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:62) SLOG_BASIC.1 [4] should be [3]
-//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:65) SLOG_BASIC.4 condition should be true
-//! (C:\Dev\Libs\NBagOfTricks\Test\Test_SLOG.cs:68) SLOG_BASIC.5 [5] should be [3]
-

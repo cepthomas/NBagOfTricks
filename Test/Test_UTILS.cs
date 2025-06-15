@@ -14,6 +14,8 @@ using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfTricks.PNUT;
 
 
+// Tests for the *Utils.cs components.
+
 namespace Ephemera.NBagOfTricks.Test
 {
     public class UTILS_EXTENSIONS : TestSuite
@@ -47,100 +49,19 @@ namespace Ephemera.NBagOfTricks.Test
         }
     }
 
-    public class UTILS_SETTINGS : TestSuite
-    {
-        public class TestSettings : SettingsCore
-        {
-            public List<string> TestList { get; set; } = new();
-
-            [JsonConverter(typeof(JsonColorConverter))]
-            public Color? TestColor { get; set; } = Color.Salmon;
-
-            public string TestString { get; set; } = "Just a test";
-        }
-
-        public override void RunSuite()
-        {
-            UT_INFO("Test SettingsCore.");
-
-            const string TEST_FN = "set-test.json";
-
-            File.Delete(TEST_FN);
-
-            TestSettings set = (TestSettings)TestSettings.Load(".", typeof(TestSettings), TEST_FN);
-
-            UT_TRUE(!File.Exists(TEST_FN));
-
-            UT_TRUE(set.TestColor.ToString()!.Contains("Salmon"));
-
-            set.FormGeometry = new Rectangle(20, 50, 100, 200);
-            set.TestString = "hoohaa";
-            set.TestList.Add("item1");
-            set.TestList.Add("item2");
-            set.TestList.Add("item3");
-
-            set.UpdateMru(Path.GetFullPath("Ephemera.NBagOfTricks.dll"));
-            set.UpdateMru(Path.GetFullPath("Ephemera.NBagOfTricks.xml"));
-            set.UpdateMru(@"C:\bad\path\file.xyz");
-
-            UT_EQUAL(set.RecentFiles.Count, 2);
-
-            set.Save();
-            UT_TRUE(File.Exists(TEST_FN));
-
-            // Check recent file list.
-            File.ReadAllLines(TEST_FN).ForEach(l => Debug.WriteLine(l));
-        }
-    }
-
-    public class UTILS_WATCHER : TestSuite
+    public class UTILS_MISC : TestSuite
     {
         public override void RunSuite()
         {
-            UT_INFO("Test MultiFileWatcher.");
+            UT_INFO("Test misc utils.");
 
-            int iters = 3;
+            var dir = MiscUtils.GetAppDataDir("Test");
+            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Roaming\Test");
 
-            // The watcher is slow so we have to wait a bit.
-            int delay = 200;
+            dir = MiscUtils.GetAppDataDir("Bar", "Test");
+            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Roaming\Test\Bar");
 
-            List<string> filesTouched = new(); // capture
-            MultiFileWatcher _watcher = new();
-            _watcher.FileChange += (object? sender, MultiFileWatcher.FileChangeEventArgs e) => { filesTouched.AddRange(e.FileNames); };
-
-            // Create fake files.
-            List<string> testFilesToWatch = new();
-            for (int i = 0; i < iters; i++)
-            {
-                var fn = Path.Combine(MiscUtils.GetSourcePath(), "out", $"test_{i + 1}.txt");
-                testFilesToWatch.Add(fn);
-                _watcher.Add(fn);
-            }
-
-            System.Threading.Thread.Sleep(delay);
-
-            UT_EQUAL(_watcher.WatchedFiles.Count, iters);
-            UT_EQUAL(filesTouched.Count, 0);
-
-            // Touch the files.
-            testFilesToWatch.ForEach(fn => File.WriteAllText(fn, "AAAAAA"));
-            System.Threading.Thread.Sleep(delay);
-
-            UT_EQUAL(_watcher.WatchedFiles.Count, iters);
-            UT_EQUAL(filesTouched.Count, iters);
-
-            _watcher.Clear();
-            System.Threading.Thread.Sleep(delay);
-
-            UT_EQUAL(_watcher.WatchedFiles.Count, 0);
-
-            // Post clear should still work.
-            filesTouched.Clear();
-            testFilesToWatch.ForEach(fn => { _watcher.Add(fn); File.WriteAllText(fn, "BBBBBB"); });
-            System.Threading.Thread.Sleep(delay);
-
-            UT_EQUAL(_watcher.WatchedFiles.Count, iters);
-            UT_EQUAL(filesTouched.Count, iters);
+            Tools.ShowReadme("NBagOfTricks");
         }
     }
 }

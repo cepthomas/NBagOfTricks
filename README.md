@@ -14,7 +14,8 @@ Probably I should make this into a nuget package at some point.
 ## Components
 - MmTimerEx: A theoretically better multimedia timer with improved accuracy for sub 10 msec period.
 - MultiFileWatcher: Multiple file change watcher.
-- TimeIt: High speed event statistics.
+- TimeAnalyzer: High speed event statistics.
+- TimeIt: Simple profiler.
 
 ## Various utilities and extensions
 - MathUtils: Numbers are good.

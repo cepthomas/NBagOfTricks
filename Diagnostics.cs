@@ -7,39 +7,48 @@ using System.Linq;
 
 namespace Ephemera.NBagOfTricks
 {
-    /// <summary>
-    /// Diagnostics for timing measurement and analysis.
-    /// </summary>
+    /// <summary>Simple profiler.</summary>
     public class TimeIt
     {
-        // old TimeIt
-        //long _startTick = 0;
-        //long _lastTick = 0;
-        //public List<string> Captures { get; set; } = [];
-        //public TimeIt()
-        //{
-        //    _startTick = Stopwatch.GetTimestamp();
-        //    _lastTick = _startTick;
-        //}
-        //public void Snap(string msg)
-        //{
-        //    long tick = Stopwatch.GetTimestamp();
-        //    var durMsec = FormatTicks(tick - _lastTick);
-        //    var totMsec = FormatTicks(tick - _startTick);
-        //    var s = $"dur:{durMsec} tot:{totMsec} {msg}";
-        //    Captures.Add(s);
+        #region Fields
+        long _startTick = 0;
+        long _lastTick = 0;
+        #endregion
 
-        //    _lastTick = tick;
-        //}
-        //string FormatTicks(long ticks)
-        //{
-        //    double dur = 1000.0 * ticks / Stopwatch.Frequency;
-        //    return dur.ToString("000.000");
-        //}
+        #region Properties
+        public List<string> Captures { get; set; } = [];
+        #endregion
 
+        public TimeIt()
+        {
+           _startTick = Stopwatch.GetTimestamp();
+           _lastTick = _startTick;
+        }
+
+        public void Snap(string msg)
+        {
+           long tick = Stopwatch.GetTimestamp();
+           var durMsec = FormatTicks(tick - _lastTick);
+           var totMsec = FormatTicks(tick - _startTick);
+           var s = $"dur:{durMsec} tot:{totMsec} {msg}";
+           Captures.Add(s);
+
+           _lastTick = tick;
+        }
+
+        string FormatTicks(long ticks)
+        {
+           double dur = 1000.0 * ticks / Stopwatch.Frequency;
+           return dur.ToString("000.000");
+        }
+    }
+
+    /// <summary>Diagnostics for timing measurement and analysis.</summary>
+    public class TimeAnalyzer
+    {
         #region Fields
         /// <summary>The internal timer.</summary>
-        readonly Stopwatch _watch = new();
+        readonly Stopwatch _sw = new();
 
         /// <summary>Last grab time for calculating diff.</summary>
         long _lastTicks = -1;
@@ -85,7 +94,7 @@ namespace Ephemera.NBagOfTricks
         /// </summary>
         public void Stop()
         {
-            _watch.Stop();
+            _sw.Stop();
             Times.Clear();
             _lastTicks = -1;
         }
@@ -95,13 +104,13 @@ namespace Ephemera.NBagOfTricks
         /// </summary>
         public void Arm()
         {
-            if (!_watch.IsRunning)
+            if (!_sw.IsRunning)
             {
                 _lastTicks = -1;
-                _watch.Start();
+                _sw.Start();
             }
 
-            _lastTicks = _watch.ElapsedTicks;
+            _lastTicks = _sw.ElapsedTicks;
         }
 
         /// <summary>
@@ -111,7 +120,7 @@ namespace Ephemera.NBagOfTricks
         public double ReadOne()
         {
             double dt = 0.0;
-            long t = _watch.ElapsedTicks; // snap!
+            long t = _sw.ElapsedTicks; // snap!
 
             if (Times.Count >= SampleSize)
             {
@@ -130,16 +139,16 @@ namespace Ephemera.NBagOfTricks
         /// <summary>
         /// Grab a data point. Also auto starts the timer.
         /// </summary>
-        /// <returns>New stats are available.</returns>
+        /// <returns>True - new stats are available.</returns>
         public bool Grab()
         {
             bool stats = false;
 
-            if(!_watch.IsRunning)
+            if(!_sw.IsRunning)
             {
                 Times.Clear();
                 _lastTicks = -1;
-                _watch.Start();
+                _sw.Start();
             }
 
             if (Times.Count >= SampleSize)
@@ -147,7 +156,7 @@ namespace Ephemera.NBagOfTricks
                 Times.Clear();
             }
 
-            long et = _watch.ElapsedTicks; // snap!
+            long et = _sw.ElapsedTicks; // snap!
 
             if (_lastTicks != -1 && _skipCount-- < 0)
             {
@@ -204,4 +213,63 @@ namespace Ephemera.NBagOfTricks
             return 1000.0 * ticks / Stopwatch.Frequency;
         }
     }
+
+    /*
+    /// <summary>TODO Experimental class to log enter/exit scope. Use syntax "using new Scoper(...);"</summary>
+    public sealed class Scoper : IDisposable
+    {
+        readonly Logger _logger;
+        readonly string _id;
+
+        public Scoper(Logger logger, string id)
+        {
+            _logger = logger;
+            _id = id;
+            _logger.Trace($"{_id}: Enter scope");
+        }
+
+        public void Dispose()
+        {
+            _logger.Trace($"{_id}: Leave scope");
+        }
+    }
+
+    public class MISC_SCOPER : TestSuite
+    {
+        readonly Logger _loggerS = LogManager.CreateLogger("TestLoggerS");
+
+        public override void RunSuite()
+        {
+            UT_INFO("Test scoper.");
+
+            File.Delete(SLOG_FILE);
+            LogManager.MinLevelFile = LogLevel.Trace;
+            LogManager.MinLevelNotif = LogLevel.Trace;
+            LogManager.Run(Defs.SLOG_FILE, 1000);
+
+            int i = 0;
+            
+            using Scoper s1 = new(_loggerS, "111");
+            if (i++ < 100)
+            {
+                using Scoper s2 = new(_loggerS, "222");
+                if (i++ < 100)
+                {
+                    using Scoper s3 = new(_loggerS, "333");
+                }
+            }
+
+            if (i++ < 100)
+            {
+                using Scoper s4 = new(_loggerS, "444");
+            }
+
+            using Scoper s5 = new(_loggerS, "555");
+            if (i++ < 100)
+            {
+                using Scoper s6 = new(_loggerS, "666");
+            }
+        }
+    }
+    */
 }
