@@ -64,7 +64,7 @@ namespace Ephemera.NBagOfTricks
         /// <param name="width">The width to resize to.</param>
         /// <param name="height">The height to resize to.</param>
         /// <returns>The resized image.</returns>
-        public static Bitmap ResizeBitmap(this Bitmap bmp, int width, int height)
+        public static Bitmap Resize(this Bitmap bmp, int width, int height)
         {
             Bitmap result = new(width, height);
             result.SetResolution(bmp.HorizontalResolution, bmp.VerticalResolution);
@@ -91,7 +91,7 @@ namespace Ephemera.NBagOfTricks
         /// <param name="newcol"></param>
         /// <param name="replace">Optional source color to replace. Defaults to black.</param>
         /// <returns></returns>
-        public static Bitmap ColorizeBitmap(this Bitmap original, Color newcol, Color replace = default)
+        public static Bitmap Colorize(this Bitmap original, Color newcol, Color replace = default)
         {
             Bitmap newbmp = new(original.Width, original.Height);
 
@@ -112,6 +112,30 @@ namespace Ephemera.NBagOfTricks
             }
 
             return newbmp;
+        }
+
+        /// <summary>
+        /// For debug purposes. This is not very efficient, could be improved.
+        /// </summary>
+        /// <param name="bmp"></param>
+        /// <param name="firstRow"></param>
+        /// <param name="numRows"></param>
+        /// <param name="info"></param>
+        public static List<(int x, int y, Color color)> Dump(this Bitmap bmp, int firstRow, int numRows, string info)
+        {
+            List<(int x, int y, Color color)> res = [];
+
+            for (int y = firstRow; y < firstRow + numRows && y < bmp.Height; y++)
+            {
+                for (int x = 0; x < bmp.Width; x++)
+                {
+                    // Get the pixel from the image.
+                    Color acolor = bmp.GetPixel(x, y);
+                    res.Add((x, y, acolor));
+                }
+            }
+
+            return res;
         }
     }
     #endregion

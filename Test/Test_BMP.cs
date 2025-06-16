@@ -13,11 +13,12 @@ using System.Threading;
 using Ephemera.NBagOfTricks;
 using System.Drawing.Imaging;
 using Ephemera.NBagOfTricks.PNUT;
+using System.Windows.Forms;
 
 
 namespace Ephemera.NBagOfTricks.Test
 {
-    public class BMP_EDIT : TestSuite
+    public class BMP_MAIN : TestSuite
     {
         public override void RunSuite()
         {
@@ -29,7 +30,7 @@ namespace Ephemera.NBagOfTricks.Test
             var bmpIn = (Bitmap)Image.FromFile(Path.Join(inputDir, "color-wheel.png")); // 500 x 500
 
             // Resize bitmap.
-            var bmpResize = bmpIn.ResizeBitmap(300, 200);
+            var bmpResize = bmpIn.Resize(300, 200);
             bmpResize.Save(Path.Join(outputDir, "resize.png"), ImageFormat.Png);
 
             // Convert grayscale.
@@ -37,7 +38,7 @@ namespace Ephemera.NBagOfTricks.Test
             bmpGray.Save(Path.Join(outputDir, "grayscale.png"), ImageFormat.Png);
 
             // Colorize.
-            var bmpColorize = bmpIn.ColorizeBitmap(Color.Yellow, Color.FromArgb(0x00, 0x80, 0x00));
+            var bmpColorize = bmpIn.Colorize(Color.Yellow, Color.FromArgb(0x00, 0x80, 0x00));
             bmpColorize.Save(Path.Join(outputDir, "colorize.png"), ImageFormat.Png);
         }
     }

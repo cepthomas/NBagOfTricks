@@ -214,62 +214,23 @@ namespace Ephemera.NBagOfTricks
         }
     }
 
-    /*
-    /// <summary>TODO Experimental class to log enter/exit scope. Use syntax "using new Scoper(...);"</summary>
+    /// <summary>TODO Experimental class to log enter/exit scope.</summary>
     public sealed class Scoper : IDisposable
     {
-        readonly Logger _logger;
         readonly string _id;
+        static readonly List<string> _captures = [];
 
-        public Scoper(Logger logger, string id)
+        public static List<string> Captures { get { return _captures; } }
+
+        public Scoper(string id)
         {
-            _logger = logger;
             _id = id;
-            _logger.Trace($"{_id}: Enter scope");
+            _captures.Add($"{_id}: Enter scope");
         }
 
         public void Dispose()
         {
-            _logger.Trace($"{_id}: Leave scope");
+            _captures.Add($"{_id}: Leave scope");
         }
     }
-
-    public class MISC_SCOPER : TestSuite
-    {
-        readonly Logger _loggerS = LogManager.CreateLogger("TestLoggerS");
-
-        public override void RunSuite()
-        {
-            UT_INFO("Test scoper.");
-
-            File.Delete(SLOG_FILE);
-            LogManager.MinLevelFile = LogLevel.Trace;
-            LogManager.MinLevelNotif = LogLevel.Trace;
-            LogManager.Run(Defs.SLOG_FILE, 1000);
-
-            int i = 0;
-            
-            using Scoper s1 = new(_loggerS, "111");
-            if (i++ < 100)
-            {
-                using Scoper s2 = new(_loggerS, "222");
-                if (i++ < 100)
-                {
-                    using Scoper s3 = new(_loggerS, "333");
-                }
-            }
-
-            if (i++ < 100)
-            {
-                using Scoper s4 = new(_loggerS, "444");
-            }
-
-            using Scoper s5 = new(_loggerS, "555");
-            if (i++ < 100)
-            {
-                using Scoper s6 = new(_loggerS, "666");
-            }
-        }
-    }
-    */
 }

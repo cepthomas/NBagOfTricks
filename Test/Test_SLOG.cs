@@ -13,7 +13,7 @@ namespace NBagOfTricks.Test
 {
     class Defs
     {
-        public static string SLOG_FILE = Path.Combine(MiscUtils.GetSourcePath(), "out", "slog_log.txt");
+        public static string SLOG_FILE = Path.Combine(MiscUtils.GetSourcePath(), "out", "slog.log");
     }
 
     public class SLOG_BASIC : TestSuite

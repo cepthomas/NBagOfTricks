@@ -23,8 +23,8 @@ Probably I should make this into a nuget package at some point.
 - StringUtils: Mostly low-level extensions.
 - MusicDefinitions: Scales and chords.
 - ColorUtils: Conversion between `System.Color`, `ConsoleColor` and ANSI format.
-- KeyUtils: Keyboard input.
 - BitmapUtils: Make it easy to manipulate bitmaps.
+- IniReader: Read simple ini files.
 
 # Simple Logger
 - Singleton manager.

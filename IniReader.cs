@@ -6,24 +6,29 @@ using Ephemera.NBagOfTricks;
 
 namespace Ephemera.NBagOfTricks
 {
+    /// <summary>Reporting user errors.</summary>
     public class IniSyntaxException(string message, int lineNum) : Exception(message)
     {
         public int LineNum { get; init; } = lineNum;
     }
 
-    public class Section
+    /// <summary>Contents of one section.</summary>
+    public class IniSection
     {
         public string Name { get; set; } = "???";
         public Dictionary<string, string> Values { get; set; } = [];
     }
 
+    /// <summary>Process the ini file.</summary>
     public class IniReader
     {
-        public Dictionary<string, Section> Contents { get; } = [];
+        /// <summary>What's in the file.</summary>
+        public Dictionary<string, IniSection> Contents { get; } = [];
 
+        /// <summary>Do it.</summary>
         public IniReader(string fn)
         {
-            Section? currentSection = null;
+            IniSection? currentSection = null;
             int lineNum = 0;
 
             foreach (var inline in File.ReadAllLines(fn))
@@ -58,7 +63,7 @@ namespace Ephemera.NBagOfTricks
                             }
                             else
                             {
-                                throw new IniSyntaxException($"Section {currentSection.Name} has no elements", lineNum);
+                                throw new IniSyntaxException($"IniSection {currentSection.Name} has no elements", lineNum);
                             }
                         }
 
