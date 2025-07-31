@@ -8,12 +8,6 @@ using System.Linq;
 
 namespace Ephemera.NBagOfTricks
 {
-
-
-
-
-
-
     #region Types
     /// <summary>ConsoleColor variation with None added.</summary>
     public enum ConsoleColorEx
