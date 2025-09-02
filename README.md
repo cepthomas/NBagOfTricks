@@ -7,7 +7,7 @@ No dependencies on external components.
 
 Probably I should make this into a nuget package at some point.
 
-![logo](felix.jpg)
+![logo](felix200.jpg)
 
 # Core
 
