@@ -213,24 +213,4 @@ namespace Ephemera.NBagOfTricks
             return 1000.0 * ticks / Stopwatch.Frequency;
         }
     }
-
-    /// <summary>TODO Experimental class to log enter/exit scope.</summary>
-    public sealed class Scoper : IDisposable
-    {
-        readonly string _id;
-        static readonly List<string> _captures = [];
-
-        public static List<string> Captures { get { return _captures; } }
-
-        public Scoper(string id)
-        {
-            _id = id;
-            _captures.Add($"{_id}: Enter scope");
-        }
-
-        public void Dispose()
-        {
-            _captures.Add($"{_id}: Leave scope");
-        }
-    }
 }

@@ -101,11 +101,64 @@ namespace Ephemera.NBagOfTricks
             if (show)
             {
                 string fn = Path.GetTempFileName() + ".html";
-                File.WriteAllText(fn, string.Join(Environment.NewLine, mdText));
-                new Process { StartInfo = new ProcessStartInfo(fn) { UseShellExecute = true } }.Start();
+                try
+                {
+                    File.WriteAllText(fn, string.Join(Environment.NewLine, mdText));
+                    new Process { StartInfo = new ProcessStartInfo(fn) { UseShellExecute = true } }.Start();
+                }
+                finally
+                {
+                    File.Delete(fn);
+                }
             }
 
             return htmlText;
+        }
+
+        /// <summary>Execute a chunk of lua code (not file).</summary>
+        /// <param name="scode">The code</param>
+        /// <returns>Exit code, stdout</returns>
+        public static (int ecode, string sret) ExecuteLuaCode(string scode)
+        {
+            var fn = Path.GetTempFileName();
+            var ecode = 0;
+            var sret = "";
+
+            try
+            {
+                File.WriteAllText(fn, scode);
+                ProcessStartInfo pinfo = new("lua", [fn])
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                };
+
+                using Process proc = new() { StartInfo = pinfo };
+                proc.Start();
+
+                // TIL: To avoid deadlocks, always read the output stream first and then wait.
+                var stdout = proc.StandardOutput.ReadToEnd();
+                var stderr = proc.StandardError.ReadToEnd();
+
+                proc.WaitForExit();
+
+                ecode = proc.ExitCode == 0 ? 0 : proc.ExitCode;
+                sret = proc.ExitCode == 0 ? stdout : stderr;
+            }
+            catch (Exception ex)
+            {
+                ecode = -1;
+                sret = $"Failed: {ex}";
+            }
+            finally
+            {
+                File.Delete(fn);
+            }
+
+            return (ecode, sret);
         }
 
         /// <summary>
