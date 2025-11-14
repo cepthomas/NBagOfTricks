@@ -14,7 +14,7 @@ namespace Ephemera.NBagOfTricks
     {
         #region Fields
         /// <summary>The chord/scale note definitions. Key is chord/scale name, value is list of constituent notes.</summary>
-        static Dictionary<string, List<string>> _chordsScales = new Dictionary<string, List<string>>();
+        static readonly Dictionary<string, List<string>> _chordsScales = [];
 
         /// <summary>all the notes.</summary>
         const int NOTES_PER_OCTAVE = 12;
@@ -41,7 +41,7 @@ namespace Ephemera.NBagOfTricks
         /// <returns></returns>
         public static List<string> FormatDoc()
         {
-            List<string> docs = new();
+            List<string> docs = [];
 
             docs.Add("# Chords");
             docs.Add("These are the built-in chords.");
@@ -59,29 +59,29 @@ namespace Ephemera.NBagOfTricks
 
         #region Note definitions
         /// <summary>All possible note names and aliases.</summary>
-        static readonly List<string> _noteNames = new()
-        {
-            "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B",
-            "B#", "C#", "", "D#", "Fb", "E#", "F#", "", "G#", "", "A#", "Cb",
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
-        };
+        static readonly List<string> _noteNames =
+        [
+            "C",  "Db", "D", "Eb", "E",  "F",  "Gb", "G", "Ab", "A",  "Bb", "B",
+            "B#", "C#", "",  "D#", "Fb", "E#", "F#", "",  "G#", "",   "A#", "Cb",
+            "1",  "2",  "3", "4",  "5",  "6",  "7",  "8", "9",  "10", "11", "12"
+        ];
 
         /// <summary>Helpers.</summary>
-        static readonly List<int> _naturals = new()
-        {
+        static readonly List<int> _naturals =
+        [
             0, 2, 4, 5, 7, 9, 11
-        };
+        ];
 
         /// <summary>Helpers.</summary>
-        static readonly List<string> _intervals = new()
-        {
-            "1", "b2", "2", "b3", "3", "4", "b5", "5", "#5", "6", "b7", "7",
-            "", "", "9", "#9", "", "11", "#11", "", "", "13", "", ""
-        };
+        static readonly List<string> _intervals =
+        [
+            "1", "b2", "2", "b3", "3", "4",  "b5",  "5", "#5", "6",  "b7", "7",
+            "",  "",   "9", "#9", "",  "11", "#11", "",  "",   "13", "",   ""
+        ];
 
         /// <summary>All the builtin chord defs.</summary>
         static readonly string[] _chordDefs =
-        {
+        [
             "M       | 1 3 5             | Named after the major 3rd interval between root and 3.",
             "m       | 1 b3 5            | Named after the minor 3rd interval between root and b3.",
             "7       | 1 3 5 b7          | Also called dominant 7th.",
@@ -110,11 +110,11 @@ namespace Ephemera.NBagOfTricks
             "sus4    | 1 4 5             |",
             "sus2    | 1 2 5             | Sometimes considered as an inverted sus4 (GCD).",
             "5       | 1 5               | Power chord."
-        };
+        ];
 
         /// <summary>All the builtin scale defs.</summary>
         static readonly string[] _scaleDefs =
-        {
+        [
             "Acoustic                      | 1 2 3 #4 5 6 b7              | Acoustic scale                           | whole tone        | minor",
             "Aeolian                       | 1 2 b3 4 5 b6 b7             | Aeolian mode or natural minor scale      | minor             | Phrygian",
             "NaturalMinor                  | 1 2 b3 4 5 b6 b7             | Aeolian mode or natural minor scale      | minor             | Phrygian",
@@ -162,19 +162,20 @@ namespace Ephemera.NBagOfTricks
             "UkrainianDorian               | 1 2 b3 #4 5 6 b7             | Ukrainian Dorian scale                   | Gypsy             | minor",
             "WholeTone                     | 1 2 3 #4 #5 #6               | Whole tone scale                         |                   |",
             "Yo                            | 1 b3 4 5 b7                  | Yo scale                                 |                   |"
-        };
+        ];
         #endregion
 
         #region Public note manipulation functions
         /// <summary>
         /// Convert note number into name.
         /// </summary>
-        /// <param name="inote"></param>
+        /// <param name="inote">Note number</param>
+        /// <param name="octave">Include octave</param>
         /// <returns></returns>
-        public static string NoteNumberToName(int inote)
+        public static string NoteNumberToName(int inote, bool octave = true)
         {
             var split = SplitNoteNumber(inote);
-            string s = $"{_noteNames[split.root]}{split.octave}";
+            string s = octave ? $"{_noteNames[split.root]}{split.octave}" : $"{_noteNames[split.root]}";
             return s;
         }
 
@@ -196,7 +197,7 @@ namespace Ephemera.NBagOfTricks
         /// <returns>List of note numbers - empty if invalid.</returns>
         public static List<int> GetNotesFromString(string noteString)
         {
-            List<int> notes = new();
+            List<int> notes = [];
 
             // Parse the input value.
             // Note: Need exception handling here to protect from user script errors.
@@ -219,7 +220,7 @@ namespace Ephemera.NBagOfTricks
                 if (soct.IsInteger())
                 {
                     octave = int.Parse(soct);
-                    snote = snote.Remove(snote.Length - 1);
+                    snote = snote[..^1];
                 }
 
                 // Figure out the root note.
@@ -240,7 +241,7 @@ namespace Ephemera.NBagOfTricks
                             string interval = chordNotes[p];
                             bool down = false;
 
-                            if (interval.StartsWith("-"))
+                            if (interval.StartsWith('-'))
                             {
                                 down = true;
                                 interval = interval.Replace("-", "");
@@ -328,7 +329,7 @@ namespace Ephemera.NBagOfTricks
         /// <returns></returns>
         public static List<string> FormatNotes(List<int> notes)
         {
-            List<string> snotes = new();
+            List<string> snotes = [];
 
             // Dissect root note.
             foreach (int n in notes)
@@ -358,10 +359,10 @@ namespace Ephemera.NBagOfTricks
         /// <returns>The list of notes or empty if invalid.</returns>
         public static List<string> GetChordScale(string name)
         {
-            List<string> ret = new();
-            if(_chordsScales.ContainsKey(name))
+            List<string> ret = [];
+            if(_chordsScales.TryGetValue(name, out List<string>? value))
             {
-                ret = _chordsScales[name];
+                ret = value;
             }
             //throw new ArgumentException($"Invalid chord or scale: {name}");
             return ret;
