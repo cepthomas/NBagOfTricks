@@ -123,12 +123,12 @@ namespace Ephemera.NBagOfTricks
         /// <param name="action">The action to execute on each element</param>
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
-            if(source is not null)
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
+            foreach (var element in source)
             {
-                foreach (var element in source)
-                {
-                    action(element);
-                }
+                action(element);
             }
         }
 
@@ -142,13 +142,13 @@ namespace Ephemera.NBagOfTricks
         /// of the action represents the index of the source element.</param>
         public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
         {
-            if(source is not null)
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (action == null) throw new ArgumentNullException(nameof(action));
+
+            var index = 0;
+            foreach (var element in source)
             {
-                var index = 0;
-                foreach (var element in source)
-                {
-                    action(element, index++);
-                }
+                action(element, index++);
             }
         }
         #endregion
