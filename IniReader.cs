@@ -26,7 +26,7 @@ namespace Ephemera.NBagOfTricks
         public Dictionary<string, IniSection> Contents { get; } = [];
 
         /// <summary>Do it.</summary>
-        public IniReader(string fn)
+        public IniReader(string fn) // "C:\Dev\Libs\MusicLib\Test\bin\net8.0-windows\music_defs.ini"
         {
             IniSection? currentSection = null;
             int lineNum = 0;
