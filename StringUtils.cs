@@ -90,7 +90,7 @@ namespace Ephemera.NBagOfTricks
         public static List<string> SplitByTokens(this string text, string tokens, bool trim = true)
         {
             var ret = new List<string>();
-            var list = text.Split(tokens.ToCharArray(), trim ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
+            var list = text.Split(tokens.ToCharArray(), trim ? StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries : StringSplitOptions.None);
             list.ForEach(s => ret.Add(trim ? s.Trim() : s));
             return ret;
         }
@@ -105,7 +105,7 @@ namespace Ephemera.NBagOfTricks
         public static List<string> SplitByToken(this string text, string splitby, bool trim = true)
         {
             var ret = new List<string>();
-            var list = text.Split(new string[] { splitby }, trim ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
+            var list = text.Split(new string[] { splitby }, trim ? StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries: StringSplitOptions.None);
             list.ForEach(s => ret.Add(trim ? s.Trim() : s));
             return ret;
         }

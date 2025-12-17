@@ -17,6 +17,11 @@ namespace Ephemera.NBagOfTricks.Test
         [STAThread]
         static void Main(string[] _)
         {
+            // Make sure out path exists.
+             var outPath = Path.Join(MiscUtils.GetSourcePath(), "out");
+            DirectoryInfo di = new(outPath);
+            di.Create();
+
             // Run pnut tests from cmd line.
             TestRunner runner = new(OutputFormat.Readable);
             //var cases = new[] { "INI" };
