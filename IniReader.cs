@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Ephemera.NBagOfTricks;
 
 
@@ -23,21 +24,56 @@ namespace Ephemera.NBagOfTricks
     public class IniReader
     {
         /// <summary>What's in the file.</summary>
-        public Dictionary<string, IniSection> Contents { get; } = [];
+        readonly List<IniSection> _contents = [];
 
-        /// <summary>Do it.</summary>
-        public IniReader(string fn) // "C:\Dev\Libs\MusicLib\Test\bin\net8.0-windows\music_defs.ini"
+        /// <summary>All section names</summary>
+        /// <returns>Names</returns>
+        public List<string> GetSectionNames()
+        {
+            return [.. _contents.Select(c => c.Name)];
+        }
+
+        /// <summary>Get values for the section name.</summary>
+        /// <param name="section"></param>
+        /// <returns></returns>
+        public Dictionary<string, string>? GetValues(string section)
+        {
+            var res = _contents.Where(c => c.Name == section);
+            if (res.Any())
+            {
+                return res.First().Values;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Process an ini file.
+        /// </summary>
+        /// <param name="fn"></param>
+        public void DoFile(string fn)
+        {
+            DoStrings(File.ReadAllLines(fn));
+        }
+
+        /// <summary>
+        /// Process an ini string.
+        /// </summary>
+        /// <param name="ls">Input</param>
+        public void DoStrings(IEnumerable<string> ls)
         {
             IniSection? currentSection = null;
             int lineNum = 0;
 
-            foreach (var inline in File.ReadAllLines(fn))
+            foreach (var ln in ls)
             {
                 lineNum++;
 
                 ///// Clean up line, strip comments.
-                var cmt = inline.IndexOf(';');
-                var line = cmt >= 0 ? inline[0..cmt] : inline;
+                var cmt = ln.IndexOf(';');
+                var line = cmt >= 0 ? ln[0..cmt] : ln;
 
                 line = line.Trim();
 
@@ -50,15 +86,15 @@ namespace Ephemera.NBagOfTricks
                 ///// New section?
                 if (line[0] == '[')
                 {
-                    if (line[^1 ] == ']')
+                    if (line[^1] == ']')
                     {
                         // New section.
-                        if (currentSection is not null) // the first
+                        if (currentSection is not null) // the first is null
                         {
                             if (currentSection.Values.Count > 0)
                             {
                                 // Save last.
-                                Contents[currentSection.Name] = currentSection;
+                                _contents.Add(currentSection);
                                 //currentValues = new();
                             }
                             else
@@ -68,16 +104,16 @@ namespace Ephemera.NBagOfTricks
                         }
 
                         var sectionName = line[1..^1];
-                        if (Contents.ContainsKey(sectionName))
-                        {
-                            throw new IniSyntaxException($"Duplicate section: {inline}", lineNum);
-                        }
+                        //if (Contents.ContainsKey(sectionName))
+                        //{
+                        //    throw new IniSyntaxException($"Duplicate section: {inline}", lineNum);
+                        //}
 
                         currentSection = new() { Name = sectionName };
                     }
                     else
                     {
-                        throw new IniSyntaxException($"Invalid section: {inline}", lineNum);
+                        throw new IniSyntaxException($"Invalid section: {ln}", lineNum);
                     }
                     continue;
                 }
@@ -85,13 +121,13 @@ namespace Ephemera.NBagOfTricks
                 ///// Just a value.
                 if (currentSection is null)
                 {
-                    throw new IniSyntaxException($"Global values not supported: {inline}", lineNum);
+                    throw new IniSyntaxException($"Global values not supported: {ln}", lineNum);
                 }
 
                 var parts = line.SplitByToken("="); // TODO support escaped '='
-                if (parts.Count !=2)
+                if (parts.Count != 2)
                 {
-                    throw new IniSyntaxException($"Invalid value: {inline}", lineNum);
+                    throw new IniSyntaxException($"Invalid value: {ln}", lineNum);
                 }
 
                 // Remove any quotes.
@@ -100,7 +136,7 @@ namespace Ephemera.NBagOfTricks
 
                 if (currentSection.Values.ContainsKey(lhs))
                 {
-                    throw new IniSyntaxException($"Duplicate key: {inline}", lineNum);
+                    throw new IniSyntaxException($"Duplicate key: {ln}", lineNum);
                 }
 
                 currentSection.Values.Add(lhs, rhs);
@@ -109,7 +145,7 @@ namespace Ephemera.NBagOfTricks
             // Anything left?
             if (currentSection is not null)
             {
-                Contents[currentSection.Name] = currentSection;
+                _contents.Add(currentSection);
             }
         }
     }

@@ -26,10 +26,15 @@ namespace Ephemera.NBagOfTricks.Test
             var inputDir = Path.Join(MiscUtils.GetSourcePath(), "Files");
             // var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
 
-            var irdr = new IniReader(Path.Join(inputDir, "valid.ini"));
-            UT_EQUAL(irdr.Contents.Count, 5);
-            UT_EQUAL(irdr.Contents["test123"].Values.Count, 5);
-            UT_EQUAL(irdr.Contents["Some lists"].Values.Count, 2);
+            var irdr = new IniReader();
+            irdr.DoFile(Path.Join(inputDir, "valid.ini"));
+            var sections = irdr.GetSectionNames();
+            UT_EQUAL(sections.Count, 5);
+
+            UT_EQUAL(irdr.GetValues("test123").Count, 5);
+            UT_EQUAL(irdr.GetValues("Some lists").Count, 2);
+            var vv = irdr.GetValues("not here lists");
+            UT_NULL(irdr.GetValues("not here lists"));
 
             // TODO more tests.
         }
