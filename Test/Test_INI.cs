@@ -27,14 +27,18 @@ namespace Ephemera.NBagOfTricks.Test
             // var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
 
             var irdr = new IniReader();
-            irdr.DoFile(Path.Join(inputDir, "valid.ini"));
+            irdr.ParseFile(Path.Join(inputDir, "valid.ini"));
             var sections = irdr.GetSectionNames();
             UT_EQUAL(sections.Count, 5);
 
             UT_EQUAL(irdr.GetValues("test123").Count, 5);
             UT_EQUAL(irdr.GetValues("Some lists").Count, 2);
-            var vv = irdr.GetValues("not here lists");
-            UT_NULL(irdr.GetValues("not here lists"));
+
+            // TODO a neater way to test exceptions:
+            var throws = false;
+            try { irdr.GetValues("not here lists"); }
+            catch { throws = true; }
+            UT_TRUE(throws);
 
             // TODO more tests.
         }

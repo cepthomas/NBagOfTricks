@@ -34,18 +34,18 @@ namespace Ephemera.NBagOfTricks
         }
 
         /// <summary>Get values for the section name.</summary>
-        /// <param name="section"></param>
-        /// <returns></returns>
-        public Dictionary<string, string>? GetValues(string section)
+        /// <param name="name"></param>
+        /// <returns>The section contents or throws if name is invalid.</returns>
+        public Dictionary<string, string> GetValues(string name)
         {
-            var res = _contents.Where(c => c.Name == section);
+            var res = _contents.Where(c => c.Name == name);
             if (res.Any())
             {
                 return res.First().Values;
             }
             else
             {
-                return null;
+                throw new ArgumentOutOfRangeException("Invalid section {name}");
             }
         }
 
@@ -53,19 +53,20 @@ namespace Ephemera.NBagOfTricks
         /// Process an ini file.
         /// </summary>
         /// <param name="fn"></param>
-        public void DoFile(string fn)
+        public void ParseFile(string fn)
         {
-            DoStrings(File.ReadAllLines(fn));
+            ParseString(File.ReadAllText(fn));
         }
 
         /// <summary>
         /// Process an ini string.
         /// </summary>
-        /// <param name="ls">Input</param>
-        public void DoStrings(IEnumerable<string> ls)
+        /// <param name="s">Input</param>
+        public void ParseString(string s)
         {
             IniSection? currentSection = null;
             int lineNum = 0;
+            var ls = s.SplitByTokens(Environment.NewLine);
 
             foreach (var ln in ls)
             {
