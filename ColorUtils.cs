@@ -51,7 +51,7 @@ namespace Ephemera.NBagOfTricks
                 // Sanity check. ESC[34m  ESC[38;5;IDm  ESC[38;2;R;G;Bm
                 if (ansi[0] != '\u001b' || ansi[1] != '[' || ansi.Last() != 'm')
                 {
-                    throw new Exception();
+                    throw new ArgumentException($"ansi:[{ArgumentException}]");
                 }
 
                 var parts = ansi[2..^1].SplitByToken(";").Select(i => int.Parse(i)).ToList();
@@ -182,7 +182,7 @@ namespace Ephemera.NBagOfTricks
 
             var ret = conclr switch
             {
-                // ConsoleColor.Name        System.Color                         ConsoleColor val  System.Color.Name
+                // ConsoleColor.Name        System.Color                    ConsoleColor val  System.Color.Name
                 ConsoleColor.Black       => MakeColor(0x00, 0x00, 0x00), // 0000              Black
                 ConsoleColor.DarkBlue    => MakeColor(0x00, 0x00, 0x80), // 0001              Navy
                 ConsoleColor.DarkGreen   => MakeColor(0x00, 0x80, 0x00), // 0010              Green
@@ -199,7 +199,7 @@ namespace Ephemera.NBagOfTricks
                 ConsoleColor.Magenta     => MakeColor(0xFF, 0x00, 0xFF), // 1101              Fuchsia
                 ConsoleColor.Yellow      => MakeColor(0xFF, 0xFF, 0x00), // 1110              Yellow
                 ConsoleColor.White       => MakeColor(0xFF, 0xFF, 0xFF), // 1111              White
-                _ => throw new ArgumentOutOfRangeException(nameof(conclr)),
+                _ => throw new ArgumentException(nameof(conclr)),
             };
             return ret;
         }

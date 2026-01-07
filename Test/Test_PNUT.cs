@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Ephemera.NBagOfTricks.PNUT;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 
 // Tests for pnut itself.
@@ -138,6 +139,39 @@ namespace Ephemera.NBagOfTricks.Test
             UT_GREATER(val1, val2);
 
             UT_GREATER(val2, val1);
+        }
+    }
+
+    public class PNUT_EXC : TestSuite
+    {
+        public override void RunSuite()
+        {
+            int ii = 99;
+            int zero = 0;
+
+            // Next test should pass on UT_THROWS.
+            UT_THROWS(typeof(DivideByZeroException), () =>
+            {
+                var zz = ii / zero;
+            });
+
+            UT_INFO("Next test should fail on UT_THROWS.");
+            UT_THROWS(typeof(ArgumentException), () =>
+            {
+                var zz = ii / zero;
+            });
+
+            // Next test should pass on UT_THROWS_NOT.
+            UT_THROWS_NOT(() =>
+            {
+                var zz = ii / 2;
+            });
+
+            UT_INFO("Next test should fail on UT_THROWS_NOT.");
+            UT_THROWS_NOT(() =>
+            {
+                var zz = ii / zero;
+            });
         }
     }
 

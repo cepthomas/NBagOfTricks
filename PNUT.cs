@@ -491,7 +491,7 @@ namespace Ephemera.NBagOfTricks.PNUT
         }
 
         /// <summary>
-        /// Prints the condition and gens assert/exception.
+        /// Prints the condition and gens assert exception.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value1"></param>
@@ -700,6 +700,72 @@ namespace Ephemera.NBagOfTricks.PNUT
             return pass;
         }
 
+        /// <summary>
+        /// Does the Action code throw?
+        /// </summary>
+        /// <param name="exType"></param>
+        /// <param name="act"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        protected bool UT_THROWS(Type exType, Action act, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
+        {
+            bool pass = true;
+            bool throws = false;
+
+            try
+            {
+                act.Invoke();
+            }
+            catch (Exception ex)
+            {
+                throws = ex.GetType() == exType;
+            }
+
+            if (!throws)
+            {
+                RecordResult(false, $"action did not throw {exType}", file, line);
+                pass = false;
+            }
+            else
+            {
+                RecordResult(true, $"", file, line);
+            }
+            return pass;
+        }
+
+        /// <summary>
+        /// Does the Action code not throw?
+        /// </summary>
+        /// <param name="act"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        protected bool UT_THROWS_NOT(Action act, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
+        {
+            bool pass = true;
+            bool throws = false;
+
+            try
+            {
+                act.Invoke();
+            }
+            catch (Exception)
+            {
+                throws = true;
+            }
+
+            if (throws)
+            {
+                RecordResult(false, $"action did throw", file, line);
+                pass = false;
+            }
+            else
+            {
+                RecordResult(true, $"", file, line);
+            }
+            return pass;
+        }
         #endregion
     }
 }

@@ -45,7 +45,7 @@ namespace Ephemera.NBagOfTricks
             }
             else
             {
-                throw new ArgumentOutOfRangeException("Invalid section {name}");
+                throw new InvalidOperationException("Invalid section {name}");
             }
         }
 

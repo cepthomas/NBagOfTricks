@@ -123,8 +123,8 @@ namespace Ephemera.NBagOfTricks
         /// <param name="action">The action to execute on each element</param>
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (source == null) throw new ArgumentNullException($"source");
+            if (action == null) throw new ArgumentNullException($"action");
 
             foreach (var element in source)
             {
@@ -142,8 +142,8 @@ namespace Ephemera.NBagOfTricks
         /// of the action represents the index of the source element.</param>
         public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (source == null) throw new ArgumentNullException($"source");
+            if (action == null) throw new ArgumentNullException($"action");
 
             var index = 0;
             foreach (var element in source)

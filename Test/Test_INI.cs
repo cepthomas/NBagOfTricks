@@ -34,11 +34,10 @@ namespace Ephemera.NBagOfTricks.Test
             UT_EQUAL(irdr.GetValues("test123").Count, 5);
             UT_EQUAL(irdr.GetValues("Some lists").Count, 2);
 
-            // TODO a neater way to test exceptions:
-            var throws = false;
-            try { irdr.GetValues("not here lists"); }
-            catch { throws = true; }
-            UT_TRUE(throws);
+            UT_THROWS(typeof(InvalidOperationException), () =>
+            {
+                irdr.GetValues("not here lists");
+            });
 
             // TODO more tests.
         }
