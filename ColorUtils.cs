@@ -51,7 +51,7 @@ namespace Ephemera.NBagOfTricks
                 // Sanity check. ESC[34m  ESC[38;5;IDm  ESC[38;2;R;G;Bm
                 if (ansi[0] != '\u001b' || ansi[1] != '[' || ansi.Last() != 'm')
                 {
-                    throw new ArgumentException($"ansi:[{ArgumentException}]");
+                    throw new ArgumentException($"invalid ansi:[{ansi}]");
                 }
 
                 var parts = ansi[2..^1].SplitByToken(";").Select(i => int.Parse(i)).ToList();
