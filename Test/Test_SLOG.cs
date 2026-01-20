@@ -63,7 +63,7 @@ namespace NBagOfTricks.Test
             UT_TRUE(_cbText[0].Contains("11111"));
             UT_TRUE(_cbText[1].Contains("22222"));
             UT_TRUE(_cbText[2].Contains("Attempted to divide by zero"));
-            UT_TRUE(_cbText[3].Contains("44444"));
+            UT_TRUE(_cbText[3].Contains("Test_SLOG.cs:line 45"));
             UT_TRUE(_cbText[4].Contains("55555"));
 
             var ftext = File.ReadAllLines(Defs.SLOG_FILE);
@@ -116,78 +116,10 @@ namespace NBagOfTricks.Test
                 _logger9.Info($"Entry{i}");
                 if (i == 25)
                 {
-                    Debug.WriteLine($"1  {LogManager.QueueSize}");
                     LogManager.Flush();
-                    Debug.WriteLine($"2  {LogManager.QueueSize}");
                 }
             }
-            Debug.WriteLine($"3  {LogManager.QueueSize}");
             LogManager.Flush();
-            Debug.WriteLine($"4  {LogManager.QueueSize}");
-        }
-    }
-
-    public class SLOG_OPTS : TestSuite
-    {
-        readonly Logger _logger9 = LogManager.CreateLogger("TestLogger9");
-        readonly List<string> _cbText = [];
-
-        public override void RunSuite()
-        {
-            UT_INFO("Test slog.");
-            UT_STOP_ON_FAIL(true);
-
-            _cbText.Clear();
-            File.Delete(Defs.SLOG_FILE);
-            LogManager.MinLevelFile = LogLevel.Debug;
-            LogManager.MinLevelNotif = LogLevel.Info;
-            LogManager.LogMessage += LogManager_LogMessage;
-            LogManager.Run(Defs.SLOG_FILE, 1000);
-
-            LogManager.Timestamp = true;
-            LogManager.SourceInfo = true;
-            _logger9.Info("11111 all");
-            //LogManager.Flush();
-
-            LogManager.Timestamp = true;
-            LogManager.SourceInfo = false;
-            _logger9.Info("22222 no source info");
-            //LogManager.Flush();
-
-            LogManager.Timestamp = false;
-            LogManager.SourceInfo = true;
-            _logger9.Info("33333 no timestamp");
-            //LogManager.Flush();
-
-            LogManager.Timestamp = false;
-            LogManager.SourceInfo = false;
-            _logger9.Info("44444 no options");
-            //LogManager.Flush();
-
-            LogManager.Stop();
-            Thread.Sleep(100);
-            Thread.Sleep(100);
-            Thread.Sleep(100);
-
-            ////////// Look at what we have.
-
-            //_cbText.ForEach(s => Debug.WriteLine(s));
-
-            var ftext = File.ReadAllLines(Defs.SLOG_FILE);
-            UT_EQUAL(ftext.Length, 4);
-            UT_TRUE(_cbText[0].Contains("INF TestLogger9 Test_SLOG.cs(149) 11111 all"));
-            UT_TRUE(ftext[0].Contains("INF TestLogger9 Test_SLOG.cs(149) 11111 all"));
-            UT_TRUE(_cbText[1].Contains("INF TestLogger9 22222 no source info"));
-            UT_TRUE(ftext[1].Contains("INF TestLogger9 22222 no source info"));
-            UT_EQUAL(_cbText[2], "INF TestLogger9 Test_SLOG.cs(161) 33333 no timestamp");
-            UT_EQUAL(ftext[2], "INF TestLogger9 Test_SLOG.cs(161) 33333 no timestamp");
-            UT_EQUAL(_cbText[3], "INF TestLogger9 44444 no options");
-            UT_EQUAL(ftext[3], "INF TestLogger9 44444 no options");
-        }
-
-        void LogManager_LogMessage(object? sender, LogMessageEventArgs e)
-        {
-            _cbText.Add(e.Message);
         }
     }
 }

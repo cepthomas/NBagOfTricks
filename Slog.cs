@@ -71,12 +71,6 @@ namespace Ephemera.NBagOfTricks
         /// <summary>Event filter for callback event.</summary>
         public static LogLevel MinLevelNotif { get; set; } = LogLevel.Info;
 
-        /// <summary>Add a timestamp.</summary>
-        public static bool Timestamp { get; set; } = true;
-
-        /// <summary>Add source file/line.</summary>
-        public static bool SourceInfo { get; set; } = true;
-
         /// <summary>Format for file records.</summary>
         public static string TimeFormat { get; set; } = "yyyy'-'MM'-'dd HH':'mm':'ss.fff";
 
@@ -155,12 +149,10 @@ namespace Ephemera.NBagOfTricks
                             {
                                 var fn = Path.GetFileName(le.SourceFile);
                                 var slevel = _levelNames[le.Level];
-                                var stime = Timestamp ? $"{DateTime.Now.ToString(TimeFormat)} " : "";
-                                var sinfo = SourceInfo ? $"{fn}({le.SourceLine}) " : "";
 
                                 if (writer is not null && le.Level >= MinLevelFile)
                                 {
-                                    string s = $"{stime}{slevel} {le.LoggerName} {sinfo}{le.Message}";
+                                    string s = $"{le.Timestamp.ToString(TimeFormat)} : {slevel} {le.LoggerName} {fn}({le.SourceLine}) {le.Message}";
                                     writer.WriteLine(s);
                                     writer.Flush();
                                 }
@@ -168,7 +160,7 @@ namespace Ephemera.NBagOfTricks
                                 if (LogMessage is not null && le.Level >= MinLevelNotif)
                                 {
                                     string smsg = $"{slevel} {le.Message}";
-                                    string msg = $"{slevel} {le.LoggerName} {sinfo}{le.Message}";
+                                    string msg = $"{slevel} {le.LoggerName} {le.Message}";
                                     LogMessage.Invoke(null, new LogMessageEventArgs() { Level = le.Level, Message = msg, ShortMessage = smsg });
                                 }
                             }
