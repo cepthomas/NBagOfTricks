@@ -293,7 +293,7 @@ namespace Ephemera.NBagOfTricks
         public void Exception(Exception ex, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             AddEntry(LogLevel.Error, $"{ex.Message}", file, line);
-            AddEntry(LogLevel.Error, $"{new StackTrace(ex, true)}", file, line);
+            AddEntry(LogLevel.Debug, $"{new StackTrace(ex, true)}", file, line);
         }
         #endregion
 

@@ -29,7 +29,7 @@ namespace NBagOfTricks.Test
             _cbText.Clear();
             File.Delete(Defs.SLOG_FILE);
             LogManager.MinLevelFile = LogLevel.Debug;
-            LogManager.MinLevelNotif = LogLevel.Info;
+            LogManager.MinLevelNotif = LogLevel.Debug;
             LogManager.LogMessage += LogManager_LogMessage;
             LogManager.Run(Defs.SLOG_FILE, 1000);
 
@@ -59,11 +59,12 @@ namespace NBagOfTricks.Test
             LogManager.Stop();
 
             ////////// Look at what we have.
-            UT_EQUAL(_cbText.Count, 4);
+            UT_EQUAL(_cbText.Count, 5);
             UT_TRUE(_cbText[0].Contains("11111"));
-            UT_TRUE(_cbText[1].Contains("Attempted to divide by zero"));
-            UT_TRUE(_cbText[2].Contains("44444"));
-            UT_TRUE(_cbText[3].Contains("55555"));
+            UT_TRUE(_cbText[1].Contains("22222"));
+            UT_TRUE(_cbText[2].Contains("Attempted to divide by zero"));
+            UT_TRUE(_cbText[3].Contains("44444"));
+            UT_TRUE(_cbText[4].Contains("55555"));
 
             var ftext = File.ReadAllLines(Defs.SLOG_FILE);
             UT_EQUAL(ftext.Length, 5);
@@ -134,7 +135,7 @@ namespace NBagOfTricks.Test
         public override void RunSuite()
         {
             UT_INFO("Test slog.");
-            UT_STOP_ON_FAIL(false);
+            UT_STOP_ON_FAIL(true);
 
             _cbText.Clear();
             File.Delete(Defs.SLOG_FILE);
@@ -146,52 +147,42 @@ namespace NBagOfTricks.Test
             LogManager.Timestamp = true;
             LogManager.SourceInfo = true;
             _logger9.Info("11111 all");
-            LogManager.Flush();
-            Thread.Sleep(100);
+            //LogManager.Flush();
 
             LogManager.Timestamp = true;
             LogManager.SourceInfo = false;
             _logger9.Info("22222 no source info");
-            LogManager.Flush();
-            Thread.Sleep(100);
+            //LogManager.Flush();
 
             LogManager.Timestamp = false;
             LogManager.SourceInfo = true;
             _logger9.Info("33333 no timestamp");
-            LogManager.Flush();
-            Thread.Sleep(100);
+            //LogManager.Flush();
 
             LogManager.Timestamp = false;
             LogManager.SourceInfo = false;
             _logger9.Info("44444 no options");
-            LogManager.Flush();
-            Thread.Sleep(100);
+            //LogManager.Flush();
 
             LogManager.Stop();
+            Thread.Sleep(100);
+            Thread.Sleep(100);
+            Thread.Sleep(100);
 
             ////////// Look at what we have.
 
-            _cbText.ForEach(s => Debug.WriteLine(s));
-            //INF TestLogger9 Test_SLOG.cs(147) 11111 all
-            //INF TestLogger9 22222 no source info
-            //INF TestLogger9 Test_SLOG.cs(157) 33333 no timestamp
-            //INF TestLogger9 44444 no options
+            //_cbText.ForEach(s => Debug.WriteLine(s));
 
             var ftext = File.ReadAllLines(Defs.SLOG_FILE);
             UT_EQUAL(ftext.Length, 4);
-            UT_TRUE(_cbText[0].Contains("INF TestLogger9 Test_SLOG.cs(148) 11111 all"));
-            UT_TRUE(ftext[0].Contains("INF TestLogger9 Test_SLOG.cs(148) 11111 all"));
+            UT_TRUE(_cbText[0].Contains("INF TestLogger9 Test_SLOG.cs(149) 11111 all"));
+            UT_TRUE(ftext[0].Contains("INF TestLogger9 Test_SLOG.cs(149) 11111 all"));
             UT_TRUE(_cbText[1].Contains("INF TestLogger9 22222 no source info"));
             UT_TRUE(ftext[1].Contains("INF TestLogger9 22222 no source info"));
-            UT_EQUAL(_cbText[2], "INF TestLogger9 Test_SLOG.cs(160) 33333 no timestamp");
-            UT_EQUAL(ftext[2], "INF TestLogger9 Test_SLOG.cs(160) 33333 no timestamp");
+            UT_EQUAL(_cbText[2], "INF TestLogger9 Test_SLOG.cs(161) 33333 no timestamp");
+            UT_EQUAL(ftext[2], "INF TestLogger9 Test_SLOG.cs(161) 33333 no timestamp");
             UT_EQUAL(_cbText[3], "INF TestLogger9 44444 no options");
             UT_EQUAL(ftext[3], "INF TestLogger9 44444 no options");
-
-            //2026-01-09 15:57:13.361 INF TestLogger9 Test_SLOG.cs(147) 11111 all
-            //2026-01-09 15:57:13.417 INF TestLogger9 22222 no source info
-            //INF TestLogger9 Test_SLOG.cs(157) 33333 no timestamp
-            //INF TestLogger9 44444 no options
         }
 
         void LogManager_LogMessage(object? sender, LogMessageEventArgs e)
