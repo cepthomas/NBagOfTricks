@@ -28,10 +28,4 @@
         <ProjectReference Include="..\NBagOfTricks.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <None Update="Files\nonascii.txt">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
 </Project>

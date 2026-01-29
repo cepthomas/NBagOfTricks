@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Ephemera.NBagOfTricks.PNUT;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 
 // Tests for pnut itself.
