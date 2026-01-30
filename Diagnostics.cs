@@ -21,11 +21,16 @@ namespace Ephemera.NBagOfTricks
 
         public TimeIt()
         {
-           _startTick = Stopwatch.GetTimestamp();
-           _lastTick = _startTick;
+            Reset();
         }
 
-        public void Snap(string msg)
+        public void Reset()
+        {
+            _startTick = Stopwatch.GetTimestamp();
+            _lastTick = _startTick;
+        }
+
+        public string Snap(string msg)
         {
            long tick = Stopwatch.GetTimestamp();
            var durMsec = FormatTicks(tick - _lastTick);
@@ -34,6 +39,7 @@ namespace Ephemera.NBagOfTricks
            Captures.Add(s);
 
            _lastTick = tick;
+            return s;
         }
 
         string FormatTicks(long ticks)
