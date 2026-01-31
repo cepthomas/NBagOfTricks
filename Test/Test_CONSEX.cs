@@ -16,11 +16,11 @@ using Ephemera.NBagOfTricks.PNUT;
 
 namespace Ephemera.NBagOfTricks.Test
 {
-    public class CONSEX_MISC : TestSuite //TODO1
+    public class CONSEX_MOCK : TestSuite // TODO
     {
         public override void RunSuite()
         {
-            UT_INFO("Test ConsoleEx.");
+            UT_INFO("Test MockConsole.");
 
             //bool bret;
 
@@ -43,39 +43,26 @@ namespace Ephemera.NBagOfTricks.Test
             // _console.WindowHeight = _console.WindowHeight - 10;
             // _console.WindowWidth = _console.WindowWidth - 10;
             // Print($"{_console.WindowHeight} {_console.WindowWidth}");
+        }
+
+        // public class CliHost
+        // {
+        //     readonly IConsole _console;
+        //     readonly string _prompt = ">";
+        //
+        //     public CliHost(string scriptFn, IConsole console)
+        //     {
+        //         _console = console;
+        //     }
+        // }
+    }
+
+    public class CONSEX_REAL : TestSuite // TODO
+    {
+        public override void RunSuite()
+        {
+            UT_INFO("Test RealConsole.");
 
         }
     }
 }
-
-    // ///////////////////////////////// test stuff ??? ////////////////////////////////////
-    // public class CliHost : IDisposable
-    // {
-    //     #region Fields
-    //     /// <summary>Resource management.</summary>
-    //     bool _disposed = false;
-
-    //     /// <summary>CLI.</summary>
-    //     readonly IConsole _console;
-
-    //     /// <summary>CLI prompt.</summary>
-    //     readonly string _prompt = ">";
-    //     #endregion
-
-    //     #region Lifecycle
-    //     /// <summary>
-    //     /// Constructor inits stuff.
-    //     /// </summary>
-    //     /// <param name="scriptFn">Cli version requires cl script name.</param>
-    //     /// <param name="console">Mock</param>
-    //     public CliHost(string scriptFn, IConsole console)
-    //     {
-    //         _console = console;
-    //     }
-
-    //     public void Dispose()
-    //     {
-    //         throw new NotImplementedException();
-    //     }
-    //     #endregion
-    // }

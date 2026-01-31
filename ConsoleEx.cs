@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 
-namespace Ephemera.NBagOfTricks // TODO1 => NBOT + test
+namespace Ephemera.NBagOfTricks
 {
     /// <summary>
     /// Interface for consoles. Subset of System.Console.
@@ -225,7 +225,7 @@ namespace Ephemera.NBagOfTricks // TODO1 => NBOT + test
             }
         }
 
-        // intercept - don't display in the console window.
+        // intercept -> don't display in the console window.
         public ConsoleKeyInfo ReadKey(bool intercept)
         {
             if (KeyAvailable)
