@@ -97,23 +97,10 @@ namespace Ephemera.NBagOfTricks
                         // New section.
                         if (currentSection is not null) // the first is null
                         {
-                            if (currentSection.Values.Count > 0)
-                            {
-                                // Save last.
-                                _contents.Add(currentSection);
-                                //currentValues = new();
-                            }
-                            else
-                            {
-                                throw new IniSyntaxException($"IniSection {currentSection.Name} has no elements", lineNum);
-                            }
+                            _contents.Add(currentSection);
                         }
 
                         var sectionName = line[1..^1];
-                        //if (Contents.ContainsKey(sectionName))
-                        //{
-                        //    throw new IniSyntaxException($"Duplicate section: {inline}", lineNum);
-                        //}
 
                         currentSection = new() { Name = sectionName };
                     }

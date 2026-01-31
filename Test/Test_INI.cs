@@ -29,7 +29,7 @@ namespace Ephemera.NBagOfTricks.Test
             var irdr = new IniReader();
             irdr.ParseFile(Path.Join(inputDir, "valid.ini"));
             var sections = irdr.GetSectionNames();
-            UT_EQUAL(sections.Count, 5);
+            UT_EQUAL(sections.Count, 6);
 
             UT_EQUAL(irdr.GetValues("test123").Count, 5);
             UT_EQUAL(irdr.GetValues("Some lists").Count, 2);
