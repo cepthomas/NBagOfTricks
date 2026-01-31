@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Threading;
 
 
 namespace Ephemera.NBagOfTricks
@@ -14,25 +12,6 @@ namespace Ephemera.NBagOfTricks
     /// </summary>
     public static class Tools
     {
-        /// <summary>
-        /// Create a new clean filename for export. Creates path if it doesn't exist.
-        /// </summary>
-        /// <param name="path">Export path</param>
-        /// <param name="baseFn">Root of the new file name</param>
-        /// <param name="mod">Modifier</param>
-        /// <param name="ext">File extension</param>
-        /// <returns></returns>
-        public static string MakeExportFileName(string path, string baseFn, string mod, string ext)
-        {
-            string name = Path.GetFileNameWithoutExtension(baseFn);
-
-            // Clean the file name.
-            name = name.Replace('.', '-').Replace(' ', '_');
-            mod = mod == "" ? "default" : mod.Replace(' ', '_');
-            var newfn = Path.Join(path, $"{name}_{mod}.{ext}");
-            return newfn;
-        }
-
         /// <summary>
         /// Display the application readme.
         /// </summary>
@@ -115,7 +94,9 @@ namespace Ephemera.NBagOfTricks
             return htmlText;
         }
 
-        /// <summary>Execute a chunk of lua code (not file).</summary>
+        /// <summary>
+        /// Execute a chunk of lua code (not file).
+        /// </summary>
         /// <param name="scode">The code</param>
         /// <returns>Exit code, stdout</returns>
         public static (int ecode, string sret) ExecuteLuaCode(string scode)
@@ -159,6 +140,89 @@ namespace Ephemera.NBagOfTricks
             }
 
             return (ecode, sret);
+        }
+
+        /// <summary>
+        /// Run a script in external process. Handles py/lua/ps1/cmd/bat. TODO1 need a way to kill script.
+        /// Liberally borrowed from http://csharptest.net/532/using-processstart-to-capture-console-output/index.html
+        /// </summary>
+        /// <param name="fn">Script name</param>
+        /// <param name="output">What to do with script stdout</param>
+        /// <param name="error">What to do with script stderr</param>
+        /// <param name="input">Optional for stdin</param>
+        /// <returns>Script return code</returns>
+        public static int RunScript(string fn, Action<string> output, Action<string> error, TextReader? input = null)
+        {
+            int retCode = -1;
+            var ext = Path.GetExtension(fn);
+            var wdir = Path.GetDirectoryName(fn);
+
+            string[] args = ext switch
+            {
+                ".cmd" or ".bat" => ["cmd", "/C", fn],
+                ".ps1" => ["powershell", "-executionpolicy", "bypass", "-File", fn],
+                ".lua" => ["lua", fn],
+                ".py" => ["py", "-u", fn],  // TODO1 -u is unbuffered/autoflush - should be an option
+                _ => ["cmd", "/C", fn] // default just open.
+            };
+
+            ProcessStartInfo pinfo = new(args[0], args[1..])
+            {
+                UseShellExecute = false,
+                RedirectStandardInput = input is not null,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
+                //ErrorDialog = false,
+                WorkingDirectory = wdir,
+            };
+
+            // - The OutputDataReceived event fires on a separate thread, so you must use synchronization mechanisms
+            //   (like ManualResetEvent or TaskCompletionSource) if you need to ensure all output is captured before
+            //   proceeding with or using the full output in the main thread (e.g. after calling process.WaitForExit()).
+            // - Also! in order to receive the events asynchronously, the target must flush its stdout on write.
+
+            using (var proc = Process.Start(pinfo))
+            using (ManualResetEvent mreOut = new(false), mreErr = new(false))
+            {
+                if (proc is null) { throw new InvalidOperationException($"Couldn't start process {args}"); }
+
+                proc.OutputDataReceived += (o, e) =>
+                {
+                    if (e.Data == null) mreOut.Set();
+                    else output(e.Data);
+                };
+                proc.BeginOutputReadLine();
+
+                proc.ErrorDataReceived += (o, e) =>
+                {
+                    if (e.Data == null) mreErr.Set();
+                    else error(e.Data);
+                };
+                proc.BeginErrorReadLine();
+
+                if (input is not null)
+                {
+                    bool done = false;
+                    while (input != null && !done)
+                    {
+                        var line = input.ReadLine();
+                        if (line is not null) { proc.StandardInput.WriteLine(line); }
+                        else { done = true; }
+                    }
+                    proc.StandardInput.Close();
+                }
+
+                proc.WaitForExit();
+                 
+                mreOut.WaitOne();
+                mreErr.WaitOne();
+
+                retCode = proc.ExitCode;
+            }
+
+            return retCode;
         }
 
         /// <summary>

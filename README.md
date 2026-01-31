@@ -26,6 +26,9 @@ Probably I should make this into a nuget package at some point.
 - BitmapUtils: Make it easy to manipulate bitmaps.
 - IniReader: Read simple ini files.
 
+## Tools
+- talk about TODO1
+
 # Simple Logger
 - Singleton manager.
 - Client creates multiple named loggers.
