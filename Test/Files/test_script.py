@@ -12,6 +12,7 @@ start_ms = time.time() * 1000.0
 for i in range(5):
     now_ms = time.time() * 1000.0
     print(f'[{i} {now_ms - start_ms}] print {i} -> {tag}')
+    time.sleep(0.2)
 
 # stderr
 print("Error message 1!!!", file=sys.stderr)
