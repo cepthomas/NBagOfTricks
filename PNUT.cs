@@ -53,40 +53,28 @@ namespace Ephemera.NBagOfTricks.PNUT
         public int NumCasesFailed { get; set; } = 0;
 
         /// <summary></summary>
-        public List<string> OutputLines { get; set; } = new List<string>();
+        public List<string> OutputLines { get; set; } = [];
         
         /// <summary></summary>
-        public List<string> PropertyLines { get; set; } = new List<string>();
+        public List<string> PropertyLines { get; set; } = [];
     }
 
     /// <summary>
     /// Specific exception type.
     /// </summary>
-    class AssertException : Exception
+    class AssertException(string msg, string file, int line) : Exception(msg)
     {
-        public string File { get; }
-        public int Line { get; }
-
-        public AssertException(string msg, string file, int line) : base(msg)
-        {
-            File = file;
-            Line = line;
-        }
+        public string File { get; } = file;
+        public int Line { get; } = line;
     }
 
     /// <summary>
     /// Specific exception type.
     /// </summary>
-    class TestFailException : Exception
+    class TestFailException(string file, int line) : Exception("!!!")
     {
-        public string File { get; }
-        public int Line { get; }
-
-        public TestFailException(string file, int line) : base("!!!")
-        {
-            File = file;
-            Line = line;
-        }
+        public string File { get; } = file;
+        public int Line { get; } = line;
     }
 
     /// <summary>
@@ -118,7 +106,7 @@ namespace Ephemera.NBagOfTricks.PNUT
         public void RunSuites(string[] which)
         {
             // Locate the test cases.
-            Dictionary<string, TestSuite> suites = new();
+            Dictionary<string, TestSuite> suites = [];
 
             foreach (Type t in Assembly.GetCallingAssembly().GetTypes())
             {
@@ -217,7 +205,7 @@ namespace Ephemera.NBagOfTricks.PNUT
             DateTime endTime = DateTime.Now;
             TimeSpan dur = endTime - startTime;
             string sdur = dur.ToString(TIME_FORMAT);
-            List<string> preamble = new();
+            List<string> preamble = [];
 
             switch (Context.Format)
             {

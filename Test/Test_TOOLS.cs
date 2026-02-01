@@ -20,25 +20,28 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Test RunScript()."); //TODO1 more - stderr, stdin
+            UT_STOP_ON_FAIL(true);
+
+            UT_INFO("Test RunScript().");
 
             var stdout = new List<string>();
             var stderr = new List<string>();
 
-            // public static int RunScript(string fn, Action<string> output, Action<string> error, TextReader? input = null)
-            void _print(string text)
-            {
-                stdout.Add(text);
-            };
-
-            void _error(string text)
-            {
-                stderr.Add(text);
-            };
+            void _print(string text) { stdout.Add(text); };
+            void _error(string text) { stderr.Add(text); };
+            StringReader _input = new("Giddyup");
 
             MiscUtils.GetSourcePath();
             var scriptFile = Path.Combine(MiscUtils.GetSourcePath(), "Files", "test_script.py");
-            Tools.RunScript(scriptFile, _print, _error);
+            var code = Tools.RunScript(scriptFile, _print, _error, _input);
+
+            UT_EQUAL(stdout.Count, 5);
+            UT_STRING_CONTAINS(stdout[3], "print 3 -> Giddyup");
+
+            UT_EQUAL(stderr.Count, 2);
+            UT_STRING_CONTAINS(stderr[1], "Error message 2!!!");
+
+            UT_EQUAL(code, 999);
         }
     }
     public class TOOLS_MISC : TestSuite

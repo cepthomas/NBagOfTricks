@@ -143,13 +143,15 @@ namespace Ephemera.NBagOfTricks
         }
 
         /// <summary>
-        /// Run a script in external process. Handles py/lua/ps1/cmd/bat. TODO1 need a way to kill script.
+        /// Run a script in external process. Handles py/lua/ps1/cmd/bat. This is primarily to be used as a
+        /// run-to-completion format. Currently there is no clean way to kill a running script or to support
+        /// continuous input.
         /// Liberally borrowed from http://csharptest.net/532/using-processstart-to-capture-console-output/index.html
         /// </summary>
         /// <param name="fn">Script name</param>
         /// <param name="output">What to do with script stdout</param>
         /// <param name="error">What to do with script stderr</param>
-        /// <param name="input">Optional for stdin</param>
+        /// <param name="input">Optional for stdin - one-shot</param>
         /// <returns>Script return code</returns>
         public static int RunScript(string fn, Action<string> output, Action<string> error, TextReader? input = null)
         {
@@ -162,7 +164,7 @@ namespace Ephemera.NBagOfTricks
                 ".cmd" or ".bat" => ["cmd", "/C", fn],
                 ".ps1" => ["powershell", "-executionpolicy", "bypass", "-File", fn],
                 ".lua" => ["lua", fn],
-                ".py" => ["py", "-u", fn],  // TODO1 -u is unbuffered/autoflush - should be an option
+                ".py" => ["py", "-u", fn],  // TODO -u is unbuffered/autoflush - optional?
                 _ => ["cmd", "/C", fn] // default just open.
             };
 
@@ -202,6 +204,7 @@ namespace Ephemera.NBagOfTricks
                 };
                 proc.BeginErrorReadLine();
 
+                // Optional input to script. Not usual.
                 if (input is not null)
                 {
                     bool done = false;
@@ -233,7 +236,7 @@ namespace Ephemera.NBagOfTricks
         /// <returns></returns>
         public static List<string> SniffBin(string fn, int limit = 100)
         {
-            List<string> res = new();
+            List<string> res = [];
 
             using (var fo = File.OpenRead(fn))
             {

@@ -27,7 +27,7 @@ namespace Ephemera.NBagOfTricks.Test
             MockConsole console = new();
            // var cli = new Cli("none", console);
 
-            string prompt = ">";
+            //string prompt = ">";
 
             console.Clear();
 

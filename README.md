@@ -5,8 +5,6 @@ Requires VS2022 and .NET8.
 
 No dependencies on external components.
 
-Probably I should make this into a nuget package at some point.
-
 ![logo](felix200.jpg)
 
 # Core
@@ -21,20 +19,21 @@ Probably I should make this into a nuget package at some point.
 - MathUtils: Numbers are good.
 - MiscUtils: Things that don't fit anywhere else.
 - StringUtils: Mostly low-level extensions.
-- MusicDefinitions: Scales and chords.
 - ColorUtils: Conversion between `System.Color`, `ConsoleColor` and ANSI format.
 - BitmapUtils: Make it easy to manipulate bitmaps.
 - IniReader: Read simple ini files.
 
-## Tools
-- talk about TODO1
+## Tools - bigger than utilities
+- Execute script code.
+- Manipulate markdown text.
+- Binary file ops.
 
 # Simple Logger
 - Singleton manager.
 - Client creates multiple named loggers.
 - Log records go to log file and/or notification event hook for UI.
-- Note: Be careful with handling notifications - don't call Logger functions in UI constructors as the handle is not assigned
-   and Invoke() will fail.
+- Note: Be careful with handling notifications - don't call Logger functions in UI constructors as
+   the handle is not assigned and Invoke() will fail.
 
 # PNUT
 Practically Nonexistent Unit Tester

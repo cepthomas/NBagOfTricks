@@ -5,11 +5,6 @@ using System.Linq;
 using Ephemera.NBagOfTricks;
 
 
-//TODO1 config/ini:
-// allow empty:
-// [macros]
-// ; none
-
 namespace Ephemera.NBagOfTricks
 {
     /// <summary>Reporting user errors.</summary>
