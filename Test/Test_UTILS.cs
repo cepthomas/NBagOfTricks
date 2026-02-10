@@ -56,10 +56,10 @@ namespace Ephemera.NBagOfTricks.Test
             UT_INFO("Test misc utils.");
 
             var dir = MiscUtils.GetAppDataDir("Test");
-            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Roaming\Test");
+            UT_STRING_CONTAINS(dir, @"\AppData\Roaming\Test");
 
             dir = MiscUtils.GetAppDataDir("Bar", "Test");
-            UT_EQUAL(dir, @"C:\Users\cepth\AppData\Roaming\Test\Bar");
+            UT_STRING_CONTAINS(dir, @"\AppData\Roaming\Test\Bar");
 
             Tools.ShowReadme("NBagOfTricks");
         }

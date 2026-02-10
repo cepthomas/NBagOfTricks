@@ -12,6 +12,8 @@ using System.Diagnostics;
 // Since then is has gone through many iterations and made many users happy. Now here's a .NET version.
 // The original license is GNU Lesser General Public License OR BSD-style, which allows unrestricted use of the Quicktest code.
 
+// TODO1 migrate to NLab\Tracer.cs Assert()
+
 
 namespace Ephemera.NBagOfTricks.PNUT
 {
