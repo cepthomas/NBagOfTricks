@@ -151,6 +151,41 @@ namespace Ephemera.NBagOfTricks
                 action(element, index++);
             }
         }
+
+        /// <summary>
+        /// Determines absolute file name.
+        /// </summary>
+        /// <param name="fnTest">File name to fix - may have env vars and/or '.\' '..\'</param>
+        /// <param name="defDir">Default directory - if null use fnTest dir</param>
+        /// <returns>Fixed file name or null if invalid</returns>
+        public static string? RationalizeFileName(string fnTest, string? defDir = null)
+        {
+            string? fn = null;
+
+            // 1 - Fix any env vars.
+            fnTest = Environment.ExpandEnvironmentVariables(fnTest);
+
+            // 2 - Is it explicit?
+            if (Path.IsPathFullyQualified(fnTest))
+            {
+                fn = fnTest;
+            }
+            // 3 - Is it relative to script file?
+            else
+            {
+                var dir = defDir ?? Path.GetDirectoryName(fnTest);
+                fn = Path.Combine(dir ?? "invalid", fnTest);
+            }
+
+            // 4 - Does it exist?
+            if (fn is not null)
+            {
+                fn = File.Exists(fn) ? Path.GetFullPath(fn) : null;
+            }
+
+            return fn;
+        }
+
         #endregion
     }
 }
