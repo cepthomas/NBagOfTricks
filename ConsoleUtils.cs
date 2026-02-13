@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 
-// WBOT is experiments for manipulating consoles in a WinForms world. Needs more debugging.
+// WBOT is experiments for manipulating consoles. Needs more debugging.
 // Borrowed from https://developercommunity.visualstudio.com/t/console-output-is-gone-in-vs2017-works-fine-when-d/12166
 
 

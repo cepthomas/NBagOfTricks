@@ -178,7 +178,7 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Other stuff, could be in another file.");
+            UT_INFO("Other stuff, should be in another file.");
 
             string str1 = MathUtils.RandStr(10);
             string? str2 = str1.Clone() as string;
@@ -194,6 +194,163 @@ namespace Ephemera.NBagOfTricks.Test
             // Cause an explosion.
             //UT_ASSERT(11, 22);
             //UT_INFO($"{100/0}");
+        }
+    }
+
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    ////////////////////////// new flavor /////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+
+    public class PNUT2_ONE : TestSuite
+    {
+        public override void RunSuite()
+        {
+            int int1 = 321;
+            int int2 = 987;
+            string str1 = "round and round";
+            string str2 = "the mulberry bush";
+            double dbl1 = 1.500;
+            double dbl2 = 1.600;
+            double dblTol = 0.001;
+
+            StopOnFail(false);
+
+            Info("Suite tests core functions.");
+
+            Info("Visually inspect that there are 3 failures in the output.");
+
+            Info("Test Info with args", int1, dbl2);
+
+            Info("Next test should fail.");
+            Assert(str1 == str2);
+
+            // Next test should pass
+            Assert(str2 == "the mulberry bush");
+
+            Assert("".Length == 0);
+
+            // Next test should pass
+            Assert(int1 == 321);
+
+            // Next test should pass
+            Assert(int2 > int1);
+
+            Info("Next test should fail.");
+            Assert(int1 > int2);
+
+            // Next test should pass.
+            Close(dbl1, dbl2, dbl2 - dbl1 + dblTol);
+
+            Info("Next test should fail.");
+            Close(dbl1, dbl1 - 2 * dblTol, dblTol);
+        }
+    }
+
+    public class PNUT2_FATAL1 : TestSuite
+    {
+        public override void RunSuite()
+        {
+            int val1 = 1;
+
+            StopOnFail(false);
+
+            Info("Visually inspect that this appears in the output");
+
+            Assert(val1 == 3);
+
+            Info("1 Visually inspect that this does not appear in the output");
+
+            throw new Exception("Random error");
+
+#pragma warning disable CS0162 // Unreachable code detected
+            Assert(val1 == 3);
+#pragma warning restore CS0162 // Unreachable code detected
+
+            Info("2 Visually inspect that this does not appear in the output");
+        }
+    }
+
+    public class PNUT2_TWO : TestSuite
+    {
+        public override void RunSuite()
+        {
+            int seed = 999;
+            MathUtils.InitRand(seed);
+
+            StopOnFail(false);
+
+            Property("version", "xyz123");
+
+            Property("rand-seed", seed);
+
+            int val1 = 1;
+            int val2 = 2;
+
+            Info("Visually inspect that this appears in the output with arg", val2);
+            Assert(val1 + val2 == 3);
+
+            Assert(val1 == val2);
+
+            Assert(val2 == val1);
+        }
+    }
+
+    public class PNUT2_EXC : TestSuite
+    {
+        public override void RunSuite()
+        {
+            int ii = 99;
+            int zero = 0;
+
+            // Next test should pass.
+            Throws(typeof(DivideByZeroException), () =>
+            {
+                var zz = ii / zero;
+            });
+
+            Info("Next test should fail.");
+            Throws(typeof(ArgumentException), () =>
+            {
+                var zz = ii / zero;
+            });
+
+            // Next test should pass.
+            ThrowsNot(() =>
+            {
+                var zz = ii / 2;
+            });
+
+            Info("Next test should fail.");
+            ThrowsNot(() =>
+            {
+                var zz = ii / zero;
+            });
+        }
+    }
+
+    public class ETC_NOT_PNUT2 : TestSuite
+    {
+        public override void RunSuite()
+        {
+            Info("Other stuff, should be in another file.");
+
+            string str1 = MathUtils.RandStr(10);
+            string? str2 = str1.Clone() as string;
+            Assert(str1 == str2!);
+
+            Assert(str1 == "Should fail");
+            Info("Previous step should have failed.");
+
+            Assert(str1 == "Should pass");
+
+            Info("Test various ...... functions.");
+
+            // Cause an explosion.
+            //UT_ASSERT(11, 22);
+            //Info($"{100/0}");
         }
     }
 }

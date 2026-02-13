@@ -12,8 +12,6 @@ using System.Diagnostics;
 // Since then is has gone through many iterations and made many users happy. Now here's a .NET version.
 // The original license is GNU Lesser General Public License OR BSD-style, which allows unrestricted use of the Quicktest code.
 
-// TODO1 migrate to NLab\Tracer.cs Assert()
-
 
 namespace Ephemera.NBagOfTricks.PNUT
 {
@@ -120,7 +118,7 @@ namespace Ephemera.NBagOfTricks.PNUT
                         if (t.Name.StartsWith(ssuite))
                         {
                             object? o = Activator.CreateInstance(t);
-                            if(o is not null)
+                            if (o is not null)
                             {
                                 suites.Add(t.Name, (TestSuite)o);
                             }
@@ -666,7 +664,9 @@ namespace Ephemera.NBagOfTricks.PNUT
             }
             return pass;
         }
+        #endregion
 
+        #region Miscellany
         /// <summary>
         /// Check for part of a string.
         /// </summary>
@@ -744,6 +744,164 @@ namespace Ephemera.NBagOfTricks.PNUT
             {
                 throws = true;
             }
+
+            if (throws)
+            {
+                RecordResult(false, $"action did throw", file, line);
+                pass = false;
+            }
+            else
+            {
+                RecordResult(true, $"", file, line);
+            }
+            return pass;
+        }
+        #endregion
+
+        #region PNUT2 ============================================
+        /// <summary>
+        /// Toggle the fatal bail out mechanism.
+        /// </summary>
+        /// <param name="value">True/false</param>
+        public void StopOnFail(bool value)
+        {
+            Context.StopOnFail = value;
+        }
+
+        // public void Info(string text)
+        // {
+        //     Tell(INF, $"{text}", 2);
+        // }
+        /// <summary>
+        /// Print some info to the report.
+        /// </summary>
+        /// <param name="message">Info text</param>
+        /// <param name="vars">Optional vars to print</param>
+        protected void Info(string message, params object[] vars)
+        {
+            if (Context.Format == OutputFormat.Readable)
+            {
+                RecordVerbatim($"{message} {string.Join(", ", vars)}");
+            }
+        }
+
+        /// <summary>
+        /// Add an element to the property collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        protected void Property<T>(string name, T value)
+        {
+            RecordProperty(name, value is null ? "null" : value.ToString()!);
+        }
+
+        /// <summary>
+        /// General purpose assert.
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="actual"></param>
+        /// <param name="expr"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public bool Assert(
+            bool condition,
+            object? actual = null,
+            [CallerArgumentExpression(nameof(condition))] string expr = "???",
+            [CallerFilePath] string file = UNKNOWN_FILE,
+            [CallerLineNumber] int line = UNKNOWN_LINE)
+        {
+            if (actual is null)
+            {
+                RecordResult(condition, $"{expr}", file, line);
+            }
+            else
+            {
+                RecordResult(condition, $"{expr} actual:{actual}", file, line);
+            }
+            return condition;
+        }
+
+        /// <summary>
+        /// Checks whether the first parameter is within the given tolerance from the second parameter.
+        /// This is useful for comparing floating point values.
+        /// </summary>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <param name="tolerance">Absolute</param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        protected bool Close(
+            double value1,
+            double value2,
+            double tolerance,
+            [CallerFilePath] string file = UNKNOWN_FILE,
+            [CallerLineNumber] int line = UNKNOWN_LINE)
+        {
+            bool pass = true;
+            if (Math.Abs(value1 - value2) > tolerance)
+            {
+                RecordResult(false, $"[{value1}] not close enough to [{value2}]", file, line);
+                pass = false;
+            }
+            else
+            {
+                RecordResult(true, $"", file, line);
+            }
+            return pass;
+        }
+
+        /// <summary>
+        /// Does the Action code throw?
+        /// </summary>
+        /// <param name="exType"></param>
+        /// <param name="act"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        protected bool Throws(
+            Type exType,
+            Action act,
+            [CallerFilePath] string file = UNKNOWN_FILE,
+            [CallerLineNumber] int line = UNKNOWN_LINE)
+        {
+            bool pass = true;
+            bool throws = false;
+
+            try { act.Invoke(); }
+            catch (Exception ex) { throws = ex.GetType() == exType; }
+
+            if (!throws)
+            {
+                RecordResult(false, $"action did not throw {exType}", file, line);
+                pass = false;
+            }
+            else
+            {
+                RecordResult(true, $"", file, line);
+            }
+            return pass;
+        }
+
+        /// <summary>
+        /// Does the Action code not throw?
+        /// </summary>
+        /// <param name="act"></param>
+        /// <param name="file"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        protected bool ThrowsNot(
+            Action act,
+            [CallerFilePath] string file = UNKNOWN_FILE,
+            [CallerLineNumber] int line = UNKNOWN_LINE)
+        {
+            bool pass = true;
+            bool throws = false;
+
+            try { act.Invoke(); }
+            catch (Exception) { throws = true; }
 
             if (throws)
             {
