@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Text;
 
 
@@ -36,7 +35,7 @@ namespace Ephemera.NBagOfTricks
         #endregion
 
         #region All other real Console members - not implemented
-        ///// Basics
+        // === Basics
         // bool CapsLock
         // bool NumberLock
         // bool TreatControlCAsInput
@@ -50,7 +49,7 @@ namespace Ephemera.NBagOfTricks
         // void Beep(int frequency, int duration)
         // event ConsoleCancelEventHandler? CancelKeyPress
 
-        ///// STD streams
+        // === STD streams
         // TextReader In
         // TextWriter Error
         // TextWriter Out
@@ -67,7 +66,7 @@ namespace Ephemera.NBagOfTricks
         // bool IsInputRedirected
         // bool IsOutputRedirected
 
-        ///// Cursor ops - on buffer C/R
+        // === Cursor ops - on buffer C/R
         // bool CursorVisible
         // int CursorLeft
         // int CursorSize
@@ -75,14 +74,14 @@ namespace Ephemera.NBagOfTricks
         // (int Left, int Top) GetCursorPosition()
         // void SetCursorPosition(int left, int top)
 
-        ///// Buffer ops - on buffer C/R
+        // === Buffer ops - on buffer C/R
         // void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop)
         // void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor)
         // void SetBufferSize(int width, int height)
         // void SetWindowPosition(int left, int top)
         // void SetWindowSize(int width, int height)
 
-        ///// Lots of Write() and WriteLine() overloads - implement as needed.
+        // === Lots of Write() and WriteLine() overloads - implement as needed.
         #endregion
     }
 
@@ -96,31 +95,11 @@ namespace Ephemera.NBagOfTricks
         public string Title { get => Console.Title; set => Console.Title = value; }
         public ConsoleColor BackgroundColor { get => Console.BackgroundColor; set => Console.BackgroundColor = value; }
         public ConsoleColor ForegroundColor { get => Console.ForegroundColor; set => Console.ForegroundColor = value; }
-
-        // Setting window row/column doesn't work in .NET so take a dive into win32.
-        public int WindowLeft
-        {
-            get { var r = GetRect(); return r.X; }
-            set { var r = GetRect(); Move(value, r.Y, r.Width, r.Height); }
-        }
-
-        public int WindowTop
-        {
-            get { var r = GetRect(); return r.Top; }
-            set { var r = GetRect(); Move(r.X, value, r.Width, r.Height); }
-        }
-
-        public int WindowWidth
-        {
-            get { var r = GetRect(); return r.Width; }
-            set { var r = GetRect(); Move(r.X, r.Y, value, r.Height); }
-        }
-
-        public int WindowHeight
-        {
-            get { var r = GetRect(); return r.Height; }
-            set { var r = GetRect(); Move(r.X, r.Y, r.Width, value); }
-        }
+        // Setting window row/column doesn't really work in .NET - needs win32.
+        public int WindowLeft { get => Console.WindowLeft; set => Console.WindowLeft = value; }
+        public int WindowTop { get => Console.WindowTop; set => Console.WindowTop = value; }
+        public int WindowWidth { get => Console.WindowWidth; set => Console.WindowWidth = value; }
+        public int WindowHeight { get => Console.WindowHeight; set => Console.WindowHeight = value; }
         #endregion
 
         #region Functions - IConsole
@@ -133,43 +112,6 @@ namespace Ephemera.NBagOfTricks
         public void ResetColor() { Console.ResetColor(); }
         public void WriteLine() { Console.WriteLine(); }
         public int Read() { return Console.Read(); }
-        #endregion
-
-        #region Native Win32
-        struct RectNative
-        {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
-        }
-
-        [DllImport("user32.dll")]
-        static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        [DllImport("user32.dll")]
-        static extern bool GetWindowRect(IntPtr hWnd, out RectNative lpRect);
-
-        [DllImport("user32.dll")]
-        static extern bool MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
-        #endregion
-
-        #region Helpers
-        static void Move(int x, int y, int width, int height)
-        {
-            IntPtr hnd = GetForegroundWindow();
-            MoveWindow(hnd, x, y, width, height, true);
-        }
-
-        static Rectangle GetRect()
-        {
-            IntPtr hnd = GetForegroundWindow();
-            GetWindowRect(hnd, out RectNative nrect);
-            return new Rectangle(nrect.Left, nrect.Top, nrect.Right - nrect.Left, nrect.Bottom - nrect.Top);
-        }
         #endregion
     }
 

@@ -14,6 +14,7 @@ No dependencies on external components.
 - MultiFileWatcher: Multiple file change watcher.
 - TimeAnalyzer: High speed event statistics.
 - TimeIt: Simple profiler.
+- MockConsole: abstraction useful for testing console applications.
 
 ## Various utilities and extensions
 - MathUtils: Numbers are good.
