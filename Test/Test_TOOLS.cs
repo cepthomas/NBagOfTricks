@@ -20,9 +20,9 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_STOP_ON_FAIL(true);
+            StopOnFail(true);
 
-            UT_INFO("Test RunScript().");
+            Info("Test RunScript().");
 
             var stdout = new List<string>();
             var stderr = new List<string>();
@@ -35,20 +35,20 @@ namespace Ephemera.NBagOfTricks.Test
             var scriptFile = Path.Combine(MiscUtils.GetSourcePath(), "Files", "test_script.py");
             var code = Tools.RunScript(scriptFile, _print, _error, _input);
 
-            UT_EQUAL(stdout.Count, 5);
-            UT_STRING_CONTAINS(stdout[3], "print 3 -> Giddyup");
+            Assert(stdout.Count == 5);
+            Assert(stdout[3].Contains("print 3 -> Giddyup"));
 
-            UT_EQUAL(stderr.Count, 2);
-            UT_STRING_CONTAINS(stderr[1], "Error message 2!!!");
+            Assert(stderr.Count == 2);
+            Assert(stderr[1].Contains("Error message 2!!!"));
 
-            UT_EQUAL(code, 999);
+            Assert(code == 999);
         }
     }
     public class TOOLS_MISC : TestSuite
     {
         public override void RunSuite()
         {
-            UT_INFO("Test misc tools.");
+            Info("Test misc tools.");
 
             // public static string MarkdownToHtml(List<string> body, MarkdownMode mode, bool show)
             Tools.ShowReadme("NBagOfTricks");

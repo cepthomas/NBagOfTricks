@@ -21,7 +21,7 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Test ini reader.");
+            Info("Test ini reader.");
 
             var inputDir = Path.Join(MiscUtils.GetSourcePath(), "Files");
             // var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
@@ -29,12 +29,12 @@ namespace Ephemera.NBagOfTricks.Test
             var irdr = new IniReader();
             irdr.ParseFile(Path.Join(inputDir, "valid.ini"));
             var sections = irdr.GetSectionNames();
-            UT_EQUAL(sections.Count, 6);
+            Assert(sections.Count == 6);
 
-            UT_EQUAL(irdr.GetValues("test123").Count, 5);
-            UT_EQUAL(irdr.GetValues("Some lists").Count, 2);
+            Assert(irdr.GetValues("test123").Count == 5);
+            Assert(irdr.GetValues("Some lists").Count == 2);
 
-            UT_THROWS(typeof(InvalidOperationException), () =>
+            Throws(typeof(InvalidOperationException), () =>
             {
                 irdr.GetValues("not here lists");
             });

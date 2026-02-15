@@ -24,7 +24,7 @@ namespace NBagOfTricks.Test
 
         public override void RunSuite()
         {
-            UT_INFO("Test slog.");
+            Info("Test slog.");
 
             _cbText.Clear();
             File.Delete(Defs.SLOG_FILE);
@@ -59,15 +59,15 @@ namespace NBagOfTricks.Test
             LogManager.Stop();
 
             ////////// Look at what we have.
-            UT_EQUAL(_cbText.Count, 5);
-            UT_TRUE(_cbText[0].Contains("11111"));
-            UT_TRUE(_cbText[1].Contains("22222"));
-            UT_TRUE(_cbText[2].Contains("Attempted to divide by zero"));
-            UT_TRUE(_cbText[3].Contains("Test_SLOG.cs:line 45"));
-            UT_TRUE(_cbText[4].Contains("55555"));
+            Assert(_cbText.Count == 5);
+            Assert(_cbText[0].Contains("11111"));
+            Assert(_cbText[1].Contains("22222"));
+            Assert(_cbText[2].Contains("Attempted to divide by zero"));
+            Assert(_cbText[3].Contains("Test_SLOG.cs:line 45"));
+            Assert(_cbText[4].Contains("55555"));
 
             var ftext = File.ReadAllLines(Defs.SLOG_FILE);
-            UT_EQUAL(ftext.Length, 5);
+            Assert(ftext.Length == 5);
         }
 
         void LogManager_LogMessage(object? sender, LogMessageEventArgs e)
@@ -82,7 +82,7 @@ namespace NBagOfTricks.Test
 
         public override void RunSuite()
         {
-            UT_INFO("Test exception.");
+            Info("Test exception.");
 
             LogManager.MinLevelFile = LogLevel.Debug;
             LogManager.MinLevelNotif = LogLevel.Debug;
@@ -105,7 +105,7 @@ namespace NBagOfTricks.Test
 
         public override void RunSuite()
         {
-            UT_INFO("Test flush.");
+            Info("Test flush.");
 
             LogManager.MinLevelFile = LogLevel.Debug;
             LogManager.MinLevelNotif = LogLevel.Debug;

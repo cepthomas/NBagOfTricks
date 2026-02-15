@@ -26,7 +26,7 @@ namespace Ephemera.NBagOfTricks.Test
 
         public override void RunSuite()
         {
-            UT_INFO("Test MmTimerEx functions.");
+            Info("Test MmTimerEx functions.");
 
             // Fast mm timer under test.
             _timer = new MmTimerEx();

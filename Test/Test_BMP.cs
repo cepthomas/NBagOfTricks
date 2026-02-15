@@ -22,7 +22,7 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Test system Bitmap manipulation functions.");
+            Info("Test system Bitmap manipulation functions.");
 
             var inputDir = Path.Join(MiscUtils.GetSourcePath(), "Files");
             var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
@@ -47,7 +47,7 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Test PixelBitmap functions.");
+            Info("Test PixelBitmap functions.");
 
             var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
 

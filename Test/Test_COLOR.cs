@@ -14,7 +14,7 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Test color conversion functions.");
+            Info("Test color conversion functions.");
 
             //ColorDialog d = new();
             //d.ShowDialog();
@@ -176,53 +176,53 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Test ANSI color functions.");
+            Info("Test ANSI color functions.");
 
             //char ESC = 27;
             // One of: ESC[IDm  ESC[38;5;IDm  ESC[48;5;IDm  ESC[38;2;R;G;Bm  ESC[48;2;R;G;Bm
 
             var (fg, bg) = ColorUtils.ColorFromAnsi("bad string");
-            UT_TRUE(fg.IsEmpty);
-            UT_TRUE(bg.IsEmpty);
+            Assert(fg.IsEmpty);
+            Assert(bg.IsEmpty);
 
             (fg, bg) = ColorUtils.ColorFromAnsi("\u001b[34m");
-            UT_EQUAL(fg.Name, "ff00007f");
-            UT_EQUAL(bg.Name, "0");
+            Assert(fg.Name == "ff00007f");
+            Assert(bg.Name == "0");
 
             (fg, bg) = ColorUtils.ColorFromAnsi("\u001b[45m");
-            UT_EQUAL(fg.Name, "0");
-            UT_EQUAL(bg.Name, "ff7f007f");
+            Assert(fg.Name == "0");
+            Assert(bg.Name == "ff7f007f");
 
             // system
             (fg, bg) = ColorUtils.ColorFromAnsi("\u001b[38;5;12m");
-            UT_EQUAL(fg.Name, "ff0000ff");
-            UT_EQUAL(bg.Name, "0");
+            Assert(fg.Name == "ff0000ff");
+            Assert(bg.Name == "0");
 
             // id
             (fg, bg) = ColorUtils.ColorFromAnsi("\u001b[38;5;122m");
-            UT_EQUAL(fg.Name, "ff87ffd7");
-            UT_EQUAL(bg.Name, "0");
+            Assert(fg.Name == "ff87ffd7");
+            Assert(bg.Name == "0");
 
             // grey
             (fg, bg) = ColorUtils.ColorFromAnsi("\u001b[38;5;249m");
-            UT_EQUAL(fg.Name, "ffb2b2b2");
-            UT_EQUAL(bg.Name, "0");
+            Assert(fg.Name == "ffb2b2b2");
+            Assert(bg.Name == "0");
 
             // id bg
             (fg, bg) = ColorUtils.ColorFromAnsi("\u001b[48;5;231m");
-            UT_EQUAL(fg.Name, "0");
-            UT_EQUAL(bg.Name, "ffffffff");
+            Assert(fg.Name == "0");
+            Assert(bg.Name == "ffffffff");
 
             //ESC[38;2;R;G;Bm
             // rgb
             (fg, bg) = ColorUtils.ColorFromAnsi("\u001b[38;2;204;39;187m");
-            UT_EQUAL(fg.Name, "ffcc27bb");
-            UT_EQUAL(bg.Name, "0");
+            Assert(fg.Name == "ffcc27bb");
+            Assert(bg.Name == "0");
 
             // rgb invert
             (fg, bg) = ColorUtils.ColorFromAnsi("\u001b[48;2;19;0;222m");
-            UT_EQUAL(fg.Name, "0");
-            UT_EQUAL(bg.Name, "ff1300de");
+            Assert(fg.Name == "0");
+            Assert(bg.Name == "ff1300de");
         }
     }
 }

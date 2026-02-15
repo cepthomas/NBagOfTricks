@@ -22,30 +22,30 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Test various util functions.");
+            Info("Test various util functions.");
 
             string input = "12345 \"I HAVE SPACES\" aaa bbb  \"me too\" ccc ddd \"  and the last  \"";
             // Output: 12345,I HAVE SPACES,aaa,bbb,me too,ccc,ddd,and the last
 
             var splits = input.SplitQuotedString();
 
-            UT_EQUAL(splits.Count, 8);
-            UT_EQUAL(splits[0], "12345");
-            UT_EQUAL(splits[1], "I HAVE SPACES");
-            UT_EQUAL(splits[2], "aaa");
-            UT_EQUAL(splits[3], "bbb");
-            UT_EQUAL(splits[4], "me too");
-            UT_EQUAL(splits[5], "ccc");
-            UT_EQUAL(splits[6], "ddd");
-            UT_EQUAL(splits[7], "  and the last  ");
+            Assert(splits.Count == 8);
+            Assert(splits[0] == "12345");
+            Assert(splits[1] == "I HAVE SPACES");
+            Assert(splits[2] == "aaa");
+            Assert(splits[3] == "bbb");
+            Assert(splits[4] == "me too");
+            Assert(splits[5] == "ccc");
+            Assert(splits[6] == "ddd");
+            Assert(splits[7] == "  and the last  ");
 
             input = " \"aaa ttt uuu\" 84ss \"  dangling quote  ";
             splits = input.SplitQuotedString();
 
-            UT_EQUAL(splits.Count, 3);
-            UT_EQUAL(splits[0], "aaa ttt uuu");
-            UT_EQUAL(splits[1], "84ss");
-            UT_EQUAL(splits[2], "  dangling quote  ");
+            Assert(splits.Count == 3);
+            Assert(splits[0] == "aaa ttt uuu");
+            Assert(splits[1] == "84ss");
+            Assert(splits[2] == "  dangling quote  ");
         }
     }
 
@@ -53,13 +53,13 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            UT_INFO("Test misc utils.");
+            Info("Test misc utils.");
 
             var dir = MiscUtils.GetAppDataDir("Test");
-            UT_STRING_CONTAINS(dir, @"\AppData\Roaming\Test");
+            Assert(dir.Contains(@"\AppData\Roaming\Test"));
 
             dir = MiscUtils.GetAppDataDir("Bar", "Test");
-            UT_STRING_CONTAINS(dir, @"\AppData\Roaming\Test\Bar");
+            Assert(dir.Contains(@"\AppData\Roaming\Test\Bar"));
 
             Tools.ShowReadme("NBagOfTricks");
         }

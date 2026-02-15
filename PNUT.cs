@@ -16,6 +16,15 @@ using System.Diagnostics;
 namespace Ephemera.NBagOfTricks.PNUT
 {
     /// <summary>
+    /// Specific exception type.
+    /// </summary>
+    class TestFailException(string file, int line) : Exception()
+    {
+        public string File { get; } = file;
+        public int Line { get; } = line;
+    }
+
+    /// <summary>
     /// Generate a human readable or junit format output.
     /// </summary>
     public enum OutputFormat { Readable, Xml };
@@ -57,24 +66,6 @@ namespace Ephemera.NBagOfTricks.PNUT
         
         /// <summary></summary>
         public List<string> PropertyLines { get; set; } = [];
-    }
-
-    /// <summary>
-    /// Specific exception type.
-    /// </summary>
-    class AssertException(string msg, string file, int line) : Exception(msg)
-    {
-        public string File { get; } = file;
-        public int Line { get; } = line;
-    }
-
-    /// <summary>
-    /// Specific exception type.
-    /// </summary>
-    class TestFailException(string file, int line) : Exception("!!!")
-    {
-        public string File { get; } = file;
-        public int Line { get; } = line;
     }
 
     /// <summary>
@@ -160,11 +151,6 @@ namespace Ephemera.NBagOfTricks.PNUT
                     // Run the suite.
                     tc.RunSuite();
                 }
-                catch (AssertException ex)
-                {
-                    // Deliberate exception.
-                    tc.RecordResult(false, ex.Message, ex.File, ex.Line);
-                }
                 catch (TestFailException)
                 {
                     // Stop on fail set.
@@ -245,7 +231,7 @@ namespace Ephemera.NBagOfTricks.PNUT
     /// </summary>
     public abstract class TestSuite
     {
-        #region Properties
+        #region Internal Properties
         /// <summary>Accumulated count.</summary>
         public int CaseCnt { get; set; } = 0;
 
@@ -256,11 +242,7 @@ namespace Ephemera.NBagOfTricks.PNUT
         public TestContext Context { get; set; } = new();
         #endregion
 
-        #region Definitions
-        const string UNKNOWN_FILE = "???";
-        const int UNKNOWN_LINE = -1;
-        #endregion
-
+        #region Internal Functions
         /// <summary>
         /// All test case specifications must supply this.
         /// </summary>
@@ -340,425 +322,9 @@ namespace Ephemera.NBagOfTricks.PNUT
         {
             Context.OutputLines.Add(message);
         }
-
-        /// <summary>
-        /// Toggle the fatal bail out mechanism.
-        /// </summary>
-        /// <param name="value">True/false</param>
-        public void UT_STOP_ON_FAIL(bool value)
-        {
-            Context.StopOnFail = value;
-        }
-
-        #region Test functions - Boilerplate
-        /// <summary>
-        /// Print some info to the report.
-        /// </summary>
-        /// <param name="message">Info text</param>
-        /// <param name="vars">Optional vars to print</param>
-        protected void UT_INFO(string message, params object[] vars)
-        {
-            if(Context.Format == OutputFormat.Readable)
-            {
-                RecordVerbatim($"{message} {string.Join(", ", vars)}");
-            }
-        }
-
-        /// <summary>
-        /// Add an element to the property collection.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        protected void UT_PROPERTY<T>(string name, T value)
-        {
-            RecordProperty(name, value is null ? "null" : value.ToString()!);
-        }
         #endregion
 
-        #region Test functions - Basic
-        /// <summary>
-        /// Always fail.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_FAIL(string message, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
-        {
-            RecordResult(false, message, file, line);
-            return false;
-        }
-
-        /// <summary>
-        /// Checks whether the given condition is true.
-        /// </summary>
-        /// <param name="condition"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_TRUE(bool condition, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
-        {
-            bool pass = true;
-            if (!condition)
-            {
-                RecordResult(false, $"condition should be true", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Checks whether the given condition is false.
-        /// </summary>
-        /// <param name="condition"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_FALSE(bool condition, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
-        {
-            bool pass = true;
-            if (condition)
-            {
-                RecordResult(false, $"condition should be false", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Checks whether the given object is null.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_NULL(object? obj, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
-        {
-            bool pass = true;
-            if (obj is not null)
-            {
-                RecordResult(false, $"condition should be null", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Checks whether the given object is not null.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_NOT_NULL(object? obj, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
-        {
-            bool pass = true;
-            if (obj is null)
-            {
-                RecordResult(false, $"condition should not be null", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Prints the condition and gens assert exception.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        protected void UT_ASSERT<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
-        {
-            if (value1.CompareTo(value2) != 0)
-            {
-                throw new AssertException($"[{value1}] != [{value2}]", file, line);
-            }
-        }
-        #endregion
-
-        #region Test functions - Comparers
-        /// <summary>
-        /// Checks whether the first parameter is equal to the second.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_EQUAL<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
-        {
-            bool pass = true;
-            if (value1.CompareTo(value2) != 0)
-            {
-                RecordResult(false, $"[{value1}] should be [{value2}]", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Checks whether the first parameter is not equal to the second.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_NOT_EQUAL<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
-        {
-            bool pass = true;
-            if (value1.CompareTo(value2) == 0)
-            {
-                RecordResult(false, $"should not be [{value2}]", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Checks whether the first parameter is less than the second.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_LESS<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
-        {
-            bool pass = true;
-            if (value1.CompareTo(value2) >= 0)
-            {
-                RecordResult(false, $"[{value1}] should be less than [{value2}]", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Checks whether the first parameter is less than or equal to the second.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_LESS_OR_EQUAL<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
-        {
-            bool pass = true;
-            if (value1.CompareTo(value2) > 0)
-            {
-                RecordResult(false, $"[{value1}] should be less than or equal to [{value2}]", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Checks whether the first parameter is greater than the second.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_GREATER<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
-        {
-            bool pass = true;
-            if (value1.CompareTo(value2) <= 0)
-            {
-                RecordResult(false, $"[{value1}] should be greater than [{value2}]", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Checks whether the first parameter is greater than or equal to the second.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_GREATER_OR_EQUAL<T>(T value1, T value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE) where T : IComparable
-        {
-            bool pass = true;
-            if (value1.CompareTo(value2) < 0)
-            {
-                RecordResult(false, $"[{value1}] should be greater than or equal to [{value2}]", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Checks whether the first parameter is within the given tolerance from the second parameter.
-        /// This is useful for comparing floating point values.
-        /// </summary>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <param name="tolerance">Absolute</param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_CLOSE(double value1, double value2, double tolerance, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
-        {
-            bool pass = true;
-            if (Math.Abs(value1 - value2) > tolerance)
-            {
-                RecordResult(false, $"[{value1}] not close enough to [{value2}]", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-        #endregion
-
-        #region Miscellany
-        /// <summary>
-        /// Check for part of a string.
-        /// </summary>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_STRING_CONTAINS(string value1, string value2, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
-        {
-            bool pass = true;
-            if (value1.Contains(value2))
-            {
-                RecordResult(true, $"", file, line);
-            }
-            else
-            {
-                RecordResult(false, $"[{value1}] does not contain [{value2}]", file, line);
-                pass = false;
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Does the Action code throw?
-        /// </summary>
-        /// <param name="exType"></param>
-        /// <param name="act"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_THROWS(Type exType, Action act, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
-        {
-            bool pass = true;
-            bool throws = false;
-
-            try
-            {
-                act.Invoke();
-            }
-            catch (Exception ex)
-            {
-                throws = ex.GetType() == exType;
-            }
-
-            if (!throws)
-            {
-                RecordResult(false, $"action did not throw {exType}", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-
-        /// <summary>
-        /// Does the Action code not throw?
-        /// </summary>
-        /// <param name="act"></param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool UT_THROWS_NOT(Action act, [CallerFilePath] string file = UNKNOWN_FILE, [CallerLineNumber] int line = UNKNOWN_LINE)
-        {
-            bool pass = true;
-            bool throws = false;
-
-            try
-            {
-                act.Invoke();
-            }
-            catch (Exception)
-            {
-                throws = true;
-            }
-
-            if (throws)
-            {
-                RecordResult(false, $"action did throw", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
-        }
-        #endregion
-
-        #region PNUT2 ============================================
+        #region Test Suite Callable Functions
         /// <summary>
         /// Toggle the fatal bail out mechanism.
         /// </summary>
@@ -768,20 +334,15 @@ namespace Ephemera.NBagOfTricks.PNUT
             Context.StopOnFail = value;
         }
 
-        // public void Info(string text)
-        // {
-        //     Tell(INF, $"{text}", 2);
-        // }
         /// <summary>
         /// Print some info to the report.
         /// </summary>
         /// <param name="message">Info text</param>
-        /// <param name="vars">Optional vars to print</param>
-        protected void Info(string message, params object[] vars)
+        protected void Info(string message)
         {
             if (Context.Format == OutputFormat.Readable)
             {
-                RecordVerbatim($"{message} {string.Join(", ", vars)}");
+                RecordVerbatim($"> {message}");
             }
         }
 
@@ -797,60 +358,23 @@ namespace Ephemera.NBagOfTricks.PNUT
         }
 
         /// <summary>
-        /// General purpose assert.
+        /// General purpose assert. Step fails if condition is false.
         /// </summary>
         /// <param name="condition"></param>
-        /// <param name="actual"></param>
+        /// <param name="message"></param>
         /// <param name="expr"></param>
         /// <param name="file"></param>
         /// <param name="line"></param>
         /// <returns></returns>
         public bool Assert(
             bool condition,
-            object? actual = null,
+            string? message = null,
             [CallerArgumentExpression(nameof(condition))] string expr = "???",
-            [CallerFilePath] string file = UNKNOWN_FILE,
-            [CallerLineNumber] int line = UNKNOWN_LINE)
+            [CallerFilePath] string file = "???",
+            [CallerLineNumber] int line = -1)
         {
-            if (actual is null)
-            {
-                RecordResult(condition, $"{expr}", file, line);
-            }
-            else
-            {
-                RecordResult(condition, $"{expr} actual:{actual}", file, line);
-            }
+            RecordResult(condition, $"[{expr}] [{message}]", file, line);
             return condition;
-        }
-
-        /// <summary>
-        /// Checks whether the first parameter is within the given tolerance from the second parameter.
-        /// This is useful for comparing floating point values.
-        /// </summary>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <param name="tolerance">Absolute</param>
-        /// <param name="file"></param>
-        /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool Close(
-            double value1,
-            double value2,
-            double tolerance,
-            [CallerFilePath] string file = UNKNOWN_FILE,
-            [CallerLineNumber] int line = UNKNOWN_LINE)
-        {
-            bool pass = true;
-            if (Math.Abs(value1 - value2) > tolerance)
-            {
-                RecordResult(false, $"[{value1}] not close enough to [{value2}]", file, line);
-                pass = false;
-            }
-            else
-            {
-                RecordResult(true, $"", file, line);
-            }
-            return pass;
         }
 
         /// <summary>
@@ -858,24 +382,26 @@ namespace Ephemera.NBagOfTricks.PNUT
         /// </summary>
         /// <param name="exType"></param>
         /// <param name="act"></param>
+        /// <param name="message"></param>
         /// <param name="file"></param>
         /// <param name="line"></param>
         /// <returns></returns>
         protected bool Throws(
             Type exType,
             Action act,
-            [CallerFilePath] string file = UNKNOWN_FILE,
-            [CallerLineNumber] int line = UNKNOWN_LINE)
+            string? message = null,
+            [CallerFilePath] string file = "???",
+            [CallerLineNumber] int line = -1)
         {
             bool pass = true;
-            bool throws = false;
+            bool didThrow = false;
 
             try { act.Invoke(); }
-            catch (Exception ex) { throws = ex.GetType() == exType; }
+            catch (Exception ex) { didThrow = ex.GetType() == exType; }
 
-            if (!throws)
+            if (!didThrow)
             {
-                RecordResult(false, $"action did not throw {exType}", file, line);
+                RecordResult(false, $"[Did not throw {exType}] [{message}]", file, line);
                 pass = false;
             }
             else
@@ -889,23 +415,26 @@ namespace Ephemera.NBagOfTricks.PNUT
         /// Does the Action code not throw?
         /// </summary>
         /// <param name="act"></param>
+        /// <param name="message"></param>
         /// <param name="file"></param>
         /// <param name="line"></param>
         /// <returns></returns>
         protected bool ThrowsNot(
             Action act,
-            [CallerFilePath] string file = UNKNOWN_FILE,
-            [CallerLineNumber] int line = UNKNOWN_LINE)
+            string? message = null,
+            [CallerFilePath] string file = "???",
+            [CallerLineNumber] int line = -1)
         {
             bool pass = true;
-            bool throws = false;
+            //bool throws = false;
+            Exception? exType = null;
 
             try { act.Invoke(); }
-            catch (Exception) { throws = true; }
+            catch (Exception ex) { exType = ex; }
 
-            if (throws)
+            if (exType is not null)
             {
-                RecordResult(false, $"action did throw", file, line);
+                RecordResult(false, $"[Did throw {exType}] [{message}]", file, line);
                 pass = false;
             }
             else
