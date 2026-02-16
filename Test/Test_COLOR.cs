@@ -83,7 +83,7 @@ namespace Ephemera.NBagOfTricks.Test
             }
 
             html.Add("</body></html>");
-            var fn = Path.Combine(MiscUtils.GetSourcePath(), "out", "ConsoleColorToSystem.html");
+            var fn = Path.Combine(MiscUtils.GetSourcePath(), "ConsoleColorToSystem.html");
             File.WriteAllLines(fn, html);
         }
 
@@ -167,7 +167,7 @@ namespace Ephemera.NBagOfTricks.Test
             }
             html.Add("</body></html>");
 
-            var fn = Path.Combine(MiscUtils.GetSourcePath(), "out", "SystemColorToConsoleColor.html");
+            var fn = Path.Combine(MiscUtils.GetSourcePath(), "SystemColorToConsoleColor.html");
             File.WriteAllLines(fn, html);
         }
     }

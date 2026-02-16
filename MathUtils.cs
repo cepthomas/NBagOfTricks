@@ -70,6 +70,14 @@ namespace Ephemera.NBagOfTricks
         }
 
         /// <summary>
+        /// Compare two doubles "close enough".
+        /// </summary>
+        public static bool IsClose(this float t1, float t2, float tol = 0.000001f)
+        {
+            return Math.Abs(t2 - t1) < tol;
+        }
+
+        /// <summary>
         /// Split a double into two parts: each side of the dp.
         /// </summary>
         /// <param name="val"></param>

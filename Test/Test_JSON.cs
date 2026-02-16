@@ -34,8 +34,8 @@ namespace Ephemera.NBagOfTricks.Test
             ConverterTarget? ct2 = JsonSerializer.Deserialize<ConverterTarget>(ser);
 
             Assert(ct2 is not null);
-            Assert(ct2.DrawColor.Name == "Pink");
-            Close(ct2.Position.X, 45.88, 0.00001);
+            Assert(ct2!.DrawColor.Name == "Pink");
+            Assert(ct2.Position.X.IsClose(45.88f, 0.00001f));
             Assert(ct2.SomeRect.Width == 75);
             Assert(ct2.PrettyFace.Size == 14);
         }

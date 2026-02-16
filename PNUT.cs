@@ -79,6 +79,9 @@ namespace Ephemera.NBagOfTricks.PNUT
         /// <summary>Format string.</summary>
         const string DATE_TIME_FORMAT_MSEC = "yyyy'-'MM'-'dd HH':'mm':'ss.fff";
 
+        /// <summary>Report visual marker.</summary>
+        const string ATTENTION = "^^^^^^^^^^^^^^^^";
+
         /// <summary>The test context.</summary>
         public TestContext Context { get; } = new TestContext();
 
@@ -93,7 +96,7 @@ namespace Ephemera.NBagOfTricks.PNUT
         /// <summary>
         /// Run selected cases.
         /// </summary>
-        /// <param name="which">List of names of test cases to run. If the test case names begin with these values they will run.</param>
+        /// <param name="which">List of test suites to run - if suite name starts with which.</param>
         public void RunSuites(string[] which)
         {
             // Locate the test cases.
@@ -115,7 +118,7 @@ namespace Ephemera.NBagOfTricks.PNUT
                             }
                             else
                             {
-                                Context.OutputLines.Add($"Couldn't create {t.BaseType.Name}");
+                                Context.OutputLines.Add($"{ATTENTION} Invalid TestSuite [{t.BaseType.Name}]");
                             }
                         }
                     }
@@ -154,11 +157,11 @@ namespace Ephemera.NBagOfTricks.PNUT
                 catch (TestFailException)
                 {
                     // Stop on fail set.
-                    tc.RecordVerbatim($"^^^^^^^^^^^^^^^^ Stop on fail");
+                    tc.RecordVerbatim($"{ATTENTION} Stop on fail");
                 }
                 catch (Exception ex)
                 {
-                    tc.RecordVerbatim($"^^^^^^^^^^^^^^^^ Unexpected exception: {ex.Message}");
+                    tc.RecordVerbatim($"{ATTENTION} Unexpected exception: {ex.Message}");
                     tc.RecordVerbatim($"{ ex.StackTrace}");
                 }
 
@@ -231,6 +234,17 @@ namespace Ephemera.NBagOfTricks.PNUT
     /// </summary>
     public abstract class TestSuite
     {
+        #region Fields
+        /// <summary>Report visual marker.</summary>
+        const string FAIL = "!";
+
+        /// <summary>Report visual marker.</summary>
+        const string PROP = "-";
+
+        /// <summary>Report visual marker.</summary>
+        const string INFO = ">";
+        #endregion
+
         #region Internal Properties
         /// <summary>Accumulated count.</summary>
         public int CaseCnt { get; set; } = 0;
@@ -284,7 +298,7 @@ namespace Ephemera.NBagOfTricks.PNUT
                         break;
 
                     case OutputFormat.Readable:
-                        Context.OutputLines.Add($"! ({file}:{line}) {Context.CurrentSuiteId}.{CaseCnt} {message}");
+                        Context.OutputLines.Add($"{FAIL} ({file}:{line}) {Context.CurrentSuiteId}.{CaseCnt} {message}");
                         break;
                 }
 
@@ -309,7 +323,7 @@ namespace Ephemera.NBagOfTricks.PNUT
                     break;
 
                 case OutputFormat.Readable:
-                    Context.OutputLines.Add($"Property {name}:{value}");
+                    Context.OutputLines.Add($"{PROP} [{name}] is [{value}]");
                     break;
             }
         }
@@ -342,7 +356,7 @@ namespace Ephemera.NBagOfTricks.PNUT
         {
             if (Context.Format == OutputFormat.Readable)
             {
-                RecordVerbatim($"> {message}");
+                RecordVerbatim($"{INFO} {message}");
             }
         }
 
@@ -354,7 +368,7 @@ namespace Ephemera.NBagOfTricks.PNUT
         /// <param name="value"></param>
         protected void Property<T>(string name, T value)
         {
-            RecordProperty(name, value is null ? "null" : value.ToString()!);
+            RecordProperty(name, value is null ? "" : value.ToString()!);
         }
 
         /// <summary>
@@ -385,30 +399,28 @@ namespace Ephemera.NBagOfTricks.PNUT
         /// <param name="message"></param>
         /// <param name="file"></param>
         /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool Throws(
+        /// <returns>Thrown exception for examination or null if no throw.</returns>
+        protected Exception? Throws(
             Type exType,
             Action act,
             string? message = null,
             [CallerFilePath] string file = "???",
             [CallerLineNumber] int line = -1)
         {
-            bool pass = true;
-            bool didThrow = false;
+            Exception? exThrown = null;
 
             try { act.Invoke(); }
-            catch (Exception ex) { didThrow = ex.GetType() == exType; }
+            catch (Exception ex) { exThrown = ex; }
 
-            if (!didThrow)
+            if (exThrown is null || exThrown.GetType() != exType)
             {
                 RecordResult(false, $"[Did not throw {exType}] [{message}]", file, line);
-                pass = false;
             }
             else
             {
                 RecordResult(true, $"", file, line);
             }
-            return pass;
+            return exThrown;
         }
 
         /// <summary>
@@ -418,30 +430,27 @@ namespace Ephemera.NBagOfTricks.PNUT
         /// <param name="message"></param>
         /// <param name="file"></param>
         /// <param name="line"></param>
-        /// <returns></returns>
-        protected bool ThrowsNot(
+        /// <returns>Thrown exception for examination or null if no throw.</returns>
+        protected Exception? ThrowsNot(
             Action act,
             string? message = null,
             [CallerFilePath] string file = "???",
             [CallerLineNumber] int line = -1)
         {
-            bool pass = true;
-            //bool throws = false;
-            Exception? exType = null;
+            Exception? exThrown = null;
 
             try { act.Invoke(); }
-            catch (Exception ex) { exType = ex; }
+            catch (Exception ex) { exThrown = ex; }
 
-            if (exType is not null)
+            if (exThrown is not null)
             {
-                RecordResult(false, $"[Did throw {exType}] [{message}]", file, line);
-                pass = false;
+                RecordResult(false, $"[Did throw {exThrown}] [{message}]", file, line);
             }
             else
             {
                 RecordResult(true, $"", file, line);
             }
-            return pass;
+            return exThrown;
         }
         #endregion
     }

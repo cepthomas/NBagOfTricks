@@ -22,19 +22,13 @@ namespace Ephemera.NBagOfTricks.Test
             if (doTests)
             {
                 // Make sure out path exists.
-                var outPath = Path.Join(MiscUtils.GetSourcePath(), "out");
-                DirectoryInfo di = new(outPath);
-                di.Create();
+                var outPath = MiscUtils.GetSourcePath();
 
                 // Run pnut tests from cmd line.
                 TestRunner runner = new(OutputFormat.Readable);
-                var cases = new[] { "PNUT" };
-                //var cases = new[] { "PNUT", "UTILS", "MMTEX", "JSON", "SLOG", "COLOR", "BMP", "INI", "MISC", "TOOLS" };
-                runner.RunSuites(cases);
-
-                //var fn = Path.Combine(MiscUtils.GetSourcePath(), "out", "pnut_out.txt");
-                //File.WriteAllLines(fn, runner.Context.OutputLines);
-
+                var torun = new[] { "PNUT", "JSON" };
+                //var torun = new[] { "PNUT", "UTILS", "MMTEX", "JSON", "SLOG", "COLOR", "BMP", "INI", "MISC", "TOOLS" };
+                runner.RunSuites(torun);
                 //runner.Context.OutputLines.ForEach(l => Console.WriteLine(l));
             }
             else

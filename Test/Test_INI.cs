@@ -24,7 +24,6 @@ namespace Ephemera.NBagOfTricks.Test
             Info("Test ini reader.");
 
             var inputDir = Path.Join(MiscUtils.GetSourcePath(), "Files");
-            // var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
 
             var irdr = new IniReader();
             irdr.ParseFile(Path.Join(inputDir, "valid.ini"));

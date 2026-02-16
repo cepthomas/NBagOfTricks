@@ -32,20 +32,21 @@ namespace Ephemera.NBagOfTricks.Test
 
             Info("Suite tests core functions.");
 
-            Info("Inspect that there are 3 FAIL in the output.");
+            Info("Inspect that there are 4 FAIL in the output.");
 
-            Assert(str1 != str2, "Should FAIL");
+            Assert(str1 == str2, "Should FAIL");
 
             Assert(str2 == "the mulberry bush");
 
-            Assert(int1 == 322, "Should FAIL");
+            Assert(int1 == 322, $"Should FAIL because int1 = {int1}");
 
             Assert(int2 < int1, "Should FAIL");
 
             Assert(int1 < int2);
 
-            // close
-            Assert(Math.Abs(dbl1 - dbl2) > dblTol);
+            Assert(dbl1.IsClose(1.50002, dblTol));
+
+            Assert(dbl1.IsClose(dbl2, dblTol), "Should FAIL");
         }
     }
 
@@ -87,28 +88,35 @@ namespace Ephemera.NBagOfTricks.Test
         {
             int ii = 99;
             int zero = 0;
+            Exception? exThrown = null;
 
             StopOnFail(false);
 
-            Throws(typeof(DivideByZeroException), () =>
+            exThrown = Throws(typeof(DivideByZeroException), () =>
             {
                 var zz = ii / zero;
             }, "FAIL Should not appear in output");
+            Assert(exThrown == null);
 
-            Throws(typeof(ArgumentException), () =>
+            exThrown = Throws(typeof(ArgumentException), () =>
             {
                 var zz = ii / zero;
             }, "Should appear in output");
+            Assert(exThrown != null);
+            Assert(exThrown!.Message == "Attempted to divide by zero.");
 
-            ThrowsNot(() =>
+            exThrown = ThrowsNot(() =>
             {
                 var zz = ii / 2;
             }, "FAIL Should not appear in output");
+            Assert(exThrown == null);
 
-            ThrowsNot(() =>
+            exThrown = ThrowsNot(() =>
             {
                 var zz = ii / zero;
             }, "Should appear in output");
+            Assert(exThrown != null);
+            Assert(exThrown!.Message == "Attempted to divide by zero.");
         }
     }
 }
