@@ -232,6 +232,13 @@ namespace Ephemera.NBagOfTricks
             return (ConsoleColor)val;
         }
 
+        /// <summary>Parse console color safely.</summary>
+        /// <param name="value">Color name</param>
+        /// <returns>Console color or null if invalid</returns>
+        public static ConsoleColor? ParseNullableConsoleColor(string value)
+        {
+            return Enum.TryParse(value, ignoreCase: true, out ConsoleColor result) ? result : null;
+        }
 
         /// <summary>
         /// Helper to get next contrast color in the sequence.
@@ -273,6 +280,5 @@ namespace Ephemera.NBagOfTricks
                 (one.G + two.G) >> 1,
                 (one.B + two.B) >> 1);
         }
-
     }
 }
