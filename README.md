@@ -14,13 +14,12 @@ No dependencies on external components.
 - MultiFileWatcher: Multiple file change watcher.
 - TimeAnalyzer: High speed event statistics.
 - TimeIt: Simple profiler.
-- MockConsole: abstraction useful for testing console applications.
 
 ## Various utilities and extensions
 - MathUtils: Numbers are good.
 - MiscUtils: Things that don't fit anywhere else.
 - StringUtils: Mostly low-level extensions.
-- ColorUtils: Conversion between `System.Color`, `ConsoleColor` and ANSI format.
+- ColorUtils: Conversion between `System.Color` and ANSI format.
 - BitmapUtils: Make it easy to manipulate bitmaps.
 - IniReader: Read simple ini files.
 
