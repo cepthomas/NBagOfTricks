@@ -135,7 +135,6 @@ namespace Ephemera.NBagOfTricks
         [DllImport("user32.dll")]
         static extern bool MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
 
-        // ===== Below is from WBOT TBD =========
         [DllImport("kernel32.dll", EntryPoint = "GetStdHandle", SetLastError = true, CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         static extern IntPtr GetStdHandle(int nStdHandle);
 
