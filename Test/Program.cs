@@ -17,6 +17,10 @@ namespace Ephemera.NBagOfTricks.Test
         [STAThread]
         static void Main(string[] _)
         {
+            // Ensure paths.
+            var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
+            Directory.CreateDirectory(outputDir);
+
             // Run pnut tests from cmd line.
             TestRunner runner = new(OutputFormat.Readable);
             //var torun = new[] { "PNUT", "JSON" };

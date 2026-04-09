@@ -25,7 +25,7 @@ namespace Ephemera.NBagOfTricks.Test
             Info("Test system Bitmap manipulation functions.");
 
             var inputDir = Path.Join(MiscUtils.GetSourcePath(), "Files");
-            var outputDir = MiscUtils.GetSourcePath();
+            var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
 
             var bmpIn = (Bitmap)Image.FromFile(Path.Join(inputDir, "color-wheel.png")); // 500 x 500
 
@@ -49,7 +49,7 @@ namespace Ephemera.NBagOfTricks.Test
         {
             Info("Test PixelBitmap functions.");
 
-            var outputDir = MiscUtils.GetSourcePath();
+            var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
 
             // Pixel bitmap.
             int size = 128;
