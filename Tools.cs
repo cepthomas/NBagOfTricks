@@ -19,8 +19,8 @@ namespace Ephemera.NBagOfTricks
         /// <returns></returns>
         public static void ShowReadme(string appName)
         {
-            string uri = $"https://github.com/cepthomas/{appName}/blob/main/README.md";
-            var info = new ProcessStartInfo(uri) { UseShellExecute = true };
+            string url = $"https://github.com/cepthomas/{appName}/blob/main/README.md";
+            var info = new ProcessStartInfo(url) { UseShellExecute = true };
             var proc = new Process() { StartInfo = info };
             proc.Start();
         }
