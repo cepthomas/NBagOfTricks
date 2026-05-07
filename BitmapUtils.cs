@@ -134,13 +134,18 @@ namespace Ephemera.NBagOfTricks
     }
     #endregion
 
-    #region Performant bitmap replacement
     /// <summary>Fast pixel read/write. Borrowed from https://stackoverflow.com/a/34801225.</summary>
     public sealed class PixelBitmap : IDisposable
     {
         #region Fields
         /// <summary>Unmanaged buffer.</summary>
         readonly int[] _buff;
+
+        /// <summary>Geometry.</summary>
+        int _width;
+
+        /// <summary>Geometry.</summary>
+        int _height;
 
         /// <summary>Unmanaged buffer handle.</summary>
         GCHandle _hBuff;
@@ -149,20 +154,16 @@ namespace Ephemera.NBagOfTricks
         bool _disposed = false;
         #endregion
 
-        #region Properties
-        /// <summary>Managed image for client consumption.</summary>
-        public Bitmap ClientBitmap { get; init; }
-        #endregion
-
         #region Lifecycle
         /// <summary>Normal constructor.</summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
         public PixelBitmap(int width, int height)
         {
+            _width = width;
+            _height = height;
             _buff = new int[width * height];
             _hBuff = GCHandle.Alloc(_buff, GCHandleType.Pinned);
-            ClientBitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppPArgb, _hBuff.AddrOfPinnedObject());
         }
 
         /// <summary>Override finalizer only if Dispose(bool disposing) has code to free unmanaged resources.</summary>
@@ -186,7 +187,6 @@ namespace Ephemera.NBagOfTricks
                 if (disposing)
                 {
                     // Dispose managed state/objects).
-                    ClientBitmap.Dispose();
                 }
 
                 // Release unmanaged resources.
@@ -197,13 +197,14 @@ namespace Ephemera.NBagOfTricks
         }
         #endregion
 
+        #region API
         /// <summary>Set one pixel.</summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="clr"></param>
         public void SetPixel(int x, int y, Color clr)
         {
-            int index = x + (y * ClientBitmap.Width);
+            int index = x + (y * _width);
             int col = clr.ToArgb();
             _buff[index] = col;
         }
@@ -216,10 +217,20 @@ namespace Ephemera.NBagOfTricks
         /// <returns></returns>
         public Color GetPixel(int x, int y)
         {
-            int index = x + (y * ClientBitmap.Width);
+            int index = x + (y * _width);
             int col = _buff[index];
             Color result = Color.FromArgb(col);
             return result;
+        }
+
+        /// <summary>
+        /// Get a rendering of the buffer. Client must manage lifetime.
+        /// </summary>
+        /// <returns></returns>
+        public Bitmap GetBitmap()
+        {
+            var bmp = new Bitmap(_width, _height, _width * 4, PixelFormat.Format32bppPArgb, _hBuff.AddrOfPinnedObject());
+            return bmp;
         }
         #endregion
     }

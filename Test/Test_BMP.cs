@@ -61,7 +61,7 @@ namespace Ephemera.NBagOfTricks.Test
                     pbmp.SetPixel(x, y, Color.FromArgb(255, x * 2, y * 2, 150));
                 }
             }
-            pbmp.ClientBitmap.Save(Path.Join(outputDir, "pixels.png"), ImageFormat.Png);
+            pbmp.GetBitmap().Save(Path.Join(outputDir, "pixels.png"), ImageFormat.Png);
         }
     }
 }
