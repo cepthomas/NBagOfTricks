@@ -134,7 +134,7 @@ namespace Ephemera.NBagOfTricks
     }
     #endregion
 
-    /// <summary>Fast pixel read/write. Borrowed from https://stackoverflow.com/a/34801225.</summary>
+    /// <summary>Fast pixel read/write. TODO fix/replace. Borrowed from https://stackoverflow.com/a/34801225.</summary>
     public sealed class PixelBitmap : IDisposable
     {
         #region Fields
@@ -166,6 +166,33 @@ namespace Ephemera.NBagOfTricks
             _hBuff = GCHandle.Alloc(_buff, GCHandleType.Pinned);
         }
 
+        ///// <summary>Constructor from GDI Bitmap.</summary>
+        ///// <param name="bmp"></param>
+        ///// <param name="height"></param>
+        //public PixelBitmap(Bitmap bmp) : this(bmp.Width, bmp.Height)
+        //{
+        //    // TODO https://learn.microsoft.com/en-us/dotnet/api/system.drawing.bitmap.lockbits?view=netframework-4.8.1&redirectedfrom=MSDN#overloads
+
+        //    //Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+        //    //// Lock the bitmap's bits
+        //    //BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly, bmp.PixelFormat);
+
+        //    //// Calculate the number of bytes required
+        //    //int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
+        //    //byte[] rgbValues = new byte[bytes];
+
+        //    //// Copy the RGB values into the array
+        //    //Marshal.Copy(bmpData.Scan0, rgbValues, 0, bytes);
+
+        //    //// Unlock the bits
+        //    //bmp.UnlockBits(bmpData);
+        //    //return rgbValues;
+
+
+        //    ImageConverter converter = new ImageConverter();
+        //    var bytes = (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+        //}
+ 
         /// <summary>Override finalizer only if Dispose(bool disposing) has code to free unmanaged resources.</summary>
         ~PixelBitmap()
         {
@@ -232,6 +259,13 @@ namespace Ephemera.NBagOfTricks
             var bmp = new Bitmap(_width, _height, _width * 4, PixelFormat.Format32bppPArgb, _hBuff.AddrOfPinnedObject());
             return bmp;
         }
+        #endregion
+
+        #region Native
+        // Import the native DeleteObject function from GDI32.dll
+        [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool DeleteObject([In] IntPtr hObject);
         #endregion
     }
 }
