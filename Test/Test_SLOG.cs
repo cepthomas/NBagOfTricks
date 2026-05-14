@@ -9,13 +9,8 @@ using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfTricks.PNUT;
 
 
-namespace NBagOfTricks.Test
+namespace Ephemera.NBagOfTricks.Test
 {
-    class Defs
-    {
-        public static string SLOG_FILE = Path.Combine(MiscUtils.GetSourcePath(), "out", "slog.log");
-    }
-
     public class SLOG_BASIC : TestSuite
     {
         readonly Logger _logger1 = LogManager.CreateLogger("TestLogger1");
@@ -27,11 +22,11 @@ namespace NBagOfTricks.Test
             Info("Test slog.");
 
             _cbText.Clear();
-            File.Delete(Defs.SLOG_FILE);
+            File.Delete(Program.SlogFile);
             LogManager.MinLevelFile = LogLevel.Debug;
             LogManager.MinLevelNotif = LogLevel.Debug;
             LogManager.LogMessage += LogManager_LogMessage;
-            LogManager.Run(Defs.SLOG_FILE, 1000);
+            LogManager.Run(Program.SlogFile, 1000);
 
             _logger1.Info("11111 file:Y cb:Y");
             _logger2.Debug("22222 file:Y cb:N");
@@ -66,7 +61,7 @@ namespace NBagOfTricks.Test
             Assert(_cbText[3].Contains("Test_SLOG.cs:line 45"));
             Assert(_cbText[4].Contains("55555"));
 
-            var ftext = File.ReadAllLines(Defs.SLOG_FILE);
+            var ftext = File.ReadAllLines(Program.SlogFile);
             Assert(ftext.Length == 5);
         }
 
@@ -86,7 +81,7 @@ namespace NBagOfTricks.Test
 
             LogManager.MinLevelFile = LogLevel.Debug;
             LogManager.MinLevelNotif = LogLevel.Debug;
-            LogManager.Run(Defs.SLOG_FILE, 1000);
+            LogManager.Run(Program.SlogFile, 1000);
 
             try
             {
@@ -109,7 +104,7 @@ namespace NBagOfTricks.Test
 
             LogManager.MinLevelFile = LogLevel.Debug;
             LogManager.MinLevelNotif = LogLevel.Debug;
-            LogManager.Run(Defs.SLOG_FILE, 1000);
+            LogManager.Run(Program.SlogFile, 1000);
 
             for (int i = 0; i < 50; i++)
             {

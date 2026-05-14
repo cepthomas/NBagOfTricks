@@ -23,10 +23,8 @@ namespace Ephemera.NBagOfTricks.Test
         {
             Info("Test ini reader.");
 
-            var inputDir = Path.Join(MiscUtils.GetSourcePath(), "Files");
-
             var irdr = new IniReader();
-            irdr.ParseFile(Path.Join(inputDir, "valid.ini"));
+            irdr.ParseFile(Path.Join(Program.InputDir, "valid.ini"));
             var sections = irdr.GetSectionNames();
             Assert(sections.Count == 6);
 

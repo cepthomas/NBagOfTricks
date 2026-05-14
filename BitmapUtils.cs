@@ -5,53 +5,79 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 
+// 
+// public static Bitmap ConvertToGrayscale(this Bitmap bmp)
+// not used
+// 
+// 
+// public static Bitmap Resize(this Bitmap bmp, int width, int height)
+// C:\Dev\Apps\NDraw\MainForm.cs:
+//   397:             using var bmpr = bmp.Resize(sz.Width, sz.Height);
+// C:\Dev\Apps\WinClip\Clip.cs:
+//   257:             Thumbnail = Content.Resize(tnWidth, tnHeight);
+// C:\Dev\Libs\IconicSelector\Selector.cs:
+//   209:                     bmp = bmp.Resize(ImageSize.Width, ImageSize.Height);
+// C:\Dev\Misc\NLab\ImageCache.cs:
+//    61:             var img = bmp.Resize(_imageSize, _imageSize);
+// 
+// 
+// public static Bitmap Colorize(this Bitmap original, Color newcol, Color replace = default)
+// C:\Dev\Libs\NBagOfUis\GraphicsUtils.cs:
+//   174:                     btn.Image = ((Bitmap)btn.Image!).Colorize(clr);
+//   178:                     btn.Image = ((Bitmap)btn.Image!).Colorize(clr);
+// C:\Dev\Misc\NLab\TrayEx.cs:
+//    52:             var img1 = sf.Colorize(Color.LightGreen);
+//    53:             var img2 = sf.Colorize(Color.HotPink);
+
+
+
 
 namespace Ephemera.NBagOfTricks
 {
     #region Extension methods for manipulating bmps - not for realtime
     public static class BitmapUtils
     {
-        /// <summary>De-colorize.</summary>
-        /// <param name="bmp"></param>
-        /// <returns></returns>
-        public static Bitmap ConvertToGrayscale(this Bitmap bmp)
-        {
-            Bitmap result = new(bmp.Width, bmp.Height);
+        ///// <summary>De-colorize.</summary>
+        ///// <param name="bmp"></param>
+        ///// <returns></returns>
+        //public static Bitmap ConvertToGrayscale(this Bitmap bmp)
+        //{
+        //    Bitmap result = new(bmp.Width, bmp.Height);
 
-            // Conversion algo (worst to best)
-            // - Simple averaging.
-            // - channel-dependent luminance perception
-            //   Y = R * 0.2126 + G * 0.7152 + B * 0.0722; // 0.0 to 255.0
-            // - gamma-compression-corrected approximation:
-            //   Y = 0.299 R + 0.587 G + 0.114 B
-            ColorMatrix mat = new(
-            [
-                [.30f, .30f, .30f,  0,  0],
-                [.59f, .59f, .59f,  0,  0],
-                [.11f, .11f, .11f,  0,  0],
-                [   0,    0,    0,  1,  0],
-                [   0,    0,    0,  0,  1]
-            ]);
+        //    // Conversion algo (worst to best)
+        //    // - Simple averaging.
+        //    // - channel-dependent luminance perception
+        //    //   Y = R * 0.2126 + G * 0.7152 + B * 0.0722; // 0.0 to 255.0
+        //    // - gamma-compression-corrected approximation:
+        //    //   Y = 0.299 R + 0.587 G + 0.114 B
+        //    ColorMatrix mat = new(
+        //    [
+        //        [.30f, .30f, .30f,  0,  0],
+        //        [.59f, .59f, .59f,  0,  0],
+        //        [.11f, .11f, .11f,  0,  0],
+        //        [   0,    0,    0,  1,  0],
+        //        [   0,    0,    0,  0,  1]
+        //    ]);
 
-            // Identity matrix for dev.
-            //ColorMatrix mat = new(
-            //[
-            //    [  1,  0,  0,  0,  0],
-            //    [  0,  1,  0,  0,  0],
-            //    [  0,  0,  1,  0,  0],
-            //    [  0,  0,  0,  1,  0],
-            //    [  0,  0,  0,  0,  1]
-            //]);
+        //    // Identity matrix for dev.
+        //    //ColorMatrix mat = new(
+        //    //[
+        //    //    [  1,  0,  0,  0,  0],
+        //    //    [  0,  1,  0,  0,  0],
+        //    //    [  0,  0,  1,  0,  0],
+        //    //    [  0,  0,  0,  1,  0],
+        //    //    [  0,  0,  0,  0,  1]
+        //    //]);
 
-            using (Graphics g = Graphics.FromImage(result))
-            {
-                using ImageAttributes attributes = new();
-                attributes.SetColorMatrix(mat);
-                g.DrawImage(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
-            }
+        //    using (Graphics g = Graphics.FromImage(result))
+        //    {
+        //        using ImageAttributes attributes = new();
+        //        attributes.SetColorMatrix(mat);
+        //        g.DrawImage(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
         /// <summary>Resize the image to the specified width and height.</summary>
         /// <param name="bmp">The image to resize.</param>
@@ -80,57 +106,56 @@ namespace Ephemera.NBagOfTricks
             return result;
         }
 
-        /// <summary>Colorize a bitmap. Mainly for beautifying glyphicons.</summary>
-        /// <param name="original"></param>
-        /// <param name="newcol"></param>
-        /// <param name="replace">Optional source color to replace. Defaults to black.</param>
-        /// <returns></returns>
-        public static Bitmap Colorize(this Bitmap original, Color newcol, Color replace = default)
-        {
-            Bitmap newbmp = new(original.Width, original.Height);
+        ///// <summary>Colorize a bitmap. Mainly for beautifying glyphicons.</summary>
+        ///// <param name="original"></param>
+        ///// <param name="newcol"></param>
+        ///// <param name="replace">Optional source color to replace. Defaults to black.</param>
+        ///// <returns></returns>
+        //public static Bitmap Colorize(this Bitmap original, Color newcol, Color replace = default)
+        //{
+        //    Bitmap newbmp = new(original.Width, original.Height);
 
-            for (int y = 0; y < newbmp.Height; y++) // This is not very efficient. Use a matrix instead.
-            {
-                for (int x = 0; x < newbmp.Width; x++)
-                {
-                    // Get the pixel from the image.
-                    // 0 is fully transparent, and 255 is fully opaque
-                    Color acol = original.GetPixel(x, y);
+        //    for (int y = 0; y < newbmp.Height; y++) // TODO use PixelBitmap + matrix. Combine with ConvertToGrayscale()?
+        //    {
+        //        for (int x = 0; x < newbmp.Width; x++)
+        //        {
+        //            // Get the pixel from the image. 0 is fully transparent, and 255 is fully opaque
+        //            Color acol = original.GetPixel(x, y);
 
-                    if (acol.R == replace.R && acol.G == replace.G && acol.B == replace.B)
-                    {
-                        acol = Color.FromArgb(acol.A, newcol.R, newcol.G, newcol.B);
-                    }
-                    newbmp.SetPixel(x, y, acol);
-                }
-            }
+        //            if (acol.R == replace.R && acol.G == replace.G && acol.B == replace.B)
+        //            {
+        //                acol = Color.FromArgb(acol.A, newcol.R, newcol.G, newcol.B);
+        //            }
+        //            newbmp.SetPixel(x, y, acol);
+        //        }
+        //    }
 
-            return newbmp;
-        }
+        //    return newbmp;
+        //}
 
-        /// <summary>
-        /// For debug purposes. This is not very efficient, could be improved.
-        /// </summary>
-        /// <param name="bmp"></param>
-        /// <param name="firstRow"></param>
-        /// <param name="numRows"></param>
-        /// <param name="info"></param>
-        public static List<(int x, int y, Color color)> Dump(this Bitmap bmp, int firstRow, int numRows, string info)
-        {
-            List<(int x, int y, Color color)> res = [];
+        ///// <summary>
+        ///// For debug purposes. TODO use PixelBitmap.
+        ///// </summary>
+        ///// <param name="bmp"></param>
+        ///// <param name="firstRow"></param>
+        ///// <param name="numRows"></param>
+        ///// <param name="info"></param>
+        //public static List<(int x, int y, Color color)> Dump(this Bitmap bmp, int firstRow, int numRows, string info)
+        //{
+        //    List<(int x, int y, Color color)> res = [];
 
-            for (int y = firstRow; y < firstRow + numRows && y < bmp.Height; y++)
-            {
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    // Get the pixel from the image.
-                    Color acolor = bmp.GetPixel(x, y);
-                    res.Add((x, y, acolor));
-                }
-            }
+        //    for (int y = firstRow; y < firstRow + numRows && y < bmp.Height; y++)
+        //    {
+        //        for (int x = 0; x < bmp.Width; x++)
+        //        {
+        //            // Get the pixel from the image.
+        //            Color acolor = bmp.GetPixel(x, y);
+        //            res.Add((x, y, acolor));
+        //        }
+        //    }
 
-            return res;
-        }
+        //    return res;
+        //}
     }
     #endregion
 
@@ -166,33 +191,58 @@ namespace Ephemera.NBagOfTricks
             _hBuff = GCHandle.Alloc(_buff, GCHandleType.Pinned);
         }
 
+        /// <summary>Constructor from GDI Bitmap.</summary>
+        /// <param name="bmp"></param>
+        public PixelBitmap(Bitmap bmp)
+        {
+            _width = bmp.Width;
+            _height = bmp.Height;
+            _buff = new int[_width * _height];
+            _hBuff = GCHandle.Alloc(_buff, GCHandleType.Pinned);
+
+            Rectangle rect = new(0, 0, _width, _height);
+            // Lock the bitmap bits.
+            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly, bmp.PixelFormat);
+
+            // Calculate the number of bytes required.
+            int numBytes = Math.Abs(bmpData.Stride) * bmp.Height;
+            byte[] rgbValues = new byte[numBytes];
+
+            // Copy the RGB values into the array.
+            Marshal.Copy(bmpData.Scan0, rgbValues, 0, numBytes);
+>>>
+            // Unlock the bits.
+            bmp.UnlockBits(bmpData);
+        }
+
+        /// <summary>Constructor from GDI Bitmap.</summary>
+        /// <param name="fn">Filename</param>
+        public PixelBitmap(string fn) : this((Bitmap)Bitmap.FromFile(fn))
+        {
+        }
+
         ///// <summary>Constructor from GDI Bitmap.</summary>
         ///// <param name="bmp"></param>
-        ///// <param name="height"></param>
         //public PixelBitmap(Bitmap bmp) : this(bmp.Width, bmp.Height)
         //{
+
         //    // TODO https://learn.microsoft.com/en-us/dotnet/api/system.drawing.bitmap.lockbits?view=netframework-4.8.1&redirectedfrom=MSDN#overloads
 
-        //    //Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-        //    //// Lock the bitmap's bits
-        //    //BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly, bmp.PixelFormat);
+        //    Rectangle rect = new(0, 0, _width, _height);
+        //    // Lock the bitmap's bits.
+        //    BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly, bmp.PixelFormat);
 
-        //    //// Calculate the number of bytes required
-        //    //int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
-        //    //byte[] rgbValues = new byte[bytes];
+        //    // Calculate the number of bytes required.
+        //    int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
+        //    byte[] rgbValues = new byte[bytes];
 
-        //    //// Copy the RGB values into the array
-        //    //Marshal.Copy(bmpData.Scan0, rgbValues, 0, bytes);
+        //    // Copy the RGB values into the array.
+        //    Marshal.Copy(bmpData.Scan0, rgbValues, 0, bytes);
 
-        //    //// Unlock the bits
-        //    //bmp.UnlockBits(bmpData);
-        //    //return rgbValues;
-
-
-        //    ImageConverter converter = new ImageConverter();
-        //    var bytes = (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+        //    // Unlock the bits.
+        //    bmp.UnlockBits(bmpData);
         //}
- 
+
         /// <summary>Override finalizer only if Dispose(bool disposing) has code to free unmanaged resources.</summary>
         ~PixelBitmap()
         {
@@ -225,6 +275,107 @@ namespace Ephemera.NBagOfTricks
         #endregion
 
         #region API
+        /// <summary>Colorize a bitmap. Mainly for beautifying glyphicons.</summary>
+        /// <param name="newcol"></param>
+        /// <param name="toReplace">Optional source color to replace. Defaults to black.</param>
+        /// <returns></returns>
+        public void Colorize(Color newcol, Color toReplace = default)
+        {
+            for (int y = 0; y < _height; y++)
+            {
+                for (int x = 0; x < _width; x++)
+                {
+                    // Get the pixel from the image.
+                    Color acol = GetPixel(x, y);
+                    if (acol.R == toReplace.R && acol.G == toReplace.G && acol.B == toReplace.B)
+                    {
+                        SetPixel(x, y, Color.FromArgb(acol.A, newcol.R, newcol.G, newcol.B));
+                    }
+                }
+            }
+        }
+
+        /// <summary>De-colorize.</summary>
+        /// <returns></returns>
+        public void ConvertToGrayscale()
+        {
+            // Conversion algo (worst to best)
+            // - Simple averaging.
+            // - channel-dependent luminance perception
+            //   Y = R * 0.2126 + G * 0.7152 + B * 0.0722; // 0.0 to 255.0
+            // - gamma-compression-corrected approximation:
+            //   Y = 0.299 R + 0.587 G + 0.114 B
+            for (int y = 0; y < _height; y++)
+            {
+                for (int x = 0; x < _width; x++)
+                {
+                    // Get the pixel from the image. 0 is fully transparent, and 255 is fully opaque
+                    Color acol = GetPixel(x, y);
+                    var lum = (int)(acol.R * 0.299 + acol.G * 0.587 + acol.B * 0.114);
+                    SetPixel(x, y, Color.FromArgb(acol.A, lum, lum, lum));
+                }
+            }
+
+            //Bitmap result = new(_width, _height);
+
+            //// Conversion algo (worst to best)
+            //// - Simple averaging.
+            //// - channel-dependent luminance perception
+            ////   Y = R * 0.2126 + G * 0.7152 + B * 0.0722; // 0.0 to 255.0
+            //// - gamma-compression-corrected approximation:
+            ////   Y = 0.299 R + 0.587 G + 0.114 B
+            //ColorMatrix mat = new(
+            //[
+            //    [.30f, .30f, .30f,  0,  0],
+            //    [.59f, .59f, .59f,  0,  0],
+            //    [.11f, .11f, .11f,  0,  0],
+            //    [   0,    0,    0,  1,  0],
+            //    [   0,    0,    0,  0,  1]
+            //]);
+
+            //// Identity matrix for dev.
+            ////ColorMatrix mat = new(
+            ////[
+            ////    [  1,  0,  0,  0,  0],
+            ////    [  0,  1,  0,  0,  0],
+            ////    [  0,  0,  1,  0,  0],
+            ////    [  0,  0,  0,  1,  0],
+            ////    [  0,  0,  0,  0,  1]
+            ////]);
+
+            //using (Graphics g = Graphics.FromImage(result))
+            //{
+            //    using ImageAttributes attributes = new();
+            //    attributes.SetColorMatrix(mat);
+            //    g.DrawImage(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+            //}
+
+            //return result;
+        }
+
+        /// <summary>
+        /// For debug purposes.
+        /// </summary>
+        /// <param name="firstRow"></param>
+        /// <param name="numRows"></param>
+        /// <param name="info"></param>
+        public List<(int x, int y, Color color)> Dump(int firstRow, int numRows, string info)
+        {
+            List<(int x, int y, Color color)> res = [];
+
+            for (int y = firstRow; y < firstRow + numRows && y < _height; y++)
+            {
+                for (int x = 0; x < _width; x++)
+                {
+                    // Get the pixel from the image.
+                    Color acolor = GetPixel(x, y);
+                    res.Add((x, y, acolor));
+                }
+            }
+
+            return res;
+        }
+
         /// <summary>Set one pixel.</summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -251,7 +402,7 @@ namespace Ephemera.NBagOfTricks
         }
 
         /// <summary>
-        /// Get a rendering of the buffer. Client must manage lifetime.
+        /// Get GDI Bitmap of the buffer. Client must manage lifetime.
         /// </summary>
         /// <returns></returns>
         public Bitmap GetBitmap()

@@ -31,8 +31,7 @@ namespace Ephemera.NBagOfTricks.Test
             void _error(string text) { stderr.Add(text); };
             StringReader _input = new("Giddyup");
 
-            MiscUtils.GetSourcePath();
-            var scriptFile = Path.Combine(MiscUtils.GetSourcePath(), "Files", "test_script.py");
+            var scriptFile = Path.Combine(Program.InputDir, "test_script.py");
             var code = Tools.RunScript(scriptFile, _print, _error, _input);
 
             Assert(stdout.Count == 5);

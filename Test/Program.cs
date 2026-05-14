@@ -11,6 +11,10 @@ namespace Ephemera.NBagOfTricks.Test
 {
     static class Program
     {
+        public static string InputDir = Path.Join(MiscUtils.GetSourcePath(), "Files");
+        public static string OutputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
+        public static string SlogFile = Path.Combine(Program.OutputDir, "slog.log");
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -18,8 +22,7 @@ namespace Ephemera.NBagOfTricks.Test
         static void Main(string[] _)
         {
             // Ensure paths.
-            var outputDir = Path.Join(MiscUtils.GetSourcePath(), "out");
-            Directory.CreateDirectory(outputDir);
+            Directory.CreateDirectory(OutputDir);
 
             // Run pnut tests from cmd line.
             TestRunner runner = new(OutputFormat.Readable);
@@ -29,5 +32,7 @@ namespace Ephemera.NBagOfTricks.Test
             runner.RunSuites(torun);
             //runner.Context.OutputLines.ForEach(l => Console.WriteLine(l));
         }
+
+
     }
 }
