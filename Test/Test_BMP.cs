@@ -37,7 +37,7 @@ namespace Ephemera.NBagOfTricks.Test
             }
 
             // Diagnostics.
-            var ls = pbmp1.Dump(10, 20, "howdy doody");
+            var ls = pbmp1.Dump(10, 20);
             Assert(ls.Count == 5120);
 
             // Write bitmap.

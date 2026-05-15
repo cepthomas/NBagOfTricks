@@ -60,32 +60,13 @@ namespace Ephemera.NBagOfTricks
         {
         }
 
-        /// <summary>Override finalizer only if Dispose(bool disposing) has code to free unmanaged resources.</summary>
-        ~PixelBitmap()
-        {
-            Dispose(false);
-        }
-
         /// <summary>Boilerplate.</summary>
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>Boilerplate.</summary>
-        public void Dispose(bool disposing)
-        {
             if (!_disposed)
             {
-                if (disposing)
-                {
-                    // Dispose managed state/objects).
-                }
-
                 // Release unmanaged resources.
                 _hBuff.Free();
-
                 _disposed = true;
             }
         }
@@ -166,9 +147,8 @@ namespace Ephemera.NBagOfTricks
         /// <summary>For debug purposes.</summary>
         /// <param name="firstRow"></param>
         /// <param name="numRows"></param>
-        /// <param name="info"></param>
         /// <returns></returns>
-        public List<(int x, int y, Color color)> Dump(int firstRow, int numRows, string info)
+        public List<(int x, int y, Color color)> Dump(int firstRow, int numRows)
         {
             List<(int x, int y, Color color)> res = [];
 

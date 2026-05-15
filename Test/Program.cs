@@ -32,7 +32,5 @@ namespace Ephemera.NBagOfTricks.Test
             runner.RunSuites(torun);
             //runner.Context.OutputLines.ForEach(l => Console.WriteLine(l));
         }
-
-
     }
 }
