@@ -5,31 +5,6 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 
-// 
-// public static Bitmap ConvertToGrayscale(this Bitmap bmp)
-// not used
-// 
-// 
-// public static Bitmap Resize(this Bitmap bmp, int width, int height)
-// C:\Dev\Apps\NDraw\MainForm.cs:
-//   397:             using var bmpr = bmp.Resize(sz.Width, sz.Height);
-// C:\Dev\Apps\WinClip\Clip.cs:
-//   257:             Thumbnail = Content.Resize(tnWidth, tnHeight);
-// C:\Dev\Libs\IconicSelector\Selector.cs:
-//   209:                     bmp = bmp.Resize(ImageSize.Width, ImageSize.Height);
-// C:\Dev\Misc\NLab\ImageCache.cs:
-//    61:             var img = bmp.Resize(_imageSize, _imageSize);
-// 
-// 
-// public static Bitmap Colorize(this Bitmap original, Color newcol, Color replace = default)
-// C:\Dev\Libs\NBagOfUis\GraphicsUtils.cs:
-//   174:                     btn.Image = ((Bitmap)btn.Image!).Colorize(clr);
-//   178:                     btn.Image = ((Bitmap)btn.Image!).Colorize(clr);
-// C:\Dev\Misc\NLab\TrayEx.cs:
-//    52:             var img1 = sf.Colorize(Color.LightGreen);
-//    53:             var img2 = sf.Colorize(Color.HotPink);
-
-
 
 
 namespace Ephemera.NBagOfTricks
@@ -160,7 +135,7 @@ namespace Ephemera.NBagOfTricks
     #endregion
 
     /// <summary>Fast pixel read/write. TODO fix/replace. Borrowed from https://stackoverflow.com/a/34801225.</summary>
-    public sealed class PixelBitmap : IDisposable
+    public sealed class PixelBitmapXXX : IDisposable
     {
         #region Fields
         /// <summary>Unmanaged buffer.</summary>
@@ -183,7 +158,7 @@ namespace Ephemera.NBagOfTricks
         /// <summary>Normal constructor.</summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public PixelBitmap(int width, int height)
+        public PixelBitmapXXX(int width, int height)
         {
             _width = width;
             _height = height;
@@ -193,7 +168,7 @@ namespace Ephemera.NBagOfTricks
 
         /// <summary>Constructor from GDI Bitmap.</summary>
         /// <param name="bmp"></param>
-        public PixelBitmap(Bitmap bmp)
+        public PixelBitmapXXX(Bitmap bmp)
         {
             _width = bmp.Width;
             _height = bmp.Height;
@@ -210,20 +185,26 @@ namespace Ephemera.NBagOfTricks
 
             // Copy the RGB values into the array.
             Marshal.Copy(bmpData.Scan0, rgbValues, 0, numBytes);
->>>
+
+            var num1 = _buff.Length;
+            var num2 = rgbValues.Length;
+
+
+
+
             // Unlock the bits.
             bmp.UnlockBits(bmpData);
         }
 
         /// <summary>Constructor from GDI Bitmap.</summary>
         /// <param name="fn">Filename</param>
-        public PixelBitmap(string fn) : this((Bitmap)Bitmap.FromFile(fn))
+        public PixelBitmapXXX(string fn) : this((Bitmap)Bitmap.FromFile(fn))
         {
         }
 
         ///// <summary>Constructor from GDI Bitmap.</summary>
         ///// <param name="bmp"></param>
-        //public PixelBitmap(Bitmap bmp) : this(bmp.Width, bmp.Height)
+        //public PixelBitmapXXX(Bitmap bmp) : this(bmp.Width, bmp.Height)
         //{
 
         //    // TODO https://learn.microsoft.com/en-us/dotnet/api/system.drawing.bitmap.lockbits?view=netframework-4.8.1&redirectedfrom=MSDN#overloads
@@ -244,7 +225,7 @@ namespace Ephemera.NBagOfTricks
         //}
 
         /// <summary>Override finalizer only if Dispose(bool disposing) has code to free unmanaged resources.</summary>
-        ~PixelBitmap()
+        ~PixelBitmapXXX()
         {
             Dispose(false);
         }
