@@ -22,28 +22,6 @@ namespace Ephemera.NBagOfTricks.Test
     {
         public override void RunSuite()
         {
-            Info("Test system Bitmap manipulation functions.");
-
-            var bmpIn = (Bitmap)Image.FromFile(Path.Join(Program.InputDir, "color_wheel.png")); // 500 x 500
-
-            // Resize bitmap.
-            var bmpResize = bmpIn.Resize(300, 200);
-            bmpResize.Save(Path.Join(Program.OutputDir, "resize.png"), ImageFormat.Png);
-
-            //// Convert grayscale.
-            //var bmpGray = bmpIn.ConvertToGrayscale();
-            //bmpGray.Save(Path.Join(Program.OutputDir, "grayscale.png"), ImageFormat.Png);
-
-            //// Colorize.
-            //var bmpColorize = bmpIn.Colorize(Color.Yellow, Color.FromArgb(0x00, 0x80, 0x00));
-            //bmpColorize.Save(Path.Join(Program.OutputDir, "colorize.png"), ImageFormat.Png);
-        }
-    }
-
-    public class BMP_PIXELBMP : TestSuite
-    {
-        public override void RunSuite()
-        {
             Info("Test PixelBitmap functions.");
 
             // Create a default gradient bitmap.
@@ -57,23 +35,27 @@ namespace Ephemera.NBagOfTricks.Test
                     pbmp1.SetPixel(x, y, clr);
                 }
             }
-            pbmp1.GetBitmap().Save(Path.Join(Program.OutputDir, "pbmp_gradient.png"), ImageFormat.Png);
+
+            // Diagnostics.
             var ls = pbmp1.Dump(10, 20, "howdy doody");
+            Assert(ls.Count == 5120);
+
+            // Write bitmap.
+            using var bmp1 = pbmp1.GetBitmap();
+            bmp1.Save(Path.Join(Program.OutputDir, "pbmp_gradient.png"), ImageFormat.Png);
 
             // Grayscale.
             pbmp1.ConvertToGrayscale();
-            pbmp1.GetBitmap().Save(Path.Join(Program.OutputDir, "pbmp_gray.png"), ImageFormat.Png);
-
-            //pbmp1.Colorize(Color.Red, Color.FromArgb(0x00, 0x80, 0x00));
-            //pbmp1.GetBitmap().Save(Path.Join(Program.OutputDir, "xxx.png"), ImageFormat.Png);
+            using var bmp2 = pbmp1.GetBitmap();
+            bmp2.Save(Path.Join(Program.OutputDir, "pbmp_gradient_gray.png"), ImageFormat.Png);
 
             // Colorize.
-            //using PixelBitmap pbmp2 = new(Path.Join(Program.InputDir, "grayscale.png"));
-            using PixelBitmap pbmp2 = new(Path.Join(Program.InputDir, "cogwheel.png"));
-            pbmp2.Colorize(Color.Red, Color.Black);
-            pbmp2.GetBitmap().Save(Path.Join(Program.OutputDir, "pbmp_colorize.png"), ImageFormat.Png);
-
-
+            using PixelBitmap pbmp2 = new(Path.Join(Program.InputDir, "grayscale.png"));
+            pbmp2.Colorize(Color.Yellow, Color.FromArgb(0x80, 0x80, 0x80));
+            //using PixelBitmap pbmp2 = new(Path.Join(Program.InputDir, "cogwheel.png"));
+            //pbmp2.Colorize(Color.Red, Color.Black);
+            using var bmp3 = pbmp2.GetBitmap();
+            bmp3.Save(Path.Join(Program.OutputDir, "pbmp_colorize.png"), ImageFormat.Png);
         }
     }
 }
