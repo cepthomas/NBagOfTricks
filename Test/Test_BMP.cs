@@ -56,6 +56,10 @@ namespace Ephemera.NBagOfTricks.Test
             //pbmp2.Colorize(Color.Red, Color.Black);
             using var bmp3 = pbmp2.GetBitmap();
             bmp3.Save(Path.Join(Program.OutputDir, "pbmp_colorize.png"), ImageFormat.Png);
+
+            // Other than 32 bit. TODO!
+
+
         }
     }
 }
