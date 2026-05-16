@@ -26,7 +26,7 @@ namespace Ephemera.NBagOfTricks.Test
 
             // Run pnut tests from cmd line.
             TestRunner runner = new(OutputFormat.Readable);
-            var torun = new[] { "BMP" };
+            var torun = new[] { "PBMP" };
             //var torun = new[] { "PNUT", "UTILS", "MMTEX", "JSON", "SLOG", "COLOR", "BMP", "INI", "MISC", "TOOLS" };
             //var torun = new[] { "UTILS", "MMTEX", "JSON", "SLOG", "COLOR", "BMP", "INI", "MISC", "TOOLS" };
             runner.RunSuites(torun);

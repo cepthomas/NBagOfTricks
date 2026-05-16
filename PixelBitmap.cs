@@ -12,7 +12,7 @@ namespace Ephemera.NBagOfTricks
     public sealed class PixelBitmap : IDisposable
     {
         #region Fields
-        /// <summary>Unmanaged buffer.</summary>
+        /// <summary>Unmanaged buffer. Full int used.</summary>
         readonly int[] _buff;
 
         /// <summary>Geometry.</summary>
@@ -44,14 +44,28 @@ namespace Ephemera.NBagOfTricks
         /// <param name="bmp"></param>
         public PixelBitmap(Bitmap bmp) : this(bmp.Width, bmp.Height)
         {
-            // Lock the source.
-            BitmapData bmpData = bmp.LockBits(new(0, 0, _width, _height), ImageLockMode.ReadOnly, bmp.PixelFormat);
+            // Check if bpp (Bits Per Pixel) is 8, 24, or 32
+            var bpp = Bitmap.GetPixelFormatSize(bmp.PixelFormat);
+            if (bpp != 8 && bpp != 24 && bpp != 32)
+            {
+                throw new ArgumentException("Only 8, 24 and 32 bpp images are supported.");
+            }
 
+            // Maybe rewrite to 32 bit.
+            var bmp32 = bmp; // default
+            if (bpp != 32)
+            {
+                bmp32 = new(_width, _height, PixelFormat.Format32bppArgb);
+                using Graphics g = Graphics.FromImage(bmp32);
+                g.DrawImage(bmp, 0, 0, _width, _height);
+            }
+
+            // Lock the source.
+            BitmapData bmpData = bmp32.LockBits(new(0, 0, _width, _height), ImageLockMode.ReadOnly, bmp32.PixelFormat);
             // Copy the RGB values into the alloc array.
             Marshal.Copy(bmpData.Scan0, _buff, 0, _buff.Length);
-
             // Unlock the source.
-            bmp.UnlockBits(bmpData);
+            bmp32.UnlockBits(bmpData);
         }
 
         /// <summary>Constructor from graphics file.</summary>
@@ -96,7 +110,7 @@ namespace Ephemera.NBagOfTricks
             return result;
         }
 
-        /// <summary>Get GDI Bitmap of the buffer. Client must manage lifetime.</summary>
+        /// <summary>Get GDI Bitmap of the buffer. Always 32 bit. Client must manage lifetime.</summary>
         /// <returns></returns>
         public Bitmap GetBitmap()
         {

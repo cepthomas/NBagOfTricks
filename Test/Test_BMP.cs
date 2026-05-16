@@ -18,48 +18,63 @@ using Ephemera.NBagOfTricks;
 
 namespace Ephemera.NBagOfTricks.Test
 {
-    public class BMP_MAIN : TestSuite
+    public class PBMP_MAIN : TestSuite
     {
         public override void RunSuite()
         {
             Info("Test PixelBitmap functions.");
 
-            // Create a default gradient bitmap.
-            int size = 256;
-            using PixelBitmap pbmp1 = new(size, size);
-            for (int y = 0; y < size; y++)
+            // Basics.
             {
-                for (int x = 0; x < size; x++)
+                // Create a default gradient bitmap.
+                int size = 256;
+                using PixelBitmap pbmp = new(size, size);
+                for (int y = 0; y < size; y++)
                 {
-                    var clr = Color.FromArgb(255, x, y, 100);
-                    pbmp1.SetPixel(x, y, clr);
+                    for (int x = 0; x < size; x++)
+                    {
+                        var clr = Color.FromArgb(255, x, y, 100);
+                        pbmp.SetPixel(x, y, clr);
+                    }
                 }
+
+                // Diagnostics.
+                var ls = pbmp.Dump(10, 20);
+                Assert(ls.Count == 5120);
+
+                // Write bitmap.
+                var bmp = pbmp.GetBitmap();
+                bmp.Save(Path.Join(Program.OutputDir, "pbmp_gradient.png"), ImageFormat.Png);
+
+                // To grayscale.
+                pbmp.ConvertToGrayscale();
+                bmp = pbmp.GetBitmap();
+                bmp.Save(Path.Join(Program.OutputDir, "pbmp_gradient_gray.png"), ImageFormat.Png);
             }
 
-            // Diagnostics.
-            var ls = pbmp1.Dump(10, 20);
-            Assert(ls.Count == 5120);
-
-            // Write bitmap.
-            using var bmp1 = pbmp1.GetBitmap();
-            bmp1.Save(Path.Join(Program.OutputDir, "pbmp_gradient.png"), ImageFormat.Png);
-
-            // Grayscale.
-            pbmp1.ConvertToGrayscale();
-            using var bmp2 = pbmp1.GetBitmap();
-            bmp2.Save(Path.Join(Program.OutputDir, "pbmp_gradient_gray.png"), ImageFormat.Png);
-
             // Colorize.
-            using PixelBitmap pbmp2 = new(Path.Join(Program.InputDir, "grayscale.png"));
-            pbmp2.Colorize(Color.Yellow, Color.FromArgb(0x80, 0x80, 0x80));
-            //using PixelBitmap pbmp2 = new(Path.Join(Program.InputDir, "cogwheel.png"));
-            //pbmp2.Colorize(Color.Red, Color.Black);
-            using var bmp3 = pbmp2.GetBitmap();
-            bmp3.Save(Path.Join(Program.OutputDir, "pbmp_colorize.png"), ImageFormat.Png);
+            {
+                // 32 bit 256 X 256  stride 1024  65536px   file size:4096 bytes
+                using PixelBitmap pbmp = new(Path.Join(Program.InputDir, "grayscale.png"));
+                pbmp.Colorize(Color.Yellow, Color.FromArgb(0x80, 0x80, 0x80));
+                using var bmp = pbmp.GetBitmap();
+                bmp.Save(Path.Join(Program.OutputDir, "pbmp_colorize.png"), ImageFormat.Png);
+            }
 
-            // Other than 32 bit. TODO!
+            // Other than 32 bit.
+            // 24 bit. 224 X 249  stride 672  55776px  file size:5867 bytes
+            {
+                using PixelBitmap pbmp = new(Path.Join(Program.InputDir, "24bit.png")); // Format24bppRgb
+                using var bmp = pbmp.GetBitmap();
+                bmp.Save(Path.Join(Program.OutputDir, "pbmp_24bit.png"), ImageFormat.Png);
+            }
 
-
+            // 8 bit. 257 X 257 1415 bytes
+            {
+                using PixelBitmap pbmp = new(Path.Join(Program.InputDir, "8bit.png")); // actually Format32bppArgb
+                using var bmp = pbmp.GetBitmap();
+                bmp.Save(Path.Join(Program.OutputDir, "pbmp_8bit.png"), ImageFormat.Png);
+            }
         }
     }
 }
