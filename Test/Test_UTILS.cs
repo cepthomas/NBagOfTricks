@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.Drawing;
 using System.Diagnostics;
 using System.Threading;
+using System.Drawing.Imaging;
 using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfTricks.PNUT;
 
@@ -55,6 +56,11 @@ namespace Ephemera.NBagOfTricks.Test
         {
             Info("Test misc utils.");
 
+            var inputDir = Path.Join(MiscUtils.GetSourcePath(), "Files");
+            var outputDir = MiscUtils.GetSourcePath();
+
+            var bmpIn = (Bitmap)Image.FromFile(Path.Join(inputDir, "color-wheel.png")); // 500 x 500
+
             var dir = MiscUtils.GetAppDataDir("Test");
             Assert(dir.Contains(@"\AppData\Roaming\Test"));
 
@@ -62,6 +68,10 @@ namespace Ephemera.NBagOfTricks.Test
             Assert(dir.Contains(@"\AppData\Roaming\Test\Bar"));
 
             Tools.ShowReadme("NBagOfTricks");
+
+            // Resize bitmap.
+            var bmpResize = MiscUtils.ResizeBitmap(bmpIn, 300, 200);
+            bmpResize.Save(Path.Join(outputDir, "resize.png"), ImageFormat.Png);
         }
     }
 }

@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 
 namespace Ephemera.NBagOfTricks
@@ -72,6 +74,35 @@ namespace Ephemera.NBagOfTricks
             return BitConverter.IsLittleEndian ?
                 (ushort)(((i & 0xFF00) >> 8) | ((i & 0x00FF) << 8)) :
                 i;
+        }
+        #endregion
+
+        #region Graphics
+        /// <summary>Resize the image to the specified width and height.</summary>
+        /// <param name="bmp">The image to resize.</param>
+        /// <param name="width">The width to resize to.</param>
+        /// <param name="height">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        public static Bitmap ResizeBitmap(Bitmap bmp, int width, int height)
+        {
+            Bitmap result = new(width, height);
+            result.SetResolution(bmp.HorizontalResolution, bmp.VerticalResolution);
+
+            using (Graphics graphics = Graphics.FromImage(result))
+            {
+                // Set high quality.
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+                // Draw the image.
+                graphics.DrawImage(bmp, 0, 0, result.Width, result.Height);
+            }
+
+            return result;
         }
         #endregion
 
