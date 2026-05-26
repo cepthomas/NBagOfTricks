@@ -257,20 +257,15 @@ namespace Ephemera.NBagOfTricks
                 };
             }
 
-            return conclr;
-        }
+            // Simple binning approach.
+            // int val = (sysclr.R > 0x80 || sysclr.G > 0x80 || sysclr.B > 0x80) ? 8 : 0;
+            // int lim = 0x40;
+            // val |= sysclr.R > lim ? 4 : 0;
+            // val |= sysclr.G > lim ? 2 : 0;
+            // val |= sysclr.B > lim ? 1 : 0;
+            // return (ConsoleColor)val;
 
-        /// <summary>Simple binning approach.</summary>
-        /// <param name="sysclr"></param>
-        /// <returns></returns>
-        public static ConsoleColor ToConsoleColor_simple(this Color sysclr)
-        {
-            int val = (sysclr.R > 0x80 || sysclr.G > 0x80 || sysclr.B > 0x80) ? 8 : 0;
-            int lim = 0x40;
-            val |= sysclr.R > lim ? 4 : 0;
-            val |= sysclr.G > lim ? 2 : 0;
-            val |= sysclr.B > lim ? 1 : 0;
-            return (ConsoleColor)val;
+            return conclr;
         }
 
         /// <summary>Parse console color safely.</summary>
@@ -280,8 +275,5 @@ namespace Ephemera.NBagOfTricks
         {
             return Enum.TryParse(value, ignoreCase: true, out ConsoleColor result) ? result : null;
         }
-
-
-
     }
 }
