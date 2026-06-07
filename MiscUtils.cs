@@ -16,7 +16,6 @@ namespace Ephemera.NBagOfTricks
     /// </summary>
     public static class MiscUtils
     {
-        #region System utils
         /// <summary>
         /// Returns a string with the application version information.
         /// </summary>
@@ -75,15 +74,13 @@ namespace Ephemera.NBagOfTricks
                 (ushort)(((i & 0xFF00) >> 8) | ((i & 0x00FF) << 8)) :
                 i;
         }
-        #endregion
 
-        #region Graphics
         /// <summary>Resize the image to the specified width and height.</summary>
         /// <param name="bmp">The image to resize.</param>
         /// <param name="width">The width to resize to.</param>
         /// <param name="height">The height to resize to.</param>
         /// <returns>The resized image.</returns>
-        public static Bitmap ResizeBitmap(Bitmap bmp, int width, int height)
+        public static Bitmap ResizeBitmap(this Bitmap bmp, int width, int height)
         {
             Bitmap result = new(width, height);
             result.SetResolution(bmp.HorizontalResolution, bmp.VerticalResolution);
@@ -104,9 +101,23 @@ namespace Ephemera.NBagOfTricks
 
             return result;
         }
-        #endregion
 
-        #region Misc extensions
+        /// <summary>
+        /// Add a value to a list with key. If the list with key doesn't exist, it is added.
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public static void Add<TKey, TValue>(this Dictionary<TKey, List<TValue>> dict, TKey key, TValue value) where TKey : notnull
+        {
+            if (!dict.TryGetValue(key, out var list))
+            {
+                list = new List<TValue>();
+                dict[key] = list;
+            }
+            list.Add(value);
+        }
+
         /// <summary>
         /// Get a subset of an array.
         /// </summary>
@@ -143,11 +154,10 @@ namespace Ephemera.NBagOfTricks
             }
         }
         public delegate void InvokeIfRequiredDelegate<T>(T obj) where T : ISynchronizeInvoke;
-        #endregion
 
-        #region Extensions borrowed from MoreLinq
         /// <summary>
         /// Immediately executes the given action on each element in the source sequence.
+        /// Borrowed from MoreLinq.
         /// </summary>
         /// <typeparam name="T">The type of the elements in the sequence</typeparam>
         /// <param name="source">The sequence of elements</param>
@@ -166,6 +176,7 @@ namespace Ephemera.NBagOfTricks
         /// <summary>
         /// Immediately executes the given action on each element in the source sequence.
         /// Each element's index is used in the logic of the action.
+        /// Borrowed from MoreLinq.
         /// </summary>
         /// <typeparam name="T">The type of the elements in the sequence</typeparam>
         /// <param name="source">The sequence of elements</param>
@@ -216,7 +227,5 @@ namespace Ephemera.NBagOfTricks
 
             return fn;
         }
-
-        #endregion
     }
 }
