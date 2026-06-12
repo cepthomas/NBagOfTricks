@@ -108,7 +108,7 @@ namespace Ephemera.NBagOfTricks
         /// <param name="dict"></param>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public static void Add<TKey, TValue>(this Dictionary<TKey, List<TValue>> dict, TKey key, TValue value) where TKey : notnull
+        public static void AddLazy<TKey, TValue>(this Dictionary<TKey, List<TValue>> dict, TKey key, TValue value) where TKey : notnull
         {
             if (!dict.TryGetValue(key, out var list))
             {
