@@ -38,10 +38,10 @@ namespace Ephemera.NBagOfTricks
         /// <returns>The section contents or throws if name is invalid.</returns>
         public Dictionary<string, string> GetValues(string name)
         {
-            var res = _contents.Where(c => c.Name == name);
-            if (res.Any())
+            var res = _contents.Where(c => c.Name == name).FirstOrDefault();
+            if (res is not null)
             {
-                return res.First().Values;
+                return res.Values;
             }
             else
             {
