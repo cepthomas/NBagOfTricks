@@ -152,7 +152,7 @@ namespace Ephemera.NBagOfTricks
 
                                 if (writer is not null && le.Level >= MinLevelFile)
                                 {
-                                    string s = $"{le.Timestamp.ToString(TimeFormat)} : {slevel} {le.LoggerName} {fn}({le.SourceLine}) {le.Message}";
+                                    string s = $"{le.Timestamp.ToString(TimeFormat)} {slevel} {le.LoggerName} {fn}({le.SourceLine}) {le.Message}";
                                     writer.WriteLine(s);
                                     writer.Flush();
                                 }
