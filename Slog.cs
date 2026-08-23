@@ -71,9 +71,6 @@ namespace Ephemera.NBagOfTricks
         /// <summary>Event filter for callback event.</summary>
         public static LogLevel MinLevelNotif { get; set; } = LogLevel.Info;
 
-        /// <summary>Format for file records.</summary>
-        public static string TimeFormat { get; set; } = "yyyy'-'MM'-'dd HH':'mm':'ss.fff";
-
         /// <summary>For diagnostics.</summary>
         public static int QueueSize { get { return _queue.Count; } }
         #endregion
@@ -138,35 +135,33 @@ namespace Ephemera.NBagOfTricks
                     {
                         if (!_queue.IsEmpty)
                         {
-                            StreamWriter? writer = null;
-
                             if (logFilePath != "" && logSize > 0)
                             {
-                                writer = new StreamWriter(logFilePath, true);
-                            }
-
-                            while (_queue.TryDequeue(out LogEntry? le))
-                            {
-                                var fn = Path.GetFileName(le.SourceFile);
-                                var slevel = _levelNames[le.Level];
-
-                                if (writer is not null && le.Level >= MinLevelFile)
+                                using var writer = new StreamWriter(logFilePath, true);
+                                while (_queue.TryDequeue(out LogEntry? le))
                                 {
-                                    string s = $"{le.Timestamp.ToString(TimeFormat)} {slevel} {le.LoggerName} {fn}({le.SourceLine}) {le.Message}";
-                                    writer.WriteLine(s);
-                                    writer.Flush();
-                                }
+                                    var fn = Path.GetFileName(le.SourceFile);
+                                    var slevel = _levelNames[le.Level];
 
-                                if (LogMessage is not null && le.Level >= MinLevelNotif)
-                                {
-                                    string smsg = $"{slevel} {le.Message}";
-                                    string msg = $"{slevel} {le.LoggerName} {le.Message}";
-                                    LogMessage.Invoke(null, new LogMessageEventArgs() { Level = le.Level, Message = msg, ShortMessage = smsg });
+                                    if (writer is not null && le.Level >= MinLevelFile)
+                                    {
+                                        var dt = le.Timestamp;
+                                        var sdate = $"{dt.Year:d4}-{dt.Month:d2}-{dt.Day:d2}"; //# TODO1 make ST and nbot logging like this
+                                        var stime = $"{dt.Hour:d2}:{dt.Minute:d2}:{dt.Second:d2}.{dt.Millisecond:d3}.{dt.Microsecond:d3}";
+                                        string s = $"{sdate} {stime} {slevel} {le.LoggerName} {fn}({le.SourceLine}) {le.Message}";
+                                        writer.WriteLine(s);
+                                        writer.Flush();
+                                    }
+
+                                    if (LogMessage is not null && le.Level >= MinLevelNotif)
+                                    {
+                                        string smsg = $"{slevel} {le.Message}";
+                                        string msg = $"{slevel} {le.LoggerName} {le.Message}";
+                                        LogMessage.Invoke(null, new LogMessageEventArgs() { Level = le.Level, Message = msg, ShortMessage = smsg });
+                                    }
                                 }
                             }
-
-                            writer?.Close();
-                            writer?.Dispose();
+                            _queue.Clear();
                         }
 
                         // Check file size every minute or so.
@@ -238,15 +233,20 @@ namespace Ephemera.NBagOfTricks
     }
 
     /// <summary>Client creates as many of these as needed.</summary>
-    /// <remarks>
-    /// Constructor.
-    /// </remarks>
-    /// <param name="name">Client assigned name.</param>
-    public class Logger(string name)
+    public class Logger
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="name">Client assigned name.</param>
+        public Logger(string name)
+        {
+            Name = name.Substring(0, 4).ToUpper();
+        }
+
         #region Properties
         /// <summary>ID for this logger.</summary>
-        public string Name { get; init; } = name;
+        public string Name { get; init; }
 
         /// <summary>Turn logger on or off.</summary>
         public bool Enable { get; set; } = true;

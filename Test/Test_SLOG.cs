@@ -29,9 +29,12 @@ namespace Ephemera.NBagOfTricks.Test
             LogManager.Run(Program.SlogFile, 1000);
 
             _logger1.Info("11111 file:Y cb:Y");
+            Thread.Sleep(123);
             _logger2.Debug("22222 file:Y cb:N");
+            Thread.Sleep(123);
             LogManager.Flush();
             _logger1.Trace("33333 file:N cb:N");
+            Thread.Sleep(123);
 
             // Force exception.
             try
@@ -58,7 +61,7 @@ namespace Ephemera.NBagOfTricks.Test
             Assert(_cbText[0].Contains("11111"));
             Assert(_cbText[1].Contains("22222"));
             Assert(_cbText[2].Contains("Attempted to divide by zero"));
-            Assert(_cbText[3].Contains("Test_SLOG.cs:line 45"));
+            Assert(_cbText[3].Contains("Test_SLOG.cs:line 43"));
             Assert(_cbText[4].Contains("55555"));
 
             var ftext = File.ReadAllLines(Program.SlogFile);
