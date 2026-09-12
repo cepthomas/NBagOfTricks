@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
+using System.Drawing;
+using System.Linq;
+using System.Drawing.Imaging;
 
 
 namespace Ephemera.NBagOfTricks
@@ -286,6 +289,45 @@ namespace Ephemera.NBagOfTricks
             }
 
             return res;
+        }
+
+        /// <summary>
+        /// Combine multiple bitmaps into one image. Stacked vertically but could add option for horizontal.
+        /// </summary>
+        /// <param name="filePaths"></param>
+        /// <returns></returns>
+        public static Bitmap AppendBitmaps(string[] filePaths)
+        {
+            // Load all bitmaps into a list.
+            List<Bitmap> bitmaps = [.. filePaths.Select(path => new Bitmap(path))];
+
+            int totalHeight = 0;
+            int maxWidth = 0;
+
+            foreach (var bmp in bitmaps)
+            {
+                totalHeight += bmp.Height;
+                if (bmp.Width > maxWidth)
+                {
+                    maxWidth = bmp.Width;
+                }
+            }
+
+            // Create a new master canvas
+            var combinedBmp = new Bitmap(maxWidth, totalHeight, PixelFormat.Format24bppRgb);
+
+            using (Graphics g = Graphics.FromImage(combinedBmp))
+            {
+                int yOffset = 0;
+                foreach (var bmp in bitmaps)
+                {
+                    g.DrawImage(bmp, new Point(0, yOffset));
+                    yOffset += bmp.Height;
+                    bmp.Dispose(); // Free memory
+                }
+            }
+
+            return combinedBmp;
         }
     }
 }

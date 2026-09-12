@@ -43,14 +43,21 @@ namespace Ephemera.NBagOfTricks.Test
             Assert(code == 999);
         }
     }
+
     public class TOOLS_MISC : TestSuite
     {
         public override void RunSuite()
         {
             Info("Test misc tools.");
 
+            string[] files = [ @"C:\Users\cepth\Desktop\pic1.bmp", @"C:\Users\cepth\Desktop\pic2.bmp",
+                @"C:\Users\cepth\Desktop\pic3.bmp", @"C:\Users\cepth\Desktop\pic4.bmp" ];
+
+            var bmp = Tools.AppendBitmaps(files);
+            bmp.Save(@"C:\Users\cepth\Desktop\pic-combined.png", System.Drawing.Imaging.ImageFormat.Png);
+
             // public static string MarkdownToHtml(List<string> body, MarkdownMode mode, bool show)
-            Tools.ShowReadme("NBagOfTricks");
+            //Tools.ShowReadme("NBagOfTricks");
 
             // TODO public static List<string> SniffBin(string fn, int limit = 100)
 
