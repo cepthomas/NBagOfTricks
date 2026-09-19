@@ -155,7 +155,8 @@ namespace Ephemera.NBagOfTricks
 
                                     if (LogMessage is not null && le.Level >= MinLevelNotif)
                                     {
-                                        string smsg = $"{slevel} {le.Message}";
+                                        string smsg = le.Message;
+                                        //string smsg = $"{slevel} {le.Message}";
                                         string msg = $"{slevel} {le.LoggerName} {le.Message}";
                                         LogMessage.Invoke(null, new LogMessageEventArgs() { Level = le.Level, Message = msg, ShortMessage = smsg });
                                     }
