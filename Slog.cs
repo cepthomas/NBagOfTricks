@@ -146,7 +146,7 @@ namespace Ephemera.NBagOfTricks
                                     if (writer is not null && le.Level >= MinLevelFile)
                                     {
                                         var dt = le.Timestamp;
-                                        var sdate = $"{dt.Year:d4}-{dt.Month:d2}-{dt.Day:d2}"; //# TODO1 make ST and nbot logging like this
+                                        var sdate = $"{dt.Year:d4}-{dt.Month:d2}-{dt.Day:d2}";
                                         var stime = $"{dt.Hour:d2}:{dt.Minute:d2}:{dt.Second:d2}.{dt.Millisecond:d3}.{dt.Microsecond:d3}";
                                         string s = $"{sdate} {stime} {slevel} {le.LoggerName} {fn}({le.SourceLine}) {le.Message}";
                                         writer.WriteLine(s);
