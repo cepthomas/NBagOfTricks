@@ -242,7 +242,8 @@ namespace Ephemera.NBagOfTricks
         /// <param name="name">Client assigned name.</param>
         public Logger(string name)
         {
-            Name = name.Substring(0, 4).ToUpper();
+            Name = name;
+            //Name = name.Substring(0, 4).ToUpper();
         }
 
         #region Properties
