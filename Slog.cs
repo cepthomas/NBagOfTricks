@@ -243,7 +243,6 @@ namespace Ephemera.NBagOfTricks
         public Logger(string name)
         {
             Name = name;
-            //Name = name.Substring(0, 4).ToUpper();
         }
 
         #region Properties
