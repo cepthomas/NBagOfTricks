@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="NBagOfTricks.csproj" />
+  <Project Path="Test/Test.csproj" />
+</Solution>

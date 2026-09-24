@@ -19,7 +19,7 @@
         <!-- en none -->
 
         <OutputPath>bin\</OutputPath>
-        <TargetFrameworks>net8.0-windows</TargetFrameworks>
+        <TargetFrameworks>net10.0-windows</TargetFrameworks>
 
     </PropertyGroup>
 
@@ -31,10 +31,6 @@
 
     <ItemGroup>
       <Compile Remove="PNUT_o.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     </ItemGroup>
 
 </Project>
