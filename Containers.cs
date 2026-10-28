@@ -200,6 +200,9 @@ namespace Ephemera.NBagOfTricks
         readonly Dictionary<string, int> _lut2 = [];
         readonly bool _throwOnError = throwOnError;
 
+        /// <summary>How many.</summary>
+        public int Count { get { return _lut1.Count; } }
+
         /// <summary>Iterate everything.</summary>
         public IEnumerable<KeyValuePair<int, string>> Contents { get { return _lut1.AsEnumerable(); } }
 
@@ -214,7 +217,7 @@ namespace Ephemera.NBagOfTricks
 
         /// <summary>Get name.</summary>
         /// <param name="id"></param>
-        /// <returns>The name if valid else null else throws.</returns>
+        /// <returns>The name if valid else null or throw.</returns>
         public string? GetName(int id)
         {
             if (_lut1.TryGetValue(id, out var name)) { return name; }
@@ -224,7 +227,7 @@ namespace Ephemera.NBagOfTricks
 
         /// <summary>Get id.</summary>
         /// <param name="name"></param>
-        /// <returns>The id if valid else null else throws..</returns>
+        /// <returns>The id if valid else null or throw.</returns>
         public int? GetId(string name)
         {
             if (_lut2.TryGetValue(name, out var id)) { return id; }

@@ -50,11 +50,17 @@ namespace Ephemera.NBagOfTricks.Test
         {
             Info("Test misc tools.");
 
-            string[] files = [ @"C:\Users\cepth\Desktop\pic1.bmp", @"C:\Users\cepth\Desktop\pic2.bmp",
-                @"C:\Users\cepth\Desktop\pic3.bmp", @"C:\Users\cepth\Desktop\pic4.bmp" ];
+            //string[] files = [ @"C:\Users\cepth\Desktop\pic1.bmp", @"C:\Users\cepth\Desktop\pic2.bmp",
+            //    @"C:\Users\cepth\Desktop\pic3.bmp", @"C:\Users\cepth\Desktop\pic4.bmp" ];
+            //var bmp = Tools.AppendBitmaps(files);
+            //bmp.Save(@"C:\Users\cepth\Desktop\pic-combined.png", System.Drawing.Imaging.ImageFormat.Png);
 
+            // TODO this doesn't work right.
+            string[] files = [ @"C:\Dev\Libs\NBagOfTricks\Test\Files\cogwheel.png",
+                @"C:\Dev\Libs\NBagOfTricks\Test\Files\color_wheel.png",
+                @"C:\Dev\Libs\NBagOfTricks\Test\Files\grayscale.png" ];
             var bmp = Tools.AppendBitmaps(files);
-            bmp.Save(@"C:\Users\cepth\Desktop\pic-combined.png", System.Drawing.Imaging.ImageFormat.Png);
+            bmp.Save(@"C:\Dev\Libs\NBagOfTricks\Test\out\pic-combined.png", System.Drawing.Imaging.ImageFormat.Png);
 
             // public static string MarkdownToHtml(List<string> body, MarkdownMode mode, bool show)
             //Tools.ShowReadme("NBagOfTricks");
