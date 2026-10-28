@@ -12,12 +12,15 @@ namespace Ephemera.NBagOfTricks
     [Serializable]
     public class Bag
     {
+        /// <summary>How to serialize.</summary> 
+        static JsonSerializerOptions _serOpts = new() { WriteIndented = true, AllowTrailingCommas = true };
+
         /// <summary>The file name.</summary> 
         [JsonIgnore]
         string FileName { get; set; } = "";
 
         /// <summary>Misc dynamic values that we want to persist. Needs to be public so serializer can see it.</summary>
-        public Dictionary<string, object> Values { get; set; } = new Dictionary<string, object>();
+        public Dictionary<string, object> Values { get; set; } = [];
 
         /// <summary>Is this bag ok?</summary>
         [JsonIgnore]
@@ -43,9 +46,9 @@ namespace Ephemera.NBagOfTricks
             double ret = double.NaN;
 
             string key = MakeKey(owner, valname);
-            if (Values.ContainsKey(key))
+            if (Values.TryGetValue(key, out object? value))
             {
-                var val = (JsonElement)Values[key];
+                var val = (JsonElement)value;
                 if (val.ValueKind == JsonValueKind.Number)
                 {
                     ret = val.GetDouble();
@@ -71,9 +74,9 @@ namespace Ephemera.NBagOfTricks
             int ret = int.MinValue;
 
             string key = MakeKey(owner, valname);
-            if (Values.ContainsKey(key))
+            if (Values.TryGetValue(key, out object? value))
             {
-                var val = (JsonElement)Values[key];
+                var val = (JsonElement)value;
                 if (val.ValueKind == JsonValueKind.Number)
                 {
                     var d = val.GetDouble();
@@ -100,13 +103,12 @@ namespace Ephemera.NBagOfTricks
             string ret;
 
             string key = MakeKey(owner, valname);
-            if (Values.ContainsKey(key))
+            if (Values.TryGetValue(key, out object? value))
             {
-                var val = (JsonElement)Values[key];
+                var val = (JsonElement)value;
                 if (val.ValueKind == JsonValueKind.String)
                 {
                     ret = val.GetString()!;
-
                 }
                 else
                 {
@@ -152,8 +154,7 @@ namespace Ephemera.NBagOfTricks
         {
             if (Valid)
             {
-                JsonSerializerOptions opts = new() { WriteIndented = true };
-                string json = JsonSerializer.Serialize(this, opts);
+                string json = JsonSerializer.Serialize(this, _serOpts);
                 File.WriteAllText(FileName, json);
             }
         }
@@ -165,11 +166,10 @@ namespace Ephemera.NBagOfTricks
         {
             Bag bag = new();
 
-            if(File.Exists(fn))
+            if (File.Exists(fn))
             {
-                JsonSerializerOptions opts = new() { AllowTrailingCommas = true };
                 string json = File.ReadAllText(fn);
-                var jpc = JsonSerializer.Deserialize<Bag>(json, opts);
+                var jpc = JsonSerializer.Deserialize<Bag>(json, _serOpts);
 
                 if (jpc is not null)
                 {
@@ -194,11 +194,11 @@ namespace Ephemera.NBagOfTricks
     }
 
     /// <summary>Both ways luts.</summary>
-    public class BiLut
+    public class BiLut(bool throwOnError = false)
     {
-        /// <summary>Both ways luts.</summary>
-        Dictionary<int, string> _lut1 = [];
-        Dictionary<string, int> _lut2 = [];
+        readonly Dictionary<int, string> _lut1 = [];
+        readonly Dictionary<string, int> _lut2 = [];
+        readonly bool _throwOnError = throwOnError;
 
         /// <summary>Iterate everything.</summary>
         public IEnumerable<KeyValuePair<int, string>> Contents { get { return _lut1.AsEnumerable(); } }
@@ -214,20 +214,22 @@ namespace Ephemera.NBagOfTricks
 
         /// <summary>Get name.</summary>
         /// <param name="id"></param>
-        /// <returns>The name if valid else throws.</returns>
-        public string GetName(int id)
+        /// <returns>The name if valid else null else throws.</returns>
+        public string? GetName(int id)
         {
-            try { return _lut1[id]; }
-            catch { throw new ArgumentException($"Invalid id:{id}"); }
+            if (_lut1.TryGetValue(id, out var name)) { return name; }
+            else if (!_throwOnError) { return null; }
+            else { throw new ArgumentException($"Invalid id:{id}"); }
         }
 
         /// <summary>Get id.</summary>
         /// <param name="name"></param>
-        /// <returns>The id if valid else -1.</returns>
-        public int GetId(string name)
+        /// <returns>The id if valid else null else throws..</returns>
+        public int? GetId(string name)
         {
-            try { return _lut2[name]; }
-            catch { return -1; }
+            if (_lut2.TryGetValue(name, out var id)) { return id; }
+            else if (!_throwOnError) { return null; }
+            else { throw new ArgumentException($"Invalid name:{name}"); }
         }
     }
 }
